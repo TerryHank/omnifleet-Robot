@@ -1,0 +1,16 @@
+
+> foxglove-studio-cn-desktop@1.86.0-cn.1 dist:arm64
+> electron-builder --linux deb --arm64
+
+  • electron-builder  version=26.15.3 os=5.15.148-tegra
+  • loaded configuration  file=package.json ("build" field)
+  • detected workspace root for project using packageManager field  pm=yarn-berry config=yarn@3.6.3 resolved=/home/iecme/omnifleet_ws/src/visualization/foxglove_studio_source projectDir=/home/iecme/omnifleet_ws/src/visualization/foxglove_studio_source/desktop-cn
+  • skipped dependencies rebuild  reason=npmRebuild is set to false
+  • packaging       platform=linux arch=arm64 electron=43.0.0 appOutDir=dist/linux-arm64-unpacked
+  • downloaded      label=electron progress=100%
+  • downloaded electron zip extracted successfully  output=/home/iecme/omnifleet_ws/src/visualization/foxglove_studio_source/desktop-cn/dist/linux-arm64-unpacked
+  • searching for node modules  pm=yarn-berry searchDir=/home/iecme/omnifleet_ws/src/visualization/foxglove_studio_source/desktop-cn
+  • no node modules found in collection, trying next search directory  searchDir=/home/iecme/omnifleet_ws/src/visualization/foxglove_studio_source/desktop-cn attempt=0
+  • searching for node modules  pm=yarn-berry searchDir=/home/iecme/omnifleet_ws/src/visualization/foxglove_studio_source
+  • duplicate dependency references  dependencies=["string-width@4.2.3","strip-ansi@6.0.1","string-width@4.2.3","strip-ansi@6.0.1","string-width@4.2.3","@foxglove/omgidl-parser@1.0.3","@foxglove/rosmsg@4.2.2","lru-cache@6.0.0","glob@7.2.3","humanize-ms@1.2.1","@npmcli/fs@1.0.0","@npmcli/move-file@1.1.2","minipass@3.3.6","once@1.4.0","minipass-collect@1.0.2","minipass-flush@1.0.5","minipass-pipeline@1.2.4","glob@7.2.3","ssri@8.0.1","fs-minipass@2.1.0","minizlib@2.1.2","unique-filename@1.1.1","strip-ansi@6.0.1","wide-align@1.1.5","agentkeepalive@4.3.0","cacache@15.3.0","agent-base@6.0.2","debug@4.3.4","agent-base@6.0.2","debug@4.3.4","lru-cache@6.0.0","minipass-collect@1.0.2","minipass-fetch@1.4.1","minipass-flush@1.0.5","minipass-pipeline@1.2.4","minipass@3.3.6","promise-retry@2.0.1","socks-proxy-agent@6.1.1","ssri@8.0.1","minipass@3.3.6","minipass-sized@1.0.3","minipass@3.3.6","minipass@3.3.6","minipass@3.3.6","minipass@3.3.6","minipass@3.3.6","glob@7.2.3","make-fetch-happen@9.1.0","npmlog@6.0.2","glob@7.2.3","semver@7.5.4","tar@6.1.13","are-we-there-yet@3.0.1","gauge@4.0.4","debug@4.3.4","debug@4.3.4","socks@2.7.1","minipass@3.3.6","unique-slug@2.0.2","string-width@4.2.3"]
+  • building        target=deb arch=arm64 file=dist/foxglove-studio-cn_1.86.0-cn.1_arm64.deb

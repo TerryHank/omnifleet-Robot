@@ -1,0 +1,9 @@
+本软件的 Studio 主体来自 AD-EYE/foxglove-opensource：
+https://github.com/AD-EYE/foxglove-opensource
+
+上游源码版本：a65add813d0c1271a21a023a08fd66252dc9a054
+许可证：Mozilla Public License 2.0（MPL-2.0）
+
+本构建增加了简体中文补全、中文默认语言、Electron Linux ARM64 桌面壳，
+以及与 foxglove_bridge 3.x 的 foxglove.sdk.v1 协议协商适配。
+相应修改后的源代码随本项目保留，可按 MPL-2.0 条款使用和再分发。

@@ -1,6 +1,0 @@
-string task_id
-string reason
----
-bool accepted
-string code
-string message

@@ -1,0 +1,51 @@
+{
+  "name": "@agenticros/eyes",
+  "version": "1.2.1",
+  "description": "Fullscreen robot eyes for tablet/display devices, driven by ROS 2 cmd_vel Twist, with optional idle person-follow gaze and R2D2-style sounds",
+  "type": "module",
+  "main": "./src/index.js",
+  "bin": {
+    "agenticros-eyes": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "lib",
+    "public",
+    "README.md",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "node -e \"process.exit(0)\"",
+    "typecheck": "node -e \"process.exit(0)\"",
+    "start": "node src/index.js",
+    "start:no-browser": "node src/index.js --no-browser",
+    "test": "node --test lib/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "optionalDependencies": {
+    "rclnodejs": "^1.9.0"
+  },
+  "keywords": [
+    "agenticros",
+    "ros2",
+    "robot",
+    "eyes",
+    "cmd_vel",
+    "teleop"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agenticros/agenticros.git",
+    "directory": "packages/robot-eyes"
+  },
+  "author": "PlaiPin",
+  "license": "MIT"
+}

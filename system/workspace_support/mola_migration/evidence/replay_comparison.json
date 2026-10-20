@@ -1,7 +1,0 @@
-{
-  "poses": 23,
-  "max_position_delta_m": 0.0,
-  "max_orientation_delta_deg": 0.0,
-  "max_timestamp_delta": 0.0,
-  "trajectory_files_identical": true
-}

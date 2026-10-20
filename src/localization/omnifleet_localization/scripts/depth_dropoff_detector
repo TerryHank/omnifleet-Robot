@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+from omnifleet_terrain_analysis.depth_dropoff_detector import main
+
+if __name__ == "__main__":
+    main()

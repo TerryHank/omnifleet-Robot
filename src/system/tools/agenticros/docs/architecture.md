@@ -1,0 +1,400 @@
+# AgenticROS System Architecture
+
+![AgenticROS system flow: chat and Jarvis voice → agent platforms → AgenticROS tools, missions, transports, and skills → ROS robot sensing and actuation](images/agenticros-architecture.png)
+
+AgenticROS supports four deployment modes depending on where OpenClaw runs
+relative to the robot. The AI Gateway layer and ROS2 layer remain the same
+across all modes — only the transport between them changes.
+
+The diagram above is the product flow: conversation channels (including
+Jarvis voice in and spoken replies out) and agent platforms (OpenClaw,
+NemoClaw, Claude, Codex, Gemini, Hermes) call into AgenticROS — tools and
+capabilities, missions and memory, transport and safety, skills and
+perception — then out to the ROS 2 graph and robot hardware. Jarvis is
+the `chrismatthieu/jarvis` skill: after the wake word, everyday questions
+are answered by a fast chat model; robot commands and ROS inquiries go
+through the same OpenClaw agent loop as web chat, so installed AgenticROS
+skills work the same out loud. Source SVG: [agenticros-system-flow.svg](agenticros-system-flow.svg).
+The text diagrams below break out each deployment mode in more detail.
+A package-level diagram of adapters and `ros2_ws` nodes is in
+[agenticros-architecture.svg](agenticros-architecture.svg).
+
+---
+
+## AI Gateway Layer (common to all modes)
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                              MESSAGING LAYER                                     │
+│                                                                                  │
+│    ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
+│    │ WhatsApp │  │ Telegram │  │ Discord  │  │  Slack   │  │ Web Chat │        │
+│    └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘        │
+│         └──────────────┴──────┬─────┴──────────────┴─────────────┘               │
+└───────────────────────────────┼──────────────────────────────────────────────────┘
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                           AI GATEWAY LAYER                                       │
+│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐  │
+│  │                        OPENCLAW GATEWAY                                    │  │
+│  │   ┌──────────────┐  ┌─────────────────┐  ┌──────────────────────────┐     │  │
+│  │   │   Sessions   │  │   AI Agent      │  │   Memory / State         │     │  │
+│  │   │  (per-user)  │  │  (intent →      │  │  (cross-conversation)    │     │  │
+│  │   │              │  │   tool calls)   │  │                          │     │  │
+│  │   └──────────────┘  └───────┬─────────┘  └──────────────────────────┘     │  │
+│  └─────────────────────────────┼─────────────────────────────────────────────┘  │
+│                                ▼                                                 │
+│  ┌────────────────────────────────────────────────────────────────────────────┐  │
+│  │                       AGENTICROS PLUGIN                                       │  │
+│  │                                                                            │  │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐   │  │
+│  │  │                    TOOL REGISTRY                                     │   │  │
+│  │  │                                                                      │   │  │
+│  │  │  ros2_publish    ros2_subscribe_once    ros2_service_call            │   │  │
+│  │  │  ros2_action_goal   ros2_param_get/set  ros2_list_topics            │   │  │
+│  │  │  ros2_camera_snapshot   follow_robot (Follow Me mission)            │   │  │
+│  │  └──────────────────────────────┬──────────────────────────────────────┘   │  │
+│  │                                 │                                          │  │
+│  │  ┌──────────────┐  ┌───────────▼──────────┐  ┌─────────────────────┐      │  │
+│  │  │   SKILLS     │  │  SAFETY VALIDATOR    │  │  ROBOT CONTEXT      │      │  │
+│  │  │              │  │                      │  │                     │      │  │
+│  │  │ navigate-to  │  │ before_tool_call     │  │ before_agent_start  │      │  │
+│  │  │ take-photo   │  │  · velocity limits   │  │  · capabilities    │      │  │
+│  │  │ check-status │  │  · workspace bounds  │  │  · topics/services │      │  │
+│  │  │ pick-object  │  │  · blocked ops       │  │  · safety config   │      │  │
+│  │  │ follow-me    │  │                      │  │                     │      │  │
+│  │  └──────────────┘  └──────────┬───────────┘  └─────────────────────┘      │  │
+│  │                               │                                            │  │
+│  │  ┌────────────────────────────┤   ┌──────────────────────────────────┐     │  │
+│  │  │  /estop COMMAND            │   │  TRANSPORT ADAPTER               │     │  │
+│  │  │  (bypasses AI entirely)    │   │  (mode-dependent, see below)     │     │  │
+│  │  └────────────────────────────┘   └──────────────┬───────────────────┘     │  │
+│  └──────────────────────────────────────────────────┼────────────────────────┘  │
+└─────────────────────────────────────────────────────┼────────────────────────────┘
+                                                      │
+                                                      ▼
+                                          ┌───────────────────────┐
+                                          │  Mode A, B, C, or D   │
+                                          │  (see below)          │
+                                          └───────────────────────┘
+```
+
+## ROS2 Layer (common to all modes)
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                              ROS2 LAYER                                          │
+│                                                                                  │
+│                           ROS2 DDS Bus                                           │
+│         ┌──────────┬──────────┬──────────┬──────────┐                            │
+│         ▼          ▼          ▼          ▼          ▼                            │
+│  ┌────────────┐┌────────┐┌────────┐┌─────────┐┌──────────────┐                  │
+│  │  /cmd_vel  ││ /odom  ││/camera ││/battery ││/diagnostics  │  ...             │
+│  │  (Twist)   ││(Odom)  ││(Image) ││(State)  ││(DiagArray)   │                  │
+│  └─────┬──────┘└───┬────┘└───┬────┘└────┬────┘└──────┬───────┘                  │
+│        │           │         │          │            │                            │
+│  ┌─────▼───────────▼─────────▼──────────▼────────────▼────────────────────┐      │
+│  │                         ROBOT HARDWARE                                  │      │
+│  │                                                                         │      │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐               │      │
+│  │  │  Motors  │  │  Camera  │  │  LIDAR   │  │   IMU    │   ...         │      │
+│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘               │      │
+│  └─────────────────────────────────────────────────────────────────────────┘      │
+│                                                                                   │
+│  ┌─────────────────────────────────┐  ┌───────────────────────────────────┐       │
+│  │  agenticros_discovery              │  │  Nav2 / MoveIt2 / Other Stacks   │       │
+│  │  (capability introspection)     │  │  (navigation, manipulation)       │       │
+│  └─────────────────────────────────┘  └───────────────────────────────────┘       │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Deployment Mode A: Same Machine
+
+OpenClaw runs directly on the robot's computer. The plugin talks to ROS2
+natively through the local DDS bus — no network transport needed. The user
+only interacts through messaging apps over the internet.
+
+Best for: single-robot setups, embedded deployments, edge devices with
+internet access.
+
+```
+    User (Telegram, WhatsApp, etc.)
+                 │
+                 │  internet
+                 ▼
+┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+│                        ROBOT MACHINE                                     │
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────────┐  │
+│  │  OPENCLAW + AGENTICROS PLUGIN                                        │  │
+│  │                                                                    │  │
+│  │  AI Agent → Safety Validator → Tool Execution                     │  │
+│  └──────────────────────┬─────────────────────────────────────────────┘  │
+│                         │                                                │
+│                         │ direct (local DDS / rclnodejs)                 │
+│                         ▼                                                │
+│  ┌────────────────────────────────────────────────────────────────────┐  │
+│  │  ROS2 DDS Bus                                                      │  │
+│  │  /cmd_vel  /odom  /camera  /battery  /diagnostics  ...            │  │
+│  └──────────────────────┬─────────────────────────────────────────────┘  │
+│                         ▼                                                │
+│  ┌────────────────────────────────────────────────────────────────────┐  │
+│  │  ROBOT HARDWARE   (motors, camera, LIDAR, IMU)                    │  │
+│  └────────────────────────────────────────────────────────────────────┘  │
+│                                                                          │
+└ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
+
+Transport: none (same process / local IPC)
+Latency:   ~ms
+NAT issue:  none — only outbound internet needed for messaging APIs
+```
+
+---
+
+## Deployment Mode B: Local Network
+
+OpenClaw runs on a separate machine on the same network as the robot
+(e.g. a laptop, local server, or dev workstation). The plugin connects to
+rosbridge_server on the robot via WebSocket over LAN.
+
+Best for: development, testing, multi-robot labs, on-premises deployments
+where everything is on the same network.
+
+```
+    User (Telegram, WhatsApp, etc.)
+                 │
+                 │  internet
+                 ▼
+┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐     ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+│  LOCAL SERVER / DEV MACHINE    │     │  ROBOT                          │
+│                                │     │                                 │
+│  ┌──────────────────────────┐  │     │  ┌───────────────────────────┐  │
+│  │  OPENCLAW + AGENTICROS      │  │     │  │  rosbridge_server         │  │
+│  │  PLUGIN                  │──┼─────┼─►│  (WebSocket → ROS2 DDS)   │  │
+│  │                          │  │ LAN │  └─────────────┬─────────────┘  │
+│  │  rosbridge-client lib    │  │ WS  │                │                │
+│  └──────────────────────────┘  │     │                ▼                │
+│                                │     │  ┌───────────────────────────┐  │
+└ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘     │  │  ROS2 DDS Bus             │  │
+                                       │  │  /cmd_vel  /odom  ...     │  │
+                                       │  └─────────────┬─────────────┘  │
+                                       │                ▼                │
+                                       │  ┌───────────────────────────┐  │
+                                       │  │  ROBOT HARDWARE           │  │
+                                       │  └───────────────────────────┘  │
+                                       │                                 │
+                                       └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
+
+Transport: WebSocket (ws://robot-ip:9090) via rosbridge protocol
+Latency:   ~ms (LAN)
+NAT issue:  none — both machines are on the same network
+```
+
+---
+
+## Deployment Mode C: Cloud / Remote
+
+OpenClaw runs on a cloud server or VPS. The robot is on a remote network
+(factory, warehouse, field) behind NAT/firewall. Neither side can directly
+reach the other. A WebRTC connection with STUN/TURN handles NAT traversal
+so both sides can establish peer-to-peer communication.
+
+Best for: production deployments, remote operations, fleet management,
+when operators and robots are in different locations.
+
+```
+    User (Telegram, WhatsApp, etc.)
+                 │
+                 │  internet
+                 ▼
+┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐                  ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+│  CLOUD / VPS                   │                  │  ROBOT (behind NAT/firewall)   │
+│                                │                  │                                │
+│  ┌──────────────────────────┐  │                  │  ┌──────────────────────────┐  │
+│  │  OPENCLAW + AGENTICROS      │  │                  │  │  AgenticROS Agent Node      │  │
+│  │  PLUGIN                  │  │                  │  │  (ROS2 node)             │  │
+│  │                          │  │                  │  │                          │  │
+│  │  WebRTC data channel     │◄─┼── P2P or TURN ──┼─►│  WebRTC data channel     │  │
+│  └──────────────────────────┘  │    (encrypted)   │  └────────────┬─────────────┘  │
+│                                │                  │               │                │
+└ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘                  │               │ local DDS      │
+                                       ┌─────────┐ │               ▼                │
+                                       │  STUN / │ │  ┌──────────────────────────┐  │
+                                       │  TURN   │ │  │  ROS2 DDS Bus            │  │
+                                       │  Server │ │  │  /cmd_vel  /odom  ...    │  │
+                                       └─────────┘ │  └────────────┬─────────────┘  │
+                                                    │               ▼                │
+                                                    │  ┌──────────────────────────┐  │
+                                                    │  │  ROBOT HARDWARE          │  │
+                                                    │  └──────────────────────────┘  │
+                                                    │                                │
+                                                    └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
+
+Transport: WebRTC data channel (STUN for NAT traversal, TURN as relay fallback)
+Latency:   ~10-100ms (internet, varies)
+NAT issue:  solved — both sides connect outbound to STUN/TURN, then P2P
+```
+
+In Mode C, the robot runs a **AgenticROS Agent Node** (`agenticros_agent`) — a
+lightweight ROS2 node that connects outbound to the signaling/TURN server
+and establishes a WebRTC data channel with the cloud-side plugin. Commands
+and feedback flow over this encrypted peer-to-peer channel. Neither side
+needs a public IP or open inbound ports.
+
+---
+
+## Deployment Mode D: Zenoh
+
+When the robot uses **ROS 2 with Zenoh RMW** (`RMW_IMPLEMENTATION=rmw_zenoh_cpp`),
+the plugin can connect directly to a Zenoh router via **zenoh-ts** (WebSocket to
+`zenoh-plugin-remote-api`). No rosbridge or WebRTC bridge is required.
+
+Best for: robots already on Zenoh, low-latency pub/sub, or deployments that
+prefer the Zenoh stack over DDS.
+
+```
+    User (Telegram, WhatsApp, etc.)
+                 │
+                 │  internet
+                 ▼
+┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐     ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+│  OPENCLAW MACHINE               │     │  ROBOT (Zenoh RMW)           │
+│                                 │     │                               │
+│  ┌──────────────────────────┐   │     │  ┌─────────────────────────┐  │
+│  │  OPENCLAW + AGENTICROS      │   │     │  │  Zenoh router           │  │
+│  │  PLUGIN                  │   │     │  │  (zenohd)                │  │
+│  │                          │   │     │  └───────────┬─────────────┘  │
+│  │  zenoh-ts (WebSocket)    │───┼─────┼─►             │                │
+│  └──────────────────────────┘   │     │               │ Zenoh         │
+│                                 │     │  ┌─────────────▼─────────────┐  │
+└ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘     │  │  ROS2 (rmw_zenoh_cpp)      │  │
+                                       │  │  /cmd_vel  /odom  ...       │  │
+                                       │  └─────────────┬─────────────┘  │
+                                       │                ▼                │
+                                       │  ┌─────────────────────────────┐  │
+                                       │  │  ROBOT HARDWARE             │  │
+                                       │  └─────────────────────────────┘  │
+                                       │                                   │
+                                       └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
+
+Transport: Zenoh (WebSocket to Zenoh router; plugin uses zenoh-ts)
+Latency:   ~ms
+NAT issue:  depends on network — router must be reachable from OpenClaw
+```
+
+Set `transport.mode` to `zenoh`, configure `zenoh.routerEndpoint` (e.g.
+`ws://router-host:10000` for zenoh-ts), and optionally `zenoh.domainId` to
+match `ROS_DOMAIN_ID` / rmw_zenoh. The `robot.namespace` config applies to
+topic names (and thus to Zenoh key expressions), e.g. namespace `robot-uuid`
+yields `/robot-uuid/cmd_vel`.
+
+---
+
+## Robot hardware profiles
+
+Each `robots[]` entry may declare a **profile**: frozen hardware features
+(`base`, `camera`, `depth`, …) plus ROS bindings (`cmd_vel`, `camera.rgb`).
+Advertised capability verbs are the intersection of installed skills and
+those features. Configs without a profile keep the gateway-wide skill list.
+
+Optional `robots[i].safety` overlays gateway velocity caps and an optional
+`workspaceLimits` geofence. On transport loss the pool publishes a zero
+Twist to every robot whose profile has `base`. See [robot-profile.md](robot-profile.md).
+
+---
+
+## Transport Adapter Abstraction
+
+All plugin tools call `getTransport()` instead of directly using a specific
+client library. The `RosTransport` interface (`@agenticros/transport`) provides
+a unified API for all three deployment modes:
+
+```
+  Plugin Tools (ros2_publish, ros2_subscribe_once, ...)
+       │
+       ▼
+  getTransport(): RosTransport
+       │
+       ├── RosbridgeTransport  (Mode B — @agenticros/rosbridge-client)
+       │     └── WebSocket → rosbridge_server → ROS2 DDS
+       │
+       ├── LocalTransport      (Mode A — @agenticros/transport-local, stub)
+       │     └── rclnodejs → ROS2 DDS directly
+       │
+       ├── WebRTCTransport     (Mode C — @agenticros/transport-webrtc, stub)
+       │     └── WebRTC data channel → agenticros_agent → ROS2 DDS
+       │
+       └── ZenohTransport      (Mode D — zenoh-ts)
+             └── WebSocket → Zenoh router → ROS2 (rmw_zenoh_cpp)
+```
+
+The `createTransport(config)` factory in `@agenticros/transport` uses dynamic
+`import()` to load the correct adapter by mode, so unused adapters and their
+dependencies are never loaded.
+
+---
+
+## Optional cross-adapter memory
+
+When `config.memory.enabled` is true, all four adapters (OpenClaw, Claude Code
+MCP, Claude Desktop MCP, Gemini CLI) register four extra tools —
+`memory_remember`, `memory_recall`, `memory_forget`, `memory_status` — backed
+by a **shared, file-backed store** namespaced by `robot.namespace`. With the
+`mem0` backend, the vector store lives at `~/.mem0/vector_store.db`, so every
+process on the host reads and writes the same data — that is what enables
+true cross-adapter recall (a fact remembered from Claude Desktop is immediately
+recall-able from OpenClaw).
+
+The OpenClaw plugin additionally injects a `### Memory` section into each
+chat's system context at `before_agent_start`, containing usage directives
+for the four tools plus a snapshot of up to 10 recently-remembered facts
+(via the `MemoryProvider.recent(namespace, limit)` core method). This lets
+the OpenClaw LLM answer common personal-context questions ("what do I have
+for X?") **without** a tool call, while still using `memory_recall` for
+deeper semantic search.
+
+Off by default; see [memory.md](memory.md) for setup, recipes, and
+cross-process verification steps.
+
+---
+
+## Optional fleet hive
+
+When `config.hive.enabled` is true, adapters register `hive_*` tools
+(remember / recall / forget / status / enable / set_recipe) that talk to
+an optional Corebrum process over `http://127.0.0.1:6502/api/*`. Hive is
+**not** a memory backend: per-robot `memory_*` stays on `local` / `mem0`.
+Corebrum is a separate proprietary product; AgenticROS never vendors it
+and never publishes `cmd_vel` through it.
+
+When hive is off (the default), `createHiveClient` returns `null`, no
+`hive_*` tools are registered, and nothing calls `:6502`. See
+[hive.md](hive.md).
+
+---
+
+## Data Flow Example
+
+```
+  User (Telegram)                AgenticROS                        Robot
+       │                            │                              │
+       │  "Move forward 2 meters"   │                              │
+       │───────────────────────────►│                              │
+       │                            │                              │
+       │              AI Agent selects ros2_publish                │
+       │              Safety hook validates (0.5 m/s < 1.0 limit) │
+       │                            │                              │
+       │                            │  publish /cmd_vel            │
+       │                            │─────────────────────────────►│
+       │                            │  (via Mode A, B, or C)       │  Motors
+       │                            │                              │  engage
+       │                            │  subscribe /odom             │
+       │                            │◄─────────────────────────────│
+       │                            │                              │
+       │  "Done! Moved 2m forward"  │                              │
+       │◄───────────────────────────│                              │
+       │                            │                              │
+```

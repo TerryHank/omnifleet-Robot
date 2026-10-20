@@ -1,0 +1,38 @@
+/// <reference types="react" />
+import { Immutable } from "immer";
+import { Time } from "@foxglove/rostime";
+import { ParameterValue } from "@foxglove/studio";
+import { BuiltinPanelExtensionContext } from "@foxglove/studio-base/components/PanelExtensionAdapter";
+import { AdvertiseOptions, MessageEvent, PlayerPresence, PlayerProblem, PlayerStateActiveData, PlayerURLState, Progress, PublishPayload, SubscribePayload, Topic, TopicStats } from "@foxglove/studio-base/players/types";
+import { RosDatatypes } from "@foxglove/studio-base/types/RosDatatypes";
+export type MockMessagePipelineProps = {
+    name?: string;
+    presence?: PlayerPresence;
+    topics?: Topic[];
+    topicStats?: Map<string, TopicStats>;
+    datatypes?: RosDatatypes;
+    messages?: MessageEvent[];
+    problems?: PlayerProblem[];
+    publish?: (request: PublishPayload) => void;
+    callService?: (service: string, request: unknown) => Promise<unknown>;
+    setPublishers?: (arg0: string, arg1: AdvertiseOptions[]) => void;
+    setSubscriptions?: (arg0: string, arg1: Immutable<SubscribePayload[]>) => void;
+    setParameter?: (key: string, value: ParameterValue) => void;
+    fetchAsset?: BuiltinPanelExtensionContext["unstable_fetchAsset"];
+    noActiveData?: boolean;
+    activeData?: Partial<PlayerStateActiveData>;
+    capabilities?: string[];
+    profile?: string;
+    startPlayback?: () => void;
+    pausePlayback?: () => void;
+    seekPlayback?: (arg0: Time) => void;
+    currentTime?: Time;
+    startTime?: Time;
+    endTime?: Time;
+    isPlaying?: boolean;
+    pauseFrame?: (arg0: string) => () => void;
+    playerId?: string;
+    progress?: Progress;
+    urlState?: PlayerURLState;
+};
+export default function MockMessagePipelineProvider(props: React.PropsWithChildren<MockMessagePipelineProps>): React.ReactElement;

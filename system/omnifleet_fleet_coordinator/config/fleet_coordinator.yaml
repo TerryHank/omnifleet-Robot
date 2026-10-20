@@ -1,7 +1,0 @@
-fleet_coordinator:
-  ros__parameters:
-    robot_ids: [robot_104, robot_113]
-    heartbeat_timeout_sec: 2.5
-    conflict_radius_m: 1.0
-    dispatch_period_sec: 0.2
-    auto_enable_fleet: true

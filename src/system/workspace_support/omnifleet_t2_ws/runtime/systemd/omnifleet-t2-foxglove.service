@@ -1,0 +1,20 @@
+[Unit]
+Description=OmniFleet T2 Foxglove WebSocket bridge
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_ws/omnifleet_t2_ws
+Environment=HOME=/home/iecme
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStart=/bin/bash -lc 'source /opt/ros/$ROS_DISTRO/setup.bash && source $OMNIFLEET_T2_SENSOR_WS/install/setup.bash && source $OMNIFLEET_T2_WS/install/setup.bash && exec ros2 run foxglove_bridge foxglove_bridge --ros-args -r __node:=omnifleet_t2_foxglove_bridge --params-file /etc/omnifleet_t2/foxglove.yaml -p address:=$OMNIFLEET_T2_FOXGLOVE_ADDRESS -p port:=$OMNIFLEET_T2_FOXGLOVE_PORT'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

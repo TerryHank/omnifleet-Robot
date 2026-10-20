@@ -1,0 +1,1 @@
+export type RegisteredIconNames = "Add" | "AddIn" | "BacklogList" | "Blockhead" | "BlockheadFilled" | "BookStar" | "Cancel" | "DatabaseSettings" | "Delete" | "Edit" | "ErrorBadge" | "FileASPX" | "FiveTileGrid" | "Flow" | "GenericScan" | "OpenFile" | "PanelSettings" | "RectangularClipping" | "Settings" | "Sparkle" | "Variable2" | "ROS";

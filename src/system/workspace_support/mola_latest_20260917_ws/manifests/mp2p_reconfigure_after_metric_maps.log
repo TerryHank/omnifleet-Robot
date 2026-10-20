@@ -1,0 +1,11 @@
+-- Found mola_common: 0.6.1 (/home/iecme/omnifleet_ws/mola_latest_20260917_ws/install/mola_common/share/mola_common/cmake)
+-- MP2P_ICP version: 2.14.1 (detected in package.xml)
+-- Configuring done
+-- Generating done
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    AMENT_CMAKE_SYMLINK_INSTALL
+
+
+-- Build files have been written to: /home/iecme/omnifleet_ws/mola_latest_20260917_ws/build/mp2p_icp_core

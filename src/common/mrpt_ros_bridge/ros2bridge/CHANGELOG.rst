@@ -1,0 +1,89 @@
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package mrpt_libros_bridge
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+3.5.3 (2026-04-24)
+------------------
+* Merge pull request `#8 <https://github.com/MRPT/mrpt_ros_bridge/issues/8>`_ from MRPT/fix/potential-ub-reinterpret-cast
+  FIX: Potential UB for reinterpret_cast
+* FIX: Potential UB for reinterpret_cast
+* Contributors: Jose Luis Blanco-Claraco
+
+3.5.2 (2026-04-23)
+------------------
+* Merge pull request `#7 <https://github.com/MRPT/mrpt_ros_bridge/issues/7>`_ from MRPT/fix/gps-nmea-regression
+  Fix/gps nmea regression
+* Add GPS unit tests
+* FIX: Regression in populating GPS ROS2 messages for mrpt>=2.15.11
+* Contributors: Jose Luis Blanco-Claraco
+
+3.5.1 (2026-04-06)
+------------------
+* Merge pull request `#6 <https://github.com/MRPT/mrpt_ros_bridge/issues/6>`_ from MRPT/fix/new-mrpt-api
+  Update to build against mrpt >=2.15.13
+* Update to build against mrpt >=2.15.13 (pointcloud field names as std::string instead of string_view)
+* Merge pull request `#5 <https://github.com/MRPT/mrpt_ros_bridge/issues/5>`_ from MRPT/feat/new-gps-obs-fields
+  Support new MRPT 2.15.11 GPS data fields
+* Support new MRPT 2.15.11 GPS data fields
+* Contributors: Jose Luis Blanco-Claraco
+
+3.5.0 (2026-02-17)
+------------------
+* Merge pull request `#4 <https://github.com/MRPT/mrpt_ros_bridge/issues/4>`_ from MRPT/feat/parse-gps-fix
+  Support converting GpsFix messages too
+* Support converting GpsFix messages too
+* Contributors: Jose Luis Blanco-Claraco
+
+3.4.0 (2026-02-14)
+------------------
+* Merge pull request `#3 <https://github.com/MRPT/mrpt_ros_bridge/issues/3>`_ from MRPT/feat/refactor-rosbag2
+  Refactor to reuse common code in mola bridge and rosbag input
+* fix reversed tf look up
+* Gracefully handle optional rosbag2_cpp
+* Fix bug: in stereo_msg conversion
+* Refactor to reuse common code in mola bridge and rosbag input
+* Contributors: Jose Luis Blanco-Claraco
+
+3.3.0 (2026-02-11)
+------------------
+* Merge pull request `#2 <https://github.com/MRPT/mrpt_ros_bridge/issues/2>`_ from MRPT/feat/support-gps-msgs
+  Add support for gps_msgs types too
+* Add support for gps_msgs types too
+* Contributors: Jose Luis Blanco-Claraco
+
+3.2.0 (2026-02-06)
+------------------
+* Merge pull request `#1 <https://github.com/MRPT/mrpt_ros_bridge/issues/1>`_ from MRPT/feat/export-pointcloud-color
+  Fix: export RGB color clouds in the expected format by RViz/PCL
+* Fix: export RGB color clouds in the expected format by RViz/PCL
+* Support LaserScan.scan_time for mrpt 2.15.6
+* Contributors: Jose Luis Blanco-Claraco
+
+3.1.1 (2025-12-26)
+------------------
+* Prepare for API change in mrpt 2.15.4
+* Contributors: Jose Luis Blanco-Claraco
+
+3.1.0 (2025-12-23)
+------------------
+* PointCloud2 to CGenericPointsMap: parse remaining fields of unsupported types as float
+* Contributors: Jose Luis Blanco-Claraco
+
+3.0.2 (2025-11-08)
+------------------
+* FIX: Wrong find_dependency() on mrpt-apps, while it should be now mrpt-maps for minimal dependencies
+* Contributors: Jose Luis Blanco-Claraco
+
+3.0.1 (2025-11-07)
+------------------
+* Fix package.xml so packages downstream install the required dependencies
+* Finer grained dependencies on the part of mrpt that is really used
+* Contributors: Jose Luis Blanco-Claraco
+
+3.0.0 (2025-11-07)
+------------------
+* Release as independent repository. Moved out from the MRPT/mrpt repository.
+
+
+2.14.15 (2024-10-12)
+----------------------

@@ -1,0 +1,48 @@
+import { StoryObj } from "@storybook/react";
+declare const _default: import("@storybook/types").ComponentAnnotations<import("@storybook/react/dist/types-0fc72a6d").R, import("@storybook/types").Args>;
+export default _default;
+declare const ImageModeRosImage: ({ imageType }: {
+    imageType: "raw" | "png";
+}) => JSX.Element;
+export declare const ImageModeRosRawImage: StoryObj<typeof ImageModeRosImage>;
+export declare const ImageModeRosPngImage: StoryObj<typeof ImageModeRosImage>;
+declare const ImageModeFoxgloveImage: ({ imageType, rotation, onDownloadImage, flipHorizontal, flipVertical, minValue, maxValue, }: {
+    imageType?: "raw" | "png" | "raw_mono16" | undefined;
+    rotation?: 0 | 180 | 90 | 270 | undefined;
+    flipHorizontal?: boolean | undefined;
+    flipVertical?: boolean | undefined;
+    minValue?: number | undefined;
+    maxValue?: number | undefined;
+    onDownloadImage?: ((blob: Blob, fileName: string) => void) | undefined;
+}) => JSX.Element;
+export declare const ImageModeFoxgloveRawImage: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const ImageModeFoxglovePngImage: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadRawImage: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImage: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImageFlipH: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImageFlipV: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImageFlipHV: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImage90: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImage180: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImage270: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImage90FlipH: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImage90FlipV: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadPngImage90FlipHV: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadMono16Image: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const DownloadMono16ImageCustomMinMax: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const ImageModeResizeHandled: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const ImageModePick: StoryObj<typeof ImageModeFoxgloveImage>;
+export declare const ImageModeInvalidCameraCalibration: StoryObj;
+export declare const UnsupportedEncodingError: StoryObj;
+export declare const DecompressionError: StoryObj;
+export declare const LargeImage: StoryObj;
+export declare const YUYV: StoryObj;
+export declare const UYVY: StoryObj;
+export declare const RationalPolynomialDistortion: StoryObj;
+declare const ImageModeEmptyLayout: ({ type, }: {
+    type: "no-topics" | "no-image-topics" | "no-messages" | "image-topic-DNE";
+}) => JSX.Element;
+export declare const ImageModeEmptyNoTopics: StoryObj<typeof ImageModeEmptyLayout>;
+export declare const ImageModeEmptyNoImageTopics: StoryObj<typeof ImageModeEmptyLayout>;
+export declare const ImageModeEmptyNoMessages: StoryObj<typeof ImageModeEmptyLayout>;
+export declare const ImageModeEmptyOnlyImageTopicDNE: StoryObj<typeof ImageModeEmptyLayout>;

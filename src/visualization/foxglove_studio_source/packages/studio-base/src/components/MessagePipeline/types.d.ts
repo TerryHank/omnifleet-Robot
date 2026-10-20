@@ -1,0 +1,26 @@
+import { Time } from "@foxglove/rostime";
+import { Immutable, MessageEvent, ParameterValue } from "@foxglove/studio";
+import { BuiltinPanelExtensionContext } from "@foxglove/studio-base/components/PanelExtensionAdapter";
+import { AdvertiseOptions, PlayerState, PublishPayload, SubscribePayload, Topic } from "@foxglove/studio-base/players/types";
+import { RosDatatypes } from "@foxglove/studio-base/types/RosDatatypes";
+type ResumeFrame = () => void;
+export type MessagePipelineContext = Immutable<{
+    playerState: PlayerState;
+    sortedTopics: Topic[];
+    datatypes: RosDatatypes;
+    subscriptions: SubscribePayload[];
+    messageEventsBySubscriberId: Map<string, MessageEvent[]>;
+    setSubscriptions: (id: string, subscriptionsForId: Immutable<SubscribePayload[]>) => void;
+    setPublishers: (id: string, publishersForId: AdvertiseOptions[]) => void;
+    setParameter: (key: string, value: ParameterValue) => void;
+    publish: (request: PublishPayload) => void;
+    callService: (service: string, request: unknown) => Promise<unknown>;
+    fetchAsset: BuiltinPanelExtensionContext["unstable_fetchAsset"];
+    startPlayback?: () => void;
+    pausePlayback?: () => void;
+    playUntil?: (time: Time) => void;
+    setPlaybackSpeed?: (speed: number) => void;
+    seekPlayback?: (time: Time) => void;
+    pauseFrame: (name: string) => ResumeFrame;
+}>;
+export {};

@@ -1,0 +1,10 @@
+{
+  "robot_id": "robot_113",
+  "enable_control": true,
+  "length": 0.5,
+  "width": 0.37,
+  "padding": 0.05,
+  "radius": 0.39,
+  "require_obstacles": true,
+  "state_file": "/home/iecme/.local/share/omnifleet_t2/local-navigation-state.json"
+}

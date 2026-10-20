@@ -1,0 +1,15 @@
+<library path="footprint_safe_goal_checker">
+  <class
+    type="omnifleet_planner::FootprintSafeGoalChecker"
+    base_class_type="nav2_core::GoalChecker">
+    <description>
+      Requires pose tolerance and a continuously safe current robot footprint before reporting success.
+    </description>
+  </class>
+  <class type="omnifleet_planner::NativeContinuousGoalChecker" base_class_type="nav2_core::GoalChecker">
+    <description>Shares single-goal safety and requires all intermediate native waypoints passed.</description>
+  </class>
+  <class type="omnifleet_planner::NoProgressChecker" base_class_type="nav2_core::ProgressChecker">
+    <description>Leaves progress handling to the planner and controller without a time-based abort.</description>
+  </class>
+</library>

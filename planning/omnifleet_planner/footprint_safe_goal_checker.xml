@@ -1,9 +1,0 @@
-<library path="footprint_safe_goal_checker">
-  <class
-    type="omnifleet_planner::FootprintSafeGoalChecker"
-    base_class_type="nav2_core::GoalChecker">
-    <description>
-      Requires pose tolerance and a continuously safe current robot footprint before reporting success.
-    </description>
-  </class>
-</library>

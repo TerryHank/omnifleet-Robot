@@ -1,0 +1,20 @@
+[Unit]
+Description=OmniFleet T2 DSH read-only diagnostics for Foxglove
+After=network-online.target
+
+[Service]
+Type=simple
+User=iecme
+Environment=HOME=/home/iecme
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+WorkingDirectory=/home/iecme/omnifleet_ws/src/visualization/omnifleet_t2_ws/foxglove/dsh_diagnostic_panel
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/src/system/omnifleet_fleet/env.bash && exec python3 diagnostic_node.py'
+Restart=on-failure
+RestartSec=5
+KillMode=control-group
+TimeoutStopSec=5
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

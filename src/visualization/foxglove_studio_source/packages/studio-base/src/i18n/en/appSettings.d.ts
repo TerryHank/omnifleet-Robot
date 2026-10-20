@@ -1,0 +1,28 @@
+export declare const appSettings: {
+    about: string;
+    advanced: string;
+    askEachTime: string;
+    colorScheme: string;
+    dark: string;
+    debugModeDescription: string;
+    desktopApp: string;
+    displayTimestampsIn: string;
+    experimentalFeatures: string;
+    experimentalFeaturesDescription: string;
+    extensions: string;
+    followSystem: string;
+    general: string;
+    language: string;
+    layoutDebugging: string;
+    layoutDebuggingDescription: string;
+    light: string;
+    messageRate: string;
+    newAppMenu: string;
+    newAppMenuDescription: string;
+    noExperimentalFeatures: string;
+    openLinksIn: string;
+    ros: string;
+    settings: string;
+    timestampFormat: string;
+    webApp: string;
+};

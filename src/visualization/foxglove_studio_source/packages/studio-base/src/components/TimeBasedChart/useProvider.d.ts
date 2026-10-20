@@ -1,0 +1,12 @@
+import { ChartDataset, ChartData } from "chart.js";
+import type { ObjectData, TypedData } from "@foxglove/studio-base/components/Chart/types";
+import { PlotDataProvider, ProviderState, Bounds, PlotViewport } from "./types";
+type Datasets<T> = ChartDataset<"scatter", T>[];
+type Data<T> = ChartData<"scatter", T>;
+export declare function getBounds(data: Datasets<ObjectData>): Bounds | undefined;
+export declare function getTypedBounds(data: Datasets<TypedData[]>): Bounds | undefined;
+type State<T> = ProviderState<T>;
+export declare const mergeNormal: (a: State<ObjectData>, b: State<ObjectData>) => State<ObjectData>;
+export declare const mergeTyped: (a: State<TypedData[]>, b: State<TypedData[]>) => State<TypedData[]>;
+export default function useProvider<T>(view: PlotViewport, getDatasetBounds: (data: Datasets<T>) => Bounds | undefined, mergeState: (a: ProviderState<T>, b: ProviderState<T>) => ProviderState<T>, data: Data<T> | undefined, provider: PlotDataProvider<T> | undefined): ProviderState<T> | undefined;
+export {};

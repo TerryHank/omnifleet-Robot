@@ -1,9 +1,0 @@
-builtin_interfaces/Time stamp
-string transaction_id
-string state
-string mission_id
-uint64 revision
-uint32 current_index
-uint32 total
-string map_id
-string message

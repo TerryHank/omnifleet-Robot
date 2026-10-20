@@ -1,0 +1,18 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/
+const globalWithHandler = global;
+/**
+ * Report an error that has escaped past normal error-handling flows in the app and should be
+ * triaged and diagnosed.
+ */
+export function reportError(error) {
+    globalWithHandler.foxgloveStudioReportErrorFn?.(error);
+}
+/**
+ * Set the handler function which will be called when an error is passed to `reportError()`. The default is
+ * a no-op.
+ */
+export function setReportErrorHandler(fn) {
+    globalWithHandler.foxgloveStudioReportErrorFn = fn;
+}

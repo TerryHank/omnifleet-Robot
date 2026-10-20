@@ -1,0 +1,24 @@
+[Unit]
+Description=OmniFleet T2 STM32 chassis
+After=systemd-udevd.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+SupplementaryGroups=dialout
+WorkingDirectory=/home/iecme/omnifleet_ws/omnifleet_t2_ws
+Environment=HOME=/home/iecme
+Environment=ROS_HOME=/var/lib/omnifleet_t2/ros
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStartPre=/bin/bash -c 'for i in $(seq 1 30); do test -e "$OMNIFLEET_T2_SERIAL_PORT" && exit 0; sleep 1; done; exit 1'
+ExecStart=/bin/bash -lc 'source /opt/ros/$ROS_DISTRO/setup.bash && source $OMNIFLEET_T2_WS/install/setup.bash && exec ros2 launch omnifleet_bringup chassis_core.launch.py serial_port:=$OMNIFLEET_T2_SERIAL_PORT track_separation_m:=0.33 max_linear_speed_mps:=0.40 max_angular_speed_rps:=1.50'
+Restart=on-failure
+RestartSec=2
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

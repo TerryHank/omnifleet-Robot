@@ -1,0 +1,1 @@
+<library path="cost_aware_smac"><class name="omnifleet_planner::CostAwareSmac2D" type="omnifleet_planner::CostAwareSmac2D" base_class_type="nav2_core::GlobalPlanner"><description>Smac 2D with smoothing checked against maximum and integrated traversal cost.</description></class></library>

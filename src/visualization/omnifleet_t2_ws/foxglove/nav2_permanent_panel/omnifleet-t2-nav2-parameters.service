@@ -1,0 +1,18 @@
+[Unit]
+Description=OmniFleet T2 permanent Nav2 parameters
+After=network-online.target
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_ws
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/src/system/omnifleet_fleet/env.bash && exec python3 /home/iecme/omnifleet_ws/src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/nav2_parameter_store.py'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

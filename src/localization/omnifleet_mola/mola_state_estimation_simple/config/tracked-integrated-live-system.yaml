@@ -1,0 +1,67 @@
+modules:
+- name: lidar_odometry
+  type: mola::LidarOdometry
+  verbosity_level: INFO
+  raw_data_source: ros2_bridge
+  params: /home/iecme/omnifleet_ws/src/localization/omnifleet_mola/mola_lidar_odometry/pipelines/lidar3d-gicp.yaml
+- name: state_estimation
+  type: mola::state_estimation_simple::StateEstimationSimple
+  verbosity_level: ${MOLA_VERBOSITY_MOLA_STATE_ESTIMATOR|INFO}
+  raw_data_source: ros2_bridge
+  execution_rate: 20
+  params: /home/iecme/omnifleet_ws/src/localization/omnifleet_mola/mola_state_estimation_simple/config/robot113-simple.yaml
+- name: ros2_bridge
+  type: mola::BridgeROS2
+  verbosity_level: ${MOLA_VERBOSITY_BRIDGE_ROS2|INFO}
+  export_to_rawlog: ${MOLA_BRIDGE_ROS2_EXPORT_TO_RAWLOG_FILE|''}
+  execution_rate: 20
+  gui_preview_sensors:
+  - raw_sensor_label: ${MOLA_LIDAR_NAME|lidar}
+    decimation: 1
+    enabled: ${MOLA_WITH_GUI|true}
+    win_pos: 5 5 400 400
+  params:
+    base_link_frame: base_link
+    base_footprint_frame: ''
+    base_footprint_to_base_link_tf: ${MOLA_TF_FOOTPRINT_TO_BASE_LINK|[0, 0, 0, 0,
+      0, 0]}
+    odom_frame: ${MOLA_TF_ESTIMATED_ODOMETRY|odom}
+    reference_frame: map
+    publish_localization_following_rep105: false
+    forward_ros_tf_as_mola_odometry_observations: ${MOLA_FORWARD_ROS_TF_ODOM_TO_MOLA|false}
+    publish_odometry_msgs_from_slam: ${MOLA_LOCALIZATION_PUBLISH_ODOM_MSGS|true}
+    publish_odometry_msgs_from_slam_source: lidar_odometry
+    publish_twist_from_latest_odometry: ${MOLA_PUBLISH_TWIST_FROM_LATEST_ODOM|false}
+    latest_odom_twist_source: ${MOLA_LATEST_ODOM_TWIST_SOURCE|wheel_odom}
+    latest_odom_twist_max_age: ${MOLA_LATEST_ODOM_TWIST_MAX_AGE|0.5}
+    publish_tf_from_slam: true
+    publish_tf_from_slam_source: lidar_odometry
+    publish_tf_from_robot_pose_observations: false
+    relocalize_from_topic: ''
+    publish_in_sim_time: true
+    period_publish_new_localization: 0.05
+    period_publish_new_map: ${MOLA_ROS2_PUBLISH_MAPS_PERIOD|1.0}
+    ros_args: '["--ros-args", "-r", "__node:=mola_integrated_bridge", "-p", "use_sim_time:=false",
+      "-r", "/lidar_odometry/deskewed_scan_points:=/navigation/deskewed_points"]'
+    subscribe:
+    - topic: /rslidar_points
+      msg_type: PointCloud2
+      output_sensor_label: lidar
+      use_fixed_sensor_pose: true
+      fixed_sensor_pose: -0.041 0 0.150 0 0 0
+      qos:
+        reliability: best_effort
+        depth: ${MOLA_LIDAR_QOS_DEPTH|1}
+    - topic: /odom
+      msg_type: Odometry
+      output_sensor_label: wheel_odom
+    - topic: /imu_lidar/data_raw
+      msg_type: Imu
+      output_sensor_label: radar_imu
+      use_fixed_sensor_pose: true
+      fixed_sensor_pose: -0.041 0 0.150 0 0 0
+      qos:
+        reliability: best_effort
+        depth: 1000
+    odometry_as_robot_pose_observation: false
+    transform_publish_period: 0.0

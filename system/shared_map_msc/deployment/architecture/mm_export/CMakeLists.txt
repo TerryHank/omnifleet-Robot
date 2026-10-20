@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 3.16)
-project(msc_mm_export LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
-find_package(mola_metric_maps REQUIRED CONFIG)
-find_package(mp2p_icp_map REQUIRED CONFIG)
-add_executable(msc_mm_export export.cpp)
-target_link_libraries(msc_mm_export PRIVATE mola::mola_metric_maps mola::mp2p_icp_map)
