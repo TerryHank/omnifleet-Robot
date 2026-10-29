@@ -1,0 +1,14 @@
+{
+  "mode": "client",
+  "connect": {
+    "endpoints": ["tcp/127.0.0.1:7447"],
+    "timeout_ms": 3000,
+    "exit_on_failure": true
+  },
+  "listen": {"endpoints": []},
+  "transport": {"shared_memory": {"enabled": false}},
+  "scouting": {
+    "multicast": {"enabled": false},
+    "gossip": {"enabled": false}
+  }
+}

@@ -1,0 +1,12 @@
+[Unit]
+Description=RMF trajectory visualization WebSocket (domain 42)
+PartOf=omnifleet-rmf-web.target
+Requires=omnifleet-rmf-schedule.service
+After=omnifleet-rmf-schedule.service
+
+[Service]
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/visualization/omnifleet_rmf_web/run.bash trajectory
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=15

@@ -1,0 +1,16 @@
+{
+  "revision": 5,
+  "parameters": {
+    "inflation_radius": 0.1,
+    "cost_scaling_factor": 4,
+    "robot_radius": 0.01,
+    "footprint_padding": 0
+  },
+  "seed": {
+    "robot_name": "car1",
+    "source_file": "/home/iecme/omnifleet_ws/src/planning/omnifleet_planner/config/nav2_t2.yaml",
+    "sha256": "e78d96371d28ccc4ee2031fe327671126cf8de003e447041560f881f2d78b749",
+    "footprint": "[]",
+    "copied_once": true
+  }
+}

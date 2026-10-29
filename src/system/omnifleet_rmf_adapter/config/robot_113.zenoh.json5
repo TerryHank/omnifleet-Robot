@@ -1,0 +1,17 @@
+{
+  "mode": "client",
+  "connect": {
+    "endpoints": []
+  },
+  "listen": {
+    "endpoints": []
+  },
+  "scouting": {
+    "multicast": {
+      "enabled": false
+    },
+    "gossip": {
+      "enabled": false
+    }
+  }
+}

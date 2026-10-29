@@ -1,0 +1,14 @@
+[Unit]
+Description=OmniFleet WSL native Zenoh router (loopback only)
+
+[Service]
+Type=simple
+Environment=ZENOH_ROUTER_CONFIG_URI=/home/zhangwnag/workspaces/omnifleet_ws/src/system/omnifleet_zenoh_runtime/config/wsl-router.json5
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/system/omnifleet_zenoh_runtime/scripts/router.bash
+Restart=on-failure
+RestartSec=2
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=default.target

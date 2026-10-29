@@ -1,0 +1,12 @@
+[Unit]
+Description=Native RMF Web API (read-only, domain 42)
+PartOf=omnifleet-rmf-web.target
+Requires=omnifleet-wsl-zenoh-router.service
+After=omnifleet-wsl-zenoh-router.service
+
+[Service]
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/visualization/omnifleet_rmf_web/run.bash api
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=15

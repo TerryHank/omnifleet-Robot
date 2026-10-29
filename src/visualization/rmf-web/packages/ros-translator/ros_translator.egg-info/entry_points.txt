@@ -1,0 +1,3 @@
+[console_scripts]
+ros_translator = ros_translator.__main__:main
+

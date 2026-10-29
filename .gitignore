@@ -1,0 +1,11 @@
+/build/
+/install/
+/log/
+**/node_modules/
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+*.pyc
+*.key
+*.pem
+/data/run/

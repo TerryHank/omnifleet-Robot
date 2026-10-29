@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>omnifleet_zenoh_runtime</name>
+  <version>0.1.0</version>
+  <description>Shared native Zenoh runtime for local WSL ROS workspaces.</description>
+  <maintainer email="maintainer@omnifleet.local">OmniFleet</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>rmw_zenoh_cpp</exec_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

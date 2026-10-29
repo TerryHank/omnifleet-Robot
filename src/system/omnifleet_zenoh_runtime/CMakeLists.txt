@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.8)
+project(omnifleet_zenoh_runtime)
+find_package(ament_cmake REQUIRED)
+ament_environment_hooks(env-hooks/native_zenoh.sh.in)
+install(DIRECTORY config scripts deployment DESTINATION share/${PROJECT_NAME})
+ament_package()

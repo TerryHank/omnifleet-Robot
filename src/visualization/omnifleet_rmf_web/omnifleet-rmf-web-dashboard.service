@@ -1,0 +1,9 @@
+[Unit]
+Description=Native RMF Web Dashboard (production static build)
+PartOf=omnifleet-rmf-web.target
+
+[Service]
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/visualization/omnifleet_rmf_web/run.bash dashboard
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=10

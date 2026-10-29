@@ -1,0 +1,218 @@
+{
+  "validated": false,
+  "method": "occupied-grid FFT yaw search and trimmed rigid ICP",
+  "epochs": {
+    "robot_104": "03ce63b3-e4ce-4ed9-838a-607fc9a78d33|3167:1902:0",
+    "robot_111": "421efabcfde141ba8050554d563447c2"
+  },
+  "transforms": {
+    "robot_104": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "robot_111": [
+      1.2133308816148851,
+      -0.2971199073077233,
+      -0.0005714801888911575
+    ]
+  },
+  "best": {
+    "transform": [
+      1.2133308816148851,
+      -0.2971199073077233,
+      -0.0005714801888911575
+    ],
+    "source_overlap": 0.9588014981273408,
+    "target_overlap": 0.5176803394625177,
+    "rms_m": 0.059446670878459264,
+    "score": 0.4582336685840584,
+    "overlap_region": {
+      "fitness": 0.9640151515151515,
+      "reverse_fitness": 0.6806883365200764,
+      "inlier_rmse_m": 0.046515831363029614,
+      "score": 0.6341725051570468,
+      "source_points": 528,
+      "target_points": 1046,
+      "source_fraction": 0.9887640449438202,
+      "target_fraction": 0.7397454031117398
+    },
+    "overlap_region_margin": 0.14986328935694587
+  },
+  "distinct_candidate_margin": 0.18001164090128025,
+  "wall_samples": {
+    "robot_111": 534,
+    "robot_104": 1414
+  },
+  "candidates": [
+    {
+      "transform": [
+        1.2133308816148851,
+        -0.2971199073077233,
+        -0.0005714801888911575
+      ],
+      "source_overlap": 0.9588014981273408,
+      "target_overlap": 0.5176803394625177,
+      "rms_m": 0.059446670878459264,
+      "score": 0.4582336685840584,
+      "overlap_region": {
+        "fitness": 0.9640151515151515,
+        "reverse_fitness": 0.6806883365200764,
+        "inlier_rmse_m": 0.046515831363029614,
+        "score": 0.6341725051570468,
+        "source_points": 528,
+        "target_points": 1046,
+        "source_fraction": 0.9887640449438202,
+        "target_fraction": 0.7397454031117398
+      },
+      "overlap_region_margin": 0.14986328935694587
+    },
+    {
+      "transform": [
+        0.09427444674438257,
+        0.22823262456649474,
+        -0.014679412407039518
+      ],
+      "source_overlap": 0.6816479400749064,
+      "target_overlap": 0.37057991513437055,
+      "rms_m": 0.0923578874515924,
+      "score": 0.27822202768277815,
+      "overlap_region": {
+        "fitness": 0.6741573033707865,
+        "reverse_fitness": 0.5637362637362637,
+        "inlier_rmse_m": 0.06254437782338171,
+        "score": 0.501191885912882,
+        "source_points": 534,
+        "target_points": 910,
+        "source_fraction": 1.0,
+        "target_fraction": 0.6435643564356436
+      }
+    },
+    {
+      "transform": [
+        1.0613415952853709,
+        -0.2799248025117745,
+        -0.18079362854615968
+      ],
+      "source_overlap": 0.7153558052434457,
+      "target_overlap": 0.3734087694483734,
+      "rms_m": 0.10918230041726153,
+      "score": 0.2642264690311119,
+      "overlap_region": {
+        "fitness": 0.7234848484848485,
+        "reverse_fitness": 0.5357142857142857,
+        "inlier_rmse_m": 0.06558615949454213,
+        "score": 0.47012812621974354,
+        "source_points": 528,
+        "target_points": 980,
+        "source_fraction": 0.9887640449438202,
+        "target_fraction": 0.693069306930693
+      }
+    },
+    {
+      "transform": [
+        1.5552698794209094,
+        -0.4004574034739281,
+        0.28077354495930307
+      ],
+      "source_overlap": 0.6367041198501873,
+      "target_overlap": 0.3642149929278642,
+      "rms_m": 0.11306990646386755,
+      "score": 0.25114508646399664,
+      "overlap_region": {
+        "fitness": 0.6500956022944551,
+        "reverse_fitness": 0.5664804469273743,
+        "inlier_rmse_m": 0.06590276221191499,
+        "score": 0.5005776847154593,
+        "source_points": 523,
+        "target_points": 895,
+        "source_fraction": 0.9794007490636704,
+        "target_fraction": 0.632956152758133
+      }
+    },
+    {
+      "transform": [
+        2.5425873749365664,
+        0.3777493573782712,
+        0.924979981122008
+      ],
+      "source_overlap": 0.6910112359550562,
+      "target_overlap": 0.34724186704384724,
+      "rms_m": 0.10214663003048421,
+      "score": 0.24509523701336303,
+      "overlap_region": {
+        "fitness": 0.708253358925144,
+        "reverse_fitness": 0.5288135593220339,
+        "inlier_rmse_m": 0.06942758100193219,
+        "score": 0.4593859783201017,
+        "source_points": 521,
+        "target_points": 885,
+        "source_fraction": 0.9756554307116105,
+        "target_fraction": 0.6258840169731259
+      }
+    },
+    {
+      "transform": [
+        0.47927551085231823,
+        -0.5834622367598992,
+        -0.4299043424425178
+      ],
+      "source_overlap": 0.6310861423220974,
+      "target_overlap": 0.34582743988684583,
+      "rms_m": 0.11223098363301545,
+      "score": 0.23359645625383038,
+      "overlap_region": {
+        "fitness": 0.6455938697318008,
+        "reverse_fitness": 0.526258205689278,
+        "inlier_rmse_m": 0.06744379506181382,
+        "score": 0.45881441062746414,
+        "source_points": 522,
+        "target_points": 914,
+        "source_fraction": 0.9775280898876404,
+        "target_fraction": 0.6463932107496464
+      }
+    },
+    {
+      "transform": [
+        2.6628969848670536,
+        0.324928552804232,
+        1.0123156492343437
+      ],
+      "source_overlap": 0.6629213483146067,
+      "target_overlap": 0.3338048090523338,
+      "rms_m": 0.10319082804452513,
+      "score": 0.23061398100780867,
+      "overlap_region": {
+        "fitness": 0.6749521988527725,
+        "reverse_fitness": 0.5039018952062431,
+        "inlier_rmse_m": 0.06663481285734559,
+        "score": 0.4372670823488975,
+        "source_points": 523,
+        "target_points": 897,
+        "source_fraction": 0.9794007490636704,
+        "target_fraction": 0.6343705799151343
+      }
+    },
+    {
+      "transform": [
+        1.7546728312822726,
+        -0.15869528721992487,
+        0.43496874336683494
+      ],
+      "source_overlap": 0.6254681647940075,
+      "target_overlap": 0.34724186704384724,
+      "rms_m": 0.11707668206767013,
+      "score": 0.2301651849761771,
+      "overlap_region": {
+        "fitness": 0.638623326959847,
+        "reverse_fitness": 0.5635939323220537,
+        "inlier_rmse_m": 0.06846133346121486,
+        "score": 0.4951325988608388,
+        "source_points": 523,
+        "target_points": 857,
+        "source_fraction": 0.9794007490636704,
+        "target_fraction": 0.6060820367751061
+      }
+    }
+  ]
+}

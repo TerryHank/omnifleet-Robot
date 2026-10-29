@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: api-server
+Version: 0.0.1
+Summary: RMF api server
+Home-page: UNKNOWN
+Author: Teo Koon Peng
+Author-email: koonpeng@openrobotics.org
+License: Apache License, Version 2.0
+Keywords: ROS,RMF
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development
+Requires-Python: ~=3.10.4
+Provides-Extra: maria
+Provides-Extra: mysql
+Provides-Extra: postgres
+License-File: LICENSE
+
+UNKNOWN
+

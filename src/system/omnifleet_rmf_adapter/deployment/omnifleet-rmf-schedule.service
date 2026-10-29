@@ -1,0 +1,14 @@
+[Unit]
+Description=OmniFleet RMF traffic schedule (central domain)
+PartOf=omnifleet-rmf.target
+Requires=omnifleet-wsl-zenoh-router.service
+After=omnifleet-wsl-zenoh-router.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/zhangwnag/workspaces/omnifleet_ws
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/system/omnifleet_rmf_adapter/scripts/run.bash schedule
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10

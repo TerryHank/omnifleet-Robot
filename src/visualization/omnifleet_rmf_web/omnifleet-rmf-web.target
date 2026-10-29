@@ -1,0 +1,7 @@
+[Unit]
+Description=Native RMF Web read-only dashboard
+Wants=omnifleet-rmf-web-api.service omnifleet-rmf-web-dashboard.service omnifleet-rmf-web-trajectory.service
+After=omnifleet-rmf.target
+
+[Install]
+WantedBy=default.target

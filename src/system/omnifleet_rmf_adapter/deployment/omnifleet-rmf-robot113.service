@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet robot 113 isolated native Zenoh navigation client
+PartOf=omnifleet-rmf.target
+After=omnifleet-rmf-adapter.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/zhangwnag/workspaces/omnifleet_ws
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/system/omnifleet_rmf_adapter/scripts/run.bash robot_113
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10

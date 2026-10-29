@@ -1,0 +1,11 @@
+[Unit]
+Description=Web-only read-only robot 104 observer (native Zenoh, domain 104)
+PartOf=omnifleet-rmf-web.target
+After=omnifleet-rmf-web-api.service
+
+[Service]
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/visualization/omnifleet_rmf_web/run.bash observer
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10

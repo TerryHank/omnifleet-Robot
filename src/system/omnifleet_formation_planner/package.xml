@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>omnifleet_formation_planner</name><version>0.1.0</version>
+  <description>Joint footprint-aware elastic formation planning using OMPL.</description>
+  <maintainer email="maintainer@omnifleet.local">OmniFleet</maintainer><license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>ompl</depend><depend>nlohmann_json</depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

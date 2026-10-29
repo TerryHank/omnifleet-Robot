@@ -1,0 +1,14 @@
+[Unit]
+Description=OmniFleet broadcast vehicle discovery and isolated connection manager
+PartOf=omnifleet-rmf.target
+After=omnifleet-rmf-adapter.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/zhangwnag/workspaces/omnifleet_ws
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/system/omnifleet_rmf_adapter/scripts/run.bash discovery
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+KillMode=control-group
+TimeoutStopSec=20

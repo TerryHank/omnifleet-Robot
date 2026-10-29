@@ -1,0 +1,23 @@
+/**:
+  ros__parameters:
+    address: 0.0.0.0
+    port: 8767
+    capabilities: [assets, clientPublish]
+    topic_whitelist:
+      - ^/tf(_static)?$
+      - ^/fleet/(map|map_status|formation_state|robots|waypoints)$
+      - ^/fleet/peer_map$
+      - ^/omnifleet/rmf/connection_status$
+      - ^/rrc_safety/emergency_stop_state$
+      - ^/robot_(104|113)/(map|robot_description|formation/preview_path|navigation/peer_map|rmf/connection_status)$
+    client_topic_whitelist: ['^/[A-Za-z][A-Za-z0-9_]*/ui/r[0-9]+/(goal|waypoint|point|pose_estimate|cmd_vel)$', '^/fleet/dispatch/(nearest|all)/ui/r[0-9]+/goal$', '^/rrc_safety/emergency_stop$']
+    service_whitelist: ['^$']
+    best_effort_qos_topic_whitelist:
+      - ^/tf(_static)?$
+      - ^/fleet/(map|peer_map|robots|map_status|global_costmap/costmap)$
+      - ^/omnifleet/rmf/connection_status$
+      - ^/[A-Za-z][A-Za-z0-9_]*/(map|robot_description|navigation/peer_map|global_costmap/costmap|local_costmap/costmap|rmf/connection_status)$
+    max_qos_depth: 1
+    min_qos_depth: 1
+    send_buffer_limit: 8000000
+    sysinfo: false

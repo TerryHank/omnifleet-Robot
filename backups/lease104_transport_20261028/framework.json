@@ -1,0 +1,75 @@
+{
+  "central": {
+    "domain_id": 42,
+    "rmw": "rmw_zenoh_cpp",
+    "zenoh_config": "../../omnifleet_zenoh_runtime/config/wsl-session.json5",
+    "reference_robot": "robot_104",
+    "assignments": {
+      "robot_104": {
+        "robot_name": "car2",
+        "namespace": "/car2",
+        "display_name": "车辆 104"
+      },
+      "robot_113": {
+        "robot_name": "car1",
+        "namespace": "/car1",
+        "display_name": "一号车"
+      },
+      "robot_111": {
+        "robot_name": "a2_111",
+        "namespace": "/a2_111",
+        "display_name": "A2 阿克曼111"
+      }
+    },
+    "identity_revision": 19
+  },
+  "stale_after_seconds": 3.0,
+  "robots": {
+    "robot_104": {
+      "enabled": true,
+      "motion_enabled": true,
+      "pose_topic": "/lidar_odometry/pose",
+      "domain_id": 104,
+      "rmw": "rmw_zenoh_cpp",
+      "local_namespace": "",
+      "observed_namespace": "",
+      "zenoh_config": "/home/zhangwnag/workspaces/omnifleet_ws/data/run/discovery/robot_104.zenoh.json5",
+      "map_transform_validated": false,
+      "fleet_lease_contract_validated": false
+    },
+    "robot_113": {
+      "enabled": true,
+      "motion_enabled": true,
+      "pose_topic": "/lidar_odometry/pose",
+      "domain_id": 113,
+      "rmw": "rmw_zenoh_cpp",
+      "local_namespace": "",
+      "observed_namespace": "",
+      "zenoh_config": "/home/zhangwnag/workspaces/omnifleet_ws/data/run/discovery/robot_113.zenoh.json5",
+      "map_transform_validated": false,
+      "fleet_lease_contract_validated": false
+    },
+    "robot_111": {
+      "enabled": true,
+      "motion_enabled": true,
+      "pose_topic": "/lidar_odometry/pose",
+      "domain_id": 111,
+      "rmw": "rmw_zenoh_cpp",
+      "local_namespace": "",
+      "observed_namespace": "",
+      "map_transform_validated": true,
+      "fleet_lease_contract_validated": true,
+      "vehicle_type": "ackermann",
+      "manual_topic": "/cmd_vel_teleop",
+      "rmf_traits": {
+        "footprint_radius": 0.46,
+        "vicinity_radius": 0.51,
+        "linear_velocity": 0.4,
+        "linear_acceleration": 0.3,
+        "angular_velocity": 0.295,
+        "angular_acceleration": 0.5,
+        "minimum_turning_radius": 1.05
+      }
+    }
+  }
+}

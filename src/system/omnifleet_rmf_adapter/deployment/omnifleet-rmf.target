@@ -1,0 +1,7 @@
+[Unit]
+Description=OmniFleet WSL broadcast-discovered fleet
+Wants=omnifleet-rmf-blockade.service omnifleet-rmf-schedule.service omnifleet-rmf-dispatcher.service omnifleet-rmf-adapter.service omnifleet-rmf-discovery.service omnifleet-rmf-foxglove.service
+After=omnifleet-rmf-schedule.service
+
+[Install]
+WantedBy=default.target
