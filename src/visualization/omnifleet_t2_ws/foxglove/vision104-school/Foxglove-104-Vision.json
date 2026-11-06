@@ -1,0 +1,484 @@
+{
+  "configById": {
+    "local.omnifleet-vision.demo!functional-control": {
+      "foxglovePanelTitle": "视觉功能演示",
+      "selectedCase": "04_09_body_tracking",
+      "selectedView": "result",
+      "views": {
+        "result": {
+          "id": "Image!case104_04_09_body_tracking_result_jpeg",
+          "config": {
+            "foxglovePanelTitle": "04.09 人体手势跟随 · C++深度控距 · 功能结果",
+            "imageMode": {
+              "imageTopic": "/vision/course_gui/course_04_09_body_tracking/debug/compressed"
+            },
+            "scene": {},
+            "topics": {},
+            "transforms": {},
+            "layers": {},
+            "version": 1
+          }
+        },
+        "rgb": {
+          "id": "Image!rgb104",
+          "config": {
+            "foxglovePanelTitle": "RGB 原图 · 全分辨率 JPEG",
+            "imageMode": {
+              "imageTopic": "/camera/color/image_raw/compressed"
+            },
+            "scene": {},
+            "topics": {},
+            "transforms": {},
+            "layers": {},
+            "version": 1
+          }
+        },
+        "gray": {
+          "id": "Image!depth104",
+          "config": {
+            "foxglovePanelTitle": "深度灰度 · 相机原生平滑＋补洞 · PNG无损",
+            "imageMode": {
+              "imageTopic": "/camera/depth/image_gray/compressed"
+            },
+            "scene": {},
+            "topics": {},
+            "transforms": {},
+            "layers": {},
+            "version": 1
+          }
+        },
+        "goal": {
+          "id": "3D!goal104",
+          "config": {
+            "foxglovePanelTitle": "三维导航候选 · Z-up",
+            "followTf": "rgbd_view_z_up",
+            "followMode": "follow-pose",
+            "cameraState": {
+              "perspective": true,
+              "distance": 9,
+              "phi": 65,
+              "thetaOffset": 135,
+              "target": [
+                0,
+                0,
+                0
+              ],
+              "targetOffset": [
+                3,
+                0,
+                0
+              ],
+              "targetOrientation": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "fovy": 45,
+              "near": 0.01,
+              "far": 20
+            },
+            "scene": {
+              "meshUpAxis": "z_up",
+              "backgroundColor": "#46505c",
+              "transforms": {
+                "showLabel": false,
+                "lineWidth": 0
+              }
+            },
+            "transforms": {},
+            "layers": {},
+            "topics": {
+              "/vision/nav_goal": {
+                "visible": true,
+                "type": "axis",
+                "axisScale": 0.2
+              }
+            }
+          }
+        },
+        "data": {
+          "id": "RawMessages!case104",
+          "config": {
+            "foxglovePanelTitle": "04.09 人体手势跟随 · C++深度控距 · 功能数据",
+            "topicPath": "/vision/body_tracking/status",
+            "expansion": "all",
+            "diffEnabled": false,
+            "fontSize": 16
+          }
+        },
+        "followMap": {
+          "id": "3D!personFollowCurrentGoal104_v3",
+          "config": {
+            "cameraState": {
+              "perspective": true,
+              "distance": 5.403600876625664,
+              "phi": 0.000057317405573920985,
+              "thetaOffset": -8.394534888760228,
+              "targetOffset": [
+                0.6303585021331027,
+                -0.9197597652553424,
+                -1.91367984649705e-23
+              ],
+              "target": [
+                0,
+                0,
+                0
+              ],
+              "targetOrientation": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "fovy": 45,
+              "near": 0.1,
+              "far": 5000
+            },
+            "followMode": "follow-pose",
+            "followTf": "map",
+            "scene": {
+              "transforms": {
+                "showLabel": false,
+                "axisScale": 0.5,
+                "lineWidth": 1,
+                "enablePreloading": true
+              },
+              "meshUpAxis": "z_up"
+            },
+            "transforms": {
+              "frame:map": {
+                "visible": true
+              }
+            },
+            "topics": {
+              "/map": {
+                "visible": true,
+                "colorMode": "custom",
+                "minColor": "#d9f0ff55",
+                "maxColor": "#1f4e79cc",
+                "unknownColor": "#ffffff00",
+                "fallbackColor": "#ff00ffff",
+                "frameLocked": false
+              },
+              "/global_costmap/costmap": {
+                "visible": true,
+                "colorMode": "custom",
+                "minColor": "#fff2cc35",
+                "maxColor": "#f28e2bcc",
+                "unknownColor": "#ffffff00",
+                "fallbackColor": "#ff00ffff",
+                "frameLocked": false
+              },
+              "/local_costmap/costmap": {
+                "visible": true,
+                "colorMode": "custom",
+                "minColor": "#e8f5e955",
+                "maxColor": "#e15759dd",
+                "unknownColor": "#ffffff00",
+                "fallbackColor": "#ff00ffff",
+                "frameLocked": true,
+                "alpha": 1
+              },
+              "/global_costmap/published_footprint": {
+                "visible": true,
+                "color": "#ffd600",
+                "lineWidth": 0.012
+              },
+              "/local_costmap/published_footprint": {
+                "visible": true,
+                "color": "#ff1744",
+                "lineWidth": 0.02
+              },
+              "/lookahead_collision_arc": {
+                "visible": true,
+                "color": "#ff9100",
+                "lineWidth": 0.015
+              },
+              "/lookahead_point": {
+                "visible": true,
+                "color": "#00e676"
+              },
+              "/plan": {
+                "visible": true,
+                "type": "line",
+                "color": "#00d4ff",
+                "lineWidth": 0.05,
+                "gradient": [
+                  "#00d4ff",
+                  "#00d4ff"
+                ]
+              },
+              "/local_plan": {
+                "visible": true,
+                "type": "line",
+                "color": "#ff00cc",
+                "lineWidth": 0.055,
+                "gradient": [
+                  "#ff00cc",
+                  "#ff00cc"
+                ]
+              },
+              "/robot_description": {
+                "visible": true
+              },
+              "/set_pose": {
+                "visible": true
+              },
+              "/initialpose": {
+                "visible": true
+              },
+              "/goal_pose": {
+                "visible": true
+              },
+              "/lidar_odometry/localmap_points": {
+                "visible": false,
+                "colorField": "z",
+                "colorMode": "colormap",
+                "colorMap": "turbo"
+              },
+              "/lidar_odometry/nav_voxelmap_points": {
+                "visible": false,
+                "colorField": "z",
+                "colorMode": "colormap",
+                "colorMap": "turbo"
+              },
+              "/rslidar_points": {
+                "visible": false,
+                "frameLocked": false,
+                "pointSize": 2.5,
+                "pointShape": "circle",
+                "decayTime": 1.5,
+                "colorMode": "colormap",
+                "colorField": "intensity",
+                "colorMap": "turbo",
+                "minValue": 0,
+                "maxValue": 255
+              },
+              "/received_global_plan": {
+                "visible": true,
+                "type": "line",
+                "color": "#ff55cc",
+                "lineWidth": 0.045,
+                "gradient": [
+                  "#ff55cc",
+                  "#ff55cc"
+                ]
+              },
+              "/unsmoothed_plan": {
+                "visible": false,
+                "color": "#ff9100",
+                "lineWidth": 0.025
+              },
+              "/omnifleet_t2/waypoints/add_pose": {
+                "visible": true
+              },
+              "/omnifleet_t2/waypoints/markers": {
+                "visible": true
+              },
+              "/omnifleet_t2/waypoints/path": {
+                "visible": true,
+                "color": "#4499ffaa",
+                "lineWidth": 0.035
+              },
+              "/cost_cloud": {
+                "visible": false
+              },
+              "/omnifleet_t2/waypoints/active_path": {
+                "visible": true,
+                "color": "#00ff66",
+                "lineWidth": 0.065
+              },
+              "/msc/peer_map": {
+                "visible": false
+              },
+              "/msc/alignment_points": {
+                "visible": false,
+                "colorField": "z",
+                "colorMode": "colormap",
+                "colorMap": "turbo",
+                "pointSize": 5.2
+              },
+              "/vision/person_follow/nav_goal": {
+                "visible": false,
+                "type": "arrow",
+                "color": "#00e5ff",
+                "arrowScale": [
+                  0.45,
+                  0.1,
+                  0.1
+                ]
+              },
+              "/goal_update": {
+                "visible": false,
+                "type": "arrow",
+                "color": "#ffd740",
+                "arrowScale": [
+                  0.6,
+                  0.13,
+                  0.13
+                ]
+              },
+              "/transformed_global_plan": {
+                "visible": true,
+                "type": "line",
+                "color": "#ff55cc",
+                "lineWidth": 0.045,
+                "gradient": [
+                  "#ff55cc",
+                  "#ff55cc"
+                ]
+              },
+              "/trajectories": {
+                "visible": true,
+                "namespaces": {
+                  "Candidate Trajectories": {
+                    "visible": false
+                  },
+                  "Optimal Trajectory": {
+                    "visible": true
+                  }
+                }
+              },
+              "/vision/person_follow/goal_markers": {
+                "visible": true
+              }
+            },
+            "layers": {
+              "requiredSensorsGrid": {
+                "layerId": "foxglove.Grid",
+                "visible": true,
+                "frameLocked": true,
+                "label": "odom 地面网格",
+                "frameId": "map",
+                "size": 20,
+                "divisions": 20,
+                "lineWidth": 1,
+                "color": "#248eff",
+                "position": [
+                  0,
+                  0,
+                  0
+                ],
+                "rotation": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "omnifleetT2RobotModel": {
+                "layerId": "foxglove.Urdf",
+                "visible": true,
+                "frameLocked": true,
+                "label": "OmniFleet T2履带模型 0.50×0.37×0.33 m",
+                "instanceId": "omnifleetT2RobotModel",
+                "sourceType": "topic",
+                "framePrefix": "",
+                "displayMode": "visual",
+                "fallbackColor": "#9e9e9e",
+                "order": 1,
+                "topic": "/robot_description"
+              }
+            },
+            "publish": {
+              "type": "pose",
+              "poseTopic": "/goal_pose",
+              "pointTopic": "/clicked_point",
+              "poseEstimateTopic": "/initialpose",
+              "poseEstimateXDeviation": 0.5,
+              "poseEstimateYDeviation": 0.5,
+              "poseEstimateThetaDeviation": 0.26179939
+            },
+            "imageMode": {},
+            "foxglovePanelTitle": "104导航 · 实时动态目标 / 保持状态 · Z-up"
+          }
+        }
+      },
+      "navigationConfig": {
+        "foxglovePanelTitle": "104导航永久参数",
+        "fontScale": 1.15,
+        "collapsedSections": {
+          "group:全局与局部代价地图共用": false,
+          "advanced:hot_dwb": true,
+          "algorithm:global": false,
+          "algorithm:local": false,
+          "group:导航行为": true,
+          "group:MOLA 点云转地图（地图坐标系 Z，非局部障碍过滤）": false,
+          "group:STM32 底盘 PWM 补偿": true,
+          "sub:rpp:速度与平顺": false,
+          "sub:rpp:避障与路线选择": false,
+          "sub:rpp:路线跟踪": false,
+          "sub:rpp:先转向再走": false,
+          "sub:hot_dwb:走不通时怎么处理": false,
+          "sub:mppi:避障与路线选择": false,
+          "sub:mppi:到点与终点对齐": false,
+          "sub:mppi:走不通时怎么处理": false,
+          "sub:mppi:速度与平顺": false,
+          "group:建图与避障共用高度（地图坐标系 Z）": true
+        },
+        "focusParameters": true
+      },
+      "dataTopic": "/vision/body_tracking/status"
+    },
+    "Image!case104_04_09_body_tracking_result_jpeg": {
+      "foxglovePanelTitle": "04.09 人体手势跟随 · C++深度控距 · 功能结果",
+      "imageMode": {
+        "imageTopic": "/vision/course_gui/course_04_09_body_tracking/debug/compressed"
+      },
+      "scene": {},
+      "topics": {},
+      "transforms": {},
+      "layers": {},
+      "version": 1
+    },
+    "local.omnifleet-113-panels.nav2-hot-params-panel!vision104Navigation": {
+      "foxglovePanelTitle": "104导航永久参数",
+      "fontScale": 1.15,
+      "collapsedSections": {
+        "group:全局与局部代价地图共用": false,
+        "advanced:hot_dwb": true,
+        "algorithm:global": false,
+        "algorithm:local": false,
+        "group:导航行为": true,
+        "group:MOLA 点云转地图（地图坐标系 Z，非局部障碍过滤）": false,
+        "group:STM32 底盘 PWM 补偿": true,
+        "sub:rpp:速度与平顺": false,
+        "sub:rpp:避障与路线选择": false,
+        "sub:rpp:路线跟踪": false,
+        "sub:rpp:先转向再走": false,
+        "sub:hot_dwb:走不通时怎么处理": false,
+        "sub:mppi:避障与路线选择": false,
+        "sub:mppi:到点与终点对齐": false,
+        "sub:mppi:走不通时怎么处理": false,
+        "sub:mppi:速度与平顺": false,
+        "group:建图与避障共用高度（地图坐标系 Z）": true
+      },
+      "focusParameters": true
+    },
+    "Tab!vision104Controls": {
+      "activeTabIdx": 0,
+      "tabs": [
+        {
+          "title": "视觉案例",
+          "layout": "local.omnifleet-vision.demo!functional-control"
+        },
+        {
+          "title": "104导航永久参数",
+          "layout": "local.omnifleet-113-panels.nav2-hot-params-panel!vision104Navigation"
+        }
+      ]
+    }
+  },
+  "layout": {
+    "direction": "row",
+    "first": "Tab!vision104Controls",
+    "second": "Image!case104_04_09_body_tracking_result_jpeg",
+    "splitPercentage": 30
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "playbackConfig": {
+    "speed": 1
+  },
+  "version": 1
+}

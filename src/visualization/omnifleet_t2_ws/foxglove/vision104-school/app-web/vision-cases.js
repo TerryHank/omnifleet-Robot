@@ -1,0 +1,983 @@
+window.OMNIFLEET_VISION_CASES=[
+  {
+    "id": "02_04_color",
+    "title": "02.04 颜色识别",
+    "offline": false,
+    "imageTopic": "/vision/color/debug",
+    "statusTopics": [
+      "/vision/color/result",
+      "/vision/target_follow/status",
+      "/vision/tracks",
+      "/vision/targets_3d"
+    ],
+    "guide": "点击颜色框后只检测并跟踪所选色块。点击清除跟踪停车并恢复全部颜色检测，再选择新目标。",
+    "fields": [
+      {
+        "name": "enable_motion",
+        "label": "运行模式",
+        "type": "select",
+        "default": "false",
+        "options": [
+          [
+            "true",
+            "点击目标后实机跟随"
+          ],
+          [
+            "false",
+            "仅识别与跟踪"
+          ]
+        ]
+      }
+    ],
+    "displayTopic": "/vision/color/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "点击颜色框选择目标、NanoTrack、真实深度与底盘跟随",
+      "views": [
+        "result",
+        "data",
+        "rgb"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/color/result",
+          "颜色识别与点击结果"
+        ],
+        [
+          "/vision/target_follow/status",
+          "目标跟随状态"
+        ],
+        [
+          "/vision/targets_3d",
+          "目标深度与位置"
+        ]
+      ],
+      "dataTopic": "/vision/target_follow/status"
+    }
+  },
+  {
+    "id": "02_05_qr",
+    "title": "02.05 二维码",
+    "offline": false,
+    "imageTopic": "/vision/qr/debug",
+    "statusTopics": [
+      "/vision/qr/result"
+    ],
+    "guide": "自动识别二维码内容并锁定同一码，解码间隙KCF连续跟踪；从配准深度图取距离。结果窗口可开启/关闭底盘跟随，调节保持距离。",
+    "fields": [],
+    "displayTopic": "/vision/qr/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "二维码身份、连续跟踪、真实深度及底盘跟随",
+      "views": [
+        "result",
+        "data",
+        "rgb",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/qr/result",
+          "二维码框与解码内容"
+        ],
+        [
+          "/vision/qr/follow/status",
+          "跟随运动与距离状态"
+        ]
+      ],
+      "dataTopic": "/vision/qr/result"
+    }
+  },
+  {
+    "id": "02_06_apriltag",
+    "title": "02.06 AprilTag",
+    "offline": false,
+    "imageTopic": "/vision/apriltag/debug",
+    "statusTopics": [
+      "/vision/apriltag/result"
+    ],
+    "guide": "tag36h11 ID 0，黑色外框边长210mm。RGB识别标签后，可热切换纯RGB位姿估距或配准深度采样；结果窗口可开启/关闭底盘跟随并调节距离。",
+    "fields": [],
+    "displayTopic": "/vision/apriltag/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "标签身份跟踪、RGB/深度两种测距及底盘跟随",
+      "views": [
+        "result",
+        "data",
+        "rgb",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/apriltag/result",
+          "tag36h11 ID 0 · 210mm · 角点与位姿"
+        ],
+        [
+          "/vision/apriltag/follow/status",
+          "跟随运动与距离状态"
+        ]
+      ],
+      "dataTopic": "/vision/apriltag/result"
+    }
+  },
+  {
+    "id": "02_07_kcf",
+    "title": "02.07 目标物追踪 · NanoTrack/KCF",
+    "offline": false,
+    "imageTopic": "/omnifleet_vision/kcf/image",
+    "statusTopics": [
+      "/omnifleet_vision/kcf/status",
+      "/omnifleet_vision/kcf/targets_3d"
+    ],
+    "guide": "框选物体后，先提取深度连通前景，再把前景图像交给NanoTrack追踪；KCF选项使用OpenCV KCF CPU前景输入。深度只取同一组件的真实测量，保持高清显示和2米可调控距。无有效前景时会标记不可用，纯深度前景不代表语义确认。",
+    "fields": [
+      {
+        "name": "enable_motion",
+        "label": "运行模式",
+        "type": "select",
+        "default": "true",
+        "options": [
+          [
+            "true",
+            "框选后实机跟随"
+          ],
+          [
+            "false",
+            "仅跟踪与测距"
+          ]
+        ]
+      },
+      {
+        "name": "tracking_backend",
+        "label": "目标物追踪算法",
+        "type": "select",
+        "default": "nanotrack",
+        "options": [
+          [
+            "nanotrack",
+            "NanoTrack（优先GPU）"
+          ],
+          [
+            "kcf",
+            "KCF（CPU前景输入）"
+          ]
+        ]
+      }
+    ],
+    "displayTopic": "/omnifleet_vision/kcf/image/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "鼠标框选、指定物体跟随、居中与保持距离",
+      "views": [
+        "result",
+        "data",
+        "rgb",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/omnifleet_vision/kcf/status",
+          "跟随状态、目标距离与候选速度"
+        ],
+        [
+          "/omnifleet_vision/kcf/targets_3d",
+          "原生深度16×16采样与目标XYZ"
+        ]
+      ],
+      "dataTopic": "/omnifleet_vision/kcf/status"
+    }
+  },
+  {
+    "id": "02_08_human_perception",
+    "title": "02.08 人体感知",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_08_human_perception/debug",
+    "statusTopics": [
+      "/vision/faces",
+      "/vision/pose"
+    ],
+    "guide": "人员进入视野，观察人体姿态关键点和人脸结果。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_02_08_human_perception/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "人体骨架与人脸检测",
+      "views": [
+        "result",
+        "data",
+        "rgb"
+      ],
+      "usesDepth": false,
+      "dataTopics": [
+        [
+          "/vision/faces",
+          "人脸检测"
+        ],
+        [
+          "/vision/pose",
+          "人体姿态"
+        ]
+      ],
+      "dataTopic": "/vision/pose"
+    }
+  },
+  {
+    "id": "02_09_yolo",
+    "title": "02.09 YOLO检测",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_09_yolo/debug",
+    "statusTopics": [
+      "/vision/detections"
+    ],
+    "guide": "展示常见物品，观察类别、置信度与检测框。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_02_09_yolo/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "物体类别、置信度与检测框",
+      "views": [
+        "result",
+        "data",
+        "rgb"
+      ],
+      "usesDepth": false,
+      "dataTopics": [
+        [
+          "/vision/detections",
+          "目标检测"
+        ]
+      ],
+      "dataTopic": "/vision/detections"
+    }
+  },
+  {
+    "id": "02_10_depth",
+    "title": "02.10 深度测距",
+    "offline": false,
+    "imageTopic": "/vision/depth/debug",
+    "statusTopics": [
+      "/vision/depth/result"
+    ],
+    "guide": "展示可识别目标，观察 RGB 框中心的配准深度与测距结果。",
+    "fields": [],
+    "displayTopic": "/vision/depth/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "目标测距、灰度深度与配准深度数据",
+      "views": [
+        "result",
+        "gray",
+        "data",
+        "rgb"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/depth/result",
+          "目标测距、灰度深度与配准深度数据"
+        ]
+      ],
+      "dataTopic": "/vision/depth/result"
+    }
+  },
+  {
+    "id": "02_13_pedestrian",
+    "title": "02.13 行人检测",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_13_pedestrian/debug",
+    "statusTopics": [
+      "/vision/detections"
+    ],
+    "guide": "人员进入视野，观察行人检测框。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_02_13_pedestrian/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "行人检测框与置信度",
+      "views": [
+        "result",
+        "data",
+        "rgb"
+      ],
+      "usesDepth": false,
+      "dataTopics": [
+        [
+          "/vision/detections",
+          "目标检测"
+        ]
+      ],
+      "dataTopic": "/vision/detections"
+    }
+  },
+  {
+    "id": "02_14_traffic_light",
+    "title": "02.14 交通灯",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_14_traffic_light/debug",
+    "statusTopics": [
+      "/vision/detections"
+    ],
+    "guide": "展示交通灯目标，观察检测类别与结果。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_02_14_traffic_light/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "交通灯检测类别与置信度",
+      "views": [
+        "result",
+        "data",
+        "rgb"
+      ],
+      "usesDepth": false,
+      "dataTopics": [
+        [
+          "/vision/detections",
+          "目标检测"
+        ]
+      ],
+      "dataTopic": "/vision/detections"
+    }
+  },
+  {
+    "id": "02_16_vehicle",
+    "title": "02.16 车辆检测",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_16_vehicle/debug",
+    "statusTopics": [
+      "/vision/detections"
+    ],
+    "guide": "展示车辆目标，观察车辆检测框与类别。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_02_16_vehicle/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "车辆检测类别与位置",
+      "views": [
+        "result",
+        "data",
+        "rgb"
+      ],
+      "usesDepth": false,
+      "dataTopics": [
+        [
+          "/vision/detections",
+          "目标检测"
+        ]
+      ],
+      "dataTopic": "/vision/detections"
+    }
+  },
+  {
+    "id": "02_17_license_plate",
+    "title": "02.17 车牌识别",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_17_license_plate/debug",
+    "statusTopics": [
+      "/vision/license_plate"
+    ],
+    "guide": "展示车牌，观察车牌定位与识别结果。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_02_17_license_plate/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "车牌位置与识别文本",
+      "views": [
+        "result",
+        "data",
+        "rgb"
+      ],
+      "usesDepth": false,
+      "dataTopics": [
+        [
+          "/vision/license_plate",
+          "车牌位置与识别文本"
+        ]
+      ],
+      "dataTopic": "/vision/license_plate"
+    }
+  },
+  {
+    "id": "03_02_detection_tracking",
+    "title": "03.02 检测与跟踪",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_02_detection_tracking/debug",
+    "statusTopics": [
+      "/vision/detections",
+      "/vision/tracks"
+    ],
+    "guide": "先提取目标前景，再追踪：非人体使用NanoTrack前景图像，人体保留BoT-SORT并使用前景观测框。下游深度只读取该前景中的原生深度点，不新增SAM。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_03_02_detection_tracking/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "物体NanoTrack / 人体BoT-SORT、目标ID与跟踪框",
+      "views": [
+        "result",
+        "data",
+        "rgb"
+      ],
+      "usesDepth": false,
+      "dataTopics": [
+        [
+          "/vision/detections",
+          "目标检测"
+        ],
+        [
+          "/vision/tracks",
+          "跟踪轨迹"
+        ]
+      ],
+      "dataTopic": "/vision/tracks"
+    }
+  },
+  {
+    "id": "03_03_target_depth",
+    "title": "03.03 目标深度",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_03_target_depth/debug",
+    "statusTopics": [
+      "/vision/tracks",
+      "/vision/targets_3d"
+    ],
+    "guide": "移动目标，观察与配准深度融合后的三维目标数据。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_03_03_target_depth/debug/compressed",
+    "ui": {
+      "defaultView": "data",
+      "focus": "配准深度融合后的目标 XYZ 数据",
+      "views": [
+        "data",
+        "result",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/tracks",
+          "跟踪轨迹"
+        ],
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ]
+      ],
+      "dataTopic": "/vision/targets_3d"
+    }
+  },
+  {
+    "id": "03_04_vision_lidar",
+    "title": "03.04 视觉雷达融合",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_04_vision_lidar/debug",
+    "statusTopics": [
+      "/vision/targets_3d",
+      "/vision/risk"
+    ],
+    "guide": "观察视觉目标、深度与雷达融合的风险结果。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_03_04_vision_lidar/debug/compressed",
+    "ui": {
+      "defaultView": "data",
+      "focus": "视觉、深度与雷达融合风险结果",
+      "views": [
+        "data",
+        "result",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/risk",
+          "融合风险"
+        ]
+      ],
+      "dataTopic": "/vision/risk"
+    }
+  },
+  {
+    "id": "03_05_traffic_events",
+    "title": "03.05 交通事件",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_05_traffic_events/debug",
+    "statusTopics": [
+      "/vision/detections",
+      "/vision/targets_3d",
+      "/vision/events",
+      "/vision/traffic_state"
+    ],
+    "guide": "展示交通目标，观察事件与交通状态。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_03_05_traffic_events/debug/compressed",
+    "ui": {
+      "defaultView": "data",
+      "focus": "交通事件和交通状态变化",
+      "views": [
+        "data",
+        "result",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/detections",
+          "目标检测"
+        ],
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/events",
+          "交通事件"
+        ],
+        [
+          "/vision/traffic_state",
+          "交通状态"
+        ]
+      ],
+      "dataTopic": "/vision/traffic_state"
+    }
+  },
+  {
+    "id": "03_06_chassis_control",
+    "title": "03.06 底盘控制",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_06_chassis_control/debug",
+    "statusTopics": [
+      "/vision/targets_3d",
+      "/vision/events",
+      "/vision/safe_behavior/status"
+    ],
+    "guide": "观察视觉行为与底盘控制状态；当前运动输出关闭。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_03_06_chassis_control/debug/compressed",
+    "ui": {
+      "defaultView": "data",
+      "focus": "行为原因、线速度与角速度计算结果",
+      "views": [
+        "data",
+        "result"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/events",
+          "交通事件"
+        ],
+        [
+          "/vision/safe_behavior/status",
+          "底盘行为与速度"
+        ]
+      ],
+      "dataTopic": "/vision/safe_behavior/status"
+    }
+  },
+  {
+    "id": "03_07_lane_integration",
+    "title": "03.07 车道联调",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_07_lane_integration/debug",
+    "statusTopics": [
+      "/vision/lane/result",
+      "/vision/targets_3d",
+      "/vision/risk",
+      "/vision/lane_follow/status"
+    ],
+    "guide": "展示车道场景，观察车道、三维目标与跟随状态。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_03_07_lane_integration/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "车道偏差、风险与车道跟随状态",
+      "views": [
+        "result",
+        "data",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/lane/result",
+          "车道偏差"
+        ],
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/risk",
+          "融合风险"
+        ],
+        [
+          "/vision/lane_follow/status",
+          "车道跟随状态"
+        ]
+      ],
+      "dataTopic": "/vision/lane_follow/status"
+    }
+  },
+  {
+    "id": "03_08_vision_nav",
+    "title": "03.08 视觉导航",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_08_vision_nav/debug",
+    "statusTopics": [
+      "/vision/targets_3d"
+    ],
+    "guide": "观察视觉三维目标生成的导航候选；当前运动输出关闭。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_03_08_vision_nav/debug/compressed",
+    "ui": {
+      "defaultView": "goal",
+      "focus": "三维导航候选位置与目标数据",
+      "views": [
+        "goal",
+        "data",
+        "result",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/nav_goal",
+          "导航候选 Pose"
+        ]
+      ],
+      "dataTopic": "/vision/nav_goal"
+    }
+  },
+  {
+    "id": "04_01_color_follow",
+    "title": "04.01 颜色跟随",
+    "offline": false,
+    "imageTopic": "/vision/color/debug",
+    "statusTopics": [
+      "/vision/detections",
+      "/vision/targets_3d",
+      "/vision/target_follow/status",
+      "/vision/tracks"
+    ],
+    "guide": "点击颜色框后只检测并跟踪所选色块。点击清除跟踪停车并恢复全部颜色检测，再选择新目标。",
+    "fields": [
+      {
+        "name": "enable_motion",
+        "label": "运行模式",
+        "type": "select",
+        "default": "false",
+        "options": [
+          [
+            "true",
+            "点击目标后实机跟随"
+          ],
+          [
+            "false",
+            "仅识别与跟踪"
+          ]
+        ]
+      }
+    ],
+    "displayTopic": "/vision/color/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "颜色检测 + NanoTrack、目标ID、真实深度与跟随",
+      "views": [
+        "result",
+        "data",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/detections",
+          "目标检测"
+        ],
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/target_follow/status",
+          "目标跟随状态"
+        ],
+        [
+          "/vision/tracks",
+          "NanoTrack目标与分数"
+        ]
+      ],
+      "dataTopic": "/vision/target_follow/status"
+    }
+  },
+  {
+    "id": "04_02_human_object_follow",
+    "title": "04.02 人体目标跟随",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_02_human_object_follow/debug",
+    "statusTopics": [
+      "/vision/targets_3d",
+      "/vision/target_follow/status"
+    ],
+    "guide": "人员进入视野并移动，观察人体目标与跟随状态；当前运动输出关闭。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_04_02_human_object_follow/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "人体目标、距离与跟随控制状态",
+      "views": [
+        "result",
+        "data",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/target_follow/status",
+          "目标跟随状态"
+        ]
+      ],
+      "dataTopic": "/vision/target_follow/status"
+    }
+  },
+  {
+    "id": "04_03_lane_project",
+    "title": "04.03 车道项目",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_03_lane_project/debug",
+    "statusTopics": [
+      "/vision/lane/result",
+      "/vision/targets_3d",
+      "/vision/risk",
+      "/vision/lane_follow/status"
+    ],
+    "guide": "展示车道场景，观察车道、风险和车道跟随状态。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_04_03_lane_project/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "车道、目标距离与风险联动",
+      "views": [
+        "result",
+        "data",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/lane/result",
+          "车道偏差"
+        ],
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/risk",
+          "融合风险"
+        ],
+        [
+          "/vision/lane_follow/status",
+          "车道跟随状态"
+        ]
+      ],
+      "dataTopic": "/vision/lane_follow/status"
+    }
+  },
+  {
+    "id": "04_04_object_navigation",
+    "title": "04.04 目标导航",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_04_object_navigation/debug",
+    "statusTopics": [
+      "/vision/targets_3d"
+    ],
+    "guide": "展示目标，观察目标导航候选；当前运动输出关闭。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_04_04_object_navigation/debug/compressed",
+    "ui": {
+      "defaultView": "goal",
+      "focus": "目标生成的三维导航候选",
+      "views": [
+        "goal",
+        "data",
+        "result",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/nav_goal",
+          "导航候选 Pose"
+        ]
+      ],
+      "dataTopic": "/vision/nav_goal"
+    }
+  },
+  {
+    "id": "04_05_multimodal_avoidance",
+    "title": "04.05 多模态避障",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_05_multimodal_avoidance/debug",
+    "statusTopics": [
+      "/vision/lane/result",
+      "/vision/targets_3d",
+      "/vision/risk",
+      "/vision/lane_follow/status"
+    ],
+    "guide": "观察视觉、深度与雷达组合的避障风险状态。",
+    "fields": [],
+    "displayTopic": "/vision/course_gui/course_04_05_multimodal_avoidance/debug/compressed",
+    "ui": {
+      "defaultView": "data",
+      "focus": "视觉、深度与雷达融合风险",
+      "views": [
+        "data",
+        "result",
+        "gray"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/lane/result",
+          "车道偏差"
+        ],
+        [
+          "/vision/targets_3d",
+          "目标 XYZ 与距离"
+        ],
+        [
+          "/vision/risk",
+          "融合风险"
+        ],
+        [
+          "/vision/lane_follow/status",
+          "车道跟随状态"
+        ]
+      ],
+      "dataTopic": "/vision/risk"
+    }
+  },
+  {
+    "id": "04_08_gesture_person_follow",
+    "title": "04.08 方案A：TROS C++ + Nav2",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_08_gesture_person_follow/debug",
+    "statusTopics": [
+      "/vision/gesture_follow/status"
+    ],
+    "guide": "最终综合案例。104 YOLO分割/跟踪与RGB-D测距，接入官方tros_person_following C++状态机及现有MOLA/Nav2。原版按滞回与死区更新目标，过近停车；主动搜索丢失人物。",
+    "fields": [
+      {
+        "name": "enable_motion",
+        "label": "运行模式",
+        "type": "select",
+        "default": "false",
+        "options": [
+          [
+            "false",
+            "识别展示 / 指令预览"
+          ],
+          [
+            "true",
+            "实机运动"
+          ]
+        ]
+      }
+    ],
+    "isFinal": false,
+    "displayTopic": "/vision/course_gui/course_04_08_gesture_person_follow/debug/compressed",
+    "ui": {
+      "defaultView": "result",
+      "focus": "人体分割与ID、真实深度、官方C++跟随/搜索状态与Nav2目标",
+      "views": [
+        "result",
+        "data",
+        "gray",
+        "rgb"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/gesture_follow/status",
+          "手势与跟随状态"
+        ]
+      ],
+      "dataTopic": "/vision/gesture_follow/status"
+    }
+  },
+  {
+    "id": "04_09_body_tracking",
+    "title": "04.09 人体手势跟随 · C++深度控距",
+    "offline": false,
+    "isFinal": true,
+    "imageTopic": "/vision/body_tracking/debug",
+    "displayTopic": "/vision/course_gui/course_04_09_body_tracking/debug/compressed",
+    "statusTopics": [
+      "/vision/body_tracking/status"
+    ],
+    "fields": [
+      {
+        "name": "enable_motion",
+        "label": "运行模式",
+        "type": "select",
+        "default": "false",
+        "options": [
+          [
+            "false",
+            "识别展示 / 指令预览"
+          ],
+          [
+            "true",
+            "实机运动"
+          ]
+        ]
+      }
+    ],
+    "guide": "1前进、2后退并保持；3顺时针一圈、4逆时针一圈，按里程计累计360°后自动停车，保持同一手势不重复转。五指张掌停止；OK切回人体跟随。",
+    "ui": {
+      "defaultView": "result",
+      "focus": "3/4各转一圈自动停、角度进度、1/2保持、五指张掌停止",
+      "views": [
+        "result",
+        "data",
+        "gray",
+        "rgb"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/body_tracking/status",
+          "Body Tracking 状态与原版速度"
+        ],
+        [
+          "/vision/body_tracking/cmd_vel",
+          "原版速度请求 · Twist"
+        ]
+      ],
+      "dataTopic": "/vision/body_tracking/status"
+    }
+  }
+];
