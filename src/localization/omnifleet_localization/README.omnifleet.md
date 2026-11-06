@@ -4,17 +4,17 @@
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/omnifleet_localization`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [launch/](launch)：ROS启动入口。现有项：`airy_gateway.launch.py`、`backends`、`includes`。
-- [config/](config)：业务/算法运行配置。现有项：`airy`、`cartographer_3d`、`modes.yaml`、`mola`。
-- [scripts/](scripts)：可执行脚本。现有项：`airy_imu_adapter_node`、`cartographer_odom_adapter`、`depth_dropoff_detector`、`terrain_mapper`、`wheel_slip_detector`。
-- [test/](test)：测试。现有项：`airy`、`mapping`、`test_cartographer_3d_contract.py`、`test_mode_configs.py`、`test_mola_backend_contract.py`。
+- [launch/](launch)：ROS启动入口。当前项：`airy_gateway.launch.py`、`backends`、`includes`。
+- [config/](config)：业务/算法运行配置。当前项：`airy`、`cartographer_3d`、`modes.yaml`、`mola`。
+- [scripts/](scripts)：可执行脚本。当前项：`airy_imu_adapter_node`、`cartographer_odom_adapter`、`depth_dropoff_detector`、`terrain_mapper`、`wheel_slip_detector`。
+- [test/](test)：测试。当前项：`airy`、`mapping`、`test_cartographer_3d_contract.py`、`test_mode_configs.py`、`test_mola_backend_contract.py`。
 
 ## 工作区内声明依赖
 

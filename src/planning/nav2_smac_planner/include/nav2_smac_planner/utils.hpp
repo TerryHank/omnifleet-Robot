@@ -86,6 +86,14 @@ inline double findCircumscribedCost(std::shared_ptr<nav2_costmap_2d::Costmap2DRO
 
     inflation_layer_found = true;
     double circum_radius = costmap->getLayeredCostmap()->getCircumscribedRadius();
+    double inflation_radius;
+    if (!costmap->get_parameter(inflation_layer->getName() + ".inflation_radius", inflation_radius) ||
+      inflation_radius < circum_radius)
+    {
+      // An uninflated center says nothing about the rest of the configured body.
+      // Use the existing full-footprint check when this optimization is invalid.
+      return -1.0;
+    }
     double resolution = costmap->getCostmap()->getResolution();
     result = static_cast<double>(inflation_layer->computeCost(circum_radius / resolution));
   }

@@ -4,7 +4,7 @@
 
 - 功能域：`map`；源码：`/home/iecme/omnifleet_ws/src/map/omnifleet_map_tf_generator`。
 - colcon 类型：`(ros.ament_python)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
@@ -14,7 +14,7 @@
 
 ## 工作区内声明依赖
 
-- [omnifleet_fleet_common](../../common/omnifleet_fleet_common/README.omnifleet.md)
+package.xml 未声明其他已盘点工作区包依赖。
 
 ## 原有资料
 

@@ -66,9 +66,9 @@ MoveIt on sim-arm requires `ros-$ROS_DISTRO-moveit`. `--moveit` launches
 `sim_arm.launch.py` plus `agenticros_arm_moveit_config` `move_group` and
 `arm_trajectory_bridge.py` (`FollowJointTrajectory` → `/arm/*/cmd_pos`).
 Named SRDF poses: `home`, `ready`. Smoke: `node scripts/test-moveit-sim.mjs`.
-See [docs/simulation.md](../../../../docs/simulation.md).
+See [docs/simulation.md](../../../docs/simulation.md).
 
-This is a **static map + AMCL** stack. For live RGB-D mapping (RTAB-Map, no AMCL) and the `explore` / `wander` skills, see [docs/mapping.md](../../../../docs/mapping.md).
+This is a **static map + AMCL** stack. For live RGB-D mapping (RTAB-Map, no AMCL) and the `explore` / `wander` skills, see [docs/mapping.md](../../../docs/mapping.md).
 
 ## Arm topic layout
 

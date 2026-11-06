@@ -117,7 +117,6 @@ target_link_libraries(project ${rs_driver_LIBRARIES})
 如果使用MSVC编译器，可使用PCL官方提供的[PCL安装包](https://github.com/PointCloudLibrary/pcl/releases)安装。
 
 安装过程中选择 `Add PCL to the system PATH for xxx`。
-![](./img/01_01_install_pcl.png)
 
 ### 1.6.2 安装
 

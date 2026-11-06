@@ -17,6 +17,7 @@ namespace omnifleet_planner
 class FootprintSafeGoalChecker : public nav2_controller::SimpleGoalChecker
 {
 public:
+  bool isFleetGoalChecker() const {return plugin_name_ == "fleet_goal_checker";}
   bool requiresOrderedWaypoints() const {return require_ordered_waypoints_;}
   void initialize(
     const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent,

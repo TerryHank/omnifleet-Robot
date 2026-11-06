@@ -4,14 +4,14 @@ Advanced metric map classes, using the generic `mrpt::maps::CMetricMap` interfac
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/omnifleet_mola/mola_metric_maps`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [tests/](tests)：测试。现有项：`CMakeLists.txt`、`README-sanitizers.md`、`export-covariance.cpp`、`run-sanitizers.sh`、`test-mola_metric_maps_hashedvoxels.cpp`、`test-mola_metric_maps_incrementalpointcloud-stress.cpp`、`test-mola_metric_maps_incrementalpointcloud.cpp`、`test-mola_metric_maps_index3d_hash.cpp`、`test-mola_metric_maps_keyframemap.cpp`、`test-mola_metric_maps_ndt.cpp` 等。
+- [tests/](tests)：测试。当前项：`CMakeLists.txt`、`README-sanitizers.md`、`export-covariance.cpp`、`run-sanitizers.sh`、`test-mola_metric_maps_hashedvoxels.cpp`、`test-mola_metric_maps_incrementalpointcloud-stress.cpp`、`test-mola_metric_maps_incrementalpointcloud.cpp`、`test-mola_metric_maps_index3d_hash.cpp`、`test-mola_metric_maps_keyframemap.cpp`、`test-mola_metric_maps_ndt.cpp`、`test-mola_metric_maps_tsdf.cpp`、`test-occgrid.cpp`、`test-options-ini-io.cpp`、`test-serialization.cpp`、`test-sparsevoxelpointcloud.cpp`、`tsan-suppressions.txt`。
 
 ## 工作区内声明依赖
 

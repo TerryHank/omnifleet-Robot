@@ -42,11 +42,12 @@ def generate_launch_description():
     def fail_unrecoverable_lifecycle(event):
         lifecycle_output.extend(event.text)
         failures = (
+            b"CRITICAL FAILURE: SERVER ",
             b"Failed to re-establish connection from a server crash after maximum timeout.",
             b"Failed to bring up all requested nodes. Aborting bringup.",
         )
         if any(message in lifecycle_output for message in failures):
-            raise RuntimeError("Nav2 lifecycle recovery exhausted; restart the navigation service")
+            raise RuntimeError("Nav2 lifecycle server failure; restart the navigation service")
         del lifecycle_output[:-512]
 
     return LaunchDescription([
@@ -65,7 +66,7 @@ def generate_launch_description():
             package="nav2_controller",
             executable="controller_server",
             name="controller_server",
-            remappings=[("cmd_vel", "/msc/nav_cmd_vel")],
+            remappings=[("cmd_vel", "/navigation/nav_cmd_vel")],
             **common,
         ),
         Node(
@@ -78,13 +79,13 @@ def generate_launch_description():
             package="nav2_behaviors",
             executable="behavior_server",
             name="behavior_server",
-            remappings=[("cmd_vel", "/msc/nav_cmd_vel")],
+            remappings=[("cmd_vel", "/navigation/nav_cmd_vel")],
             **common,
         ),
         Node(
             package="nav2_bt_navigator",
             executable="bt_navigator",
-            remappings=[("/cmd_vel", "/msc/nav_cmd_vel"),
+            remappings=[("/cmd_vel", "/navigation/nav_cmd_vel"),
                         ("navigate_to_pose", "navigation_backend/navigate_to_pose"),
                         ("navigate_through_poses", "navigation_backend/navigate_through_poses"),
                         ("goal_pose", "navigation_backend/goal_pose")],

@@ -4,15 +4,15 @@ Integrator of IMU angular velocity readings
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/omnifleet_mola/mola_imu_preintegration`。
 - colcon 类型：`(ros.cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [scripts/](scripts)：可执行脚本。现有项：`formatter.sh`。
-- [tests/](tests)：测试。现有项：`CMakeLists.txt`、`test-imu-initial-calibrator.cpp`、`test-imu-preintegrator.cpp`、`test-imu-rotation-integrator.cpp`、`test-imu-transformer.cpp`、`test-map-gravity-estimator.cpp`、`test-so3-jacobians.cpp`、`test-trajectory-from-buffer.cpp`、`test-velocity-buffer.cpp`。
+- [scripts/](scripts)：可执行脚本。当前项：`formatter.sh`。
+- [tests/](tests)：测试。当前项：`CMakeLists.txt`、`test-imu-initial-calibrator.cpp`、`test-imu-preintegrator.cpp`、`test-imu-rotation-integrator.cpp`、`test-imu-transformer.cpp`、`test-map-gravity-estimator.cpp`、`test-so3-jacobians.cpp`、`test-trajectory-from-buffer.cpp`、`test-velocity-buffer.cpp`。
 
 ## 工作区内声明依赖
 

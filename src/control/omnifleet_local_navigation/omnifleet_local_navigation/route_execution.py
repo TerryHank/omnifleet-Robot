@@ -12,6 +12,7 @@ from .continuous_tree import continuous_tree
 from geometry_msgs.msg import PoseStamped, Twist
 from nav_msgs.msg import Odometry, OccupancyGrid, Path as NavPath
 from nav2_msgs.action import ComputePathThroughPoses, NavigateThroughPoses, NavigateToPose, FollowWaypoints
+from action_msgs.msg import GoalStatusArray
 from rclpy.action import ActionClient
 from rcl_interfaces.srv import GetParameters
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, qos_profile_sensor_data
@@ -127,6 +128,12 @@ class ContinuousRoute:
         self.finished_at = None
         self.preflight_only = False
         latched = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        for client, endpoint in ((self.navigator,'navigation_backend/navigate_through_poses'),
+                                 (self.single,'navigation_backend/navigate_to_pose'),
+                                 (self.waypoints,'navigation_backend/follow_waypoints'),
+                                 (self.planner,'compute_path_through_poses')):
+            node.create_subscription(GoalStatusArray,topic(node,endpoint+'/_action/status'),
+                lambda message,c=client:self.observe_action_status(c,message),latched)
         node.create_subscription(String, topic(node, "controller_selector"), lambda m: setattr(self, 'controller', m.data), latched)
         node.create_subscription(OccupancyGrid, topic(node, "global_costmap/costmap"), lambda m: setattr(self, 'grid', (time.monotonic(),m)), latched)
         node.create_subscription(Odometry, topic(node, "lidar_odometry/pose"), self.on_pose, qos_profile_sensor_data)
@@ -311,7 +318,7 @@ class ContinuousRoute:
     def submit(self, client, goal, result_fn, role, feedback=None):
         key = uuid.uuid4().hex
         entry = {'epoch': self.epoch, 'role': role, 'handle': None, 'deadline': time.monotonic()+10,
-                 'cancel': False, 'cancel_sent': False, 'result': result_fn}
+                 'cancel': False, 'cancel_sent': False, 'result': result_fn, 'client': client}
         self.requests[key] = entry
         try:
             f = client.send_goal_async(goal, feedback_callback=(lambda msg: feedback(msg) if feedback and key in self.requests and not self.requests[key]['cancel'] and self.requests[key]['epoch']==self.epoch else None))
@@ -355,18 +362,49 @@ class ContinuousRoute:
             self.request_failed(entry['role'],f"{entry['role']}失败：{error}")
 
     def request_failed(self, role, reason):
-        if role=='navigation' and self.n.recover_from_nav2_failure():return
+        if (role=='navigation' or (role=='plan' and getattr(self,'phase',None)=='preplanning' and not self.preflight_only)) and self.n.recover_from_nav2_failure():return
         self.stop(reason,failed=True)
+
+    def _retire_cancelled(self, entry):
+        for key, value in list(self.requests.items()):
+            if value is entry:
+                self.requests.pop(key, None)
+
+    def observe_action_status(self, client, message):
+        terminal = {bytes(status.goal_info.goal_id.uuid):status.status
+                    for status in message.status_list if status.status in (4,5,6)}
+        for entry in list(self.requests.values()):
+            handle = entry.get('handle')
+            if entry.get('client') is not client or handle is None:
+                continue
+            status = terminal.get(bytes(handle.goal_id.uuid))
+            if status is not None:
+                entry['terminal_status'] = status
+                if entry['cancel']:
+                    self._retire_cancelled(entry)
 
     def cancel(self, entry):
         entry['cancel'] = True
-        if entry['handle'] and not entry['cancel_sent']:
+        if entry.get('terminal_status') in (4,5,6):
+            self._retire_cancelled(entry)
+            return
+        now = time.monotonic()
+        if entry['handle'] and (not entry['cancel_sent'] or now-entry.get('cancel_sent_at',0.) >= 1.):
+            attempt = object()
+            entry['cancel_attempt'] = attempt
+            pending = entry.get('cancel_future')
+            if pending is not None and not pending.done():pending.cancel()
             entry['cancel_sent'] = True
+            entry['cancel_sent_at'] = now
             f = entry['handle'].cancel_goal_async()
+            entry['cancel_future'] = f
             def replied(future):
+                if entry.get('cancel_attempt') is not attempt:return
                 try:
                     reply = future.result()
-                    if reply.return_code not in (0, 3):
+                    if reply.return_code == 3:
+                        self._retire_cancelled(entry)
+                    elif reply.return_code != 0:
                         entry['cancel_sent'] = False
                 except Exception:
                     entry['cancel_sent'] = False
@@ -492,7 +530,7 @@ class ContinuousRoute:
             if value.get('state') == 'failed':
                 reason = '连续导航失败：'+str(value.get('reason', '执行检查失败'))
                 if self.active:
-                    self.stop(reason, failed=True)
+                    self.request_failed('navigation', reason)
                 elif self.phase == 'failed':
                     self.cancel_reason = reason
                     self.n.publish_status(reason)
@@ -542,9 +580,18 @@ class ContinuousRoute:
         while start<end-1 and self.states[start] in ('已通过','已停靠'):start+=1
         self.blocks[self.block]=(start,end)
         self.epoch+=1;self.failed=False;self.active=self.n.navigation_active=True
+        if self.strategy in ('formation_follow','trail_follow'):
+            stream=self.formation if self.strategy=='formation_follow' else self.follow
+            sequence=stream.sequence
+            stream.start(self.points)
+            stream.sequence=sequence
+            self.set_phase('tracking','动态协同导航恢复，等待当前会话的新目标')
+            return
         self.send_block()
 
     def stop(self, reason, failed=False):
+        if getattr(self,'strategy','')=='trail_follow':self.follow.stop()
+        elif getattr(self,'strategy','')=='formation_follow':self.formation.stop()
         if not self.active:
             return
         if self.phase in ('canceling', 'cancel_unconfirmed'):
@@ -626,8 +673,26 @@ class ContinuousRoute:
         # if not fresh or not self.pose or now-self.pose[0] > .5:
         #     self.stop(self.health.reason+'；MOLA位姿/TF不新鲜，停止路线', failed=True)
         #     return
+        if self.sequential and self.phase == 'tracking' and self.pose and self.block < len(self.blocks)-1:
+            index, _ = self.blocks[self.block]
+            point = self.points[index]
+            position = self.pose[1].pose.pose.position
+            target = point.pose.position
+            if point.kind == 'pass' and math.hypot(position.x-target.x, position.y-target.y) <= self.radius:
+                self.n.inhibit_output()
+                for entry in list(self.requests.values()):
+                    self.cancel(entry)
+                self.block_done(None)
+                self.set_phase('stopping', f'航点{index+1}已进入通过半径，等待上一段结束')
+
         if self.phase in ('stopping','waiting'):
             self.zero.publish(Twist())
+            if self.requests:
+                for entry in list(self.requests.values()):
+                    self.cancel(entry)
+                if now > self.stop_deadline:
+                    self.stop('途经点旧导航请求未确认结束', failed=True)
+                return
             stopped = self.odom and now-self.odom[0] < .4 and abs(self.odom[1].twist.twist.linear.x) < .02 and abs(self.odom[1].twist.twist.angular.z) < .05
             if self.phase == 'stopping':
                 self.stop_since = (self.stop_since or now) if stopped else None
@@ -643,7 +708,7 @@ class ContinuousRoute:
                 self.stop('停靠期间底盘反馈不满足停止条件', failed=True)
             elif now >= self.wait_until:
                 _, end = self.blocks[self.block]
-                self.states[end-1] = '已停靠'
+                self.states[end-1] = '已通过' if self.sequential and self.block < len(self.blocks)-1 and self.points[end-1].kind == 'pass' else '已停靠'
                 self.block += 1
                 if self.block == len(self.blocks):
                     self.finish('completed', '逐点导航完成：所有航点均已到达并停稳' if self.sequential else '整条路线完成：途经点已通过，停靠点及最终点已完成')

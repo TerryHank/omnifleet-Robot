@@ -4,7 +4,7 @@ RTAB-Map's synchronization package.
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/rtabmap_ros/rtabmap_sync`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下未发现同名目录；按源代码/备用组件登记，不能称为已部署运行。
+- 状态（2026-11-06目录核对）：当前 install 下未发现同名目录；按源代码/备用组件登记，不能称为已部署运行。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
@@ -14,8 +14,8 @@ RTAB-Map's synchronization package.
 
 ## 工作区内声明依赖
 
-- [rtabmap_conversions](../rtabmap_conversions/README.md)
-- [rtabmap_msgs](../rtabmap_msgs/README.md)
+- [rtabmap_conversions](../../rtabmap/rtabmap_ros/rtabmap_conversions/package.xml)
+- [rtabmap_msgs](../../rtabmap/rtabmap_ros/rtabmap_msgs/package.xml)
 
 ## 配置和数据边界
 

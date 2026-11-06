@@ -4,7 +4,7 @@ RTAB-Map Stack
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/rtabmap_ros/rtabmap_ros`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下未发现同名目录；按源代码/备用组件登记，不能称为已部署运行。
+- 状态（2026-11-06目录核对）：当前 install 下未发现同名目录；按源代码/备用组件登记，不能称为已部署运行。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
@@ -14,19 +14,19 @@ RTAB-Map Stack
 
 ## 工作区内声明依赖
 
-- [rtabmap_conversions](../rtabmap_conversions/README.md)
-- [rtabmap_costmap_plugins](../rtabmap_costmap_plugins/README.md)
-- [rtabmap_demos](../rtabmap_demos/README.omnifleet.md)
-- [rtabmap_examples](../rtabmap_examples/README.md)
-- [rtabmap_launch](../rtabmap_launch/README.omnifleet.md)
-- [rtabmap_msgs](../rtabmap_msgs/README.md)
-- [rtabmap_odom](../rtabmap_odom/README.md)
-- [rtabmap_python](../rtabmap_python/README.md)
-- [rtabmap_rviz_plugins](../rtabmap_rviz_plugins/README.md)
-- [rtabmap_slam](../rtabmap_slam/README.md)
-- [rtabmap_sync](../rtabmap_sync/README.md)
-- [rtabmap_util](../rtabmap_util/README.md)
-- [rtabmap_viz](../rtabmap_viz/README.md)
+- [rtabmap_conversions](../../rtabmap/rtabmap_ros/rtabmap_conversions/package.xml)
+- [rtabmap_costmap_plugins](../../rtabmap/rtabmap_ros/rtabmap_costmap_plugins/package.xml)
+- [rtabmap_demos](../../rtabmap/rtabmap_ros/rtabmap_demos/README.md)
+- [rtabmap_examples](../../rtabmap/rtabmap_ros/rtabmap_examples/package.xml)
+- [rtabmap_launch](../../rtabmap/rtabmap_ros/rtabmap_launch/README.md)
+- [rtabmap_msgs](../../rtabmap/rtabmap_ros/rtabmap_msgs/package.xml)
+- [rtabmap_odom](../../rtabmap/rtabmap_ros/rtabmap_odom/package.xml)
+- [rtabmap_python](../../rtabmap/rtabmap_ros/rtabmap_python/package.xml)
+- [rtabmap_rviz_plugins](../../rtabmap/rtabmap_ros/rtabmap_rviz_plugins/package.xml)
+- [rtabmap_slam](../../rtabmap/rtabmap_ros/rtabmap_slam/package.xml)
+- [rtabmap_sync](../../rtabmap/rtabmap_ros/rtabmap_sync/package.xml)
+- [rtabmap_util](../../rtabmap/rtabmap_ros/rtabmap_util/package.xml)
+- [rtabmap_viz](../../rtabmap/rtabmap_ros/rtabmap_viz/package.xml)
 
 ## 配置和数据边界
 

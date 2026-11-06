@@ -117,7 +117,6 @@ Unzip [libpcap&#39;s developer&#39;s pack](https://www.winpcap.org/install/bin/W
 To compile with VS2019, please use the official installation package [PCL All-in-one installer](https://github.com/PointCloudLibrary/pcl/releases).
 
 Select the "Add PCL to the system PATH for xxx" option during the installation.
-![](./img/01_01_install_pcl.png)
 
 ### 1.6.2 Installation
 
@@ -141,21 +140,21 @@ To build `demo_online` and `demo_pcap`, enable the CMake option `COMPILE_DEMOS`.
 cmake -DCOMPILE_DEMOS=ON ..
 ```
 
-For more info about `demo_online`, Please refer to [Decode online LiDAR](doc/howto/07_how_to_decode_online_lidar.md)
+For more info about `demo_online`, Please refer to [Decode online LiDAR](doc/howto/08_how_to_decode_online_lidar.md)
 
-For more info about `demo_pcap`, Please refer to [Decode pcap file](doc/howto/09_how_to_decode_pcap_file.md)
+For more info about `demo_pcap`, Please refer to [Decode pcap file](doc/howto/10_how_to_decode_pcap_file.md)
 
 ## 1.8 Visualization of Point Cloud
 
-**rs_driver** offers a visualization tool `rs_driver_viwer` in ``rs_driver/tool`` , which is based on PCL.
+**rs_driver** offers a visualization tool `rs_driver_viewer` in ``rs_driver/tool`` , which is based on PCL.
 
-To build it, enable the CMake option CMOPILE_TOOLS.
+To build it, enable the CMake option COMPILE_TOOLS.
 
 ```bash
 cmake -DCOMPILE_TOOLS=ON ..
 ```
 
-For more info about `rs_driver_viewer`, please refer to [Visualization tool guide](doc/howto/13_how_to_use_rs_driver_viewer.md)
+For more info about `rs_driver_viewer`, please refer to [Visualization tool guide](doc/howto/14_how_to_use_rs_driver_viewer.md)
 
 ## 1.9 API files
 

@@ -540,7 +540,7 @@ Configurable limits exist for safety but can be adjusted or removed entirely.
 
 - **[API Reference](https://pantoniou.github.io/libfyaml/)** - Complete API documentation
 - **[Examples](examples/)** - Sample code and use cases
-- **[CMake Integration](cmake/README-package.md)** - Using libfyaml in CMake projects
+- **[CMake build and install definitions](CMakeLists.txt)** - Build targets and package exports; see also the [package configuration template](cmake/libfyaml-config.cmake.in).
 - **[Changelog](CHANGELOG.md)** - Version history and release notes
 
 ### Building Documentation Locally

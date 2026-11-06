@@ -51,7 +51,7 @@ modules:
       fixed_sensor_pose: -0.041 0 0.150 0 0 0
       qos:
         reliability: best_effort
-        depth: 5
+        depth: ${MOLA_LIDAR_QOS_DEPTH|1}
     - topic: /odom
       msg_type: Odometry
       output_sensor_label: wheel_odom

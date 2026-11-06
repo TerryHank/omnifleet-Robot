@@ -4,15 +4,15 @@ TODO: Package description
 
 - 功能域：`vehicle`；源码：`/home/iecme/omnifleet_ws/src/vehicle/ros_robot_controller_msgs`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [msg/](msg)：消息定义。现有项：`BusServoState.msg`、`ButtonState.msg`、`BuzzerState.msg`、`GetBusServoCmd.msg`、`GetPWMServoCmd.msg`、`LedState.msg`、`MotorState.msg`、`MotorsState.msg`、`PWMServoState.msg`、`Sbus.msg` 等。
-- [srv/](srv)：服务定义。现有项：`GetBusServoState.srv`、`GetPWMServoState.srv`。
+- [msg/](msg)：消息定义。当前项：`BusServoState.msg`、`ButtonState.msg`、`BuzzerState.msg`、`GetBusServoCmd.msg`、`GetPWMServoCmd.msg`、`LedState.msg`、`MotorState.msg`、`MotorsState.msg`、`PWMServoState.msg`、`Sbus.msg`、`SetBusServoState.msg`、`SetPWMServoState.msg`。
+- [srv/](srv)：服务定义。当前项：`GetBusServoState.srv`、`GetPWMServoState.srv`。
 
 ## 配置和数据边界
 

@@ -55,7 +55,7 @@ modules:
     - topic: /odom
       msg_type: Odometry
       output_sensor_label: wheel_odom
-    - topic: /imu_lidar/data_raw
+    - topic: /rslidar_imu_data_corrected
       msg_type: Imu
       output_sensor_label: radar_imu
       use_fixed_sensor_pose: true

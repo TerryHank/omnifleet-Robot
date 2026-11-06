@@ -1,22 +1,24 @@
+> 2026-11-06清理说明：本文提及的 `/home/iecme/robot_backups/` 历史副本已从104删除，不能作为当前可用回退路径；原日期的验证结论仅代表当时状态。
+
 # rslidar_sdk｜OmniFleet 工作区介绍
 
 RoboSense Airy 雷达驱动，发布原始点云和 IMU。
 
 - 功能域：`sensing`；源码：`/home/iecme/omnifleet_ws/src/sensing/rslidar_sdk`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [launch/](launch)：ROS启动入口。现有项：`elequent_start.py`、`humble_start.py`、`start.launch`、`start.py`。
-- [config/](config)：业务/算法运行配置。现有项：`config.yaml`。
+- [launch/](launch)：ROS启动入口。当前项：`elequent_start.py`、`humble_start.py`、`start.launch`、`start.py`。
+- [config/](config)：业务/算法运行配置。当前项：`config.10hz-full.yaml`、`config.20hz-half.yaml`、`config.yaml`。
 
 ## 工作区内声明依赖
 
-- [rslidar_msg](../rslidar_msg/README.omnifleet.md)
+- [rslidar_msg](../rslidar_msg/ros2/package.xml)
 
 ## 原有资料
 

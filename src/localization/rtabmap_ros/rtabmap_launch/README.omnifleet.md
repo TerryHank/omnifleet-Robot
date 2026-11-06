@@ -4,23 +4,23 @@ RTAB-Map's main launch files.
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/rtabmap_ros/rtabmap_launch`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下未发现同名目录；按源代码/备用组件登记，不能称为已部署运行。
+- 状态（2026-11-06目录核对）：当前 install 下未发现同名目录；按源代码/备用组件登记，不能称为已部署运行。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [launch/](launch)：ROS启动入口。现有项：`config`、`rtabmap.launch.py`。
+- [launch/](launch)：ROS启动入口。当前项：`config`、`rtabmap.launch.py`。
 
 ## 工作区内声明依赖
 
-- [rtabmap_msgs](../rtabmap_msgs/README.md)
-- [rtabmap_odom](../rtabmap_odom/README.md)
-- [rtabmap_rviz_plugins](../rtabmap_rviz_plugins/README.md)
-- [rtabmap_slam](../rtabmap_slam/README.md)
-- [rtabmap_util](../rtabmap_util/README.md)
-- [rtabmap_viz](../rtabmap_viz/README.md)
+- [rtabmap_msgs](../../rtabmap/rtabmap_ros/rtabmap_msgs/package.xml)
+- [rtabmap_odom](../../rtabmap/rtabmap_ros/rtabmap_odom/package.xml)
+- [rtabmap_rviz_plugins](../../rtabmap/rtabmap_ros/rtabmap_rviz_plugins/package.xml)
+- [rtabmap_slam](../../rtabmap/rtabmap_ros/rtabmap_slam/package.xml)
+- [rtabmap_util](../../rtabmap/rtabmap_ros/rtabmap_util/package.xml)
+- [rtabmap_viz](../../rtabmap/rtabmap_ros/rtabmap_viz/package.xml)
 
 ## 原有资料
 

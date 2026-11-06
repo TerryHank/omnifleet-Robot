@@ -48,6 +48,8 @@ COURSE_FUNCTIONS = {
     "04_05_multimodal_avoidance",
     "04_06_edge_detection",
     "04_07_traffic_safety",
+    "04_08_gesture_person_follow",
+    "04_09_body_tracking",
 }
 
 
@@ -59,8 +61,8 @@ def _read(path: Path) -> str:
     return text
 
 
-def test_exactly_31_student_wrappers_exist():
-    """课程定义中的 31 个学生入口必须全部存在且没有多余入口。"""
+def test_exactly_33_student_wrappers_exist():
+    """课程入口包含保留的TROS及新增Body Tracking。"""
 
     actual = {path.stem.removeprefix("vision_").removesuffix(".launch") for path in TUTORIAL_LAUNCH.glob("vision_*.launch.py")}
     assert actual == COURSE_FUNCTIONS
@@ -91,19 +93,19 @@ def test_inner_launch_covers_every_function_and_actual_topics():
     assert 'FindPackageShare("omnifleet_vision")' in text
     assert '[share, "models", "vendor", filename]' in text
     assert '"/camera/color/image_raw"' in text
-    assert '"/camera/depth/image_raw"' in text
+    assert '"/camera/aligned_depth_to_color/image_raw"' in text
     assert '"/rslidar_points"' in text
     assert '"kcf_follower.launch.py"' in text
 
 
-def test_motion_never_targets_final_chassis_topic():
-    """课程入口只能输出视觉速度候选，不得绕过安全仲裁。"""
+def test_motion_targets_local_navigation_manual_input():
+    """课程动作进入 local_navigation 的手动输入，不得直写底盘安全输出。"""
 
     files = [INNER_LAUNCH, *TUTORIAL_LAUNCH.glob("vision_*.launch.py")]
     for path in files:
         text = _read(path)
-        assert 'VISION_COMMAND_TOPIC = "/cmd_vel_vision"' in text or path != INNER_LAUNCH
-        assert not re.search(r'["\']/cmd_vel["\']', text)
+        assert 'VISION_COMMAND_TOPIC = "/cmd_vel"' in text or path != INNER_LAUNCH
+        assert '/navigation/cmd_vel_safe' not in text
 
 
 def test_depth_course_uses_aligned_rgb_yolo_and_filtered_depth():
@@ -146,7 +148,7 @@ def test_kcf_student_entry_forwards_gui_and_headless_roi_arguments():
 
 
 def test_all_realtime_visual_courses_have_a_gui_path():
-    """除训练和 TensorRT 外，29 个实时视觉课程都必须具备窗口路径。"""
+    """除训练和 TensorRT 外，30 个实时视觉课程都必须具备窗口路径。"""
 
     text = _read(INNER_LAUNCH)
     tree = ast.parse(text)
@@ -162,6 +164,6 @@ def test_all_realtime_visual_courses_have_a_gui_path():
     }
     non_realtime = {"02_11_model_training", "02_12_tensorrt"}
     assert display_keys | self_displayed | non_realtime == COURSE_FUNCTIONS
-    assert len(display_keys) == 22
+    assert len(display_keys) == 24
     assert '"image_display_node.py"' in text
     assert 'ParameterValue(LaunchConfiguration("use_gui"), value_type=bool)' in text

@@ -89,3 +89,15 @@ TEST_F(GoalCost,OrderedRouteCannotFinishAtStartNearFinalGoal) {
   checker.reset();EXPECT_FALSE(checker.isGoalReached(pose,pose,velocity));
   rosmap->cleanup();
 }
+
+TEST_F(GoalCost,UnknownPlanningPolicyDoesNotEraseRealObstacles) {
+  std::fill(map.getCharMap(),map.getCharMap()+6400,255);
+  auto allowed=[&] {return omnifleet_planner::goalFootprintCost(&map,footprint,0,0,0,true);};
+  EXPECT_EQ(allowed(),0);
+  EXPECT_EQ(cost(),255);
+  set(.025,.025,254);EXPECT_EQ(allowed(),254);
+  set(.025,.025,255);set(.3,0,254);EXPECT_EQ(allowed(),254);
+  set(.3,0,255);EXPECT_EQ(allowed(),0);
+  EXPECT_TRUE(std::all_of(map.getCharMap(),map.getCharMap()+6400,[](auto v){return v==255;}));
+  EXPECT_GE(omnifleet_planner::goalFootprintCost(&map,footprint,1.95,0,0,true),254);
+}

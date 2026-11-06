@@ -36,10 +36,13 @@
   <exec_depend>nav2_planner</exec_depend>
   <depend>nav2_regulated_pure_pursuit_controller</depend>
   <depend>nav2_mppi_controller</depend>
+  <depend>libopencv-dev</depend>
   <depend>nav2_smac_planner</depend>
   <exec_depend>python3-yaml</exec_depend>
   <test_depend>ament_cmake_pytest</test_depend>
   <test_depend>python3-yaml</test_depend>
   <export><build_type>ament_cmake</build_type></export>
   <test_depend>ament_cmake_gtest</test_depend>
+  <depend>nav2_rotation_shim_controller</depend>
+  <depend>ompl</depend>
 </package>

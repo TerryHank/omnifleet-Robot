@@ -4,7 +4,7 @@ Metapackage with all MOLA state estimation packages.
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/omnifleet_mola/mola_state_estimation`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
@@ -15,7 +15,7 @@ Metapackage with all MOLA state estimation packages.
 ## 工作区内声明依赖
 
 - [mola_state_estimation_simple](../mola_state_estimation_simple/README.omnifleet.md)
-- [mola_state_estimation_smoother](../mola_state_estimation_smoother/README.omnifleet.md)
+- [mola_state_estimation_smoother](../mola_state_estimation_smoother/official_runtime/mola_state_estimation_smoother/README.md)
 
 ## 配置和数据边界
 

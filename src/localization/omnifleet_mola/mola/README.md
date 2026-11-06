@@ -4,7 +4,7 @@ Metapackage with all core open-sourced MOLA packages.
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/omnifleet_mola/mola`。
 - colcon 类型：`(ros.cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
@@ -14,7 +14,7 @@ Metapackage with all core open-sourced MOLA packages.
 
 ## 工作区内声明依赖
 
-- [mola_bridge_ros2](../mola_bridge_ros2/README.omnifleet.md)
+- [mola_bridge_ros2](../mola_state_estimation_smoother/official_runtime/mola_bridge_ros2/README.omnifleet.md)
 - [mola_demos](../mola_demos/README.omnifleet.md)
 - [mola_input_rawlog](../mola_input_rawlog/README.omnifleet.md)
 - [mola_input_rosbag2](../mola_input_rosbag2/README.omnifleet.md)

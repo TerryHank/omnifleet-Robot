@@ -4,21 +4,21 @@ Simplemap loop-closure postprocessing library and CLI tool
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/omnifleet_mola/mola_sm_loop_closure`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [scripts/](scripts)：可执行脚本。现有项：`formatter.sh`。
-- [test/](test)：测试。现有项：`CMakeLists.txt`、`test_cli_f2f_gicp.cpp`。
+- [scripts/](scripts)：可执行脚本。当前项：`formatter.sh`。
+- [test/](test)：测试。当前项：`CMakeLists.txt`、`test_cli_f2f_gicp.cpp`。
 
 ## 工作区内声明依赖
 
 - [mola_common](../mola_common/README.omnifleet.md)
 - [mola_georeferencing](../mola_georeferencing/README.omnifleet.md)
-- [mola_gtsam_factors](../mola_gtsam_factors/README.omnifleet.md)
+- [mola_gtsam_factors](../mola_state_estimation_smoother/official_runtime/mola_gtsam_factors/README.md)
 - [mola_metric_maps](../mola_metric_maps/README.omnifleet.md)
 - [mola_pose_list](../mola_pose_list/README.omnifleet.md)
 - [mola_relocalization](../mola_relocalization/README.omnifleet.md)

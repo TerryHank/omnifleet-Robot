@@ -1,0 +1,60 @@
+# Derived from factory 640x480 calibration and measured sensor-mode resize/crop.
+# Not an independently factory-calibrated 1920x1080 profile.
+image_width: 1920
+image_height: 1080
+camera_name: camera_color
+camera_matrix:
+  rows: 3
+  cols: 3
+  data:
+  - 1371.713142793661
+  - 0.0
+  - 964.4452768125016
+  - 0.0
+  - 1371.3836409589403
+  - 550.293051649596
+  - 0.0
+  - 0.0
+  - 1.0
+distortion_model: rational_polynomial
+distortion_coefficients:
+  rows: 1
+  cols: 8
+  data:
+  - 0.04923524335026741
+  - -0.06830111891031265
+  - 0.0006133950082585216
+  - -0.0005400031222961843
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data:
+  - 1.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+projection_matrix:
+  rows: 3
+  cols: 4
+  data:
+  - 1371.713142793661
+  - 0.0
+  - 964.4452768125016
+  - 0.0
+  - 0.0
+  - 1371.3836409589403
+  - 550.293051649596
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+  - 0.0

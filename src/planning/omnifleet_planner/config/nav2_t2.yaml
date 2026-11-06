@@ -86,15 +86,15 @@ controller_server:
       plugin: omnifleet_planner::NativeContinuousGoalChecker
     general_goal_checker:
       plugin: omnifleet_planner::FootprintSafeGoalChecker
-      stateful: false
-      xy_goal_tolerance: 0.08
-      yaw_goal_tolerance: 0.25
+      stateful: true
+      xy_goal_tolerance: 0.10
+      yaw_goal_tolerance: 0.35
       safe_hold_time: 0.35
     continuous_goal_checker:
       plugin: omnifleet_planner::FootprintSafeGoalChecker
-      stateful: false
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
+      stateful: true
+      xy_goal_tolerance: 0.08
+      yaw_goal_tolerance: 0.35
       safe_hold_time: 0.35
       require_ordered_waypoints: true
     fleet_goal_checker:
@@ -179,19 +179,30 @@ controller_server:
       inflation_cost_scaling_factor: 3.0
       allow_reversing: false
       follow_gap_gain: 1.0
-      follow_speed_damping: 0.35
+      follow_speed_damping: 1.0
     FollowPathMPPI:
-      plugin: nav2_mppi_controller::MPPIController
+      plugin: omnifleet_planner::PoseRotationShim
+      primary_controller: nav2_mppi_controller::MPPIController
+      angular_dist_threshold: 0.35
+      angular_disengage_threshold: 0.15
+      forward_sampling_distance: 0.15
+      rotate_to_heading_angular_vel: 1.0
+      max_angular_accel: 1.5
+      simulate_ahead_time: 0.8
+      rotate_to_goal_heading: true
+      closed_loop: true
+      rotation_center_offset_x: 0.055
+      rotation_center_offset_y: -0.01
       time_steps: 56
       model_dt: 0.0666667
-      batch_size: 1000
+      batch_size: 500
       vx_std: 0.2
       vy_std: 0.2
       wz_std: 0.4
-      vx_max: 0.5
+      vx_max: 0.35
       vx_min: -0.35
       vy_max: 0.0
-      wz_max: 1.2
+      wz_max: 2.0
       ax_max: 0.8
       ax_min: -0.8
       ay_max: 0.0
@@ -199,12 +210,12 @@ controller_server:
       az_max: 1.5
       iteration_count: 1
       prune_distance: 1.7
-      enforce_path_inversion: true
+      enforce_path_inversion: false
       transform_tolerance: 0.3
       temperature: 0.3
       gamma: 0.015
       motion_model: DiffDrive
-      visualize: true
+      visualize: false
       TrajectoryVisualizer:
         trajectory_step: 1000
         time_step: 5
@@ -213,6 +224,8 @@ controller_server:
       - ConstraintCritic
       - VelocityDeadbandCritic
       - CostCritic
+      - FootprintClearanceCritic
+      - FollowVelocityCritic
       - GoalCritic
       - GoalAngleCritic
       - PathAlignCritic
@@ -235,6 +248,12 @@ controller_server:
         critical_cost: 300.0
         consider_footprint: true
         near_goal_distance: 0.15
+      FootprintClearanceCritic:
+        enabled: true
+        cost_weight: 6.0
+        desired_clearance: 0.10
+      FollowVelocityCritic:
+        cost_weight: 30.0
       GoalCritic:
         enabled: true
         cost_power: 1
@@ -244,27 +263,27 @@ controller_server:
         enabled: true
         cost_power: 1
         cost_weight: 3.0
-        threshold_to_consider: 0.5
+        threshold_to_consider: 0.08
       PathAlignCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 15.0
-        threshold_to_consider: 0.5
-        use_path_orientations: false
+        cost_weight: 8.0
+        threshold_to_consider: 0.08
+        use_path_orientations: true
         offset_from_furthest: 5
       PathFollowCritic:
         enabled: true
         cost_power: 1
         cost_weight: 8.0
-        threshold_to_consider: 0.6
+        threshold_to_consider: 0.08
       PathAngleCritic:
         enabled: true
         cost_power: 1
         cost_weight: 10.0
-        threshold_to_consider: 0.5
+        threshold_to_consider: 0.08
         forward_preference: false
       PreferForwardCritic:
-        enabled: true
+        enabled: false
         cost_power: 1
         cost_weight: 2.0
         threshold_to_consider: 0.5
@@ -409,13 +428,13 @@ local_costmap:
       peer_layer:
         plugin: omnifleet_planner::PeerLayer
         enabled: true
-        map_topic: /msc/peer_map
+        map_topic: /navigation/peer_map
         map_subscribe_transient_local: true
         subscribe_to_updates: false
       inflation_layer:
         plugin: nav2_costmap_2d::InflationLayer
         cost_scaling_factor: 2.0
-        inflation_radius: 0.35
+        inflation_radius: 0.15
       always_send_full_costmap: true
 global_costmap:
   global_costmap:
@@ -437,6 +456,7 @@ global_costmap:
       - peer_layer
       - inflation_layer
       static_layer:
+        footprint_clearing_enabled: true
         plugin: nav2_costmap_2d::StaticLayer
         map_subscribe_transient_local: true
         map_topic: /map
@@ -482,13 +502,13 @@ global_costmap:
       peer_layer:
         plugin: omnifleet_planner::PeerLayer
         enabled: true
-        map_topic: /msc/peer_map
+        map_topic: /navigation/peer_map
         map_subscribe_transient_local: true
         subscribe_to_updates: false
       inflation_layer:
         plugin: nav2_costmap_2d::InflationLayer
         cost_scaling_factor: 2.0
-        inflation_radius: 0.21
+        inflation_radius: 0.15
       always_send_full_costmap: true
 planner_server:
   ros__parameters:
@@ -501,8 +521,8 @@ planner_server:
     - GridHybrid
     - GridLattice
     GridBased:
-      plugin: nav2_smac_planner/SmacPlanner2D
-      tolerance: 0.2
+      plugin: omnifleet_planner::CostAwareSmac2D
+      tolerance: 0.0
       downsample_costmap: false
       downsampling_factor: 1
       allow_unknown: true
@@ -546,7 +566,7 @@ planner_server:
       smooth_path: true
       plugin: nav2_smac_planner/SmacPlannerHybrid
     GridLattice:
-      plugin: nav2_smac_planner/SmacPlannerLattice
+      plugin: omnifleet_planner::ExactGoalSmacLattice
       lattice_filepath: /home/iecme/omnifleet_ws/src/planning/omnifleet_planner/config/lattice/diff_10cm_r04.json
       tolerance: 0.2
       allow_unknown: true
@@ -554,7 +574,7 @@ planner_server:
       max_on_approach_iterations: 1000
       max_planning_time: 3.0
       allow_reverse_expansion: true
-      reverse_penalty: 2.0
+      reverse_penalty: 1.0
       change_penalty: 0.2
       non_straight_penalty: 1.05
       cost_penalty: 2.0
@@ -564,7 +584,7 @@ planner_server:
       analytic_expansion_max_length: 0.1
       lookup_table_size: 20.0
       cache_obstacle_heuristic: false
-      smooth_path: true
+      smooth_path: false
       smoother:
         max_iterations: 1000
         w_smooth: 0.3

@@ -4,16 +4,16 @@ TODO: Package description
 
 - 功能域：`vehicle`；源码：`/home/iecme/omnifleet_ws/src/vehicle/ros_robot_controller`。
 - colcon 类型：`(ros.ament_python)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [setup.py](setup.py)：Python包安装与console_scripts入口。
-- [launch/](launch)：ROS启动入口。现有项：`ros_robot_controller.launch.xml`。
-- [scripts/](scripts)：可执行脚本。现有项：`99-ttyACM0.rules`、`create_udev_rules.sh`。
-- [test/](test)：测试。现有项：`test_copyright.py`、`test_flake8.py`、`test_pep257.py`。
+- [launch/](launch)：ROS启动入口。当前项：`ros_robot_controller.launch.xml`。
+- [scripts/](scripts)：可执行脚本。当前项：`99-ttyACM0.rules`、`create_udev_rules.sh`。
+- [test/](test)：测试。当前项：`test_copyright.py`、`test_flake8.py`、`test_pep257.py`。
 
 Python可执行入口（读取setup.py，未启动节点）：
 

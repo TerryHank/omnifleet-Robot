@@ -5,7 +5,7 @@ The main entry point in this directory is:
 
 - `packaging/make_release.sh`: Generates the `*.tar.gz` and `*.zip` source
    code packages. Refer to comments in
-   [packaging/make_release.sh](packaging/make_release.sh) for the full list of
+   [packaging/make_release.sh](make_release.sh) for the full list of
    tasks done.
 
 The script includes the git submodules that should go into packages, and removes

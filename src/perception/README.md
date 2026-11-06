@@ -13,3 +13,5 @@
 | [omnifleet_vision](omnifleet_vision/README.omnifleet.md) | 视觉模型与推理集成；模型权重放 omnifleet_data/ml_models。 |
 
 业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../../AGENTS.md)。
+
+- [omnifleet_person_follow](omnifleet_person_follow/README.md)：YOLO26 TensorRT人物分割、ID绑定手势及Nav2动态跟随适配。

@@ -4,15 +4,15 @@
 
 - 功能域：`common`；源码：`/home/iecme/omnifleet_ws/src/common/omnifleet_navigation_interfaces`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [msg/](msg)：消息定义。现有项：`NavigationPoint.msg`。
-- [action/](action)：Action定义。现有项：`ExecuteNavigation.action`。
+- [msg/](msg)：消息定义。当前项：`NavigationPoint.msg`。
+- [action/](action)：Action定义。当前项：`ExecuteFormation.action`、`ExecuteNavigation.action`。
 
 ## 配置和数据边界
 

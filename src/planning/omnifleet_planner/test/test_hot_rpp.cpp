@@ -150,3 +150,18 @@ TEST(HotRpp, ActualInterpolationAndApproachChange) {
   EXPECT_NEAR(p.approach(path),.1,1e-6);
   rclcpp::shutdown();
 }
+
+TEST(ExactGoal,UnknownAllowedRetainsExactPositionAndOrientation) {
+  nav2_costmap_2d::Costmap2D map(20,20,.1,-1.,-1.,255);
+  nav_msgs::msg::Path path;path.header.frame_id="map";
+  geometry_msgs::msg::PoseStamped point;point.header=path.header;
+  point.pose.position.x=.25;point.pose.position.y=.05;point.pose.orientation.w=1.;
+  path.poses={point};auto goal=point;goal.pose.position.x=.28;
+  goal.pose.orientation=nav2_util::geometry_utils::orientationAroundZAxis(.7);
+  EXPECT_FALSE(omnifleet_planner::appendExactGoal(path,goal,map,false));
+  ASSERT_TRUE(omnifleet_planner::appendExactGoal(path,goal,map,false,true));
+  EXPECT_DOUBLE_EQ(path.poses.back().pose.position.x,.28);
+  EXPECT_DOUBLE_EQ(path.poses.back().pose.orientation.z,goal.pose.orientation.z);
+  unsigned int mx,my;ASSERT_TRUE(map.worldToMap(.28,.05,mx,my));map.setCost(mx,my,254);
+  EXPECT_FALSE(omnifleet_planner::appendExactGoal(path,goal,map,false,true));
+}

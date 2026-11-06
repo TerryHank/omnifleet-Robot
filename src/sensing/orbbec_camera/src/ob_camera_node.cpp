@@ -149,6 +149,12 @@ void OBCameraNode::setupDevices() {
       RCLCPP_WARN_STREAM(logger_, "Depth filter config is empty and soft filter is not supported");
     }
   }
+  if (device_->getDeviceInfo()->pid() == 0x0614 &&
+      device_->isPropertySupported(OB_PROP_DEPTH_HOLEFILTER_BOOL, OB_PERMISSION_READ_WRITE)) {
+    device_->setBoolProperty(OB_PROP_DEPTH_HOLEFILTER_BOOL, true);
+    RCLCPP_INFO_STREAM(logger_, "Gemini native hole filter readback: "
+                      << device_->getBoolProperty(OB_PROP_DEPTH_HOLEFILTER_BOOL));
+  }
   auto sensor_list = device_->getSensorList();
   for (size_t i = 0; i < sensor_list->count(); i++) {
     auto sensor = sensor_list->getSensor(i);
@@ -1820,6 +1826,12 @@ void OBCameraNode::onNewFrameSetCallback(std::shared_ptr<ob::FrameSet> frame_set
   if (frame_set == nullptr) {
     return;
   }
+  const auto incoming_depth = frame_set->depthFrame();
+  if (incoming_depth) {
+    RCLCPP_INFO_THROTTLE(logger_, *node_->get_clock(), 5000,
+                        "SDK depth callback source age %.1f ms",
+                        node_->now().nanoseconds() * 1e-6 - getFrameTimestampUs(incoming_depth) * 1e-3);
+  }
   try {
     if (!tf_published_) {
       publishStaticTransforms();
@@ -1850,9 +1862,8 @@ void OBCameraNode::onNewFrameSetCallback(std::shared_ptr<ob::FrameSet> frame_set
     }
     if (enable_stream_[COLOR] && color_frame) {
       std::unique_lock<std::mutex> lock(color_frame_queue_lock_);
-      // if (color_frame_queue_.size() > 2) {
-      //   color_frame_queue_.pop();
-      // }
+      // A live viewer needs the newest pending frame, not a growing FIFO.
+      while (!color_frame_queue_.empty()) color_frame_queue_.pop();
       color_frame_queue_.push(frame_set);
       color_frame_queue_cv_.notify_all();
     } else {
@@ -1897,10 +1908,17 @@ void OBCameraNode::onNewColorFrameCallback() {
     }
 
     std::shared_ptr<ob::FrameSet> frameSet = color_frame_queue_.front();
+    color_frame_queue_.pop();
+    lock.unlock();
+    const auto decode_start = std::chrono::steady_clock::now();
     is_color_frame_decoded_ = decodeColorFrameToBuffer(frameSet->colorFrame(), rgb_buffer_);
+    const double decode_ms = std::chrono::duration<double, std::milli>(
+        std::chrono::steady_clock::now() - decode_start).count();
+    RCLCPP_INFO_THROTTLE(logger_, *node_->get_clock(), 5000,
+                        "RGB decode %.1f ms; source age after decode %.1f ms", decode_ms,
+                        node_->now().nanoseconds() * 1e-6 - getFrameTimestampUs(frameSet->colorFrame()) * 1e-3);
     publishPointCloud(frameSet);
     onNewFrameCallback(frameSet->colorFrame(), COLOR);
-    color_frame_queue_.pop();
   }
 
   RCLCPP_INFO_STREAM(logger_, "Color frame thread exit!");

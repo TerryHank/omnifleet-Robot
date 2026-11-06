@@ -1,4 +1,4 @@
-#include "/home/iecme/robot_backups/tf_budget_20260916/detail_trace.hpp"
+#include <rs_driver/common/detail_trace.hpp>
 /*********************************************************************************************************************
 Copyright (c) 2020 RoboSense
 All rights reserved

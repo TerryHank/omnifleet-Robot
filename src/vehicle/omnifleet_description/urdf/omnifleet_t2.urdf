@@ -9,7 +9,7 @@
   <link name="base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><box size="0.26 0.16 0.08"/></geometry>
+      <geometry><box size="0.50 0.29 0.08"/></geometry>
       <material name="body_blue"/>
     </visual>
     <collision>
@@ -29,7 +29,7 @@
   </joint>
 
   <link name="left_track_link">
-    <visual><geometry><box size="0.28 0.035 0.065"/></geometry><material name="track_dark"/></visual>
+    <visual><geometry><box size="0.50 0.04 0.08"/></geometry><material name="track_dark"/></visual>
     <collision><geometry><box size="0.50 0.04 0.08"/></geometry></collision>
   </link>
   <joint name="left_track_joint" type="fixed">
@@ -39,7 +39,7 @@
   </joint>
 
   <link name="right_track_link">
-    <visual><geometry><box size="0.28 0.035 0.065"/></geometry><material name="track_dark"/></visual>
+    <visual><geometry><box size="0.50 0.04 0.08"/></geometry><material name="track_dark"/></visual>
     <collision><geometry><box size="0.50 0.04 0.08"/></geometry></collision>
   </link>
   <joint name="right_track_joint" type="fixed">
@@ -88,8 +88,8 @@
     </visual>
   </link>
   <joint name="camera_joint" type="fixed">
-    <parent link="base_link"/>
+    <parent link="rslidar"/>
     <child link="camera_link"/>
-    <origin xyz="0.105 0 0.105" rpy="0 0 0"/>
+    <origin xyz="0.05 0 0" rpy="0 0 0"/>
   </joint>
 </robot>

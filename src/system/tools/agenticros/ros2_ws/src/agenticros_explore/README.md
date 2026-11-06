@@ -61,4 +61,4 @@ Parameters:
 
 Goal fields: `mode` (optional; the server forces explore vs wander from the action name), `timeout_s`, `min_frontier_m`, `max_goals`.
 
-See [docs/mapping.md](../../../../docs/mapping.md) for the RealSense + RTAB-Map + Nav2 stack.
+See [docs/mapping.md](../../../docs/mapping.md) for the RealSense + RTAB-Map + Nav2 stack.

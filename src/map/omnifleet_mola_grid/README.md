@@ -4,14 +4,14 @@ MP2P 体素切片及 MRPT/ROS 地图桥接，供外部已配准点云使用。
 
 - 功能域：`map`；源码：`/home/iecme/omnifleet_ws/src/map/omnifleet_mola_grid`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [test/](test)：测试。现有项：`test_grid.cpp`。
+- [test/](test)：测试。当前项：`test_grid.cpp`。
 
 ## 工作区内声明依赖
 

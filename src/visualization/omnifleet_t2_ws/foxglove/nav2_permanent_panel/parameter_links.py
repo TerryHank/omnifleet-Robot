@@ -8,7 +8,6 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 DOCS = json.loads((HERE / 'parameter_docs.json').read_text())
-PWM_VIEW = Path('/home/iecme/.local/share/omnifleet_t2/pwm-compensation-readback.yaml')
 
 
 def location(path, keys, label='', tree=None):
@@ -55,23 +54,12 @@ def catalog(specs, yaml_file, height_file, selected_file):
         result[key] = {'targets': [locate(height_file, (leaf,))], 'docs': DOCS[key]}
     for kind, key in [('global', 'global_planner_algorithm'), ('local', 'local_controller_algorithm')]:
         result[key] = {'targets': [locate(selected_file, (kind,))], 'docs': DOCS[key]}
-    for key in ('pwm_compensation_m1', 'pwm_compensation_m2'):
-        result[key] = {'targets': [locate(PWM_VIEW, (key,), '芯片参数回读（只读）')], 'docs': DOCS[key]}
     for key, local, global_ in [('costmap_radius', 'local_radius', 'global_radius'),
                                ('costmap_scaling', 'local_scaling', 'global_scaling'),
                                ('costmap_padding', 'local_padding', 'global_padding')]:
         result[key] = {'targets': [dict(result[local]['targets'][0], label='局部配置'),
                                   dict(result[global_]['targets'][0], label='全局配置')], 'docs': DOCS[key]}
     return result
-
-
-def write_pwm_view(saved):
-    values = {key: saved[key][key] for key in ('pwm_compensation_m1', 'pwm_compensation_m2')}
-    text = '# STM32参数回读记录，实际参数保存在芯片Flash中。\n# 此文件只供查看；请在热参数面板中修改。\n' + yaml.safe_dump(values, sort_keys=False)
-    if not PWM_VIEW.exists() or PWM_VIEW.read_text() != text:
-        if PWM_VIEW.exists(): PWM_VIEW.chmod(0o644)
-        PWM_VIEW.write_text(text)
-        PWM_VIEW.chmod(0o444)
 
 
 def open_target(catalog_, key, index=0, docs=False):

@@ -1,15 +1,16 @@
 {
-  "snapshot_started_utc": "2026-10-20T17:49:12.094510+00:00",
-  "snapshot_completed_utc": "2026-10-20T17:50:22.139474+00:00",
-  "host": "iecme-tank",
-  "address": "192.168.3.113",
+  "snapshot_started_utc": "2026-11-06T15:56:37.742708+00:00",
+  "snapshot_completed_utc": "2026-11-06T15:57:59.662348+00:00",
+  "host": "iecme-tank-02",
+  "address": "192.168.3.104",
   "source_root": "/home/iecme/omnifleet_ws",
   "included": "src plus workspace env.bash",
   "source_only": true,
-  "files": 18298,
+  "files": 18586,
   "symlinks": 15,
-  "bytes": 379834380,
+  "bytes": 403530803,
   "package_xml_paths": [
+    "src/common/ai_msgs/package.xml",
     "src/common/mrpt_ros_bridge/ros2bridge/package.xml",
     "src/common/mrpt_ros_bridge/rosbag2rawlog/package.xml",
     "src/common/omnifleet_interfaces/package.xml",
@@ -100,13 +101,19 @@
     "src/map/omnifleet_cloud_grid_export/package.xml",
     "src/map/omnifleet_map_tf_generator/package.xml",
     "src/map/omnifleet_mola_grid/package.xml",
+    "src/perception/body_tracking/package.xml",
+    "src/perception/omnifleet_person_follow/package.xml",
     "src/perception/omnifleet_terrain_analysis/package.xml",
     "src/perception/omnifleet_tutorials/package.xml",
     "src/perception/omnifleet_vision/package.xml",
+    "src/perception/tros_person_following/package.xml",
     "src/planning/nav2_costmap_2d/package.xml",
+    "src/planning/nav2_mppi_controller/package.xml",
     "src/planning/nav2_smac_planner/package.xml",
     "src/planning/omnifleet_planner/package.xml",
+    "src/sensing/hik_rgbd/package.xml",
     "src/sensing/livox_ros_driver2/package.xml",
+    "src/sensing/omnifleet_hikrobot_rgbd/package.xml",
     "src/sensing/omnifleet_sensor_processing/package.xml",
     "src/sensing/orbbec_camera/package.xml",
     "src/sensing/orbbec_camera_msgs/package.xml",
@@ -128,6 +135,7 @@
     "src/system/tools/agenticros/ros2_ws/src/agenticros_follow_me/package.xml",
     "src/system/tools/agenticros/ros2_ws/src/agenticros_msgs/package.xml",
     "src/system/tools/agenticros/ros2_ws/src/agenticros_sim/package.xml",
+    "src/vehicle/huaner_driver/package.xml",
     "src/vehicle/omnifleet_chassis_driver/package.xml",
     "src/vehicle/omnifleet_description/package.xml",
     "src/vehicle/omnifleet_servo_rqt/package.xml",
@@ -138,10 +146,10 @@
     "src/visualization/omnifleet_waypoint_ui/package.xml"
   ],
   "exclusions": {
-    "generated_or_environment_directory": 134,
     "runtime_or_generated_suffix": 119,
     "binary_executable_file": 10,
-    "historical_backup": 24,
+    "generated_or_environment_directory": 92,
+    "historical_backup": 55,
     "nested_git_metadata_file": 1,
     "credential_filename": 1
   },
@@ -164,15 +172,15 @@
       "path": "src/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 8585,
-      "sha256": "151431ed67d4b328af778083b82b36974f47fa764fead04457ae571113095566"
+      "bytes": 8575,
+      "sha256": "ce23f7c9fb862700c0474697bcad0ff66f6ee7fcc9aba35b2086913a5c265b18"
     },
     {
       "path": "src/common/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1516,
-      "sha256": "9f2f42b2a5ad097fcd8d2dcc5157205abbb668c389f556f32ee2fcc4551bee88"
+      "bytes": 1234,
+      "sha256": "da3c48e7dffd5dd8293c5bb3ce3a3e2f5175999c2dade2d3534a657c5fc3901a"
     },
     {
       "path": "src/common/Livox-SDK2/.gitignore",
@@ -1867,6 +1875,118 @@
       "mode": 420,
       "bytes": 3443,
       "sha256": "836f1f9c1632edffa5f5a980ef6c5e5b855b6069f16f180a58ba181e72edb21f"
+    },
+    {
+      "path": "src/common/ai_msgs/CHANGELOG.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 833,
+      "sha256": "de0fc5fe8edc5c9fe803e19b55fec15d10fe29f03ab44620708226e316bd580f"
+    },
+    {
+      "path": "src/common/ai_msgs/CMakeLists.txt",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2245,
+      "sha256": "c2d21dcc313475503ebc54db36f491f850db2b5a17a3a3f4c4b654749e935716"
+    },
+    {
+      "path": "src/common/ai_msgs/LICENSE",
+      "type": "file",
+      "mode": 436,
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "src/common/ai_msgs/README.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 5570,
+      "sha256": "b2375ac76a40f273349660e55327b2220d776b198566a0b9b110aed21be70658"
+    },
+    {
+      "path": "src/common/ai_msgs/README_cn.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4575,
+      "sha256": "dfdaabcac4063349ff1765d51fa12e1c756c82bf28961ea79612b35f5d9e6d1c"
+    },
+    {
+      "path": "src/common/ai_msgs/package.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 868,
+      "sha256": "811939b161267e7e22b1d0bb8db363f556fa39f0b755dc09a2ed95dd708dd3c6"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/Attribute.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 840,
+      "sha256": "7c423d1aa26033bc4fad99dc8b4ea659a0d93552861154104131d8051390093b"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/Capture.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 812,
+      "sha256": "4e24683e171b3ef592d9ee73f284e6bfffa207e191aeed58d8c1357926240eec"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/CaptureTargets.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 749,
+      "sha256": "dc1e372fa5888461c540010e784cd9e638930795340f9725856932f79bce3fa2"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/DBResult.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 750,
+      "sha256": "88af887244cfc1b6ecbd0f0018e9ac50913badd9e0a9a9dc57165fdddf9991e2"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/PerceptionInfo.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 730,
+      "sha256": "8177d16dd12d87d81122c04940b56f4760f8e6e27699b0870facf198c06c4358"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/PerceptionTargets.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 884,
+      "sha256": "4c25bcfbf903c64bba89b44e0c693c7033c77dc4e00750bf8b1f7b62a1999169"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/Perf.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 903,
+      "sha256": "2ba652f7ffb4d0afd08c5c6bc9428ea92539ae5899dd29a7aa0ad366b38b98d8"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/Point.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 850,
+      "sha256": "a6a2702d385914c532906ad7cf25c0eecd2fe111f0134c791bd3ae8395743c72"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/Roi.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 820,
+      "sha256": "8aadde03205560f28d8020d7675376142e31624c6e2b66048d71bcb9e8de2522"
+    },
+    {
+      "path": "src/common/ai_msgs/msg/Target.msg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 905,
+      "sha256": "d21318ad4f9aa15e882c613f4b81069ac2c70c93bc635538c7c0ef17dff19433"
     },
     {
       "path": "src/common/mrpt/.clang-format",
@@ -5897,8 +6017,8 @@
       "path": "src/common/mrpt/3rdparty/libfyaml/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 19759,
-      "sha256": "5abf13fd833bd77738051243040b95009e916fa0e656ed6fd892bec809fb2fb4"
+      "bytes": 19849,
+      "sha256": "b869ccbccfb8ad6eb79e8bed9b165e82e66dd3226d5075432bc65968bf378b7b"
     },
     {
       "path": "src/common/mrpt/3rdparty/libfyaml/bootstrap.sh",
@@ -9270,8 +9390,8 @@
       "path": "src/common/mrpt/3rdparty/nanoflann/tests/gtest-1.8.0/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 10524,
-      "sha256": "53ae774c545bd71ce845c3a5d2773c690b1a6bd30e28dab779e520f8c1bedd50"
+      "bytes": 10332,
+      "sha256": "dc434d3321aa46bce7a63a766e16e1a857f7ada53fd24b2c7a70cfb3929439a5"
     },
     {
       "path": "src/common/mrpt/3rdparty/nanoflann/tests/gtest-1.8.0/include/gtest/gtest-death-test.h",
@@ -10922,8 +11042,8 @@
       "path": "src/common/mrpt/3rdparty/nanogui/ext/nanovg/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 5628,
-      "sha256": "cd9fcbf18ba2571ce8aa084ee2f7aefdd2aafcbcfa7abcf631dcdc97c67ad964"
+      "bytes": 5616,
+      "sha256": "ec0a97188cdb8b78d6172ce6e0b9c706d88a39a4c4dfdc8e44b4ace32cc78d3c"
     },
     {
       "path": "src/common/mrpt/3rdparty/nanogui/ext/nanovg/premake4.lua",
@@ -37696,8 +37816,8 @@
       "path": "src/common/mrpt/packaging/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 968,
-      "sha256": "2faf58d4f1b7c732542258f26a1fb79207d97937d415691b485b264ea84d3abb"
+      "bytes": 958,
+      "sha256": "dc605d7a7d355ae58e39a5a7ea4130fedbcb563849eec3ae7af4aba83f5cb665"
     },
     {
       "path": "src/common/mrpt/packaging/generate_snapshot_version.sh",
@@ -41021,8 +41141,8 @@
       "path": "src/common/mrpt/samples/bayes_tracking_example/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 464,
-      "sha256": "cae222890a3cf0832ac15a016483a3a08f61db32583a62e35b51d8810e32166e"
+      "bytes": 480,
+      "sha256": "c19aaae84d4c4b29ee39987947f09e5f2ea075517e97ad7c70894db659d3ddbc"
     },
     {
       "path": "src/common/mrpt/samples/bayes_tracking_example/plot_GT_vs_EKF.m",
@@ -42435,8 +42555,8 @@
       "path": "src/common/mrpt/samples/math_ransac_plane3d_example/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 198,
-      "sha256": "a38ebfecadb5b2d8418a10b2a88f06a2add133b6248bb27dc3ddadbf2f8c94d0"
+      "bytes": 214,
+      "sha256": "8e9a7d8aface828f054eb6aa165c914398d360bdb835f87a0df270a89df3d59e"
     },
     {
       "path": "src/common/mrpt/samples/math_ransac_plane3d_example/test.cpp",
@@ -42456,8 +42576,8 @@
       "path": "src/common/mrpt/samples/math_ransac_plane3d_example2/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 192,
-      "sha256": "b2364893eb07f329a65d0b36aa3b8997aeb60e7373b7cb525a3d84ccbc5494bf"
+      "bytes": 208,
+      "sha256": "226f03873252f403990e9843712bf57005535046426fb90273c2a971aac05025"
     },
     {
       "path": "src/common/mrpt/samples/math_ransac_plane3d_example2/test.cpp",
@@ -42505,8 +42625,8 @@
       "path": "src/common/mrpt/samples/nav_circ_robot_path_planning/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 209,
-      "sha256": "039669261e1f8f512d345642b9937e80d3a7b8bc50815ea8899379a90637e441"
+      "bytes": 232,
+      "sha256": "6779dde0eb9d413faffe045b287ef40017f9a238679c1548ff2b1171269ab32c"
     },
     {
       "path": "src/common/mrpt/samples/nav_circ_robot_path_planning/test.cpp",
@@ -45222,7 +45342,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1057,
-      "sha256": "712db2b2df7e0499f4a19568f56a380090e5752d9bc322a10ec00ab7f946fd98"
+      "sha256": "3863872710c0252f66779d24255461293e78585d681e326dd110a5068b294271"
     },
     {
       "path": "src/common/mrpt_ros_bridge/ros2bridge/package.xml",
@@ -45495,7 +45615,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1185,
-      "sha256": "b44a9e6aedcaae35522277239dfc394d6029b9c22d8a1ecbba1cd5369959afb7"
+      "sha256": "c2bec32d97a43cef0287b5f04dff813c692f57f3362ba08d45979d23e719d596"
     },
     {
       "path": "src/common/omnifleet_interfaces/package.xml",
@@ -45578,8 +45698,8 @@
       "path": "src/common/omnifleet_navigation_interfaces/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1091,
-      "sha256": "c59ad13d5835a6b89dddfff55dc521c2ab591e17bdae4906fc490849fc0449f5"
+      "bytes": 1119,
+      "sha256": "2a665b7f9b6b3e8e0113f392438ac1dea06654fff3dd4e87c7688381ab105511"
     },
     {
       "path": "src/common/omnifleet_navigation_interfaces/package.xml",
@@ -45642,7 +45762,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 991,
-      "sha256": "a1002eecd74daa579a2ee4bd4fcdd2b0decf53cc5710e6b20e78fb9f4953d4ec"
+      "sha256": "2103c359660dcad1ddf04b9f92494c0b6362ff50999b3fcd8bf3a96528951aae"
     },
     {
       "path": "src/common/rpg_vikit/vikit_common/package.xml",
@@ -46082,8 +46202,8 @@
       "path": "src/control/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1320,
-      "sha256": "4afb84ccef0a9b570b54627f5371081f8e64e62690d74997a3cea530b16e5e8f"
+      "bytes": 1141,
+      "sha256": "b19a6e17e5829ce544d231c7706c89716f3e07f717cd422eff0b41b5405ddd0a"
     },
     {
       "path": "src/control/omnifleet_behaviors/CMakeLists.txt",
@@ -46104,7 +46224,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1351,
-      "sha256": "0e8ac69dc2c0c3f8edb2d180c26c2fe91fd4ae29893f5b29fc1b60e95df7ef85"
+      "sha256": "6d54441caeea8532a3c538a2a6861b5074151ddd5560b417a042269ec1e6b920"
     },
     {
       "path": "src/control/omnifleet_behaviors/package.xml",
@@ -46202,7 +46322,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 985,
-      "sha256": "72ed743d53e8b379112ff1eb61aa6e9811900d807c3ddb25eaabdb2fe84fc33e"
+      "sha256": "5a7c1843fd174611d6614fc34a4e746b70a0f92af9c291fb5d1d4a1b8d4c4ee5"
     },
     {
       "path": "src/control/omnifleet_dwb_hot/package.xml",
@@ -46250,15 +46370,15 @@
       "path": "src/control/omnifleet_local_navigation/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1535,
-      "sha256": "3fc2e90bed0f4bfc493dba4f4ecc3253395aefaef195316e427675fab7c552b6"
+      "bytes": 2359,
+      "sha256": "37cc0a4e29b518878580d2036a48d697e489a691720279bc820baf9593008bdb"
     },
     {
       "path": "src/control/omnifleet_local_navigation/package.xml",
       "type": "file",
       "mode": 420,
-      "bytes": 1022,
-      "sha256": "30780c0813dc729db1549bcdbc74b735febfaeb4d740565c7f1466955f81e222"
+      "bytes": 1075,
+      "sha256": "e67cbdb130f7aab69fd5d678dcbcd430e11802f36d5bf09c14a07b0f49918d1d"
     },
     {
       "path": "src/control/omnifleet_local_navigation/setup.cfg",
@@ -46278,8 +46398,8 @@
       "path": "src/control/omnifleet_local_navigation/config/local-navigation.json",
       "type": "file",
       "mode": 420,
-      "bytes": 241,
-      "sha256": "7cd55f6576df2f561720ab07642fda8a67a423a023222507936f5f822be0f5c4"
+      "bytes": 272,
+      "sha256": "ecd504b6373c2911a7e43bf0fadc658fe1aba0cd008fcec7c7ac0e7cc3aa4b8f"
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/__init__.py",
@@ -46298,9 +46418,9 @@
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/clearance_recovery.py",
       "type": "file",
-      "mode": 436,
-      "bytes": 13690,
-      "sha256": "578a1967e174b0a9fb85325d624914647421e5a3120454958bb352284028b58b"
+      "mode": 438,
+      "bytes": 18080,
+      "sha256": "9a3e940a88eae1b389ee96cf0bb8d0c9224342afe0370a2ac4b53ce06313b8d0"
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/client.py",
@@ -46320,8 +46440,8 @@
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/control.py",
       "type": "file",
       "mode": 436,
-      "bytes": 28472,
-      "sha256": "7a2837cf68fa29358cca26271893b36655c879043673277dce626d1fcd99288a"
+      "bytes": 29584,
+      "sha256": "656ba2c3723123ee7595c63baf87fbd8ae0f13a779abdf808ab5e41ed3ad0902"
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/fleet_lease.py",
@@ -46334,8 +46454,8 @@
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/formation_follow.py",
       "type": "file",
       "mode": 436,
-      "bytes": 5159,
-      "sha256": "ea34d96fe981d6e22bd9693b61b25d1e10f809c4a06ec477d18e7173191bc3fe"
+      "bytes": 8093,
+      "sha256": "a43a4bdfcbfadabce399fb2c652922da79f42c90eae62651393f981755bd2fa9"
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/gate_causal.py",
@@ -46375,16 +46495,16 @@
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/route_execution.py",
       "type": "file",
-      "mode": 436,
-      "bytes": 34394,
-      "sha256": "1448ce6bb4d0fa0065850e3e13bfae337a62098f684cf38e853378fa9e017784"
+      "mode": 438,
+      "bytes": 38139,
+      "sha256": "c7e8ba1e771d4c6abea04c48b03bf032b5898748866baac3d768424122ce73c2"
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/runtime.py",
       "type": "file",
       "mode": 436,
-      "bytes": 30911,
-      "sha256": "0922a5bf71c7aca8be43a56743e5e30316fc986db33e1816c960f9801b920801"
+      "bytes": 37213,
+      "sha256": "2597304ff52d43cd538a49b9311f32da73ecebc301a9989c491ae5dcb20117fd"
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/scope.py",
@@ -46403,9 +46523,9 @@
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/task_policy.py",
       "type": "file",
-      "mode": 420,
-      "bytes": 2396,
-      "sha256": "43fdb382201db88bc10d2c37a25341b90cc3018ff3cd7aff9dbe6cd9e4fd3c9a"
+      "mode": 436,
+      "bytes": 2454,
+      "sha256": "e2134489ec026ad556f6d74c56400a9e99130a52cf973ca14dd1ec6c355f7400"
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/tracking_guard.py",
@@ -46415,11 +46535,18 @@
       "sha256": "b5859bf354600e24367634625732e2f1dfe5274a678cc98225374e34734b53f1"
     },
     {
+      "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/traffic_pause.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2439,
+      "sha256": "118b8f27b1b5789c51b091b7d9ee6da7980423ef9848be69ea7437572d535cb8"
+    },
+    {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/trail_follow.py",
       "type": "file",
       "mode": 436,
-      "bytes": 2815,
-      "sha256": "588927b167d51fd129eccbfc225e010e3ebbdfbbd19047826521ed1a0b69fe71"
+      "bytes": 2824,
+      "sha256": "4e75d3f758709bc9d8d3aed87ee6d3708220c04347f474dc2b3d9d9fd658503e"
     },
     {
       "path": "src/control/omnifleet_local_navigation/resource/omnifleet_local_navigation",
@@ -46436,11 +46563,25 @@
       "sha256": "f0f6ab4f47c9d3864f81891a74185fda3cfc2f61e04e0257accdb2f60901dc85"
     },
     {
-      "path": "src/control/omnifleet_local_navigation/test/test_clearance_recovery.py",
+      "path": "src/control/omnifleet_local_navigation/test/test_cancel_terminal_status.py",
       "type": "file",
       "mode": 436,
-      "bytes": 24379,
-      "sha256": "be99b317a0906ed7251992d6f9390dc910c4a41a4c08205493f061be933b10ce"
+      "bytes": 2941,
+      "sha256": "8e66027f25f8fed80007c00435f919820be46c8af36d9580cc70d79c46230b2f"
+    },
+    {
+      "path": "src/control/omnifleet_local_navigation/test/test_clearance_recovery.py",
+      "type": "file",
+      "mode": 438,
+      "bytes": 26632,
+      "sha256": "0e8b289900e5b9b8a49060c7c17de319aab99fe8b958c69032bfd5b02671ea03"
+    },
+    {
+      "path": "src/control/omnifleet_local_navigation/test/test_clearance_timeout_replan.py",
+      "type": "file",
+      "mode": 438,
+      "bytes": 6293,
+      "sha256": "7907833c328793cbdd97b0ed58deeab26f66c3584b690cbf254c9fa6a87b29d3"
     },
     {
       "path": "src/control/omnifleet_local_navigation/test/test_continuous_tree.py",
@@ -46450,11 +46591,39 @@
       "sha256": "6d59c1f4a12fd82d8a2736dae9f71d8455810522fa2461c9b6e7cedf0f66540e"
     },
     {
-      "path": "src/control/omnifleet_local_navigation/test/test_nav2_clearance_recovery.py",
+      "path": "src/control/omnifleet_local_navigation/test/test_global_footprint_recovery.py",
       "type": "file",
       "mode": 436,
-      "bytes": 5257,
-      "sha256": "d2b9ff21f4697b85b782522772a76a4cdd4a80d58e1d265431bca8dae8f0ff7d"
+      "bytes": 1402,
+      "sha256": "8bfb09b082d5e03444cb249a7e87865a366d7e46fe92b9254fc2056a52d049aa"
+    },
+    {
+      "path": "src/control/omnifleet_local_navigation/test/test_global_start_recovery.py",
+      "type": "file",
+      "mode": 438,
+      "bytes": 10182,
+      "sha256": "a00095e5a500ec7ef8a586eec1d71b987661e58e7f37569d94f0c931498cb7ef"
+    },
+    {
+      "path": "src/control/omnifleet_local_navigation/test/test_nav2_clearance_recovery.py",
+      "type": "file",
+      "mode": 438,
+      "bytes": 5325,
+      "sha256": "76bde88e24f8039f8ee7fba7cbc203ec387c48b311429acc2c888a603d4e02f4"
+    },
+    {
+      "path": "src/control/omnifleet_local_navigation/test/test_planner_exit_recovery.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4663,
+      "sha256": "2a0bda16e39f95b029fe84cfe72e8532dfbe6730a7a6b9b53312567b38ecc2fc"
+    },
+    {
+      "path": "src/control/omnifleet_local_navigation/test/test_point_goal.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3809,
+      "sha256": "d64575ef2f2999037f9d9996ef927c37f4e083fc9bb8e5f1b5dfd1f9f09c723e"
     },
     {
       "path": "src/control/omnifleet_local_navigation/test/test_task_policy_fleet_updates.py",
@@ -46462,6 +46631,13 @@
       "mode": 420,
       "bytes": 1120,
       "sha256": "8df33b58d37a063ee290fa72661d0b75b2795a1c37e2007cbec210ef9df2d90d"
+    },
+    {
+      "path": "src/control/omnifleet_local_navigation/test/test_tf_receive_freshness.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2656,
+      "sha256": "c1dfaae871b176a2970da3215708303d40f9e9a211d5acd0d98bfebec809dec4"
     },
     {
       "path": "src/control/omnifleet_local_navigation/test/test_tracking_progress.py",
@@ -46492,6 +46668,13 @@
       "sha256": "53742c45a04e48db88b7412f69c001a2d1497d442f986093810f086c0a500d42"
     },
     {
+      "path": "src/control/omnifleet_local_navigation/test/data/global-start-wall-fixture.json",
+      "type": "file",
+      "mode": 420,
+      "bytes": 80899,
+      "sha256": "bd143e6eb274c0db7d4b4c8d9c80c48d6611522e196ba18ba4a3dc371f6f8fa0"
+    },
+    {
       "path": "src/control/omnifleet_local_navigation/test/data/narrow-corridor-fixture.json",
       "type": "file",
       "mode": 436,
@@ -46511,6 +46694,13 @@
       "mode": 436,
       "bytes": 14158,
       "sha256": "e07f450cc22aef403721f8b195158bc8762fc46728f42f3df73593f4bf22e229"
+    },
+    {
+      "path": "src/control/omnifleet_local_navigation/test/data/recorded-global-exit.json",
+      "type": "file",
+      "mode": 420,
+      "bytes": 3448461,
+      "sha256": "2fb69c8b239d2ba6e40c1847c3843142b69723b180d6fa1eeeefb2e68ec9743f"
     },
     {
       "path": "src/control/omnifleet_local_navigation/test/data/tight-turn-fixture.json",
@@ -46565,8 +46755,8 @@
       "path": "src/control/omnifleet_teleop/omnifleet_teleop/vr_protocol_adapter.py",
       "type": "file",
       "mode": 420,
-      "bytes": 12377,
-      "sha256": "773fa80ae7e11d5419476fefb79c55e5aed417f915525d27073bd871a1ff3b5f"
+      "bytes": 12444,
+      "sha256": "84cc160b1b16d1b9af6ff88d7320ef7fdf5ef8b1d58be6fc85a3aec85c3a1ac9"
     },
     {
       "path": "src/control/omnifleet_teleop/resource/omnifleet_teleop",
@@ -46587,7 +46777,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1157,
-      "sha256": "79296c092d2709dec2a1aa1db2014ada42ece129288d76f05b2f122da6ffa2b9"
+      "sha256": "24ade0afaa166694e4773680add5ba7acb0f8ddb5089b2cb867ae24764d2cdee"
     },
     {
       "path": "src/control/omnifleet_vr_bridge/package.xml",
@@ -47203,7 +47393,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1940,
-      "sha256": "d19eacad44d1c7bd34bf60a13e298378201d96fae3eccb652b9b382373fc6c82"
+      "sha256": "ed1dfbb8b600ca8efc62c37a058d8a1fe5a810b53a537fc63f4d80f73aa4353d"
     },
     {
       "path": "src/localization/fast_livo2_ros2/package.xml",
@@ -47762,8 +47952,8 @@
       "path": "src/localization/omnifleet_backend_adapters/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1680,
-      "sha256": "cc4a28f6a39aa2190c254dc963594faf3531f34f843c70747815b2ef05d8322b"
+      "bytes": 1577,
+      "sha256": "da52c68f810fab7d0d8a506f0d88e52860f9fa51334674e5b3803571778dfd26"
     },
     {
       "path": "src/localization/omnifleet_backend_adapters/package.xml",
@@ -47826,7 +48016,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 2084,
-      "sha256": "2c690388206907eb6f5634a63faa68b6d1f2ba336b1897ac54a0bd5a9665188c"
+      "sha256": "f4b6dee4e9d89e66325aa27fda1e53958d35d6053adfaa4d7350e2935f32de6e"
     },
     {
       "path": "src/localization/omnifleet_localization/package.xml",
@@ -48123,8 +48313,8 @@
       "path": "src/localization/omnifleet_mola/mola/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1713,
-      "sha256": "7d2b4403be38940d1d072a3963e9721a3ca330e2f5a7678d7b4bb8ced410a3f1"
+      "bytes": 1761,
+      "sha256": "41d4eb287939b1566b4aa54cbfab0a832fcca23c52385155dd341097335de73c"
     },
     {
       "path": "src/localization/omnifleet_mola/mola/README.rst",
@@ -48207,8 +48397,8 @@
       "path": "src/localization/omnifleet_mola/mola_bridge_ros2/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1253,
-      "sha256": "ac2b537fda3d32a5ef15d5369ad812e6c794513ceb0cfcfe1e47e5b99ba8c007"
+      "bytes": 1283,
+      "sha256": "bab760bfb4b7748f3236f256fd0b383dce05bc09b371c311d34fff735a8089ad"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_bridge_ros2/package.xml",
@@ -48627,8 +48817,8 @@
       "path": "src/localization/omnifleet_mola/mola_georeferencing/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1334,
-      "sha256": "af6cfbe1be6bdf182e3639bf4bde9015e6daa9050f9be288af168a2997c02d26"
+      "bytes": 1372,
+      "sha256": "808a5932b05cae65d22b2a0d2e346006b89d938d32e38dc7e7cf026eaa1a9f38"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_georeferencing/package.xml",
@@ -48922,7 +49112,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1430,
-      "sha256": "738fd93b876d01547cb0ea2ede45ac6b039a50050f937ec065ce3387a76b4ca0"
+      "sha256": "5fd1d13ad5297bd7743bcfbdf3bfe8b170bb2a090577f30903fd035646d41533"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_imu_preintegration/agents.md",
@@ -49727,7 +49917,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1191,
-      "sha256": "f9b6d4a4661ebafcc7acfdaf0137de88e184e5cea6ccaefc734d0ddcf3de26d1"
+      "sha256": "ba0bd80639e79ce9180c995a68a715ed3129823f46d55991b19589ad8f4c877b"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_kernel/package.xml",
@@ -50077,7 +50267,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1093,
-      "sha256": "2b82b377057c24bb78778cccbb8d2a1799de0e91005eefed9dbb1b655ed342ba"
+      "sha256": "b3cbdd5c7201becf1ddd49366d58ecd710247e0c839704baebcd4a1a3fc2ba27"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_launcher/package.xml",
@@ -50216,8 +50406,8 @@
       "path": "src/localization/omnifleet_mola/mola_lidar_odometry/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 3033,
-      "sha256": "d0fb31521cc54423b691569573de0553a6152edc0f1f48f6c2d6e551040aae68"
+      "bytes": 3963,
+      "sha256": "2767aa786cc146a7639f94d63534f9018ea9d0f6dec3cdd95250aec38068d587"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_lidar_odometry/agents.md",
@@ -51370,8 +51560,8 @@
       "path": "src/localization/omnifleet_mola/mola_metric_maps/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1616,
-      "sha256": "3aafe505469c37a90e13b3b29ab897967deaa36678b3091cba82eb61feb27ff5"
+      "bytes": 1784,
+      "sha256": "d46ee2f26cadc2222b3e2ba9ea4438041d412ea305e0b22521a902ad06d53e07"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_metric_maps/package.xml",
@@ -51952,7 +52142,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1106,
-      "sha256": "5d4f527ec258b8cda7250b37aebe6494fbcdbf8c76d4eabb44c62421b1580d97"
+      "sha256": "d25f692d7aeb9fed7b9ca403c5ce12b600f6b9db4872e6931a261f7040e9d578"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_msgs/package.xml",
@@ -52036,7 +52226,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1108,
-      "sha256": "c356b49d60c026bb3573c9e1b6f88d3dce52892b0859e5570bf69e04249cdf20"
+      "sha256": "cde449af639b1bd37f6b67f3f586798d97c2838e0a1029a80ed695b3cc84304c"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_pose_list/package.xml",
@@ -52127,7 +52317,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1366,
-      "sha256": "a9655d84a17df76f4c727533ad9ddc62816fa7b5db75661335bf0e90050321bd"
+      "sha256": "735c097842b6d063a0bde3bf3ad0c16dd795dd6c42711290e8231beb1e4cb0cc"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_relocalization/package.xml",
@@ -52245,8 +52435,8 @@
       "path": "src/localization/omnifleet_mola/mola_sm_loop_closure/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1681,
-      "sha256": "c960d9ad4f55a7eddc9d5c21f17ef9477fab5070921fadb8e2263eeb0eb746b0"
+      "bytes": 1719,
+      "sha256": "8b0fb2c475e8f5ef8adc089a15846a06c15169d882d03c30aae2c4b89e199c33"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_sm_loop_closure/colcon_defaults.yaml",
@@ -52623,8 +52813,8 @@
       "path": "src/localization/omnifleet_mola/mola_sm_loop_closure/third_party/kiss-matcher/cpp/examples/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 8157,
-      "sha256": "ac7b5a87250f665e36247afe64ea21c78903968146f8fabfb94feb27b8cd00b6"
+      "bytes": 8199,
+      "sha256": "aeebfe7a30839c0db6b47841c5a96eb8d81d525480f003796c4bfc91e45f7f65"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_sm_loop_closure/third_party/kiss-matcher/cpp/examples/3rdparty/download_datasets.cmake",
@@ -54933,8 +55123,8 @@
       "path": "src/localization/omnifleet_mola/mola_source_metadata/mola_academic_datasets/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 18654,
-      "sha256": "917a2f6ea76664f96daae5a788ab10279729ceecc0070a36625788ec92706a07"
+      "bytes": 18684,
+      "sha256": "1abbec0bf50e9a81522b11eb52c704910370389a5ed7dbb352a665b252d265f2"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_source_metadata/mola_academic_datasets/agents.md",
@@ -55934,8 +56124,8 @@
       "path": "src/localization/omnifleet_mola/mola_state_estimation/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1129,
-      "sha256": "7b65040971f7dc6262aa98f3d6f40efe20cc7a2a6e8a952d6ebaf0c624203b28"
+      "bytes": 1167,
+      "sha256": "3dfe4b4c22fccc36c0bc5832deb57f90da16ee593e165dc12ef940b6215a4150"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_state_estimation/package.xml",
@@ -55977,7 +56167,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1277,
-      "sha256": "4797217f48a8004abf6ad0b9e82a16279fd1094bc362cef910bd4a61aad9f889"
+      "sha256": "1a019115fb31841a8efba8901ecf729bf26ef4e81e6b1f38757046d858e776c8"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_state_estimation_simple/package.xml",
@@ -55997,15 +56187,15 @@
       "path": "src/localization/omnifleet_mola/mola_state_estimation_simple/config/tracked-integrated-live-runtime.json",
       "type": "file",
       "mode": 436,
-      "bytes": 4271,
-      "sha256": "04da3c6465f7fd4cd2cbb407b70f59e3c4c5d34fb78ec850bc790f9af863d432"
+      "bytes": 7933,
+      "sha256": "e24d72df94ab356e9f10c9b67a0026e45921ce97cb9e4284f075af0f6ecc85e4"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_state_estimation_simple/config/tracked-integrated-live-system.yaml",
       "type": "file",
       "mode": 436,
-      "bytes": 2782,
-      "sha256": "24e69fc0ae1fe5e98b92fb16c6b6c96ac69d1bd43daf26f0e1a8d15d67fbce8a"
+      "bytes": 2790,
+      "sha256": "bb614a934ee74d4d1b1693a09127e0d16fe4175a05e1be5671ee54878f27306a"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_state_estimation_simple/include/mola_state_estimation_simple/Parameters.h",
@@ -56095,8 +56285,8 @@
       "path": "src/localization/omnifleet_mola/mola_state_estimation_smoother/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 3719,
-      "sha256": "0dccaa848f6a37e319a0122e4b98546f3332c530ea067464358b172519e52488"
+      "bytes": 3737,
+      "sha256": "c38c8e74770c4c4a532c3748082fc0561c975fca273ef5c7c3ff87f179aa0d66"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_state_estimation_smoother/package.xml",
@@ -56113,11 +56303,18 @@
       "sha256": "e5e4c0d6a387c7adc5f9e494ff6e9a5b1db851c8c6223d94da62e8d3f262c77a"
     },
     {
-      "path": "src/localization/omnifleet_mola/mola_state_estimation_smoother/config/tracked-integrated-live-system.yaml.bak.20261016_220251",
+      "path": "src/localization/omnifleet_mola/mola_state_estimation_smoother/config/tracked-integrated-live-runtime.json",
       "type": "file",
       "mode": 436,
-      "bytes": 2773,
-      "sha256": "a6a68cd0f0bf5d80fcd4940620cc7d1522da4760730022b2f0637ffed1823b8b"
+      "bytes": 3684,
+      "sha256": "a8a3e0d79b8638379bca379f17a6125b6011a195fab93add3a14d3a2435752ac"
+    },
+    {
+      "path": "src/localization/omnifleet_mola/mola_state_estimation_smoother/config/tracked-integrated-live-system.yaml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2797,
+      "sha256": "7ceac3553a23593f80daf0703579f3a760772eef82372a371b6bcbf0b7976823"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_state_estimation_smoother/config/tracked-integrated-runtime.json",
@@ -56235,8 +56432,8 @@
       "path": "src/localization/omnifleet_mola/mola_state_estimation_smoother/official_runtime/mola_bridge_ros2/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1253,
-      "sha256": "ac2b537fda3d32a5ef15d5369ad812e6c794513ceb0cfcfe1e47e5b99ba8c007"
+      "bytes": 1277,
+      "sha256": "ee0074dd79c57589398db1f6775e7b0bc69b28ae27307bc998c5776958e44fbf"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_state_estimation_smoother/official_runtime/mola_bridge_ros2/package.xml",
@@ -59504,8 +59701,8 @@
       "path": "src/localization/omnifleet_mola/mola_yaml/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1273,
-      "sha256": "0162bb5d5c8ac816e2f70b6cd8c9b03d90cce1e5c7fe98c14a18310663c469ce"
+      "bytes": 1363,
+      "sha256": "375fbe8ee859d10770af8ea8a11f4b0d4a563089cc2c799eebd76e0398c76731"
     },
     {
       "path": "src/localization/omnifleet_mola/mola_yaml/package.xml",
@@ -59714,8 +59911,8 @@
       "path": "src/localization/omnifleet_mola/mp2p_icp_core/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1721,
-      "sha256": "1eba20b9ebb734820612db80f3d8206d49c802cc6471053fdab784d1c43eb540"
+      "bytes": 3657,
+      "sha256": "91cd67f994643176bfdc78cc22b32a08d7dbc093dc25cbf6f102d4f0053961b7"
     },
     {
       "path": "src/localization/omnifleet_mola/mp2p_icp_core/package.xml",
@@ -86384,8 +86581,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_conversions/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1068,
-      "sha256": "cfa791cfe0296826beaf7fff9050888b079eaca915cf2506b49379025e510a06"
+      "bytes": 1138,
+      "sha256": "df7ac4db37cfd3fc5831635289cb801729a0613dd5a8bb020bd701d433b1e97f"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_conversions/package.xml",
@@ -86482,8 +86679,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_demos/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1606,
-      "sha256": "5c0a36a3c66591c7a1bc3369872ffb3c8bbb9eb87fdadea07c523be7669fea96"
+      "bytes": 1731,
+      "sha256": "c52f30114032ea291323a208858da018c20ab884dee8c4d9245a06ef35552a84"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_demos/package.xml",
@@ -86839,8 +87036,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_examples/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1872,
-      "sha256": "c2056e225e3f6c58b2b48fb11a1494f12cd4b7354002c001d372e451edb2a2fb"
+      "bytes": 2477,
+      "sha256": "3a675904e9a569521c190e56315836c34e2a494a6551205b9aad9067101dc5f1"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_examples/package.xml",
@@ -87098,8 +87295,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_launch/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1330,
-      "sha256": "c7415114ea2f507bf57c3449d28301364b6570f16de84dba01e36ad1a580d4fa"
+      "bytes": 1480,
+      "sha256": "e7074d5ef1073abf43b5aa9cc3a463d548389cf00042d2ccabf69b7938c6a7a7"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_launch/package.xml",
@@ -87133,8 +87330,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_msgs/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1387,
-      "sha256": "643506d7659f729956a88101c4190a91d0c232e4985e1837c120844f2353cc67"
+      "bytes": 1707,
+      "sha256": "81001576f167bd3220df73c72f988c242f9aabb8cd20c8fd75e433a17b149e49"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_msgs/package.xml",
@@ -87427,8 +87624,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_odom/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1108,
-      "sha256": "680691fe81e5f6586a761f56e6cf24d55a593d6d69cdaf539ffba28c84e6792b"
+      "bytes": 1208,
+      "sha256": "9459b6c68f3d978b19304fca3293a5e35414c08945cafcee8f02f35ca72e0e1c"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_odom/package.xml",
@@ -87526,7 +87723,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 984,
-      "sha256": "87e434cab2ee901c9f601da6ceaa4abf191365e57d968158c583f1f259fd30f8"
+      "sha256": "e41ab697e6940c69e6e015247c1eab1cb2fbe39b907ddb9f987c18ccf1cb9a9b"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_python/package.xml",
@@ -87616,8 +87813,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_ros/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1562,
-      "sha256": "63df853417a9cf4fcc34fe7f6699b5e20c49a831a8de47ad199eff91713ef9cf"
+      "bytes": 1863,
+      "sha256": "d6c655a5a67a2496e7917afbb2aff60a2553e490b1b24cc37566bec0966da792"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_ros/package.xml",
@@ -87637,8 +87834,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_rviz_plugins/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1032,
-      "sha256": "06b925515343f9310dea6179d97792b2dc41b5777f0a25e7a5f5da3a502f86fe"
+      "bytes": 1082,
+      "sha256": "241b400d149c244ae591304fd8f6a45f10d54db9783cd3bdd664c12096f89bc8"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_rviz_plugins/package.xml",
@@ -87714,8 +87911,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_slam/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1046,
-      "sha256": "f9b9ede579924d348bef4eef412017fd28d64b59ca5a08c7b86ff0b631f23873"
+      "bytes": 1121,
+      "sha256": "0954060b4ff3cd14174f3e5d5fdafcd27aaa1faa8559935e2b333156fa360e54"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_slam/package.xml",
@@ -87763,8 +87960,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_sync/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1027,
-      "sha256": "090dbd53c914aed2ce28f9dd82286a8307e0b08a93d630044038ed4d926b699a"
+      "bytes": 1077,
+      "sha256": "da085d9bf41c5be99bfd31bdf6c7cb5ebf0fbd8d48f7c0454258993ef4bee954"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_sync/package.xml",
@@ -88008,8 +88205,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_util/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1346,
-      "sha256": "fa115457b9538130668260e21d8304aa9b231c073b232a6f4f279b87179c81b8"
+      "bytes": 1421,
+      "sha256": "9f4e3500f7177d480e2e052e0c858e5d38779d99bf6040b3365cd2b01ff572dd"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_util/package.xml",
@@ -88407,8 +88604,8 @@
       "path": "src/localization/rtabmap_ros/rtabmap_viz/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1009,
-      "sha256": "f69f1a3012c0c080b45ebadb75b67e33e69da873b43bb70f708cd0c279d855a5"
+      "bytes": 1059,
+      "sha256": "96a3d306b386ebdb5d0a574c3b33cfe6d612f379314d3e24f3dbdc762a17ad11"
     },
     {
       "path": "src/localization/rtabmap_ros/rtabmap_viz/package.xml",
@@ -88506,7 +88703,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1138,
-      "sha256": "b07f571740de51322510a0bda64ac020ce14b1b3f0b8519a8fb0635ddb263200"
+      "sha256": "304a3548d97a68bf539c8ccb0c82085dc075444c05177816682f30387952679f"
     },
     {
       "path": "src/map/omnifleet_cloud_grid_export/package.xml",
@@ -88533,22 +88730,22 @@
       "path": "src/map/omnifleet_map_tf_generator/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 1381,
-      "sha256": "3da688c23195dd17ef450ec53a6d2815dff81e3f5197a29656204e1cd25664b8"
+      "bytes": 1775,
+      "sha256": "fb843807a0c5b587cb4052ae0058f23b0f331993212423e9508efd9c7f2fd8d8"
     },
     {
       "path": "src/map/omnifleet_map_tf_generator/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1059,
-      "sha256": "d7e21c61b9ecc4660b2ce02df6dc3609317812190c07162bf67dfec8f6b5e4e5"
+      "bytes": 1033,
+      "sha256": "0cd2e3485dbb1e9cf729fdecbf3737aa29a9941cccf737d2bf8498392e847255"
     },
     {
       "path": "src/map/omnifleet_map_tf_generator/package.xml",
       "type": "file",
       "mode": 420,
-      "bytes": 751,
-      "sha256": "48fc3e65e4a6364d4019a177eb1e74cf96fdd754861a80e6c8140f7fc9a04280"
+      "bytes": 789,
+      "sha256": "8120b7e73678b6dd281a8adbfad0c861e5381b50a2c32a913ca8e5079425690c"
     },
     {
       "path": "src/map/omnifleet_map_tf_generator/setup.cfg",
@@ -88589,8 +88786,8 @@
       "path": "src/map/omnifleet_map_tf_generator/omnifleet_map_tf_generator/mola_realtime_nav_grid.py",
       "type": "file",
       "mode": 493,
-      "bytes": 9357,
-      "sha256": "39f5389c8cc5994c54c804de2641af6ae9ae3302c18e905d8847d42e786957c9"
+      "bytes": 10096,
+      "sha256": "234460ced9f9ce46edb9effe9c7ead212ea9d9fe9edbfe9883945eb0e0875e42"
     },
     {
       "path": "src/map/omnifleet_map_tf_generator/omnifleet_map_tf_generator/transforms.py",
@@ -88607,6 +88804,13 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
+      "path": "src/map/omnifleet_map_tf_generator/test/test_nav_grid_dynamic_clearing.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4613,
+      "sha256": "7263a21aad15d86f9548c3580aa9d0ad7ed90ed5f50495608bf2b6673cae0e2e"
+    },
+    {
       "path": "src/map/omnifleet_mola_grid/CMakeLists.txt",
       "type": "file",
       "mode": 420,
@@ -88618,7 +88822,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1148,
-      "sha256": "ea225928a2f70e90edc4df3f3fcf8be8e0b619e05dea8609f9f7f3ce3ffd6e23"
+      "sha256": "f1643b25797fa012335082b4409266214922696bb7582e4e808ad3ff4c7e72bb"
     },
     {
       "path": "src/map/omnifleet_mola_grid/package.xml",
@@ -88659,8 +88863,603 @@
       "path": "src/perception/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 860,
-      "sha256": "ab8467177efb2067906ec8b855102321dc9a5e39af0c8e6a02edd7f8670edaa3"
+      "bytes": 999,
+      "sha256": "10e6d8a50559e1742c6fa06a23625bb7eb7750ab91be3153bc217d300157a133"
+    },
+    {
+      "path": "src/perception/body_tracking/.arcconfig",
+      "type": "file",
+      "mode": 436,
+      "bytes": 49,
+      "sha256": "223ff93834a679caf9590c04a3c52c73ef634cdbc90b7d6d87134bd4f2d03289"
+    },
+    {
+      "path": "src/perception/body_tracking/.arclint",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1246,
+      "sha256": "54a47f54c58a53328a0a27a9f1d8ba0725560e6b66c443db8edf6339d0df3259"
+    },
+    {
+      "path": "src/perception/body_tracking/.clang-format",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3632,
+      "sha256": "c402da6bbb38c988c2bcd4acb74f0ee7a768c86818396ada59df83b721f6f227"
+    },
+    {
+      "path": "src/perception/body_tracking/CHANGELOG.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 873,
+      "sha256": "10cc4066b0786e5d1841adebd1275d80a4392b7630b1abb2537fd1e664a6281a"
+    },
+    {
+      "path": "src/perception/body_tracking/CMakeLists.txt",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2268,
+      "sha256": "70c7ff8561bae3b038b00c293bd0ae8b8fab201f2a6286d28a71fc134003d765"
+    },
+    {
+      "path": "src/perception/body_tracking/LICENSE",
+      "type": "file",
+      "mode": 436,
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "src/perception/body_tracking/README.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 16907,
+      "sha256": "fa67b07a971d4ed896382ec25522756027dc629cbe4ffc830b13ce2967e0ef05"
+    },
+    {
+      "path": "src/perception/body_tracking/README_cn.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 15175,
+      "sha256": "3c29545c1a5e23451cb50ec7cb0b71e55d0f38d5c0eff06c8e10bb5bec6218a4"
+    },
+    {
+      "path": "src/perception/body_tracking/UPSTREAM_COMMIT",
+      "type": "file",
+      "mode": 436,
+      "bytes": 41,
+      "sha256": "3ed85ee8c8f6f982fc6e7e89c14f5c34214156812789e5fb729166202590b84d"
+    },
+    {
+      "path": "src/perception/body_tracking/package.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1097,
+      "sha256": "d0bcf9d2d3ea5e445b5f4fcd0d91233690f798d2cbfde5b731f801f0638c84a4"
+    },
+    {
+      "path": "src/perception/body_tracking/images/README.104.txt",
+      "type": "file",
+      "mode": 436,
+      "bytes": 97,
+      "sha256": "4b5ea510b01d61d04180ad95b47ecad7353aa9f961181c0b15fffb9de18585fe"
+    },
+    {
+      "path": "src/perception/body_tracking/include/bearing_centering.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1253,
+      "sha256": "54c461be675b41a604ed3d1dae3926dafc350a3bbbd380381c304870a3d6f758"
+    },
+    {
+      "path": "src/perception/body_tracking/include/body_tracking.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3538,
+      "sha256": "7278571bd2d0a29faa1f8dd0bbd2345891b227f2910bf285f28ef8ff5ed61ca3"
+    },
+    {
+      "path": "src/perception/body_tracking/include/common.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 5253,
+      "sha256": "e7e0160e3d4cd085e61812bcc90dcfe662ef054d28e49b91121f4778ffc4c4c2"
+    },
+    {
+      "path": "src/perception/body_tracking/include/depth_backoff.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2026,
+      "sha256": "98c088238bbf419da23a8bad07029d2de22a509df1b68971ab14628459431e07"
+    },
+    {
+      "path": "src/perception/body_tracking/include/one_turn.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1081,
+      "sha256": "250cd593972b62d023101271171f96e675af71a0c2ffd55783abba9495fd245a"
+    },
+    {
+      "path": "src/perception/body_tracking/include/param_node.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 6168,
+      "sha256": "1431f668ef089fa4036cb0df86a2d0fadc53a6d24e23e8cc614ed3d1fba7385e"
+    },
+    {
+      "path": "src/perception/body_tracking/include/robot_ctrl_node.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 11339,
+      "sha256": "4ae34e3e74b917874ca880f65ec25396c4889e1cdde351828ed798ba511da63f"
+    },
+    {
+      "path": "src/perception/body_tracking/include/smart_subscriber.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2202,
+      "sha256": "9d1cd584073d4d79c58d2eb6d703b161c9f2f45f53d7abdc32e86868b5af6704"
+    },
+    {
+      "path": "src/perception/body_tracking/include/time_helper.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1308,
+      "sha256": "6ad540fb282b705bce58910fe8d92a273edff3f0efabc7a03fd7b996a620bafe"
+    },
+    {
+      "path": "src/perception/body_tracking/include/util.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1011,
+      "sha256": "a696d0cd4c80d0adabbcd59575d08ea26f75322f784d67dcd7536d447bb9dfaf"
+    },
+    {
+      "path": "src/perception/body_tracking/launch/body_tracking.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1720,
+      "sha256": "b1f63c6f0896dd01ee7daa9135945bc58201cde7d438c45cf12156e1638a4201"
+    },
+    {
+      "path": "src/perception/body_tracking/launch/body_tracking_without_gesture.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1999,
+      "sha256": "73dc46be938541a1323143a2786f40c3905981cfe03d9dec8cfe06712fbc68d6"
+    },
+    {
+      "path": "src/perception/body_tracking/launch/body_tracking_without_input_node.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2018,
+      "sha256": "81aae7be9eb6f7935fe48488f422f3c5cb59e12b4fc59e755fd117183d50a376"
+    },
+    {
+      "path": "src/perception/body_tracking/src/body_tracking.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 36917,
+      "sha256": "c2a69428990284d63e415b5fae14429771a777a1785017bd61034657396d4c62"
+    },
+    {
+      "path": "src/perception/body_tracking/src/main.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2040,
+      "sha256": "b1f022451b526f19c0f0852a363953cf2de64ec66e2e5eb3cc9e25cffc937653"
+    },
+    {
+      "path": "src/perception/body_tracking/src/smart_subscriber.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1646,
+      "sha256": "8a5178da5db8654de6a96e2ec3cd60c13dc89dd3029def6a67d226350dcae1c6"
+    },
+    {
+      "path": "src/perception/body_tracking/src/util.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1220,
+      "sha256": "1f19013697d70f197545252a0180f853939e25ee2e30460fc4fcbae6f9b94d3e"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/BOTSORT_20261023.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3651,
+      "sha256": "829a01a3e9bf3f358f15efd4e8c063e27e66cfde43a77084b6b4b556b895c3e5"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/NOTICE.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2182,
+      "sha256": "51f1fdca9374e70e6c35bdde98801d235458412424c8578886cfe80c0ebfd739"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/README.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 33081,
+      "sha256": "296c0d4098b49f620232188e9faa855994c593f7594414552c11222fdb2f46bb"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/package.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1260,
+      "sha256": "b88d25f99d32ad602699a4e377874f3ad825bb7d888990e5db825d7aac13ee0c"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/requirements-jetson.txt",
+      "type": "file",
+      "mode": 436,
+      "bytes": 180,
+      "sha256": "922f4bd0024eb89d691a398bd5f15bc5d2a9c70610c390d17cc35d0c569c7d26"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/setup.cfg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 115,
+      "sha256": "78e6147c93d1f575a919845c2ee0800a2aa38608b9ae3c699576e1a983cd1778"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/setup.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 604,
+      "sha256": "765ea52cfc2c2aaa62fb3527c48618910264a178ef23a41fdf0745573f5e0d87"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/config/body_tracking_104.yaml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 455,
+      "sha256": "693109f2c575cd95642228f3102a5f0438d75e0a0453f264f54c254f5ac79670"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/config/botsort.yaml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 242,
+      "sha256": "424b0149f54da571f018e3655058b0b7489161ffd90c746a94354ef1df11c3e9"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/config/bytetrack.yaml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 144,
+      "sha256": "7a364ff07fe78ee67c233eafe8455c6fa08e4b0b11203afe86bc6a9079965883"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/config/follow_dynamic.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1763,
+      "sha256": "bf81fefbdf75d26a69ca677dfdeff59bb6e8a0f0cff58c4e9a9796586e28e074"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/config/gemini_pro_rgb_1920x1080.yaml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 922,
+      "sha256": "6eef0838bdf40bb2356f28742c1cdc7394e6ba4eeacacd23630c37163922c1bc"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/config/person_follow.yaml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1523,
+      "sha256": "8879f33ffee5a547f15e6a5283cb33ebbe6855d384868a1883a479ff525e3472"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/config/tros_104.yaml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 666,
+      "sha256": "099f83006dadf2f24f9cd795ca405e48ec4124d38f5548eee450ba8d7440f957"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/launch/body_tracking_104.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2228,
+      "sha256": "28bc2fa46b8b419412382d048e42cc8823e292dbfada4498d93306c6c4cb9150"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/launch/gemini_pro_104.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1972,
+      "sha256": "e008e65f558bcf0d69090aa9d9e1de7f8744fcbf2f138efb69ba3970b74985f1"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/launch/person_follow.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1898,
+      "sha256": "97045a82df1658bc691afb6c0da7f00ae6f51efcf073c04a173dca0248809c12"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/__init__.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 39,
+      "sha256": "8763f3ab9b0e8a0bdd70aeddff11235b2551401a80e724d2900217c527c10675"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/body_adapter.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 9115,
+      "sha256": "908f3549fbb776f58d40919221dcd0e25bb60109eaa2e8999c9a926e6aecba67"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/core.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 13424,
+      "sha256": "b0a1c65a510290ae8d55551ac371379a8978ae5e52691ab7d59db6141b0ee6c0"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_gmc.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2052,
+      "sha256": "730ffc479fb58ddc37be186a1dc1c3963131004654e52c19d83cc44e45be4562"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_wait.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 546,
+      "sha256": "790166b9f1e9424e657df6ed65bd874208bd120a55d7b62f289f317513b52da0"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/display.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3935,
+      "sha256": "353b4bc01f0b1d0643d8641a5eb765472d3ae85d335c66d813a981e95ced4d71"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/face_rois.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1888,
+      "sha256": "c81edf2bc0ff463945fadd6bc4a15c8490de39f16b00e608e26c51f479ff299f"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/following.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 5951,
+      "sha256": "54fa90e4658a52e576cf87bae4e028e1816474f6cc32836d00f24fbbf44f8745"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/frame_pairing.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 756,
+      "sha256": "764d1450abfe27d9c193c1f93be2f4344b5b7bba68789ce4e023cf32b7ab5994"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/hand_preprocess.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2448,
+      "sha256": "ae5dd24e93eb7d0d36a29002a4d274d43f40f107a1739ee7eba5c6d0475e6699"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/identity.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 5000,
+      "sha256": "a7918234792f88fb052a86725da2739ceda8dbca61c20c91706e77c588d87423"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/jpeg.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1414,
+      "sha256": "ff8679d65d2fd7e1192414f2c5aa0583e5948f586942fe0e12fb461d4f60b420"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/navigation.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 6098,
+      "sha256": "dbdde15e5576400dc239d990b0835e59b01cf729ea7c67193499e52f712b0459"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/node.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 44442,
+      "sha256": "3311d3f1b168121e8cc197296ff4affadcffc924454e04c246717614482883d6"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/perception.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 16484,
+      "sha256": "c82179efc9e0421172edc11e072ba801adcdc8139bc2885cc6ff791ffbcfeff1"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/person_masks.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1315,
+      "sha256": "f5cb59694f1ea4c360ff91f0cf3938a9043ec9ee018603526c1da2dacadd75a3"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/recovery.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4465,
+      "sha256": "49886007da8cdf5eba9a2e080859ad209e22e49d1c900abe6032d08735be1d5d"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/tros_adapter.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 7298,
+      "sha256": "dd7236041c3fc4f0757d1f60eb88f50c92011f5baa989308599db4c0d97c7eae"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/trt_net.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2593,
+      "sha256": "1901e7c0a8426529ba4b32fd13c14560d7e95d0469d230ff14384ca9c2d31788"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/resource/omnifleet_person_follow",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_body_adapter.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2373,
+      "sha256": "ffbfb202065f81f64dcdb76d9b38b5db65db2a7f56c4d8cd07cbfbb913b94ab8"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_body_gesture.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1690,
+      "sha256": "f12d498d1e56ab759ae01df6e7690cfffb6e12dd2aa39bdb6a98dea727a88d1d"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_botsort.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1573,
+      "sha256": "6efaa2d9b3cfdf46cff7eafaa00d5abb00757e4987cd098f87d247713bc64660"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_core.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4843,
+      "sha256": "3ccbb0822b11aec34e150bad56081a0cc51478c6c8b1d5a6fd957a9b93e4cc7b"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_digits.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1558,
+      "sha256": "32b42a72c1e7790c32fa22e18f292b0a2dc021bc34dc9282db2ca6ccede160bb"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_display_process.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1344,
+      "sha256": "eb4b05083dcf51628486ce6f72882b22d91f2539c7f33b5e502f6ab9e6923ca0"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_display_queue.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 477,
+      "sha256": "479eb2cdddfafdede5994c00ef6dc6f1f22983476331ac3163f3341dadd7fade"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_following.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 6652,
+      "sha256": "b4c7ca2871dfd74eb71f3cdecf330524a513a0e6b5b93be6b1ed14796f5497f2"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_frame_pairing.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3990,
+      "sha256": "8a42d40775cf55ea03249286f9ce4d4d9ad5e8c1783d722e5c56868d72d1beed"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_goal_markers.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1735,
+      "sha256": "3fc90f581620fdff8ef1f3bead605ed2a0d6d0767f65a8af2fdad34e8c389114"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_hand_cadence.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3024,
+      "sha256": "f0411b2c63df661a78e5d5bd5112cfe2f1b7ab0934362dfeb147db01f19ffa0a"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_identity.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2263,
+      "sha256": "fdd4308d6a618c07c39c597a1129a3b288e09b3bda4f5f2cac33da24794880d1"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_navigation.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 6425,
+      "sha256": "813e26c91203150e42d3a868a5cf78ceb04d46085700be4da7e2986a6cf8c4b1"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_navigation_recovery.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 5241,
+      "sha256": "09fd3af45729a89778a34aa04d60fe494a2ffcfa1baf8a5c1eeba8d92e303206"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_operator_control.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1820,
+      "sha256": "1b0b762e8797687bcb36bb64eaaf2c3c66b9a07a2a10afc4b97c05b321e4a680"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_perception.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 879,
+      "sha256": "5e749eb3c125f7a19d18457544634cd91ab19e8d283e4bccfb8432ee58ff45fa"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_person_masks.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1466,
+      "sha256": "b43dc0a5c2804aa1094632c550972eb1ce3366d0551e9e460804bcc3f514f7df"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_recovery.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4762,
+      "sha256": "ea4c3fe161ae95277ca6a357c8e1c883d3803b1f980c5a4b6703f709029cf4d6"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_tros_adapter.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2906,
+      "sha256": "3129c8e9f0d334f920f6b5e10f177e9bc6b2a5a73052667b081e954ad75b9eb0"
+    },
+    {
+      "path": "src/perception/omnifleet_person_follow/test/test_turn_observation.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 885,
+      "sha256": "c51c3667484b3e7f207e92700eaf35c25ce51f827a5abe43d8b6e869d2c00fd2"
     },
     {
       "path": "src/perception/omnifleet_terrain_analysis/README.md",
@@ -88736,22 +89535,22 @@
       "path": "src/perception/omnifleet_tutorials/CMakeLists.txt",
       "type": "file",
       "mode": 420,
-      "bytes": 462,
-      "sha256": "5eac976bd84594cd9274a7baf78286745342802c5ab738cf875bbecaf45a88df"
+      "bytes": 550,
+      "sha256": "b7a8a987a1b603a487477c8b60b901d86c04f07f3f4193544d8fffa111747e31"
     },
     {
       "path": "src/perception/omnifleet_tutorials/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 1405,
-      "sha256": "1c76c495ab4acd84a66869c25dfc99b44fe9c49a7a605c8bca0f3cf5db4fbbe7"
+      "bytes": 1252,
+      "sha256": "4676499c4bb3b193447eedd102f1d9e03e2cf39408d14e186cde9b37ad481f23"
     },
     {
       "path": "src/perception/omnifleet_tutorials/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1681,
-      "sha256": "c534eb7db853e80c59ad442d2b945213747ede52da51f04f9bd6bcbddceb5eb9"
+      "bytes": 2681,
+      "sha256": "e1e73bc62fad5e04dd00bbe849d1799fa6874c962664c05822b0a860a28b9b11"
     },
     {
       "path": "src/perception/omnifleet_tutorials/package.xml",
@@ -88759,6 +89558,13 @@
       "mode": 420,
       "bytes": 836,
       "sha256": "b2f8c4f2c23959ae2823c3b2750f0f119ba8ec26358c33853318262050f8bd38"
+    },
+    {
+      "path": "src/perception/omnifleet_tutorials/config/vision_cases.json",
+      "type": "file",
+      "mode": 436,
+      "bytes": 25940,
+      "sha256": "5fafefa5fd45208e7447da326a2a2e3fa6b091b5c06bc27a748e5958223a4af6"
     },
     {
       "path": "src/perception/omnifleet_tutorials/docs/ARCHITECTURE_CONTRACT.md",
@@ -88779,7 +89585,7 @@
       "type": "file",
       "mode": 420,
       "bytes": 8670,
-      "sha256": "1c0627c5a73fba6b4c547519644f0d87b8c4e5ab9b74032a615b4c4c289ce127"
+      "sha256": "4279bfbaac2170cea8377daa3fee4f16d8af088c24d1416f468c67c1ec8f33f9"
     },
     {
       "path": "src/perception/omnifleet_tutorials/launch/vision_02_01_camera_monitor.launch.py",
@@ -88820,8 +89626,8 @@
       "path": "src/perception/omnifleet_tutorials/launch/vision_02_07_kcf.launch.py",
       "type": "file",
       "mode": 420,
-      "bytes": 2754,
-      "sha256": "8929868c7a2627b37b41c514e448f07f177beb83f31abd55ad6a02e958c22e15"
+      "bytes": 2975,
+      "sha256": "dd8fe509feb90a11c5826c06a66340513457d1f247cb7e47d32bfcbc0e5cc074"
     },
     {
       "path": "src/perception/omnifleet_tutorials/launch/vision_02_08_human_perception.launch.py",
@@ -88999,11 +89805,32 @@
       "sha256": "b46c6f4cb8d302bf615a9bb58217a194af874a95b366cb7ff83dff92e51ccd2c"
     },
     {
+      "path": "src/perception/omnifleet_tutorials/launch/vision_04_08_gesture_person_follow.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1577,
+      "sha256": "423296ea5c76e3f38e89ae45e983fb3a2edeb1347cf40c61920baa41766ee0b7"
+    },
+    {
+      "path": "src/perception/omnifleet_tutorials/launch/vision_04_09_body_tracking.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1312,
+      "sha256": "134651b5fa1beddaac97e0c1fc6bf72c9d0927e04f6ae1d12bb67c820fa70312"
+    },
+    {
+      "path": "src/perception/omnifleet_tutorials/scripts/vision_demo_manager.py",
+      "type": "file",
+      "mode": 509,
+      "bytes": 10750,
+      "sha256": "7f32425f27bcd5f352aecbea2ad33ff4ebcd923eacf0c4fa535a5b1a10824c9c"
+    },
+    {
       "path": "src/perception/omnifleet_tutorials/test/test_vision_course_launches.py",
       "type": "file",
       "mode": 420,
-      "bytes": 6016,
-      "sha256": "1ef50067d4db26baa928886c90c6cba8465caa77507799524e81c20d54d42cf6"
+      "bytes": 6080,
+      "sha256": "24dffc4c8722cbefdc99659160b52280cc72b6656cff9e8a940d33817093ad91"
     },
     {
       "path": "src/perception/omnifleet_vision/models",
@@ -89015,29 +89842,29 @@
       "path": "src/perception/omnifleet_vision/CMakeLists.txt",
       "type": "file",
       "mode": 420,
-      "bytes": 5023,
-      "sha256": "8003c1ee2a8808663e9111c20a942da49b71c0786163967b3306957101e6213a"
+      "bytes": 5855,
+      "sha256": "4ba000506ee86ff9b03c274fb5cefbbf13fb26257a0a96d1cd8a4e0f8e4e15a7"
     },
     {
       "path": "src/perception/omnifleet_vision/NOTICE.md",
       "type": "file",
       "mode": 420,
-      "bytes": 1076,
-      "sha256": "1cdce3dcc55cdc757fd3a42aa96a4ad06714a94d97b06cf92728ba7bc0ca2785"
+      "bytes": 1879,
+      "sha256": "e1e0ed9fcaa4a7613a5bd7b338a833b41aeb5adaf31f48dbffdb788f3493bd64"
     },
     {
       "path": "src/perception/omnifleet_vision/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 3700,
-      "sha256": "d8c4788750cd5c692358be682521dfc8d751565547861d5e3d7c4ce3bb670ad5"
+      "bytes": 7385,
+      "sha256": "c3b4e9806ae0e7aa603b6b2ae10cdeb02a97a8e557625b40408edfb80a4004bc"
     },
     {
       "path": "src/perception/omnifleet_vision/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1555,
-      "sha256": "ffec70b1267c248fc865033bcfc23a43978a4fe6234f85426724f32f0d6f0150"
+      "bytes": 1904,
+      "sha256": "95f0bcd2fd1f2b88d3ac579341ee0095a012c505d73529daf6bec8d6bc4f8406"
     },
     {
       "path": "src/perception/omnifleet_vision/SOURCE_MANIFEST.sha256",
@@ -89050,15 +89877,22 @@
       "path": "src/perception/omnifleet_vision/package.xml",
       "type": "file",
       "mode": 420,
-      "bytes": 1260,
-      "sha256": "2ad0d3731d2e29eea6aebaedafe19f2703e450e4d75ee49b862cb9ee1937dc4c"
+      "bytes": 1548,
+      "sha256": "8a61ba22d039ac53b5d3df46bef83e4aeb1bfcc0af00a4fc5bc1b63b8cbfbfc5"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/config/apriltag_36h11_210mm.yaml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 197,
+      "sha256": "5a058ab78852dc4f4e639e6cec48279990c9ba3ca11e2bc1ee6ef867d9b59a65"
     },
     {
       "path": "src/perception/omnifleet_vision/config/kcf_follower.yaml",
       "type": "file",
       "mode": 420,
-      "bytes": 804,
-      "sha256": "eaa9eaecbf57ef1e4f234f04d9b9ada52ec093fb6d2e793f8ecaf0060e20c213"
+      "bytes": 834,
+      "sha256": "eb3c5b3dd049554274fa5b590cc7149acffc0dd943b2a76648c3ba5595448b0e"
     },
     {
       "path": "src/perception/omnifleet_vision/config/mvs_rgb_fast.yaml",
@@ -89113,29 +89947,36 @@
       "path": "src/perception/omnifleet_vision/include/omnifleet_vision/tracker.h",
       "type": "file",
       "mode": 420,
-      "bytes": 1327,
-      "sha256": "f9f58f570d7a41cbd6350532833326bc04c674f69afc123ec5651fbb7ad931a9"
+      "bytes": 1387,
+      "sha256": "faaafd3998ce71bd475727cf84c98b66f50d92472feca03d1d010dd1b115590c"
     },
     {
       "path": "src/perception/omnifleet_vision/launch/course_function.launch.py",
       "type": "file",
       "mode": 420,
-      "bytes": 29928,
-      "sha256": "f9d4fbf243f6dfb0b594b8e9c15dfffcadf899010f9bea439e7d608b33180502"
+      "bytes": 33892,
+      "sha256": "9e867da846f6d93618133de1e8783353961e0196930f66b86197df10cdff9615"
     },
     {
       "path": "src/perception/omnifleet_vision/launch/kcf_follower.launch.py",
       "type": "file",
       "mode": 420,
-      "bytes": 4927,
-      "sha256": "80d466bb47f1b6db964e5ce87abf99981878c90fa615177f663bc1fc4cdc13fd"
+      "bytes": 5934,
+      "sha256": "d890a5214adc7d2f4f4ebd930f4beea8508039cdc79d8f174eea3f2da4416cec"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/launch/marker_follow.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2873,
+      "sha256": "7dc6d059e15151274edd2db7399865f3abba6e88d2dd604339daf97430471fe1"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/course_gui_overlay_node.py",
       "type": "file",
       "mode": 493,
-      "bytes": 16065,
-      "sha256": "4e977c4d69f21500074ef97db5af21319575c29587c1ec4bb88d5cb0610db94f"
+      "bytes": 16110,
+      "sha256": "dd3ec65fd550b3dbb10074e74d4c4cc7d08ab3b7bcc29a269b9e66ea4771d27e"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/image_display_node.py",
@@ -89143,6 +89984,13 @@
       "mode": 493,
       "bytes": 2836,
       "sha256": "6129d1f8d3f4c1b91a525db2445b76ba9b54e2cfaec05a908d3be2170cdfd260"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/scripts/kcf_follower_python_node.py",
+      "type": "file",
+      "mode": 509,
+      "bytes": 8686,
+      "sha256": "29593b8d2b6340c39d6316b0de39f05ac5bad4d13caa5eb5e64b6885fbaf7c81"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/classical/__init__.py",
@@ -89155,15 +90003,15 @@
       "path": "src/perception/omnifleet_vision/scripts/classical/algorithms.py",
       "type": "file",
       "mode": 420,
-      "bytes": 31668,
-      "sha256": "24433b949def16fc1358b648fa4cf106d602132fc7e7aacd49cd624400c53e6e"
+      "bytes": 33255,
+      "sha256": "2419f4c40222defa4e9da38ca86ce11f73ff61499dc44bf1ced8e4f0771b7299"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/classical/apriltag_recognition_node.py",
       "type": "file",
       "mode": 493,
-      "bytes": 1260,
-      "sha256": "6bf55c1a1a8e0d8d0c4864017fcc735607554c90c4391cce0fb871ddd2ce94c1"
+      "bytes": 2794,
+      "sha256": "3aa407fcda3bf08f7d42c77ead87a8378a8d400828bf0fb348477762287ec9b6"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/classical/camera_monitor_node.py",
@@ -89173,18 +90021,25 @@
       "sha256": "64ed72fb4851014784b1cf6f4a1ab40f9f2e1910385bc5ad36e2636680ec2034"
     },
     {
+      "path": "src/perception/omnifleet_vision/scripts/classical/color_picker.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 7712,
+      "sha256": "4e90887365e50c73f5123ddb63e3e9285e75e3cc766ee573b8b03ec9f43de444"
+    },
+    {
       "path": "src/perception/omnifleet_vision/scripts/classical/color_recognition_node.py",
       "type": "file",
       "mode": 493,
-      "bytes": 1368,
-      "sha256": "973e42e075c39eaf7ae86dc3174a342eb27648277fb567a60d02e0f39cd65636"
+      "bytes": 4127,
+      "sha256": "2359a3b60fd85aef7060aef424ca1cad6b5a48b010bd82003206b0ab165af946"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/classical/depth_measurement_node.py",
       "type": "file",
       "mode": 493,
-      "bytes": 11915,
-      "sha256": "5f4b7d67d07218455fec229db0378dbf42e764fde861aca6251bd9314e2548de"
+      "bytes": 11903,
+      "sha256": "0d89aa65c2f5940074186acbb5579cad4b1c256e0e8db40b64f5db9e4c01521d"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/classical/lane_detection_node.py",
@@ -89204,15 +90059,15 @@
       "path": "src/perception/omnifleet_vision/scripts/classical/qr_recognition_node.py",
       "type": "file",
       "mode": 493,
-      "bytes": 1233,
-      "sha256": "e6387e3aa6b3b564cb5d874dec180cbd6549e9f0b539b4cdd72f00e9ccabd258"
+      "bytes": 1551,
+      "sha256": "9d4b9319750f77674dc4eec4145d02a5d594e8d5135dd260b32e681cc9b53203"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/classical/ros_support.py",
       "type": "file",
       "mode": 420,
-      "bytes": 3434,
-      "sha256": "31c7839bf6610c67bd613936d66a828642c266fdc424aa00b5536484f8f5a678"
+      "bytes": 3663,
+      "sha256": "1a310c0c680c914c093d6d0ef73ccd75053391542dd4ce949406d5b1222a2698"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/classical/synthetic_scene_publisher.py",
@@ -89225,8 +90080,8 @@
       "path": "src/perception/omnifleet_vision/scripts/classical/traffic_light_dual_node.py",
       "type": "file",
       "mode": 493,
-      "bytes": 6748,
-      "sha256": "24cc7c66f1573cefef5fd8d75a9a4bd98992e14b27f50b3d059271683fb5bee2"
+      "bytes": 6758,
+      "sha256": "c71344034492e74e6572c2c15eee9fde370b30e20511f8714e6652160e91918d"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/integration/course_controllers_core.py",
@@ -89250,11 +90105,32 @@
       "sha256": "1754f13e895f59df7392114532f4044887e1ae1f73c3e505b3aee3b911f51f93"
     },
     {
+      "path": "src/perception/omnifleet_vision/scripts/integration/foreground_ros.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4003,
+      "sha256": "ac6b94bd895be5b16793752df2ecb18dcaef69fd548b5a5ea42ad1716cb3b8ce"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/scripts/integration/gesture_person_follow_node.py",
+      "type": "file",
+      "mode": 509,
+      "bytes": 17073,
+      "sha256": "b4cc5ea583e6ae8935812a394fbc7c4c090298bc37b11710d68039d37508a64b"
+    },
+    {
       "path": "src/perception/omnifleet_vision/scripts/integration/lane_follow_controller_node.py",
       "type": "file",
       "mode": 493,
       "bytes": 4954,
       "sha256": "f94e6bfbf2bf6167209924e34bd2a1f2149a76730378534120352ae4e493c08c"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/scripts/integration/marker_follow.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 7157,
+      "sha256": "a85fe5047acfdc6c5d7b73f688c632a8dcd46247527ebf2cade80dfd53bde99d"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/integration/multimodal_risk_node.py",
@@ -89264,11 +90140,39 @@
       "sha256": "646d03bc5beb0d4284ed2e1dd3f4b6dca8863692c4c8f7ef0e3083bfe653e053"
     },
     {
+      "path": "src/perception/omnifleet_vision/scripts/integration/nanotrack_core.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 8291,
+      "sha256": "66cb1532c5a583314629e8b13a6eb65e0482f1340f7c0b158eb69a320a5eabde"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/scripts/integration/nanotrack_node.py",
+      "type": "file",
+      "mode": 493,
+      "bytes": 15517,
+      "sha256": "19f1726477d55d0bf019f66601ec096392ba89997864138e4df18786ca3b0469"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/scripts/integration/nanotrack_tracker.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 5971,
+      "sha256": "df7ed3d5c9045d4aa99efe2d0a64a6b709fb056fda39403ddd19023e5dc5b7a2"
+    },
+    {
       "path": "src/perception/omnifleet_vision/scripts/integration/safe_behavior_controller_node.py",
       "type": "file",
       "mode": 493,
       "bytes": 4327,
       "sha256": "906e7465a94719ddee22624889ccbc37ec1d7dba55f81f08805d43186a4849af"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/scripts/integration/standoff_strategy.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 5067,
+      "sha256": "8d06ef64775663c0314702d35735c658faabf6389c81496c61d363549bb8bb1d"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/integration/target_depth_fusion_node.py",
@@ -89281,8 +90185,15 @@
       "path": "src/perception/omnifleet_vision/scripts/integration/target_follow_controller_node.py",
       "type": "file",
       "mode": 493,
-      "bytes": 4361,
-      "sha256": "44a423aab1ac6d9da959c68232156e9af4a9345dc738ece48039e55f43d9fa60"
+      "bytes": 9808,
+      "sha256": "a9cd8a7dbbcff67480326c21a303701fb48a72e00f1663333fefedaeaa0006b0"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/scripts/integration/target_sparse_depth_node.py",
+      "type": "file",
+      "mode": 493,
+      "bytes": 7670,
+      "sha256": "8f101dfcbfbd290a6c0fe26cff57f0c26572acaf7162ea1fc5ce185d04c7115a"
     },
     {
       "path": "src/perception/omnifleet_vision/scripts/integration/traffic_course_state_node.py",
@@ -89379,8 +90290,8 @@
       "path": "src/perception/omnifleet_vision/scripts/ml/ultralytics_detector_node.py",
       "type": "file",
       "mode": 493,
-      "bytes": 6136,
-      "sha256": "97eb044b1de08f79b9de6e7a270865dc2b5f24ed006bcd20c29664610702eb61"
+      "bytes": 6246,
+      "sha256": "8c51a995e1484ab963bbd6e34f1cd8e035c95840b02179855a23fd37b3953e4c"
     },
     {
       "path": "src/perception/omnifleet_vision/src/fhog.cpp",
@@ -89393,8 +90304,8 @@
       "path": "src/perception/omnifleet_vision/src/kcf_follower_node.cpp",
       "type": "file",
       "mode": 420,
-      "bytes": 22731,
-      "sha256": "b9ffea3550abe7adb9f2378a5a961114eb329445d42525e7b6b36b935e916122"
+      "bytes": 42701,
+      "sha256": "15a60e2ffcad9e39776d15c75b61b0908e7440c591d196f911dcc6c9ad675396"
     },
     {
       "path": "src/perception/omnifleet_vision/src/kcftracker.cpp",
@@ -89407,8 +90318,8 @@
       "path": "src/perception/omnifleet_vision/test/test_classical_vision.py",
       "type": "file",
       "mode": 420,
-      "bytes": 12529,
-      "sha256": "a24c681e20782de6213ce4a1e0e71d9f1e4dff151d08b21d1d9e418265428eff"
+      "bytes": 13757,
+      "sha256": "33bd3405f8bdac498cda78d26604698ec171e7669c5f4e0aa84a93f02b290d64"
     },
     {
       "path": "src/perception/omnifleet_vision/test/test_course_controllers.py",
@@ -89425,6 +90336,34 @@
       "sha256": "cb45354332b43affa8afcd34c69f54b5b911fa33ffa637738f0436461bfee4ed"
     },
     {
+      "path": "src/perception/omnifleet_vision/test/test_depth_arrival.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1919,
+      "sha256": "674d31cb937ddc3bd3a5fea335d0e98f719d6005cee914278198fec9a300054f"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/test/test_depth_reuse.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2171,
+      "sha256": "ae60076c8945afccc7ee9c008cada5905743596f01fa47825c8f5bbe6e1d06fb"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/test/test_foreground_observation.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2744,
+      "sha256": "53c8ef62a32c64a8e50d38754bcf110ac03ec42cfe7fde063a6e482207d15152"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/test/test_gesture_person_follow.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4310,
+      "sha256": "62b174bdf26257a76c66e53a49e4849d8221959b2331d3ae7337ac78c6da1270"
+    },
+    {
       "path": "src/perception/omnifleet_vision/test/test_kcf_contract.py",
       "type": "file",
       "mode": 420,
@@ -89439,6 +90378,41 @@
       "sha256": "e9bde04f4910fe5f0ffb6a27dde5abc2ae2892e506ec9929460bf8e056f1d384"
     },
     {
+      "path": "src/perception/omnifleet_vision/test/test_nanotrack.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3178,
+      "sha256": "add446e49c479d7d56e242b09081b996a9fa596e9957f4b227030f7f4a92cfd1"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/test/test_nanotrack_scale.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1132,
+      "sha256": "9941423037806079d6275f861500b8deb19704dbbb66bbd4bda58f14720a862b"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/test/test_roi_box_geometry.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3135,
+      "sha256": "9a7ab30d11cf2d3959e81643fb45529c901bc877b3cc93d60c442c24f74da20a"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/test/test_roi_template_guard.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1293,
+      "sha256": "91c17ce6d8f2d846b626193407206fef0385f1703fa92efe54cc9d398578c68e"
+    },
+    {
+      "path": "src/perception/omnifleet_vision/test/test_standoff_strategy.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2739,
+      "sha256": "1353b252493571090aca96c4e81d368f056fc2ee9d3b4f90b43b71f1ef90b5f0"
+    },
+    {
       "path": "src/perception/omnifleet_vision/test/test_vision_integration.py",
       "type": "file",
       "mode": 420,
@@ -89446,11 +90420,88 @@
       "sha256": "8d109d3f476e793067bec8ee7958b8b973f18cb9a2b725e24b5cfb3a12f7d76b"
     },
     {
+      "path": "src/perception/tros_person_following/.gitignore",
+      "type": "file",
+      "mode": 436,
+      "bytes": 212,
+      "sha256": "5f29ce85d497b39459dd86f5c78e99f58c6efe70d6ea93f6815e8593c33328aa"
+    },
+    {
+      "path": "src/perception/tros_person_following/CMakeLists.txt",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1916,
+      "sha256": "d67910f8cb341a89385ec64ba080e33dd5382b9fc18809ad21d0d76b608703e8"
+    },
+    {
+      "path": "src/perception/tros_person_following/LICENSE",
+      "type": "file",
+      "mode": 436,
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "src/perception/tros_person_following/README.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 24931,
+      "sha256": "edf5ea2a61590eed1d9f5d2fd38bb2e0bc749c604447b641096ba6d91bc81193"
+    },
+    {
+      "path": "src/perception/tros_person_following/package.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1115,
+      "sha256": "62a4e3e7bd06824939679e1e4ea671d235d2a188f3c2796523c58c67c534ef1b"
+    },
+    {
+      "path": "src/perception/tros_person_following/config/iou2_method_param.json",
+      "type": "file",
+      "mode": 509,
+      "bytes": 364,
+      "sha256": "af3d04205e08948043116c8e76348a40073c2eacc07b6768bb0472550dcace32"
+    },
+    {
+      "path": "src/perception/tros_person_following/docs/LOST_REACQUIRE_FLOW.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 42921,
+      "sha256": "5142e22327ec023705deab0853f2356e118a7924a187c1d7b66550fd28037904"
+    },
+    {
+      "path": "src/perception/tros_person_following/images/vims_person_tracking.gif",
+      "type": "file",
+      "mode": 436,
+      "bytes": 9965992,
+      "sha256": "e6a2f9068efa77fd98235f76535232a2be9487720e016a8cec32851293ae0f27"
+    },
+    {
+      "path": "src/perception/tros_person_following/include/tros_person_following/person_following_node.h",
+      "type": "file",
+      "mode": 436,
+      "bytes": 28212,
+      "sha256": "5eb69eb3de1abe817625bc1363115425f83d0eee7515b8bc2c41df1aaf154bb9"
+    },
+    {
+      "path": "src/perception/tros_person_following/launch/tros_person_following.launch.py",
+      "type": "file",
+      "mode": 509,
+      "bytes": 27886,
+      "sha256": "e558ae6eb2e37c306905ecca68f38ed45292923d37815926fefabb674faf7410"
+    },
+    {
+      "path": "src/perception/tros_person_following/src/person_following_node.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 134327,
+      "sha256": "659b6ad0a7be7fce6dd18685d4e0174164fe39ab600fca09f7d50732e177f223"
+    },
+    {
       "path": "src/planning/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 910,
-      "sha256": "a8d6fb9fcd46a0e10c763726a54aef56cbea615651da620381d894eb531545c3"
+      "bytes": 764,
+      "sha256": "613214e8b5409996be9f31d919331b54d80a51e38c3f4ce7f12fa989377a5e6e"
     },
     {
       "path": "src/planning/nav2_costmap_2d/CHANGELOG.rst",
@@ -89478,7 +90529,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1181,
-      "sha256": "bae4e2ac60f7e8dab0da367123f57bd080378ff4600d3a5433f6be6d9a5260ce"
+      "sha256": "ccc08fed6b65bf6b26a60136e27c649a8e2ef5121e4ab546304092274361454c"
     },
     {
       "path": "src/planning/nav2_costmap_2d/costmap_plugins.xml",
@@ -90195,6 +91246,559 @@
       "sha256": "64564341ca85e2e122376d0eea79852ab897bc7f75e79ea6100b2bb88052a764"
     },
     {
+      "path": "src/planning/nav2_mppi_controller/CMakeLists.txt",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3645,
+      "sha256": "8cd24ff84f5aeeaaf8e758fa519ea97e03db56c96f2a798c18765a4fe5a59e72"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/LICENSE.md",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1167,
+      "sha256": "fd511b3d95b4cfc9f0a5f82ed8f1238d664e1e54d11e70c10a3e3651d859e0c4"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/README.md",
+      "type": "file",
+      "mode": 438,
+      "bytes": 34517,
+      "sha256": "da3ed899455d71ecce11555b22bc9a69dde08d244578d1bce3398695582f8b35"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/critics.xml",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2458,
+      "sha256": "e53fd23342f164fd64d820bb6a9e5ae59fbd4a1323be12c0d47a44fb6a5fd079"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/mppic.xml",
+      "type": "file",
+      "mode": 438,
+      "bytes": 252,
+      "sha256": "56c34be47d0854eb1c511eccc205750dedd7e6b9706a1d6a6e9ce09151b403aa"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/package.xml",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1454,
+      "sha256": "155fbb411e5bdd6c083d4447b0cb73890a40b434b2522d79d7f87530b1f462c4"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/benchmark/CMakeLists.txt",
+      "type": "file",
+      "mode": 438,
+      "bytes": 426,
+      "sha256": "06e38710c61807791549174fbdb635eabc9a595aaa8ac063da40ff89ba43d608"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/benchmark/controller_benchmark.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 7957,
+      "sha256": "8a0325a253b53a3ad2058bc0a01d11f169d51d182ba02ab419917b3165f554f0"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/benchmark/optimizer_benchmark.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 7232,
+      "sha256": "786a9a1ecede3eea2c3eb662ff805a12d9b895eff0f99a01e030daebcfac0901"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/controller.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3916,
+      "sha256": "1595f435c5b8b47f7a68b0d0f527f97dbab96056d99a4b72fcc3a6db86845897"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critic_data.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1739,
+      "sha256": "ea6e3bae59d008a73b0e960fb298c1b2ab8a82f7a671c07a116046f59f250863"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critic_function.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3199,
+      "sha256": "42c080bcbb3d1cc8377e0da800cb56e7b138714e623d4893e11c8414bff89ed6"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critic_manager.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3218,
+      "sha256": "0507063d99a840bebb8f11ab60af45c80b940400e32fa46ef33dd23bba5e6f0d"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/motion_models.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 7098,
+      "sha256": "6dd121bee9b6b14486466c6abf05b21a469476a13a83207cdf2a541542214ac5"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/optimizer.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 8025,
+      "sha256": "1b2b99b80cb5bf87f4fcfba7d814f31b83867d5287d40b0118ea7412fdae2e53"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/constraint_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1665,
+      "sha256": "4653d4a69b3368f7a5a48914793e4704354c230b2a37ea3e03132098bb451962"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/cost_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3290,
+      "sha256": "710e0fb8cac227429a20c417910f02b639dde514e2c40331989748ea36ffa7eb"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/goal_angle_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2101,
+      "sha256": "0d3ddd8cad4828419b57d41d184680667660745fc1c2262266f384e4c1441457"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/goal_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1573,
+      "sha256": "fbbb0f9493f346ea34c9c02cc36300b5b4b97441059366a7a5c41853ac4b283a"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/obstacles_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3441,
+      "sha256": "881bd412049416715ae8a98fcb6865848492b51b66f00105a0f15b3123022b67"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/path_align_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1913,
+      "sha256": "ce407dcaad9eb37b7179b8eb0c71953ddefe001460266d44a1de939f8898ad93"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/path_align_legacy_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2061,
+      "sha256": "f93826fd2430b6c753947f28cdd8244783f1830d0bae92c9e06216521446b2ae"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/path_angle_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1816,
+      "sha256": "0910249f71f230dd730b452a88694080ca7d58eb23935c11ca8d9652bf20f5da"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/path_follow_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2055,
+      "sha256": "72b85f5aeaefc8e7c48a9e775432d116c9eb3042a58d5ea0a3b2645192bf81ab"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/prefer_forward_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1606,
+      "sha256": "7d5401bee76f5188467c7d96a4427928a5c53dc3aace3a99f9e3d960a550a399"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/twirling_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1551,
+      "sha256": "cb16742100f3f18d568ad98e5a85e65274695df821c6215b4021475cbc3e6127"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/critics/velocity_deadband_critic.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1641,
+      "sha256": "c8ab68c80ade4480e8dc2db6daf84bd302ae60121dc0d975e7199e4a4bdafbf4"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/models/constraints.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1198,
+      "sha256": "df738ba617d6f3688f7950bf9e2fc2b3eb9b73363b0bfc5041853b544902d6a3"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/models/control_sequence.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1412,
+      "sha256": "aeea101f79922755838757c7c1ab8599dca064a28a097d51465af5a3cb9fadde"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/models/optimizer_settings.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1475,
+      "sha256": "5e3fccd7765ef2b2b3b00e1995bcbf29373cead81601752a9f352d886d584432"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/models/path.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1244,
+      "sha256": "e21dba4b220ab54077835d37370fc962b767f6e346a352c63fd0847319327155"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/models/state.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1772,
+      "sha256": "a8c253843fff10a396b8b78da93664e22c5ea664ff19b722182b996b7140bebc"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/models/trajectories.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1392,
+      "sha256": "36b035e972f45479346809008f5d606adce8fa213a828ea2e22a62e5d1e12f8d"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/tools/noise_generator.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3250,
+      "sha256": "f8e0723aa3829f7def84a483fd37da13cf1c3e0fa5a8068c4a572ea2c86a872f"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/tools/parameters_handler.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 7780,
+      "sha256": "755bdec229ab89060235c138afb9ec12a7c81929804babb60715551000d4c583"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/tools/path_handler.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 5098,
+      "sha256": "3bb0aa37fb24514bb90574568f9481fea19021760a6233341b6759fd6b19410d"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/tools/swept_footprint_collision.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 5013,
+      "sha256": "9a1591cb9f70445d1e555108f44243933f6a77c2c772d725608ad77dba429e16"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/tools/trajectory_visualizer.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3252,
+      "sha256": "5480a0eff628c336812cd4babdde88e3ad24404e1bcfa7cc445a9a7551b0f92c"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/include/nav2_mppi_controller/tools/utils.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 19597,
+      "sha256": "21d59a5245af8dac94cf5d0ddd6ca1635fb17b9fa4803087e382ad023731e582"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/media/demo.gif",
+      "type": "file",
+      "mode": 438,
+      "bytes": 8618744,
+      "sha256": "5fef279991aff4a06a09d12150ea0a4c30f5042fd2dc4d50bbdbe97e69b7b009"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/controller.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 4599,
+      "sha256": "bfbfaa14ed002c6431dfced3871c84ff9545da7420ae3bae45d11fab4e22ecfe"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critic_manager.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2730,
+      "sha256": "16e6df210846bb8f203b560aa04dce83bd8680c0cfdfc2827dfe79804d625da2"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/noise_generator.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3550,
+      "sha256": "5d7e3899a56c6c0d49a0b6433e39d61affef7dcfd15b23911219bc14bd05224b"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/optimizer.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 18319,
+      "sha256": "a4231a6e455178e002915cd7272966e8ded32567f7de52a5900ad2b80ecdeba9"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/parameters_handler.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2025,
+      "sha256": "d535be8fa086fe015e7b4396f8bcb340e662e525b8e2ae197c0df95e884b29c8"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/path_handler.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 7361,
+      "sha256": "3c0447e34598a1a12364179b57063c4c812d0038909856613b560d92c5da9ff1"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/trajectory_visualizer.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 4355,
+      "sha256": "f204713134f741ea1e697890b759c3d9c4cc7ec373c202d561c5579c078141d0"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/constraint_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2760,
+      "sha256": "9339e5ff7188f8ab38d325190c9333a2855d3fda73eaf5c394314b2acc5bc181"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/cost_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 9147,
+      "sha256": "28767f8b2f8c71dfe4a275fe85f040413be59540b286ca102bb27ab5b3b1dfd4"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/cost_critic_plugin.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 219,
+      "sha256": "53fc28170ca010e30580ba7e9cf0cd0541dbc00a8d728b627f22e972131302e7"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/goal_angle_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2731,
+      "sha256": "905ff51edd898fe47610d9433d0cb5f77f386260ab527eb2777cb06387709ebb"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/goal_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1966,
+      "sha256": "a58f7be349737e12dde79b9bbf17e72dd297df6283bf4f5be7074a7322f510ab"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/obstacles_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 8682,
+      "sha256": "81b5972ebcfe00f0ea250def95ba35e83a4a9e258ed7dfeffb8d364cc208d908"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/path_align_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 6172,
+      "sha256": "13620e3a97aaffafac2fc670b23299906336d0bed33622540ce2f7d64f428bd3"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/path_align_legacy_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 4849,
+      "sha256": "983515fe591bf0f1597b0511ad3f36e99293c3445598786d4fe9b8d5ea425f85"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/path_angle_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3806,
+      "sha256": "e2a6553a1322a4724d134ee4ed622c4b61d46c3f49828bb612680c6161489152"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/path_follow_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2810,
+      "sha256": "f48b5648bbaf647e8c06846741faf7ec4ba8ba6b6f2a3b11c9b47c9fc8b0d391"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/prefer_forward_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1703,
+      "sha256": "b52cdba33d75d44160bd2c1f494e6b2bd3be7fb5e0c49b572611a14cefa79a23"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/twirling_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1524,
+      "sha256": "1bbe74130b312cd896773190174455afc6eec36e03e2c7a543de14d14eb2de50"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/src/critics/velocity_deadband_critic.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3372,
+      "sha256": "c833779c97dc8d67e8743ab1cea02bfb324ac352b17e1ae5248ce52dc3d00d3f"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/CMakeLists.txt",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1354,
+      "sha256": "2bea35c6b49b7ff64762de3ece231c37c41f1a47f3ce148070c709c2f8e7469c"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/angular_acceleration_tests.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 12310,
+      "sha256": "41e4a4c4131b9d2987c5cc409cb696bc84ae2d64be9518e1df4106628ef2cc0c"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/controller_state_transition_test.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 2421,
+      "sha256": "e29303075577c97994e5d0022d4ff1f52194eefa04ab09b07bb7567d5e238012"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/critic_manager_test.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 4307,
+      "sha256": "c8c97fc129851c83a0e472fe071bb3d28971172d2ff2c6b95252fff795220a7f"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/critics_tests.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 27612,
+      "sha256": "281341418f758bf277cf69657e64ce5c9654b33a9a04e1f38a4829f7034e3bd4"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/models_test.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 4332,
+      "sha256": "8a9a185f9b8e99715cbde7843763a0b431537beb6ac4ab2708af5dfd75dc977f"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/motion_model_tests.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 9919,
+      "sha256": "cd76a89666dd5d947815af9c15c0d980cd3d0e0ca56e5cabf0e6dd3118694522"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/noise_generator_test.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 4610,
+      "sha256": "af758cd56aed21386545b2fa458aaef1786c36d34e55c0a946afebdf5b5caa0a"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/optimizer_smoke_test.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 3931,
+      "sha256": "071315bb06a4e9a70777a293b851f3b0c44ff5879317aee7ca6c242969a3cf00"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/optimizer_unit_tests.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 24875,
+      "sha256": "4486253a6d820d3b68e53448d2c83843952d3e2972532447981977b8389b9e44"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/parameter_handler_test.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 6242,
+      "sha256": "08a3116e3c391ea6591b3ac691cc2ff3f0192dc48c035aae8c7e15571e262b6e"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/path_handler_test.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 8296,
+      "sha256": "84cb88c75ab61763b39eced13c7c459d1514b5b3056809450671f5ff8f5c3fa7"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/swept_collision_regression.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 4798,
+      "sha256": "a321be37cafc64d7c3a0442bb43bb084b370ec10c135aabe39fb54c0b28ccd44"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/swept_geometry_tests.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 7159,
+      "sha256": "c03487d0fd94b556979df708bcd202b9004b5fed0a429eed58e18840c779c0bc"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/trajectory_visualizer_tests.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 5721,
+      "sha256": "d777e75aa2d83c80219242e18a03613d7ab23d2d34153a6357cc1815284e16dd"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/utils_test.cpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 14089,
+      "sha256": "dbb395db0512cb61404a809f6d93ba5acdc0266f861acb392e5310891e6a10ff"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/utils/factory.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 7618,
+      "sha256": "0b378938b71c90c98a5be70dd7bc655c0422baba54e3c3c1b864c598bff667b4"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/utils/models.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 1795,
+      "sha256": "a1128cc58053e5c02e9405deff53293c81e2bf2f6530f6e6f18c5171e80f7c2f"
+    },
+    {
+      "path": "src/planning/nav2_mppi_controller/test/utils/utils.hpp",
+      "type": "file",
+      "mode": 438,
+      "bytes": 7936,
+      "sha256": "95533f416905d6be064856e660ac1835a3c38b96d64e9baeaf4f5825e22844c7"
+    },
+    {
       "path": "src/planning/nav2_smac_planner/CMakeLists.txt",
       "type": "file",
       "mode": 436,
@@ -90338,8 +91942,8 @@
       "path": "src/planning/nav2_smac_planner/include/nav2_smac_planner/utils.hpp",
       "type": "file",
       "mode": 436,
-      "bytes": 5652,
-      "sha256": "ae14c889260b2348eb507dab42780937acbddf50f327138d0ee8bd899e43a7f4"
+      "bytes": 6019,
+      "sha256": "2afc1d4b375c7a1403f12ecc0a81fd64f93bc2440d7848da2d967ff9d57dd0f7"
     },
     {
       "path": "src/planning/nav2_smac_planner/include/nav2_smac_planner/thirdparty/robin_hood.h",
@@ -90534,8 +92138,8 @@
       "path": "src/planning/nav2_smac_planner/src/collision_checker.cpp",
       "type": "file",
       "mode": 436,
-      "bytes": 6323,
-      "sha256": "2be59308f6b216130abc6247aed60709137bac8b9bcd888d1afcb59a13f3b939"
+      "bytes": 6550,
+      "sha256": "0185ba276770063c1f10cdb73313246d4027039b498406e3b11e37a3ee69ea3f"
     },
     {
       "path": "src/planning/nav2_smac_planner/src/costmap_downsampler.cpp",
@@ -90744,22 +92348,22 @@
       "path": "src/planning/omnifleet_planner/CMakeLists.txt",
       "type": "file",
       "mode": 436,
-      "bytes": 10478,
-      "sha256": "692eff23a3a5fe2c04db6765638bf25a07ab7cc4d84b88b6cec65f83d448cfbb"
+      "bytes": 14137,
+      "sha256": "99ad73ae814733492d786b1ae50c779510d93385edd7ced9ddc29bb597252a39"
     },
     {
       "path": "src/planning/omnifleet_planner/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 1553,
-      "sha256": "73f2c325db4d4a844a5e358ae10c20f653fac86926cd195e5a10dc78400e4163"
+      "bytes": 1785,
+      "sha256": "a1770ab36c18498fc866f37ca0c4e82a9a676d1c7c095f92ba8e38a1cb48e0b6"
     },
     {
       "path": "src/planning/omnifleet_planner/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1895,
-      "sha256": "a08b101e2ac5749ad247af33caf13d54faf9a5f5e10bbc83c1d9526b41333aea"
+      "bytes": 2847,
+      "sha256": "552b9e2fc677a44be08b60cebe2bb91a818c2a31bd6751d3a3b1d371412f8012"
     },
     {
       "path": "src/planning/omnifleet_planner/TF_CONVENTIONS.md",
@@ -90772,8 +92376,22 @@
       "path": "src/planning/omnifleet_planner/cost_aware_smac.xml",
       "type": "file",
       "mode": 436,
-      "bytes": 289,
-      "sha256": "bcd97eefe829e6727a6a9bfb1bc56a3069a384462391714bc13959329e0ed2c1"
+      "bytes": 541,
+      "sha256": "b2ad15ed953771284092a0bc0af891c418a0422cddd31fa439cda6f509d2d8a2"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/follow_velocity_critic.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 317,
+      "sha256": "c3d4131680c0ee7fa8ba1de3c9721334e6117bc14138cb54e602691ed3993f4f"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/footprint_clearance_critic.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 325,
+      "sha256": "ab8374f2d0a71d732b987654810bef7754fcadeb73271d6138acd6aae27ea03f"
     },
     {
       "path": "src/planning/omnifleet_planner/footprint_safe_goal_checker.xml",
@@ -90807,8 +92425,8 @@
       "path": "src/planning/omnifleet_planner/package.xml",
       "type": "file",
       "mode": 436,
-      "bytes": 1845,
-      "sha256": "11e917e8e99b512ca59ea24fcd5f1589315ba1e503acd6f3fa877a307392f25a"
+      "bytes": 1954,
+      "sha256": "2afa446b2a4bb591ca154053a072affe098c815bdeaa40d0501f79b5ccca6875"
     },
     {
       "path": "src/planning/omnifleet_planner/peer_layer.xml",
@@ -90816,6 +92434,13 @@
       "mode": 436,
       "bytes": 255,
       "sha256": "625ff5cdd479512dc05cf822ab9ece2ae8daf0dc70847b8ce3254bf593e949ca"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/pose_rotation_shim.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 252,
+      "sha256": "a95650f7586286b8feaea5ef35a41512559d9b0c9b2250364a41f50b8a1f1c69"
     },
     {
       "path": "src/planning/omnifleet_planner/behavior_trees/navigate_through_poses_with_selectors.xml",
@@ -90842,8 +92467,8 @@
       "path": "src/planning/omnifleet_planner/config/nav2_t2.yaml",
       "type": "file",
       "mode": 436,
-      "bytes": 17812,
-      "sha256": "f44942916f1f817b8fa0995da6bf0330b692bda0118ccceb815a36a29326273c"
+      "bytes": 18514,
+      "sha256": "c58145c298288dab572731f4d5e7fdf386e8b5b194c151593c17c12c86cd6dca"
     },
     {
       "path": "src/planning/omnifleet_planner/config/nav2_t2_rep105.reference.yaml",
@@ -90898,22 +92523,36 @@
       "path": "src/planning/omnifleet_planner/include/omnifleet_planner/exact_goal_endpoint.hpp",
       "type": "file",
       "mode": 436,
-      "bytes": 1274,
-      "sha256": "ac1195aecae8b322ba39d243a732939338115362763ddf77656cac08ef8d1d80"
+      "bytes": 2352,
+      "sha256": "da3665061b42f3a9f9f61fbfae399f4bb8f410c22568e315871471ecfc27b1a9"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/include/omnifleet_planner/follow_velocity_critic.hpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 761,
+      "sha256": "f0b9787fa7b008c0b0e934c577dd96a39374788eaf5fcc4c775ce8c41b8b06e3"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/include/omnifleet_planner/footprint_clearance_critic.hpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 607,
+      "sha256": "a850efbc569c0b77297c2d624dc639357379d9f7c59ff52979652427c128b28f"
     },
     {
       "path": "src/planning/omnifleet_planner/include/omnifleet_planner/footprint_safe_goal_checker.hpp",
       "type": "file",
       "mode": 420,
-      "bytes": 1616,
-      "sha256": "0c4e9c7257ab4d59b8e7c1530d600039d4da362e8484e265b06e89a58fc87b7b"
+      "bytes": 1697,
+      "sha256": "65cd088efe91b6d84bc2907a7738dbac63413a9f06be88dbaf399cc437b5902f"
     },
     {
       "path": "src/planning/omnifleet_planner/include/omnifleet_planner/goal_footprint_cost.hpp",
       "type": "file",
       "mode": 420,
-      "bytes": 1929,
-      "sha256": "9d509457a3012c0950ee0928fca39ffaa2c251794e420cd8950bf6d16c575925"
+      "bytes": 2888,
+      "sha256": "f9a8378f20816c44513044bd7109ef078506b9b897a571abab12ef3eeff5da5c"
     },
     {
       "path": "src/planning/omnifleet_planner/include/omnifleet_planner/hard_cost_filter.hpp",
@@ -90958,11 +92597,25 @@
       "sha256": "8ff1e05b6844dcfa5b4d4067ddadd7bb1affa34e65345c76d1e1794e2f4a9668"
     },
     {
+      "path": "src/planning/omnifleet_planner/include/omnifleet_planner/position_first_goal.hpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4398,
+      "sha256": "251792b0999809962a3881e9e4420ae7b8a2fa16d2a5dc3c923486ce0fd0ccce"
+    },
+    {
       "path": "src/planning/omnifleet_planner/include/omnifleet_planner/publish_native_progress.hpp",
       "type": "file",
       "mode": 436,
       "bytes": 1641,
       "sha256": "e452dda4069ed3138cb0ac5681dfa1f2e925aeff47c330ee89134507a9b31393"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/include/omnifleet_planner/short_follow_plan.hpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2146,
+      "sha256": "ad424990653b03ebe7e5a041808a4829adf64c9337cfc95d5bd5dd92b7da9a1c"
     },
     {
       "path": "src/planning/omnifleet_planner/include/omnifleet_planner/terminal_pose.hpp",
@@ -90975,8 +92628,8 @@
       "path": "src/planning/omnifleet_planner/launch/navigation.launch.py",
       "type": "file",
       "mode": 420,
-      "bytes": 3916,
-      "sha256": "4b35da35764c10856675a41766d1ce1234c8fa5909477cd2be9f877fc97a7f3a"
+      "bytes": 3975,
+      "sha256": "22afbfdefece365a04a1a686d4fa3f16ca92afdbeb25b92c5f67b25af9acb852"
     },
     {
       "path": "src/planning/omnifleet_planner/src/continuous_route_control.hpp",
@@ -90996,15 +92649,29 @@
       "path": "src/planning/omnifleet_planner/src/cost_aware_smac.cpp",
       "type": "file",
       "mode": 436,
-      "bytes": 2586,
-      "sha256": "73d416d53234538b30862825d04104494f296b71dd5825597f512bc53c3b18b4"
+      "bytes": 5143,
+      "sha256": "379b2af7ce00cd5ce83f1845502add470ac07001f1121ff056a49c2f29af6404"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/src/follow_velocity_critic.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2068,
+      "sha256": "c8dfd6edcafb272e724d34bf5b737a1fd06845371031683f390823c817600ca1"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/src/footprint_clearance_critic.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3729,
+      "sha256": "ca6432c44e1f20a1d432170954f8a2a6e960fd71c51688cae45b30208bb49b0a"
     },
     {
       "path": "src/planning/omnifleet_planner/src/footprint_safe_goal_checker.cpp",
       "type": "file",
       "mode": 420,
-      "bytes": 5543,
-      "sha256": "f7efdbc566e1e87d7cbeee07208d2fc38e315bd9c65468352e72e88f4506cd9a"
+      "bytes": 5623,
+      "sha256": "a282b77e21d808c275e2075847d0d505f104f358fb7827ae06269a4855e954b1"
     },
     {
       "path": "src/planning/omnifleet_planner/src/hard_cost_filter.cpp",
@@ -91031,8 +92698,8 @@
       "path": "src/planning/omnifleet_planner/src/navigation_policy.cpp",
       "type": "file",
       "mode": 420,
-      "bytes": 5897,
-      "sha256": "c8a394dd995a615a648f81b021a74d18091b7dd59f1eef4c81861b2ad20d55bd"
+      "bytes": 9409,
+      "sha256": "379c63224b518b1ce8b7ea1fe6ad6e831eacbabd175ea2ce6ea73c44133e07ca"
     },
     {
       "path": "src/planning/omnifleet_planner/src/no_progress_checker.cpp",
@@ -91061,6 +92728,13 @@
       "mode": 436,
       "bytes": 164,
       "sha256": "3843013c0f0a9a76aacf9d5556d97a61dc9049cd1d57bd836f0313233fc39d99"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/src/pose_rotation_shim.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 11657,
+      "sha256": "c4a0ede42cae89e3190fe3fa6640e9025e6c06958ef156c618b2243ffe3bff39"
     },
     {
       "path": "src/planning/omnifleet_planner/src/test_arc_progress.cpp",
@@ -91094,8 +92768,8 @@
       "path": "src/planning/omnifleet_planner/src/test_policy.cpp",
       "type": "file",
       "mode": 420,
-      "bytes": 4459,
-      "sha256": "d4abe6d51861a99e27ba5b7b127c2570702f2770bec2fa092dda14aab5d5c3ab"
+      "bytes": 7824,
+      "sha256": "67b52bf1420063fdd3130a2d1c4fab9eabf58499e9f7d9e03556df9c1da07806"
     },
     {
       "path": "src/planning/omnifleet_planner/src/test_route_controller_joint.cpp",
@@ -91112,6 +92786,20 @@
       "sha256": "38b3e1992cff20d4aa3aba6736e09422f65c9bf84a993cb8ce03a52a7bc4daea"
     },
     {
+      "path": "src/planning/omnifleet_planner/test/test_follow_velocity_critic.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 7966,
+      "sha256": "f7d676084e5c8a137d00ff454f1b6ed49cf86a69174041b1e5f74168c7e07ac0"
+    },
+    {
+      "path": "src/planning/omnifleet_planner/test/test_footprint_clearance_critic.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 8846,
+      "sha256": "52fc25bc4ef87078bd897b10072526015f09f8f91720d3aee82411dd23ce0bbb"
+    },
+    {
       "path": "src/planning/omnifleet_planner/test/test_footprint_safe_goal_checker_config.py",
       "type": "file",
       "mode": 420,
@@ -91122,15 +92810,15 @@
       "path": "src/planning/omnifleet_planner/test/test_goal_footprint_cost.cpp",
       "type": "file",
       "mode": 420,
-      "bytes": 5634,
-      "sha256": "3e37500b31ecf98227b46a3ce398f00911cdfa920ec9dd2501643b0c785194b2"
+      "bytes": 6245,
+      "sha256": "c33f35bcae1989fbbee1fcf9c6dd8f2fa78dcec9638f0fd527d7f3a8341d7836"
     },
     {
       "path": "src/planning/omnifleet_planner/test/test_hot_rpp.cpp",
       "type": "file",
       "mode": 420,
-      "bytes": 8721,
-      "sha256": "2360e19a3085d6fc3f8c7d306a1bd5246f2df153533af8528c708a39a19fcdb6"
+      "bytes": 9665,
+      "sha256": "4261a9c7d83649494db7ee51680de80dcdcbfb2d646d6722ce1e98c3c8c7e2c9"
     },
     {
       "path": "src/planning/omnifleet_planner/test/test_native_progress.cpp",
@@ -91161,11 +92849,18 @@
       "sha256": "0dce18e0c1f2c21041571a332f661420d5d010ace23155ce8b336ba4b9079891"
     },
     {
+      "path": "src/planning/omnifleet_planner/test/test_short_follow_plan.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1600,
+      "sha256": "5cc0a23c9d9a68904730a9689b116df15f0bce485430b8aa49b145406b290f00"
+    },
+    {
       "path": "src/planning/omnifleet_planner/test/test_t2_nav2_stack.py",
       "type": "file",
       "mode": 420,
-      "bytes": 3080,
-      "sha256": "94c696c0e5a802fcf008d80f25ea1db6df0980b1908eb0a16f9c753f46d49225"
+      "bytes": 3101,
+      "sha256": "66ac6db1029a540e3ea0196a9d78ec4dc379727f3d08e8e821ed491b377c073f"
     },
     {
       "path": "src/planning/omnifleet_planner/test/data/route207.txt",
@@ -91180,6 +92875,90 @@
       "mode": 436,
       "bytes": 1226,
       "sha256": "beb23d2ed889f0027941920283ad68a67d9010b0f818e69ef00f05a73922e9c4"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/README.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 6335,
+      "sha256": "dda71a500a6c66cac4e66e71a82a7c2f747113b5d5585f9692e46c235d1f1576"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/package.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 988,
+      "sha256": "450c0ed5d76aaaab1566bd8a3ec17610a57df4c31497c178f6fc1d803daaafac"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/requirements-display.txt",
+      "type": "file",
+      "mode": 436,
+      "bytes": 17,
+      "sha256": "c9d41f0658143a8b0927f3c7bbf308120f648976e70e2e415cd5cbbd6876eb22"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/setup.cfg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 85,
+      "sha256": "9ebd16353ab6b7570c5232719818693222618c9446c12a6d9cd47ad32b151637"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/setup.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 871,
+      "sha256": "1e93fc1e5111093c26e1645e39ca5daab450b5bbdba22fc6c258a2eca68b9a33"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/config/hik_camera.rviz",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1009,
+      "sha256": "f56d2a0ecb013ab85fa370270e9c301df1bda0fab24490fafe273dfb1a03206a"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/hik_rgbd/__init__.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 90,
+      "sha256": "bea76386ff5fe13e5d1e19b9ddcf553c5636b36899d48722427b550c224d49a0"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/hik_rgbd/foxglove_display_bridge.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1829,
+      "sha256": "20218df5f48125fc28d78290cb861a5665320dc9b181066f5458ff6a852c91ec"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/hik_rgbd/sdk_node.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 544,
+      "sha256": "6c2b3092f0495e356f5ed489db4d1efddc2ee9e174d0d357142a953792017b89"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/hik_rgbd/visualization_node.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 9615,
+      "sha256": "ae872e2e80674aba3c64a53f99639f31e651a76af86cc71d391fb3c8b7a2238f"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/launch/hik_rgbd_launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1207,
+      "sha256": "12050ee8b234833842c3073809f1db7b4fb6b561a73a3deec19b681c55d4050f"
+    },
+    {
+      "path": "src/sensing/hik_rgbd/resource/hik_rgbd",
+      "type": "file",
+      "mode": 436,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "src/sensing/livox_ros_driver2/.gitignore",
@@ -91220,8 +92999,8 @@
       "path": "src/sensing/livox_ros_driver2/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1696,
-      "sha256": "a08828a514b35331d60aba8173fd255d36b9947b0d827f4abfaaee33aefc69b8"
+      "bytes": 1708,
+      "sha256": "0d673bbbcef834d15d6bb78ca194c3f982e70dba3bbeb6dcbfdb609fd3b805fc"
     },
     {
       "path": "src/sensing/livox_ros_driver2/build.sh",
@@ -92064,6 +93843,167 @@
       "sha256": "1d5b9f606deedb7c78e1a6d0c3c10d62a886fcc2aac1ac42e1a4a1ae6a9b6d49"
     },
     {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/README.md",
+      "type": "file",
+      "mode": 436,
+      "bytes": 9017,
+      "sha256": "38be51b1658e1cbddacbed13cfe7d3be73347e8f15dffd6f154d4662b5f03fc6"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/package.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 727,
+      "sha256": "b75218d8b1053007193361b2387eb7e45099cd6cf7df047799a55d8966be8087"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/setup.cfg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 115,
+      "sha256": "fafc32bce77a11692bbb93b26ac8c3ed23fbcdfa6e5ab210bffcd1090c3374f7"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/setup.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 842,
+      "sha256": "62d251ccc80534b39353574c2cacc5224145dd23e7cd0d18ccf4cdbf4fcfb90c"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/config/mv_dt01snu.yaml",
+      "type": "file",
+      "mode": 420,
+      "bytes": 1131,
+      "sha256": "36f8c71345dfaded3a9074a592fe3d52d3ca0b885a6f996056a999560dbfa1d5"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/launch/rgbd_camera.launch.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 764,
+      "sha256": "47d7217ca16e3541354b13c5ca5bd49e304aaf0ad15b78c26b2b984cdbcb1451"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/__init__.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 55,
+      "sha256": "6272b453683a33b46473d788788df1ea2a10bcbb3a08e8059f8ad6225efea2f8"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/aligned_depth.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3817,
+      "sha256": "65c852ae5c38975fc952ebac18088f94fcb2717f91616c190bc8a0b67b8436e2"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/camera_node.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 28700,
+      "sha256": "f55332b98a4200b2bb4a5cb6363c11cbb853feec705bea879522bb7263e85373"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/depth_foreground.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 8050,
+      "sha256": "bfe485c0395dc3b5c67943f26393edb11382ada0b81be4eb61ad49cf5e320656"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/depth_query.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 7849,
+      "sha256": "3972e1e29873fb49c1d17ad35a07be96710b25b95ff64555c5636bad654ec5ba"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/foreground_tracking.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3877,
+      "sha256": "62c3218fc3fb4d001eda1330c3f4e26b55d4a52919dee5686a30a4064f0a268e"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/local_frames.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3059,
+      "sha256": "bd84361040586cbd724b18b14c1433c516206a40855c60fc28d3c64993dc25da"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/official_projection.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1822,
+      "sha256": "0615db4516e03ea6bca865fbe6a2a5fea5f2d83b90a6905b2570027fdf3741d5"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/resource/omnifleet_hikrobot_rgbd",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/test/test_aligned_depth.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2473,
+      "sha256": "58a28790a9c0516d83a9dca3a4c62b0c8665a68227ba16edb769530af5a9f3a1"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/test/test_conversions.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 995,
+      "sha256": "33d00ab4a4d69687b0ad480bafe8d36dbcb5e7a0abc7a5ed5bd2ed0c862b4166"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/test/test_depth_foreground.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 4054,
+      "sha256": "aa192c9bb3b78f35a69b4550ab926c45a9e171682219c706a1646447e3032fb5"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/test/test_depth_query.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 3703,
+      "sha256": "2bbef9697b8d393caaf8652024d93649fe5aba9184b7529d65506accea6c5bd7"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/test/test_foreground_tracking.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1677,
+      "sha256": "f43ec589ffa5a2bb3643d8dfed2142f99d33aa0da1a198262a5dd548113de727"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/test/test_hot_exposure.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2257,
+      "sha256": "6af541f21df18612b09d8624752c0b0cfe87ffd3b8bbcecd660ed38b389bddbd"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/test/test_local_frames.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2046,
+      "sha256": "f90c3083cd0627d678b77f94cd16a0e4e998bdb9cc743f4d15344053107dae6e"
+    },
+    {
+      "path": "src/sensing/omnifleet_hikrobot_rgbd/test/test_registration.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1455,
+      "sha256": "d516a5e0155617868e51f7ca23cff7ad537c52a98cb91c85db6ae07f4b224813"
+    },
+    {
       "path": "src/sensing/omnifleet_sensor_processing/CMakeLists.txt",
       "type": "file",
       "mode": 420,
@@ -92082,7 +94022,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1734,
-      "sha256": "dc7920995a82892546f1fe4c1db9a06096069fcc7422595ca2bf8738e1513fe7"
+      "sha256": "b3b6cac1f99655ddc07915d4a9112e7ca2951e49cd40af27140a4ed02282c7d7"
     },
     {
       "path": "src/sensing/omnifleet_sensor_processing/package.xml",
@@ -92095,8 +94035,8 @@
       "path": "src/sensing/omnifleet_sensor_processing/config/airy_imu_calibration.yaml",
       "type": "file",
       "mode": 436,
-      "bytes": 602,
-      "sha256": "f4c20016ea0563cb9397145ade29e70653453085ae652d2c89decd1c5c31a9a9"
+      "bytes": 496,
+      "sha256": "f25ca5f4e79fd1dac66878d45edaba2a698c4a345452bf825c9d21585e0d8a26"
     },
     {
       "path": "src/sensing/omnifleet_sensor_processing/config/omnifleet-t2-height-cloud.service",
@@ -92129,9 +94069,9 @@
     {
       "path": "src/sensing/omnifleet_sensor_processing/omnifleet_sensor_processing/height_filtered_cloud.py",
       "type": "file",
-      "mode": 436,
-      "bytes": 3290,
-      "sha256": "aaa3e83a464fa7ef707fb39e2fb5acd5bb66ddf67983c3cf2171d3c93d462c43"
+      "mode": 420,
+      "bytes": 7324,
+      "sha256": "e6b46105acdbe647d8c33ad89e894fc51e6de8f3de61493bd3540de719d1bf11"
     },
     {
       "path": "src/sensing/omnifleet_sensor_processing/omnifleet_sensor_processing/lidar_velocity.py",
@@ -92242,15 +94182,15 @@
       "path": "src/sensing/orbbec_camera/CMakeLists.txt",
       "type": "file",
       "mode": 420,
-      "bytes": 7882,
-      "sha256": "1556d537977b0cd6bd85590931a8e657be3c66edb2a987bccdeebb9032e11f21"
+      "bytes": 8171,
+      "sha256": "216d6fc7571fd5473a64d8a5821f544aa0f1871b27ff10145b2e32bf9189e596"
     },
     {
       "path": "src/sensing/orbbec_camera/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1658,
-      "sha256": "73c429f9873baeec8acfadbe0818f09749053a6e2e359cf686d36b56e02ecdde"
+      "bytes": 2374,
+      "sha256": "1da08e9183413bda401d1942c8fcd270dcad91a2a699552ac6a3a7026225003e"
     },
     {
       "path": "src/sensing/orbbec_camera/package.xml",
@@ -92634,8 +94574,8 @@
       "path": "src/sensing/orbbec_camera/launch/astra_stereo_u3.launch.py",
       "type": "file",
       "mode": 420,
-      "bytes": 6252,
-      "sha256": "66ce6bec91aef624ef6c80f35da5210f132998f422bc4936b683be9ec79a563b"
+      "bytes": 6309,
+      "sha256": "62ac636238bd7483855bad7853ba096628872352d53971fed2a23c2e4ca35393"
     },
     {
       "path": "src/sensing/orbbec_camera/launch/dabai.launch.py",
@@ -92956,8 +94896,8 @@
       "path": "src/sensing/orbbec_camera/src/jetson_nv_decoder.cpp",
       "type": "file",
       "mode": 420,
-      "bytes": 4452,
-      "sha256": "ea215c7539316c8b351642d810680bfc0e54165aea603677176816e16d06b904"
+      "bytes": 4369,
+      "sha256": "a0d749e78f0799a9f49c1301b0d91594f0a032c20549ecfd5f95afc630140a07"
     },
     {
       "path": "src/sensing/orbbec_camera/src/jpeg_decoder.cpp",
@@ -92970,8 +94910,8 @@
       "path": "src/sensing/orbbec_camera/src/ob_camera_node.cpp",
       "type": "file",
       "mode": 420,
-      "bytes": 131025,
-      "sha256": "172fb46a3f81cd112c5a4e9af378e91fcb17ffa99dc704d8dc1a21e162035fcf"
+      "bytes": 132244,
+      "sha256": "8f5e7ccb8f0f4c94c9a920792838d8495f41a2ccbb0aab15e63a0e28705f53b8"
     },
     {
       "path": "src/sensing/orbbec_camera/src/ob_camera_node_driver.cpp",
@@ -92979,6 +94919,13 @@
       "mode": 420,
       "bytes": 22697,
       "sha256": "371f6291342d160dd5ffe7a81a443b83cfa2329a3333dac3d5071501abf7c074"
+    },
+    {
+      "path": "src/sensing/orbbec_camera/src/official_depth_projection.cpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2612,
+      "sha256": "fef862f5b58fa5a8919eb468d7e1b380379d950bc0a216d8ec1649ee198b4203"
     },
     {
       "path": "src/sensing/orbbec_camera/src/rk_mpp_decoder.cpp",
@@ -93097,7 +95044,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1195,
-      "sha256": "a93698bd4ea7805d5b4887eb1dc7af14e4202793f43316d4140aac5a21ca48bd"
+      "sha256": "f0e5e2223bfe7c36c9d4c90c1e240e4154c8f51257451b502743f6c99facb513"
     },
     {
       "path": "src/sensing/orbbec_camera_msgs/package.xml",
@@ -93209,7 +95156,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 960,
-      "sha256": "a1177f696d71d33986e600bf48df1957e80e40410ad02e657b7861f118f662ba"
+      "sha256": "6211a1d5d0c08c86273579cf70c7010dd675d3f966a27a5e8c467e523614cc8c"
     },
     {
       "path": "src/sensing/orbbec_description/package.xml",
@@ -93706,7 +95653,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 972,
-      "sha256": "2c48398db296ce5f8c6e86e004dcc2226f9536a7e269a41dd7f3daf3ab296251"
+      "sha256": "1926dea896de7bfa549117abebc2f44cda998060ad190829d3ebb4ffbec5e00f"
     },
     {
       "path": "src/sensing/rslidar_msg/package.xml",
@@ -93803,8 +95750,8 @@
       "path": "src/sensing/rslidar_sdk/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 3734,
-      "sha256": "339da79c7074d69e88026542867666e7ff81a3825ac1e7d907d44a8d732fa68d"
+      "bytes": 3974,
+      "sha256": "3a1626bff0d64d98b2d3133126b195936119b6c1794a8c71efb1f734ba6859fd"
     },
     {
       "path": "src/sensing/rslidar_sdk/README_CN.md",
@@ -93845,8 +95792,8 @@
       "path": "src/sensing/rslidar_sdk/config/config.yaml",
       "type": "file",
       "mode": 420,
-      "bytes": 4085,
-      "sha256": "6ed7a7a0901a23a5a6ab6df945e5a0481e95a5aca971ecf21eff2c168f933d37"
+      "bytes": 4180,
+      "sha256": "4e97a7d40edb9d7b70dcf07d1eeca15130aed697882207825537f90cccb968ee"
     },
     {
       "path": "src/sensing/rslidar_sdk/doc/howto/04_how_to_work_along_with_rslidar_sdk_node_v1.3.x_CN.md",
@@ -94307,15 +96254,15 @@
       "path": "src/sensing/rslidar_sdk/src/rs_driver/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 8523,
-      "sha256": "36fc94e9cd6461a46475fc287691e5953916741bb8a690802e7f3d1401aebfed"
+      "bytes": 8491,
+      "sha256": "f2dc312143b4dc292fe4f15fd8e453808e92d1e87d5473062c0baeffcf0e16c0"
     },
     {
       "path": "src/sensing/rslidar_sdk/src/rs_driver/README_CN.md",
       "type": "file",
       "mode": 420,
-      "bytes": 9191,
-      "sha256": "d6c9254d2f8c9df698d9608a845675c9315d31b53a95217eb356be0afcf2cc08"
+      "bytes": 9158,
+      "sha256": "4ea59020f94ce5d5e9b5d476c9181eb257cec30119c5f1c96bb1835054de9b47"
     },
     {
       "path": "src/sensing/rslidar_sdk/src/rs_driver/cmake/FindPCAP.cmake",
@@ -95326,6 +97273,20 @@
       "sha256": "d1c0fe591d033d233c943d9be7065618b188fee70c39a44530d2056b4156f555"
     },
     {
+      "path": "src/sensing/rslidar_sdk/src/rs_driver/src/rs_driver/common/causal_trace.hpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2762,
+      "sha256": "332ce806f771fb7e32b3f53dea1448eca7cb31a08eeaf509a84ad375653455ff"
+    },
+    {
+      "path": "src/sensing/rslidar_sdk/src/rs_driver/src/rs_driver/common/detail_trace.hpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2696,
+      "sha256": "54c1f5959595421750d818502775c76ba371a2e8a801ad63ece4da076374d032"
+    },
+    {
       "path": "src/sensing/rslidar_sdk/src/rs_driver/src/rs_driver/common/error_code.hpp",
       "type": "file",
       "mode": 420,
@@ -95357,8 +97318,8 @@
       "path": "src/sensing/rslidar_sdk/src/rs_driver/src/rs_driver/driver/lidar_driver_impl.hpp",
       "type": "file",
       "mode": 420,
-      "bytes": 16493,
-      "sha256": "ddb24076a2bc3113f25550880653573bc8cbd19508a11381e058bd0dfcd2b7c2"
+      "bytes": 16465,
+      "sha256": "d74c916415c52af3a809da0c257fed8320d2fb79833fcce2b410167276c78b33"
     },
     {
       "path": "src/sensing/rslidar_sdk/src/rs_driver/src/rs_driver/driver/decoder/basic_attr.hpp",
@@ -95427,8 +97388,8 @@
       "path": "src/sensing/rslidar_sdk/src/rs_driver/src/rs_driver/driver/decoder/decoder_RSAIRY.hpp",
       "type": "file",
       "mode": 420,
-      "bytes": 22677,
-      "sha256": "68d6386366f3bb16cf0a2bfc5af7c02481f3260d87e65cf619bb4b939371d462"
+      "bytes": 22649,
+      "sha256": "fb247c0108f4e189c26ff34c06929d53d23f3600e84614d3fa3d0475f6428bf6"
     },
     {
       "path": "src/sensing/rslidar_sdk/src/rs_driver/src/rs_driver/driver/decoder/decoder_RSAIRYLITE_ETH.hpp",
@@ -95935,6 +97896,13 @@
       "sha256": "edb6bccb70ff78aca8d34642681eaacec5602f5083677af8e536bbb9a2aa05e2"
     },
     {
+      "path": "src/sensing/rslidar_sdk/src/source/airy_denoise.hpp",
+      "type": "file",
+      "mode": 436,
+      "bytes": 1709,
+      "sha256": "b9cf97f47e76698562d7c39456a2454ebf6ae1cda409762058ee5859ac667712"
+    },
+    {
       "path": "src/sensing/rslidar_sdk/src/source/imu_kalman.hpp",
       "type": "file",
       "mode": 436,
@@ -95952,8 +97920,8 @@
       "path": "src/sensing/rslidar_sdk/src/source/source_driver.hpp",
       "type": "file",
       "mode": 420,
-      "bytes": 10616,
-      "sha256": "949eccbb52a310f371ffe7b5e437c5f1dd2f7d849f521505a633870b8d7d3ba8"
+      "bytes": 10588,
+      "sha256": "ef68f9fdc055c670d6bc1df33676e9733aeed7733617cd31f84b754ba3eddf19"
     },
     {
       "path": "src/sensing/rslidar_sdk/src/source/source_packet_ros.hpp",
@@ -95966,8 +97934,8 @@
       "path": "src/sensing/rslidar_sdk/src/source/source_pointcloud_ros.hpp",
       "type": "file",
       "mode": 420,
-      "bytes": 18419,
-      "sha256": "8499476a2b5a1c0559f3e9e1df8066eaba10de0dbee49cd585e7891650add1fd"
+      "bytes": 19480,
+      "sha256": "07ef7e03ff6977a70efaaea4f7437049f8fa7772f65b6470f8f6ce766204c3f8"
     },
     {
       "path": "src/sensing/rslidar_sdk/src/utility/common.hpp",
@@ -95995,7 +97963,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1310,
-      "sha256": "5e0207906cb822dbd85dccb4a882b2a0648105b804cf17cb0e402ba7e6f1a4ca"
+      "sha256": "40a4756c07f23132a97629dc0ea74ff0bb499a84ef20d6ecc47f094b56d9b7b1"
     },
     {
       "path": "src/simulator/omnifleet_kinematic_sim/package.xml",
@@ -96058,7 +98026,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1818,
-      "sha256": "bd0c4f9650b641251f45ebf911794ff9d7165a258c18e671333b4890da12532d"
+      "sha256": "419bc225188eb897672fc8dc20a92aee31db19b8b8231c2cf8b5296d9fce132b"
     },
     {
       "path": "src/simulator/omnifleet_multi_robot_sim/package.xml",
@@ -96226,7 +98194,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1204,
-      "sha256": "0859937022a7c883f412c67e51bffa38d4f4a3b10e648ea668a667673bc0d631"
+      "sha256": "a064728652d3288a10cf26a436cef250430750b03d39099c8bc89b6a926b4084"
     },
     {
       "path": "src/simulator/omnifleet_simulator/package.xml",
@@ -96260,15 +98228,15 @@
       "path": "src/system/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 2050,
-      "sha256": "173e65dc2e5a56b41c82df03596c337ae3ea4baf3b79b59dcdcdefa2afca34e3"
+      "bytes": 1561,
+      "sha256": "6b0b1447da56015c9616264801012b9f64549fb85c79b28a839e7377b610851e"
     },
     {
       "path": "src/system/omnifleet_alignment_cloud/alignment_cloud.py",
       "type": "file",
       "mode": 420,
-      "bytes": 2926,
-      "sha256": "06e8d601ad8a6837039bdeac3eb7d105225255e2e6d8d8a61a9a35ad712ad589"
+      "bytes": 2871,
+      "sha256": "d8402e90445c04ef8de8d755101771ad9f91c8fc35c6d082b96c17b2ae18f8e6"
     },
     {
       "path": "src/system/omnifleet_alignment_cloud/build_export.py",
@@ -96295,8 +98263,8 @@
       "path": "src/system/omnifleet_alignment_cloud/map_snapshot.py",
       "type": "file",
       "mode": 420,
-      "bytes": 4951,
-      "sha256": "80e1a242c1cc33c0f51daebe7a21594e4d50895058c4f99a3cdde7ff0b919b37"
+      "bytes": 7394,
+      "sha256": "79c4c66ac874c3fd7fc6d5e7b964048d031e82290f8935324ccc41f0e72a4b49"
     },
     {
       "path": "src/system/omnifleet_bringup/CMakeLists.txt",
@@ -96316,15 +98284,15 @@
       "path": "src/system/omnifleet_bringup/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 3287,
-      "sha256": "ceb1ea03593bf5480f58454449dbbc5c8435ec6fa8f5d60a8833f6d5f694006f"
+      "bytes": 2257,
+      "sha256": "bb41662b39b49c3eb22a4263e03aa4b1da5d3e01c6dd420e1e1e01bea8210c66"
     },
     {
       "path": "src/system/omnifleet_bringup/README.omnifleet.md",
       "type": "file",
       "mode": 436,
-      "bytes": 2654,
-      "sha256": "be70d041fba16ac64b85a8edc8ba669a7db4fbe7c59c12e316a0200343ee6f52"
+      "bytes": 3525,
+      "sha256": "00a5a7f4a5f5f1dafa3ff5e7db111a495336513ecf02c0ab4ba6cc9607f5b5f1"
     },
     {
       "path": "src/system/omnifleet_bringup/package.xml",
@@ -96595,8 +98563,8 @@
       "path": "src/system/omnifleet_fleet/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 881,
-      "sha256": "50d859f96cd774dde4f8a95898f893fbad19c8b3d24e92dd3ef2e2a673ba4bc9"
+      "bytes": 1072,
+      "sha256": "1aad4e25031dc5c2f47b5be3be3eb2de8c3871497ddb6dace7f1755532ea9a2e"
     },
     {
       "path": "src/system/omnifleet_fleet/README.omnifleet.md",
@@ -96617,7 +98585,7 @@
       "type": "file",
       "mode": 420,
       "bytes": 87,
-      "sha256": "9da9788553ead07c939a2cd8fab1da3511ad8f95352bc8a217dd3db4ac0d4925"
+      "sha256": "66735ccf245e0510bf1d859497453941ffa125045ef38959f9379289a6652a8f"
     },
     {
       "path": "src/system/omnifleet_fleet/env.bash",
@@ -96644,8 +98612,8 @@
       "path": "src/system/omnifleet_fleet/foxglove_start.sh",
       "type": "file",
       "mode": 493,
-      "bytes": 1150,
-      "sha256": "081ff5e699c0bdd70698666e38e5860bc2e9c6dbedc1faa1e92792adb5856f60"
+      "bytes": 1473,
+      "sha256": "6bb1899f6c2a7105a8d70759bf736cfc729435e3179f34c9cd8910d65f6df398"
     },
     {
       "path": "src/system/omnifleet_fleet/gateway_common.py",
@@ -96756,15 +98724,15 @@
       "path": "src/system/omnifleet_fleet/compat/foxglove_subscription_shutdown/README.txt",
       "type": "file",
       "mode": 436,
-      "bytes": 751,
-      "sha256": "12b1eca2b595863465db3da7d8827e1075100223953471e437ab4d8d501df673"
+      "bytes": 942,
+      "sha256": "de5fe45315df3e27934f74d26c4bcdbc7bddfedb16c4d300c0749e1ed999c732"
     },
     {
       "path": "src/system/omnifleet_fleet/compat/foxglove_subscription_shutdown/build.py",
       "type": "file",
       "mode": 436,
-      "bytes": 1936,
-      "sha256": "574bd483bedc1c87a266a17f54e3e104c5856fbba8af42c201a327d1157c8636"
+      "bytes": 2060,
+      "sha256": "3b368c35de65694e847cd1850945a55ea0b2ca77250c9a368ebe4a4ec37a3fc9"
     },
     {
       "path": "src/system/omnifleet_fleet/compat/foxglove_subscription_shutdown/subscription-shutdown.patch",
@@ -96842,6 +98810,13 @@
       "mode": 493,
       "bytes": 122,
       "sha256": "62ebd37390199238c20371b090c0a0a05d8f2c98d7026feb74eca037656c4c63"
+    },
+    {
+      "path": "src/system/operator_tools/robot_104_mode.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 2028,
+      "sha256": "9007bfdcd371316830b046e446e0e8e1861fa668c17852b23b0fa4fd54afe9f6"
     },
     {
       "path": "src/system/operator_tools/start_omnifleet_stack.sh",
@@ -97184,7 +99159,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1062,
-      "sha256": "bdb635aa0f1fbadcaba78b38d954fd9c88fc9f56ba1893761f0f79d645bd3f1a"
+      "sha256": "d4bfb52cc79865ada6d1ffe7df8611f19929d3d952683cfba171347744e19de8"
     },
     {
       "path": "src/system/rmw_zenoh_cpp/package.xml",
@@ -101943,8 +103918,8 @@
       "path": "src/system/tools/agenticros/ros2_ws/src/agenticros_explore/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 2387,
-      "sha256": "fcf6e1fd8e421f264ffed20da3bb1112a0f2a3f3076a854407b72c4763b50ba3"
+      "bytes": 2384,
+      "sha256": "537b7ac52c12902378ccf05c2518d2783f700dac4ec21aea5ccc6cd1b996d382"
     },
     {
       "path": "src/system/tools/agenticros/ros2_ws/src/agenticros_explore/package.xml",
@@ -102167,8 +104142,8 @@
       "path": "src/system/tools/agenticros/ros2_ws/src/agenticros_sim/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 9938,
-      "sha256": "200689dc2658f2d3a55f130518af54fe4b85cc50519b692dd7427186858171a1"
+      "bytes": 9932,
+      "sha256": "e341acef7d6e51b53f1111caf2343dcaf02bda2e765c17cce0d7acdd37f504d7"
     },
     {
       "path": "src/system/tools/agenticros/ros2_ws/src/agenticros_sim/package.xml",
@@ -102717,6 +104692,13 @@
       "sha256": "38033466373dfffde7839bec0e6d02b5a3fb4b46048d8dbf074c0954ba2269e6"
     },
     {
+      "path": "src/system/workspace_support/nav2_startup_probe.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 405,
+      "sha256": "980f355c6b91f137ee597ae4fed10ab00271420c5cd18ca6599a005766f69eaf"
+    },
+    {
       "path": "src/system/workspace_support/robot_fleet_env.bash",
       "type": "file",
       "mode": 436,
@@ -102742,7 +104724,7 @@
       "type": "file",
       "mode": 420,
       "bytes": 3108,
-      "sha256": "45b8b5dd71d36f7d443ec6515990b40cdd8c70255bcc6025bf5a0b423f739a30"
+      "sha256": "63ef1d69ae22d1c2e5d6a59f8886e57a8f7cff04a69d522cba08836272d1c8a7"
     },
     {
       "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/EXTERNAL_DEPENDENCY_FREEZE.json",
@@ -103028,8 +105010,8 @@
       "path": "src/system/workspace_support/omnifleet_t2_ws/runtime/etc/omnifleet_t2/foxglove.yaml",
       "type": "file",
       "mode": 420,
-      "bytes": 3527,
-      "sha256": "b3144416eedf285b2e6840cf6879ad9fe77383c7fb5453b5566954c8e06cb405"
+      "bytes": 4042,
+      "sha256": "12d9e1bff7e87dbfc39792b60fddeac0c11a8b3b80536eb88ac0af4a1c56b465"
     },
     {
       "path": "src/system/workspace_support/omnifleet_t2_ws/runtime/etc/omnifleet_t2/robot.env",
@@ -103151,6 +105133,48 @@
       "sha256": "07440526bbca74cd1e9534e8aa0cf592c4b85b562a571ef59e7f6a7a2d7af883"
     },
     {
+      "path": "src/vehicle/huaner_driver/package.xml",
+      "type": "file",
+      "mode": 436,
+      "bytes": 610,
+      "sha256": "46aea0985ff419bbc375ef7eba0d5a3f6b8fd20918613a7f1aa19f8af124a826"
+    },
+    {
+      "path": "src/vehicle/huaner_driver/setup.cfg",
+      "type": "file",
+      "mode": 436,
+      "bytes": 96,
+      "sha256": "206f67b883e0df06e1215aa94019b673247f267365e93eef52d218aef47daebd"
+    },
+    {
+      "path": "src/vehicle/huaner_driver/setup.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 359,
+      "sha256": "4ffca51aee959d4dc8f8471e9df5197fee809809578d3a955b573c307916a75e"
+    },
+    {
+      "path": "src/vehicle/huaner_driver/huaner_driver/__init__.py",
+      "type": "file",
+      "mode": 436,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/vehicle/huaner_driver/huaner_driver/node.py",
+      "type": "file",
+      "mode": 420,
+      "bytes": 8701,
+      "sha256": "90dcb12b2fa9088ac2b7d245ecb0570c6b947986e37bc65d56be6bb1597b0041"
+    },
+    {
+      "path": "src/vehicle/huaner_driver/resource/huaner_driver",
+      "type": "file",
+      "mode": 436,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
       "path": "src/vehicle/omnifleet_chassis_driver/README.md",
       "type": "file",
       "mode": 420,
@@ -103189,8 +105213,8 @@
       "path": "src/vehicle/omnifleet_chassis_driver/omnifleet_chassis_driver/Rosmaster_Lib.py",
       "type": "file",
       "mode": 436,
-      "bytes": 12827,
-      "sha256": "656a3439fc6e7b1aa6fdc39b6480622846de960d22346feeb37027a1dd480e7a"
+      "bytes": 14565,
+      "sha256": "cfbbd92d95af67fe283a9a791c8be49f08099d233ab3e5f0b3d08acc1cf6c74e"
     },
     {
       "path": "src/vehicle/omnifleet_chassis_driver/omnifleet_chassis_driver/__init__.py",
@@ -103210,8 +105234,8 @@
       "path": "src/vehicle/omnifleet_chassis_driver/omnifleet_chassis_driver/omnifleet_t2_driver.py",
       "type": "file",
       "mode": 436,
-      "bytes": 20698,
-      "sha256": "a49bc1f2a3bd851f23110b016c42e54b0cb7d19b30282d56c08dcabe17df22f1"
+      "bytes": 21366,
+      "sha256": "b0dea051e5c323746846f8c4c82b3726cf688fc10fb08e80cd0f20dbaf27a2c2"
     },
     {
       "path": "src/vehicle/omnifleet_chassis_driver/omnifleet_chassis_driver/raw_pwm_cli.py",
@@ -103253,7 +105277,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1158,
-      "sha256": "20b9fea5c40e8f63720a161cdc4aea438aaa3667d57c07e8692881703326232e"
+      "sha256": "f5721ec02d86b3d5ed01bd4abc6946139c3f6666ca062e5e3d93ff5add13b33c"
     },
     {
       "path": "src/vehicle/omnifleet_description/package.xml",
@@ -103266,8 +105290,8 @@
       "path": "src/vehicle/omnifleet_description/config/extrinsics.yaml",
       "type": "file",
       "mode": 420,
-      "bytes": 621,
-      "sha256": "665ecaf2d60bae6d74182dda954fe5224268e7f2f710877c4ca47622cf24d91f"
+      "bytes": 669,
+      "sha256": "a05c08419f0bb3564f287f648c85250178a36e3e63f9427bf88e819b06e2df5a"
     },
     {
       "path": "src/vehicle/omnifleet_description/config/sensor_frames.yaml",
@@ -103294,8 +105318,8 @@
       "path": "src/vehicle/omnifleet_description/urdf/omnifleet_t2.urdf",
       "type": "file",
       "mode": 420,
-      "bytes": 3127,
-      "sha256": "ccf924db86a88d3d6966ee17210743f6408f8156f58bf5963f4ef353fea53b35"
+      "bytes": 3116,
+      "sha256": "c8e2ab767fd2e2c0c02330dde90eba70e1c9614c4692f1f055b247e6086edba8"
     },
     {
       "path": "src/vehicle/omnifleet_servo_rqt/README.md",
@@ -103358,7 +105382,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 1294,
-      "sha256": "a9a452d17fc409f74342b04d043110845af6f8e38c63d22308f3116d7991b99d"
+      "sha256": "d424690683489695efea6933ff34827ac8c7971993b33ec81f3e31c49a3d6e25"
     },
     {
       "path": "src/vehicle/ros_robot_controller/package.xml",
@@ -103462,8 +105486,8 @@
       "path": "src/vehicle/ros_robot_controller_msgs/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1217,
-      "sha256": "8ab193e06e4960d77002e02fb7bb69698e4179daa5135b752ddd1ac6499840ef"
+      "bytes": 1263,
+      "sha256": "f40bc42abc40c4a445114ab9d5edc078ca8c40d3e6c69ff16175e91be61cc12c"
     },
     {
       "path": "src/vehicle/ros_robot_controller_msgs/package.xml",
@@ -103638,7 +105662,7 @@
       "type": "file",
       "mode": 436,
       "bytes": 975,
-      "sha256": "2c901fc9f67a128443bba3b2103123e2c651dea42868872c6adf87c756181e93"
+      "sha256": "5a9c37d3fc76708252394c90c240085c697d7eac4c38f527bc9e9d395b0639b2"
     },
     {
       "path": "src/vehicle/rrc_tank_description/package.xml",
@@ -103686,8 +105710,8 @@
       "path": "src/visualization/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 1147,
-      "sha256": "d714cf54f91aaec94aea0e81013637e9403480331565fa3a829a9ff6afdc639d"
+      "bytes": 987,
+      "sha256": "8b4e798946f1ad94d88472bc81b323698369f0ab7c302388683025577c71a786"
     },
     {
       "path": "src/visualization/foxglove_studio_source/.dockerignore",
@@ -103784,8 +105808,8 @@
       "path": "src/visualization/foxglove_studio_source/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 4601,
-      "sha256": "49cdfea9ba568a58a11adc0082d87b4270ded2d549f6762f7ac79c7a0dfdcd46"
+      "bytes": 4600,
+      "sha256": "6046c3f1d226f78565441b977ca0aab1c09ca87a9c44157a7ffd27c29099754f"
     },
     {
       "path": "src/visualization/foxglove_studio_source/README.omnifleet.md",
@@ -127479,8 +129503,8 @@
       "path": "src/visualization/omnifleet_t2_ws/foxglove/dsh_diagnostic_panel/README.md",
       "type": "file",
       "mode": 420,
-      "bytes": 3732,
-      "sha256": "ced4ee61054ada49e5a6e1a329ae57f88e3c3a69baead679720170c5f325fb2b"
+      "bytes": 3923,
+      "sha256": "273e1a8b010db91f68cc7d1939fb07876ae4f399124e5f0e5442d2f50c8c850c"
     },
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/dsh_diagnostic_panel/answer_safety.py",
@@ -127766,8 +129790,8 @@
       "path": "src/visualization/omnifleet_t2_ws/foxglove/fleet_panel/OmniFleet_总调度.json",
       "type": "file",
       "mode": 420,
-      "bytes": 5213,
-      "sha256": "77e9409b0f0e62c508e626d2621b089a0f0e5eab43e2e06bd8b211586fed2cd4"
+      "bytes": 5241,
+      "sha256": "f2bef7569c465c9217681e9eff8f5009bc85a10f88002fcbc0154e82e4aa5b07"
     },
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/fleet_panel/deploy_ui.cjs",
@@ -127780,8 +129804,8 @@
       "path": "src/visualization/omnifleet_t2_ws/foxglove/fleet_panel/layout-updated.json",
       "type": "file",
       "mode": 420,
-      "bytes": 13318,
-      "sha256": "7466f0eb2c63200c1cfbeda713b46e34381fc2c525ee9cbfc0143aca54085771"
+      "bytes": 13325,
+      "sha256": "1f60c52178524db1df91d384b0e36f0757a12a1e1b8a842ab7135b4fadb3a1a4"
     },
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/fleet_panel/使用与验收.md",
@@ -127899,8 +129923,8 @@
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/Nav2PermanentPanel.js",
       "type": "file",
       "mode": 420,
-      "bytes": 150802,
-      "sha256": "fabf398db7857c7e94ab57d6d6ef03a4c10fe56e681e0c823eb9e6a34ae12a90"
+      "bytes": 155316,
+      "sha256": "56f7c7bcfd8dfae11e20377736a02b56be58764cd27c1ae7fd4d6d6c203a879f"
     },
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/README.md",
@@ -127913,8 +129937,8 @@
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/README.route-button.md",
       "type": "file",
       "mode": 436,
-      "bytes": 2511,
-      "sha256": "8b89076477d9b49de07b6b562c21c6bf69f810208347deb4db55474089a80fa6"
+      "bytes": 2702,
+      "sha256": "e8591f98b1f658994d62dec80f7d3274d77200b79bd8afe29465896bc0a850c1"
     },
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/cdp.cjs",
@@ -127975,16 +129999,16 @@
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/nav2_parameter_store.py",
       "type": "file",
-      "mode": 436,
-      "bytes": 75209,
-      "sha256": "d31dded3a90db2ba115399b737ce7a4b14facc0423d05924b1863182174390ee"
+      "mode": 420,
+      "bytes": 72833,
+      "sha256": "17151ff3db5e397ae7bd44a01d0523f5623b010a2f9f5620008107a4e92bbeb8"
     },
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/navigation_restart.py",
       "type": "file",
       "mode": 493,
-      "bytes": 18971,
-      "sha256": "1d070014763d098570b94553f74737f02d210b170e6645b7cf61740507fdace6"
+      "bytes": 20797,
+      "sha256": "d0d2c4c91aead489a1f6a796f74383a25c4a6551d9d41a08b95a0d2c8b28d5c6"
     },
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/navigation_restart.sh",
@@ -128004,15 +130028,15 @@
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/parameter_docs.json",
       "type": "file",
       "mode": 420,
-      "bytes": 43298,
-      "sha256": "ecb02dceb578e0a3a4e10fd4f0480920e0fe4d4d5be0ab85297f6558623deabf"
+      "bytes": 43367,
+      "sha256": "ce66ab7048ae901ce10a3a42e48660dd6d43f49bab5fa184766ba672b0f0e097"
     },
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/parameter_links.py",
       "type": "file",
       "mode": 420,
-      "bytes": 4685,
-      "sha256": "991792b82cbd958cce2f50537090846499c40c66030403d188df74558fe41570"
+      "bytes": 3921,
+      "sha256": "328976c89d53494d8907522ad5f10e833fa874fd1de9b5c18240b2c68f7b7409"
     },
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/road_network_bridge.py",
@@ -128165,15 +130189,15 @@
       "path": "src/visualization/omnifleet_waypoint_ui/README.md",
       "type": "file",
       "mode": 436,
-      "bytes": 4192,
-      "sha256": "22f00908b91203675f9f8f0434f3f27bd9f03aff8105c64de9e718cf7fff19ca"
+      "bytes": 4344,
+      "sha256": "b8ff61d4ab827d0b4048dc7e09148f2fb072c8ba9c61978cc970a75eefff26d8"
     },
     {
       "path": "src/visualization/omnifleet_waypoint_ui/README.waypoint-save-fix.md",
       "type": "file",
       "mode": 436,
-      "bytes": 2008,
-      "sha256": "62cc9e48adf724d01079bdd2ff2d0a9a6c5b0ca227e7cc3ffd75a9daa42b7438"
+      "bytes": 2199,
+      "sha256": "984cd1078f6b9f1c9194fdac90216490a647fd1d7a9ae069b26cf0e87a1c50db"
     },
     {
       "path": "src/visualization/omnifleet_waypoint_ui/package.xml",

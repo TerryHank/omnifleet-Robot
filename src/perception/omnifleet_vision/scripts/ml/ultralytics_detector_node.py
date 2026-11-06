@@ -35,7 +35,7 @@ def main(args=None) -> None:
     import torch
     from cv_bridge import CvBridge
     from rclpy.node import Node
-    from rclpy.qos import qos_profile_sensor_data
+    from rclpy.qos import QoSProfile, ReliabilityPolicy
     from sensor_msgs.msg import Image
     from std_msgs.msg import String
     from ultralytics import YOLO
@@ -62,7 +62,7 @@ def main(args=None) -> None:
             self.result_publisher = self.create_publisher(String, result_topic, 10)
             self.debug_publisher = self.create_publisher(Image, debug_topic, 10)
             self.subscription = self.create_subscription(
-                Image, input_topic, self.on_image, qos_profile_sensor_data
+                Image, input_topic, self.on_image, QoSProfile(depth=1, reliability=ReliabilityPolicy.BEST_EFFORT)
             )
             self.get_logger().info(
                 f"PyTorch 视觉节点已启动：任务={self.task}，设备={self.device}，模型={model_path}"
@@ -77,6 +77,7 @@ def main(args=None) -> None:
                 result = self.model.predict(
                     image, device=self.device, imgsz=self.image_size,
                     conf=self.confidence, classes=self.class_ids, verbose=False,
+                    quantize=16 if self.device != "cpu" else 32,
                 )[0]
                 inference_ms = (time.perf_counter() - started) * 1000.0
                 detections = []

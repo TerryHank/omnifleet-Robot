@@ -4,14 +4,14 @@
 
 - 功能域：`control`；源码：`/home/iecme/omnifleet_ws/src/control/omnifleet_local_navigation`。
 - colcon 类型：`(ros.ament_python)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [setup.py](setup.py)：Python包安装与console_scripts入口。
-- [test/](test)：测试。现有项：`__pycache__`、`test_fleet_lease.py`、`test_task_policy_fleet_updates.py`。
+- [test/](test)：测试。当前项：`data`、`test_admission_inputs.py`、`test_cancel_terminal_status.py`、`test_clearance_recovery.py`、`test_clearance_timeout_replan.py`、`test_continuous_tree.py`、`test_global_footprint_recovery.py`、`test_global_start_recovery.py`、`test_nav2_clearance_recovery.py`、`test_planner_exit_recovery.py`、`test_point_goal.py`、`test_task_policy_fleet_updates.py`、`test_tf_receive_freshness.py`、`test_tracking_progress.py`、`test_tracking_stop_mode.py`。
 
 Python可执行入口（读取setup.py，未启动节点）：
 
@@ -20,6 +20,11 @@ Python可执行入口（读取setup.py，未启动节点）：
 ## 工作区内声明依赖
 
 - [omnifleet_navigation_interfaces](../../common/omnifleet_navigation_interfaces/README.md)
+- [omnifleet_planner](../../planning/omnifleet_planner/README.omnifleet.md)
+
+## 配置与车队接口
+
+服务以 `--config /home/iecme/omnifleet_ws/src/control/omnifleet_local_navigation/config/local-navigation.json` 加载配置。入口为 `runtime.py`；`allow_fleet`、`acquire_fleet`、`renew_fleet` 管理许可及租约，FLEET任务需通过现有就绪、epoch与租约匹配校验。源码支持不等于实车协同验收。
 
 ## 104 当前约定
 

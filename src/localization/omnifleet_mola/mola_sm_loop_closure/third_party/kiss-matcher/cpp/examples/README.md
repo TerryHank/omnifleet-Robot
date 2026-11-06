@@ -19,7 +19,7 @@ ______________________________________________________________________
 
 ## :package: Prerequisites
 
-To run example codes, in addition to installation of KISS-Matcher (run `make cppinstall` first), we need a) Point Cloud Library (PCL) and b) [TEASER++](<>) repository
+To run example codes, in addition to installation of KISS-Matcher (run `make cppinstall` first), we need a) Point Cloud Library (PCL) and b) [TEASER++](https://github.com/MIT-SPARK/TEASER-plusplus) repository
 
 **1. Installation of PCL**
 

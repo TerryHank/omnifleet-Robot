@@ -1,4 +1,4 @@
-#include "/home/iecme/robot_backups/tf_budget_20260916/detail_trace.hpp"
+#include <rs_driver/common/detail_trace.hpp>
 /*********************************************************************************************************************
 Copyright (c) 2020 RoboSense
 All rights reserved
@@ -35,6 +35,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "source/source.hpp"
 #include "source/imu_kalman.hpp"
+#include "source/airy_denoise.hpp"
+#include <limits>
 
 #ifdef ROS_FOUND
 #include <ros/ros.h>
@@ -276,7 +278,7 @@ namespace robosense
 namespace lidar
 {
 
-inline sensor_msgs::msg::PointCloud2 toRosMsg(const LidarPointCloudMsg& rs_msg, const std::string& frame_id, bool send_by_rows)
+inline sensor_msgs::msg::PointCloud2 toRosMsg(const LidarPointCloudMsg& rs_msg, const std::string& frame_id, bool send_by_rows, bool airy_denoise_enabled = false)
 {
   sensor_msgs::msg::PointCloud2 ros_msg;
 
@@ -323,7 +325,7 @@ inline sensor_msgs::msg::PointCloud2 toRosMsg(const LidarPointCloudMsg& rs_msg, 
 
   ros_msg.point_step = offset;
   ros_msg.row_step = ros_msg.width * ros_msg.point_step;
-  ros_msg.is_dense = rs_msg.is_dense;
+  ros_msg.is_dense = rs_msg.is_dense && !airy_denoise_enabled;
   ros_msg.data.resize(ros_msg.point_step * ros_msg.width * ros_msg.height);
 
   sensor_msgs::PointCloud2Iterator<float> iter_x_(ros_msg, "x");
@@ -347,9 +349,11 @@ inline sensor_msgs::msg::PointCloud2 toRosMsg(const LidarPointCloudMsg& rs_msg, 
       {
         const LidarPointCloudMsg::PointT& point = rs_msg.points[i + j * rs_msg.height];
 
-        *iter_x_ = point.x;
-        *iter_y_ = point.y;
-        *iter_z_ = point.z;
+        const bool reject = airy_denoise_enabled && airyIsolatedReturn(rs_msg.points, i + j * rs_msg.height, rs_msg.height);
+        const float invalid = std::numeric_limits<float>::quiet_NaN();
+        *iter_x_ = reject ? invalid : point.x;
+        *iter_y_ = reject ? invalid : point.y;
+        *iter_z_ = reject ? invalid : point.z;
         *iter_intensity_ = point.intensity;
 
         ++iter_x_;
@@ -379,9 +383,11 @@ inline sensor_msgs::msg::PointCloud2 toRosMsg(const LidarPointCloudMsg& rs_msg, 
     {
       const LidarPointCloudMsg::PointT& point = rs_msg.points[i];
 
-      *iter_x_ = point.x;
-      *iter_y_ = point.y;
-      *iter_z_ = point.z;
+      const bool reject = airy_denoise_enabled && airyIsolatedReturn(rs_msg.points, i, rs_msg.height);
+      const float invalid = std::numeric_limits<float>::quiet_NaN();
+      *iter_x_ = reject ? invalid : point.x;
+      *iter_y_ = reject ? invalid : point.y;
+      *iter_z_ = reject ? invalid : point.z;
       *iter_intensity_ = point.intensity;
 
       ++iter_x_;
@@ -453,6 +459,7 @@ private:
 #endif
   std::string frame_id_;
   bool send_by_rows_;
+  bool airy_denoise_enabled_ = false;
 };
 
 inline void DestinationPointCloudRos::init(const YAML::Node& config)
@@ -464,6 +471,11 @@ inline void DestinationPointCloudRos::init(const YAML::Node& config)
   yamlRead<bool>(config["driver"], "dense_points", dense_points, false);
   if (dense_points)
     send_by_rows_ = false;
+  yamlRead<bool>(config["driver"], "airy_denoise_enabled", airy_denoise_enabled_, false);
+  // Neighbor indexing requires native Airy channel-major, non-compacted data.
+  airy_denoise_enabled_ = airy_denoise_enabled_ && !dense_points &&
+      config["driver"]["lidar_type"].as<std::string>() == "RSAIRY";
+
 
   yamlRead<std::string>(config["ros"], 
       "ros_frame_id", frame_id_, "rslidar");
@@ -482,6 +494,7 @@ inline void DestinationPointCloudRos::init(const YAML::Node& config)
   node_ptr_.reset(new rclcpp::Node(node_name.str()));
 
   pub_ = node_ptr_->create_publisher<sensor_msgs::msg::PointCloud2>(ros_send_topic, rclcpp::QoS(ros_queue_length).best_effort());
+  RCLCPP_INFO(node_ptr_->get_logger(), "Airy fixed-neighborhood denoise: %s", airy_denoise_enabled_ ? "enabled" : "disabled");
 
 #ifdef ENABLE_IMU_DATA_PARSE
   std::string ros_send_imu_data_topic;
@@ -513,7 +526,7 @@ inline void DestinationPointCloudRos::init(const YAML::Node& config)
 inline void DestinationPointCloudRos::sendPointCloud(const LidarPointCloudMsg& msg)
 {
   causal_trace::emit("pc2_convert_begin",msg.timestamp);
-  auto cloud = toRosMsg(msg, frame_id_, send_by_rows_);
+  auto cloud = toRosMsg(msg, frame_id_, send_by_rows_, airy_denoise_enabled_);
   causal_trace::emit("pc2_publish_begin",msg.timestamp);
   pub_->publish(cloud);
   causal_trace::emit("pc2_publish_end",msg.timestamp);

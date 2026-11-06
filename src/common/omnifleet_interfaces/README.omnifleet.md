@@ -4,15 +4,15 @@
 
 - 功能域：`common`；源码：`/home/iecme/omnifleet_ws/src/common/omnifleet_interfaces`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [msg/](msg)：消息定义。现有项：`MissionStatus.msg`、`SlamStatus.msg`。
-- [srv/](srv)：服务定义。现有项：`Capability.srv`、`LoadMission.srv`、`RunMission.srv`、`SaveMap.srv`、`ServoCommand.srv`、`StoreMission.srv`、`SwitchMode.srv`。
+- [msg/](msg)：消息定义。当前项：`MissionStatus.msg`、`SlamStatus.msg`。
+- [srv/](srv)：服务定义。当前项：`Capability.srv`、`LoadMission.srv`、`RunMission.srv`、`SaveMap.srv`、`ServoCommand.srv`、`StoreMission.srv`、`SwitchMode.srv`。
 
 ## 原有资料
 

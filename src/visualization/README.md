@@ -8,7 +8,6 @@ Foxglove、导航/协同面板、航点 UI、显示模型和录制辅助。
 
 | 包/组件 | 职责 |
 |---|---|
-| [omnifleet_fleet_visualization](omnifleet_fleet_visualization/README.omnifleet.md) | 车队面板模型、ROS 数据接口、车辆显示和录制辅助。 |
 | [omnifleet_waypoint_ui](omnifleet_waypoint_ui/README.md) | 航点管理及本机导航 UI 桥接，区分添加航点与实际执行任务。 |
 
 ## 非独立ROS包的运行/支持目录

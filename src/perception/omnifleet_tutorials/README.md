@@ -3,25 +3,13 @@
 
 # omnifleet_tutorials
 
-本包保留 113 履带车仍可运行的视觉课程入口。原先四个建图/航点教程依赖一个
+本包保留 104 履带车仍可运行的视觉课程入口。原先四个建图/航点教程依赖一个
 不存在的旧 SLAM 包，现已从生产工作区删除；建图与导航统一使用
 `omnifleet_bringup` 的当前入口。
 
-## 手动建图导航
+## 建图导航入口
 
-```bash
-source /opt/ros/humble/setup.bash
-source /home/iecme/omnifleet_ws/hardware_drivers_ws/install/setup.bash
-cd /home/iecme/omnifleet_ws/omnifleet_t2_ws
-source install/setup.bash
-export ROS_DOMAIN_ID=0
-
-ros2 launch omnifleet_bringup production.launch.py \
-  backend:=mola \
-  map_id:=active \
-  map_dir:=/home/iecme/omnifleet_data/maps \
-  start_description:=false
-```
+加载 `/home/iecme/omnifleet_ws/env.bash`，使用当前MOLA和Nav2服务。见 [104启动说明](../../system/omnifleet_bringup/README.md)。旧hardware_drivers_ws与omnifleet_t2_ws嵌套工作区路径已不存在。
 
 ## 视觉课程
 

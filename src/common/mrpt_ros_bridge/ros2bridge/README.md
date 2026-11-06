@@ -4,14 +4,14 @@ Mobile Robot Programming Toolkit (MRPT) ros2bridge C++ library
 
 - 功能域：`common`；源码：`/home/iecme/omnifleet_ws/src/common/mrpt_ros_bridge/ros2bridge`。
 - colcon 类型：`(ros.cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [test/](test)：测试。现有项：`gps_unittest.cpp`、`map_unittest.cpp`、`pointcloud2_unittest.cpp`、`pose_unittest.cpp`、`time_unittest.cpp`。
+- [test/](test)：测试。当前项：`gps_unittest.cpp`、`map_unittest.cpp`、`pointcloud2_unittest.cpp`、`pose_unittest.cpp`、`time_unittest.cpp`。
 
 ## 配置和数据边界
 

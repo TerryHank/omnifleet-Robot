@@ -26,8 +26,8 @@ def test_t2_geometry_and_official_plugins():
 
 
 def test_direct_standard_command_chain():
-    assert LAUNCH.count('remappings=[("cmd_vel", "/msc/nav_cmd_vel")]') == 2
-    assert 'remappings=[("/cmd_vel", "/msc/nav_cmd_vel")' in LAUNCH
+    assert LAUNCH.count('remappings=[("cmd_vel", "/navigation/nav_cmd_vel")]') == 2
+    assert 'remappings=[("/cmd_vel", "/navigation/nav_cmd_vel")' in LAUNCH
     assert "/cmd_vel_nav_raw" not in LAUNCH
     assert "nav_steering_adapter" not in LAUNCH
     assert "velocity_smoother" not in LAUNCH
@@ -49,7 +49,7 @@ def test_global_costmap_combines_mola_map_and_live_lidar_obstacles():
     costmap = CONFIG["global_costmap"]["global_costmap"]["ros__parameters"]
     assert costmap["plugins"] == ["static_layer", "peer_layer", "obstacle_layer", "inflation_layer"]
     assert costmap["peer_layer"]["plugin"] == "nav2_costmap_2d::StaticLayer"
-    assert costmap["peer_layer"]["map_topic"] == "/msc/peer_map"
+    assert costmap["peer_layer"]["map_topic"] == "/navigation/peer_map"
     assert costmap["static_layer"]["plugin"] == "nav2_costmap_2d::StaticLayer"
     assert costmap["obstacle_layer"]["plugin"] == "nav2_costmap_2d::VoxelLayer"
     assert costmap["obstacle_layer"]["lidar"]["topic"] == "/rslidar_points"

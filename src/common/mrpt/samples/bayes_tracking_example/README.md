@@ -5,5 +5,5 @@ tracking a 2D mobile target with **state space** being its **location** and its
 
 Demo video: [https://www.youtube.com/watch?v=0_gGXYzjcGE](https://www.youtube.com/watch?v=0_gGXYzjcGE)
 
-The equations of this example and the theory behind them are explained in [this tutorial](tutorial-ekf.html).
+The equations of this example and the theory behind them are explained in [this tutorial](../../doc/source/tutorial-ekf.rst).
 

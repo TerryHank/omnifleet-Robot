@@ -102,13 +102,19 @@ bool GridCollisionChecker::inCollision(
 
   // Assumes setFootprint already set
   double wx, wy;
-  costmap_->mapToWorld(static_cast<double>(x), static_cast<double>(y), wx, wy);
+  // Lattice primitives contain fractional cells. Keep the same continuous
+  // coordinates as getWorldCoords instead of truncating to a cell center.
+  wx = costmap_->getOriginX() + (static_cast<double>(x) + 0.5) * costmap_->getResolution();
+  wy = costmap_->getOriginY() + (static_cast<double>(y) + 0.5) * costmap_->getResolution();
+  unsigned int mx, my;
+  if (!costmap_->worldToMap(wx, wy, mx, my)) {
+    return true;
+  }
 
   if (!footprint_is_radius_) {
     // if footprint, then we check for the footprint's points, but first see
     // if the robot is even potentially in an inscribed collision
-    footprint_cost_ = costmap_->getCost(
-      static_cast<unsigned int>(x), static_cast<unsigned int>(y));
+    footprint_cost_ = costmap_->getCost(mx, my);
 
     if (footprint_cost_ < possible_inscribed_cost_) {
       if (possible_inscribed_cost_ > 0) {
@@ -157,8 +163,7 @@ bool GridCollisionChecker::inCollision(
     return footprint_cost_ >= OCCUPIED;
   } else {
     // if radius, then we can check the center of the cost assuming inflation is used
-    footprint_cost_ = costmap_->getCost(
-      static_cast<unsigned int>(x), static_cast<unsigned int>(y));
+    footprint_cost_ = costmap_->getCost(mx, my);
 
     if (footprint_cost_ == UNKNOWN && traverse_unknown) {
       return false;

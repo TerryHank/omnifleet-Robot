@@ -24,8 +24,6 @@ BACKUPS = Path('/home/iecme/.local/share/omnifleet_t2/nav2-parameter-backups')
 SELECTED_FILE = Path('/home/iecme/.local/share/omnifleet_t2/nav2-selected-algorithms.json')
 HEIGHT_FILE = Path('/home/iecme/.local/share/omnifleet_t2/map-height.json')
 HEIGHT_KEYS = {'map_z_min': 'slice_z_min', 'map_z_max': 'slice_z_max'}
-STM32_PWM_KEYS = ('pwm_compensation_m1', 'pwm_compensation_m2')
-STM32_DRIVER = '/omnifleet_t2_driver'
 
 
 def robot_topic(name):
@@ -169,6 +167,8 @@ ALGORITHMS = {
 }
 ALGORITHM_PARAMETER_NAMES = {'global_planner_algorithm': 'global', 'local_controller_algorithm': 'local'}
 ALGORITHM_ROOTS = {'global': ('planner_server', 'ros__parameters'), 'local': ('controller_server', 'ros__parameters')}
+SPECS['goal_stateful'] = (('controller_server', 'ros__parameters', 'general_goal_checker'), ('stateful',), '/controller_server', 'general_goal_checker.', 0, 1, 'bool')
+SPECS['mppi_deadband_weight'] = (CONTROL_MPPI + ('VelocityDeadbandCritic',), ('cost_weight',), '/controller_server', 'FollowPathMPPI.VelocityDeadbandCritic.', 0, 100, 'double')
 DEFAULTS = {
     'dwb_min_speed_xy': 0., 'dwb_min_speed_theta': 0., 'dwb_min_vel_x': 0.,
     'planner_tolerance': .5, 'planner_max_planning_time': 3., 'planner_downsample_costmap': False,
@@ -310,7 +310,12 @@ def algorithm_state(path=YAML_FILE):
                 loaded_plugin = descend(data, algorithm_path(kind, key))
             except (KeyError, TypeError):
                 loaded_plugin = None
-            if loaded_plugin == plugin:
+            aliases = {
+                'omnifleet_planner::CostAwareSmac2D':'nav2_smac_planner/SmacPlanner2D',
+                'omnifleet_planner::ExactGoalSmacLattice':'nav2_smac_planner/SmacPlannerLattice',
+                'omnifleet_planner::PoseRotationShim':'nav2_mppi_controller::MPPIController',
+            }
+            if aliases.get(loaded_plugin,loaded_plugin) == plugin:
                 loaded.append(key)
         current = selected[kind] if selected[kind] in loaded else (loaded[0] if loaded else None)
         state[kind] = {'current': current,
@@ -329,6 +334,8 @@ def algorithm_state(path=YAML_FILE):
             state['global']['lattice_metadata'] = {'error': str(error)}
     return state
 
+
+DEFAULTS.update({'goal_stateful': False, 'mppi_deadband_weight': 1.0})
 
 def read_saved_value(data, key, spec):
     try:
@@ -554,10 +561,6 @@ def main():
                     self.create_client(SetParametersAtomically, node + '/set_parameters_atomically', callback_group=self.clients_group),
                     self.create_client(GetParameters, node + '/get_parameters', callback_group=self.clients_group),
                 )
-            self.nav_clients[STM32_DRIVER] = (
-                self.create_client(SetParametersAtomically, STM32_DRIVER + '/set_parameters_atomically', callback_group=self.clients_group),
-                self.create_client(GetParameters, STM32_DRIVER + '/get_parameters', callback_group=self.clients_group),
-            )
             selector_qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
                                       durability=DurabilityPolicy.TRANSIENT_LOCAL)
             self.planner_selector_pub = self.create_publisher(String, '/planner_selector', selector_qos)
@@ -706,7 +709,6 @@ def main():
         def read(self, request, response):
             try:
                 saved = saved_values()
-                saved.update(self.read_stm32_pwm())
                 response.message = json.dumps({'path': str(YAML_FILE.resolve()), 'saved': saved, 'algorithms': algorithm_state(), 'parameter_links': self.link_catalog(), 'navigation_strategy': navigation_strategy(), 'collision_model': collision_model.state(YAML_FILE)}, ensure_ascii=False)
                 response.success = True
             except Exception as error:
@@ -715,39 +717,7 @@ def main():
             return response
 
         def link_catalog(self):
-            parameter_links.write_pwm_view(self.read_stm32_pwm())
             return parameter_links.catalog(SPECS, YAML_FILE, HEIGHT_FILE, SELECTED_FILE)
-
-        def read_stm32_pwm(self):
-            getter = self.nav_clients[STM32_DRIVER][1]
-            result = self.request(getter, GetParameters.Request(names=list(STM32_PWM_KEYS)))
-            if len(result.values) != 2 or any(value.type != 2 for value in result.values):
-                raise ValueError('STM32 PWM 补偿参数回读类型不正确')
-            values = [value.integer_value for value in result.values]
-            return {name: {name: value} for name, value in zip(STM32_PWM_KEYS, values)}
-
-        def save_stm32_pwm(self, changes):
-            if set(changes) != set(STM32_PWM_KEYS):
-                raise ValueError('M1/M2 PWM 补偿必须成对提交')
-            setter, getter = self.nav_clients[STM32_DRIVER]
-            parameters = [Parameter(
-                name=name,
-                value=ParameterValue(type=2, integer_value=int(changes[name])),
-            ) for name in STM32_PWM_KEYS]
-            reply = self.request(setter, SetParametersAtomically.Request(parameters=parameters), timeout=6.)
-            if not reply.result.successful:
-                raise ValueError(reply.result.reason)
-            saved = saved_values()
-            saved.update(self.read_stm32_pwm())
-            return {
-                'path': 'STM32 Flash',
-                'backup': None,
-                'sha256': None,
-                'saved': saved,
-                'algorithms': algorithm_state(),
-                'runtime': {STM32_DRIVER: reply.result.reason or 'STM32 已永久保存并回读确认'},
-                'runtime_confirmed': True,
-            }
 
         def request(self, client, request, timeout=3.):
             if not client.wait_for_service(timeout_sec=1.):
@@ -786,7 +756,7 @@ def main():
                 except Exception as error:
                     response.results = [SetParametersResult(successful=False, reason=str(error))]
                 return response
-            if any(p.name in ('__stack_command', '__stack_restart', '__stack_status') for p in request.parameters):
+            if any(p.name in ('__stack_command', '__stack_restart', '__stack_status', '__saved_maps') for p in request.parameters):
                 try:
                     if len(request.parameters) != 1 or request.parameters[0].value.type != 4:
                         raise ValueError('导航栈请求格式不正确')
@@ -902,24 +872,10 @@ def main():
                                                param.value.integer_value if kind == 'int' else
                                                param.value.string_value if kind == 'string' else
                                                param.value.double_value)
-                    elif param.name in STM32_PWM_KEYS:
-                        if param.value.type != 2:
-                            raise ValueError(f'{param.name} 必须是整数')
-                        value = param.value.integer_value
-                        if not 0 <= value <= 3300:
-                            raise ValueError(f'{param.name} 必须在 0 到 3300 之间')
-                        changes[param.name] = value
                     else:
                         raise ValueError('不支持的参数')
                 if not changes:
                     raise ValueError('没有要保存的参数')
-                if any(name in changes for name in STM32_PWM_KEYS):
-                    if any(name not in STM32_PWM_KEYS for name in changes):
-                        raise ValueError('STM32 PWM 补偿不能与 Nav2 参数混合提交')
-                    receipt = self.save_stm32_pwm(changes)
-                    self.get_logger().info(json.dumps({'changes': changes, **receipt}, ensure_ascii=False))
-                    response.results = [SetParametersResult(successful=True, reason=json.dumps(receipt, ensure_ascii=False)) for _ in request.parameters]
-                    return response
                 if changes.get('global_planner_algorithm') == 'smac_hybrid':
                     _, getter = self.nav_clients['/planner_server']
                     loaded = self.request(getter, GetParameters.Request(names=['planner_plugins']))

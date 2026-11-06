@@ -108,6 +108,8 @@ def generate_launch_description():
             namespace="",
             package="rclcpp_components",
             executable="component_container",
+            respawn=True,
+            respawn_delay=2.0,
             composable_node_descriptions=[
                 compose_node,
             ],

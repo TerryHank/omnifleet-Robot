@@ -1,66 +1,26 @@
-<!-- OMNIFLEET_WORKSPACE_DOC_LINK -->
-本工作区职责、入口及104约定见 [README.omnifleet.md](README.omnifleet.md)。
+# omnifleet_bringup：104 启动编排
 
-# omnifleet_bringup（OmniFleet T2）
+当前环境由 `/home/iecme/omnifleet_ws/env.bash` 加载，ROS_DOMAIN_ID=104，RMW_IMPLEMENTATION=rmw_zenoh_cpp。
 
-本包是 113 履带车的生产启动入口。STM32 底盘只通过
-`/dev/omnifleet_t2_stm32` 打开；左右履带差速、电机方向、PWM 补偿和编码器
-PID 由履带固件负责，上位机发布标准 `/cmd_vel`。
+## 当前服务入口
 
-## 常驻服务
+- `omnifleet-t2-mola.service` → `mola_localization.launch.py profile:=integrated` → `mola_integrated_localization.launch.py`。
+- integrated读取 `src/localization/omnifleet_mola/mola_state_estimation_simple/config/tracked-integrated-live-runtime.json` 和 `tracked-integrated-live-system.yaml`；状态估计器为StateEstimationSimple。配置文件名robot113-simple.yaml是现有路径，不能仅据文件名改为104或替换参数。
+- `omnifleet-t2-pure-lio-nav2.service` → `navigation.launch.py`；Nav2永久配置在 `src/planning/omnifleet_planner/config/nav2_t2.yaml`，install入口软链接解析至该源码文件。
+- `omnifleet-local-navigation.service`为安全速度出口。速度链为 `/navigation/nav_cmd_vel` → local_navigation → `/navigation/cmd_vel_safe` → 底盘；`/cmd_vel`为人工输入。
+- 底盘、Airy、车体描述由各自systemd服务管理。MOLA及Nav2服务已启用；旧 `omnifleet-t2-navigation.service` 为disabled。
 
-```bash
-systemctl status omnifleet-t2-chassis.service
-systemctl status omnifleet-t2-airy.service
-journalctl -u omnifleet-t2-chassis.service -f
-```
+当前 integrated 配置使用 StateEstimationSimple；lidar3d-gicp.yaml 的 observations_deskew_pass 执行一次 Linear 去畸变，ICP 与地图插入共用该结果。依据 MOLA_OPTIMIZE_TWIST=false 和 LidarOdometry_ProcessScan.cpp 的 use_deskew 分支；话题 /navigation/deskewed_points 保持兼容名称。配置与源码核对不等于实车去畸变效果验收。
 
-底盘发布 `/odom`、`odom -> base_link`、`/voltage`、`/voltage/display`、
-`/firmware/version`、`/vel_raw`、`/wheel/odometry`、`/imu/data_raw`、
-`/imu/mag` 和 `/motor_command_sent`。Airy 服务发布 `/rslidar_points` 与
-`/rslidar_imu_data`。
+Nav2配置包含多个规划器和控制器，不能概括为固定SmacPlanner2D+DWB；实际选择由任务请求和当前nav2_t2.yaml决定。统一手动launch与常驻服务的重复启动检查以启动脚本为准。
 
-`omnifleet-t2-navigation.service` 固定保持 disabled，导航由操作员手动启动。
-
-## 手动启动 MOLA + Nav2
+## 只读检查
 
 ```bash
-source /opt/ros/humble/setup.bash
-source /home/iecme/omnifleet_ws/hardware_drivers_ws/install/setup.bash
-source /home/iecme/omnifleet_ws/mola_3_2_ws/install/setup.bash
-cd /home/iecme/omnifleet_ws/omnifleet_t2_ws
-source install/setup.bash
-export ROS_DOMAIN_ID=0
-
-ros2 launch omnifleet_bringup production.launch.py \
-  backend:=mola \
-  map_id:=active \
-  map_dir:=/home/iecme/omnifleet_data/maps \
-  start_description:=false
-```
-
-生产默认使用 MOLA、SmacPlanner2D 和 DWB。底盘驱动永远由
-`omnifleet-t2-chassis.service` 通过 `systemctl` 管理；任何 MOLA、Nav2 或
-上层 `robot.launch.py` 入口都不再接受或启动底盘节点。Airy 和车体描述同样
-由各自常驻服务管理，生产导航入口只连接它们。
-
-## 只读健康检查
-
-```bash
+source /home/iecme/omnifleet_ws/env.bash
+systemctl status omnifleet-t2-mola omnifleet-t2-pure-lio-nav2 omnifleet-local-navigation --no-pager
 ros2 run omnifleet_bringup robot_doctor --scope base
 ros2 run omnifleet_bringup robot_doctor --scope nav
-ros2 run omnifleet_bringup vehicle_status
 ```
 
-## 104 当前总启动管线
-
-整车跨域编排位于system/omnifleet_bringup，不依赖omnifleet_t2_mola_experiments。
-- launch/mola_nav2_unified.launch.py：MOLA主定位、雷达IMU、原生轮式vx/wz Smoother、导航栅格、Nav2与就绪检查的统一入口。
-- launch/mola_localization.launch.py：定位侧子管线，实际调用sensing、map及MOLA专用包。
-- launch/navigation.launch.py：Nav2子管线，读取planning/omnifleet_planner/config/nav2_t2.yaml的最新永久参数。
-当前由omnifleet-t2-mola与omnifleet-t2-pure-lio-nav2两个服务分别持有子管线；使用systemctl启动/重启。服务活动时统一手动launch会拒绝重复启动。底盘、Airy、描述节点仍由已有服务独立管理。
-雷达IMU标定归sensing/omnifleet_sensor_processing/config/airy_imu_calibration.yaml。轮式仅vx/wz，最终/state_estimation/pose，无车端车辆前缀，去畸变关闭。目录迁移不改变融合算法和运动授权。
-
-## RTAB-Map备用后端
-
-launch/rtabmap_lidar_grid.launch.py承接原RTAB-Map包装包的原生ICP里程计和栅格节点编排，直接依赖rtabmap_odom、rtabmap_slam。默认输入/rslidar_points、base_link、/tf和/tf_static，输出隔离到rtabmap_trial，不发布生产TF。数据库位于/home/iecme/omnifleet_data/maps/rtabmap/trial.db，启动不删除数据库。本次没有启用该备用后端，当前仍为MOLA。
+当前文件及依赖清单见 [README.omnifleet.md](README.omnifleet.md)。`rtabmap_lidar_grid.launch.py`为备用入口，源码存在不表示生产服务已切换。本次为文档核对，未执行运动测试。

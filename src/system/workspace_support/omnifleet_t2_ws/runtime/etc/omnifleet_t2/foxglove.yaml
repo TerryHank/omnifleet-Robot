@@ -4,6 +4,7 @@
       topic_whitelist:
       - .*
       client_topic_whitelist:
+      - ^/vision/color/pick$
       - ^/clicked_point$
       - "^/omnifleet_t2/diagnostics/question$"
       - ^/cmd_vel$
@@ -13,7 +14,12 @@
       - ^/(planner_selector|controller_selector)$
       - ^/omnifleet_t2/waypoints/(add_pose|next_name|rename|navigate_to|start|stop|undo|clear|update|map_save|map_load)$
       - ^/fleet/ui/(command|add_point|add_pose)$
+      - ^/vision/demo/control$
+      - ^/vision/person_follow/control$
+      - ^/camera/rgbd/control$
       service_whitelist:
+      - ^/(course_target_follow|course_color_box_follow|course_color|qr_follower|apriltag_follower|course_apriltag)/set_parameters$
+      - ^/kcf_follower/set_parameters$
       - ^/omnifleet_t2/road_network/(catalog|plan)$
       - ^/navigation/(stop|reset_estop)$
       - ^/omnifleet_t2/waypoints/(map_save|map_load)$
@@ -23,6 +29,9 @@
       - ^/omnifleet_t2/nav2/(read_saved|save_parameters)$
       - ^/map_save$
       - ^/map_load$
+      - ^/body_tracking_104/horizon_tracking_RobotCmdVel/set_parameters$
+      - ^/camera/(get_depth_exposure|set_depth_exposure)$
+      - ^/camera/(get_color_exposure|set_color_exposure|set_color_auto_exposure)$
       param_whitelist:
       - ^/planner_server[./]GridBased\.(cost_travel_multiplier|allow_unknown)$
       - ^/planner_server[./](GridBased|GridNavFn|GridThetaStar)\.(cost_travel_multiplier|allow_unknown|tolerance|max_planning_time|max_iterations|downsample_costmap|use_astar|use_final_approach_orientation|how_many_corners|w_euc_cost|w_traversal_cost)$

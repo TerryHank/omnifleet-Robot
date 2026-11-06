@@ -7,6 +7,7 @@ common:
   send_point_cloud_ros: true            # true: Send point cloud through ROS or ROS2
 lidar:
   - driver:
+      airy_denoise_enabled: true  # Inline organized-neighborhood denoise; no extra cloud pass
       lidar_type: RSAIRY             #  LiDAR type - RS16, RS32, RSBP, RSAIRY, RSAIRYLITE_ETH, RSFAIRY, RSHELIOS, RSHELIOS_16P, RS128, RS80, RS48, RSP128, RSP80, RSP48,
       airy_output_channels: 32             # robot_104 production mode; fail closed if invalid
                                    #               RSM1, RSM1_JUMBO, RSM2, RSM3, RSE1, RSMX, RSEMX.

@@ -1,11 +1,11 @@
 {
-  "repository": "TerryHank/omnifleet-t2-workspaces-backup-20260907",
-  "tag": "robot113-source-20261021-015022",
-  "parent_commit": "6816b7074ada64da9a9f8ca7205c869d464bf421",
-  "archive_sha256": "ce8f311f95d3e83bf9f13f58b882f1dffd4e45a23f79e5671e0cf0170c2a81e9",
-  "archive_bytes": 169418644,
-  "snapshot_completed_utc": "2026-10-20T17:50:22.139474+00:00",
-  "files": 18298,
+  "repository": "TerryHank/omnifleet-Robot",
+  "tag": "robot104-source-20261106-235759",
+  "parent_commit": "7435552eb8416b5c2db4583049f0350a65b1e2e1",
+  "archive_sha256": "0a38566f589f5160d62fe76763695cb0adbad0ff0de6e3c76863848639d1947b",
+  "archive_bytes": 188631111,
+  "snapshot_completed_utc": "2026-11-06T15:57:59.662348+00:00",
+  "files": 18586,
   "symlinks": 15,
   "redacted_files": 2
 }

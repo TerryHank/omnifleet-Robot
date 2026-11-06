@@ -4,14 +4,14 @@ TODO: Package description
 
 - 功能域：`sensing`；源码：`/home/iecme/omnifleet_ws/src/sensing/orbbec_description`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [launch/](launch)：ROS启动入口。现有项：`launch_utils.py`、`view_model.launch.py`。
+- [launch/](launch)：ROS启动入口。当前项：`launch_utils.py`、`view_model.launch.py`。
 
 ## 配置和数据边界
 

@@ -26,9 +26,10 @@ def generate_launch_description():
                 "use_gui", default_value="true", description="KCF 功能是否打开交互式选框窗口。"
             ),
             DeclareLaunchArgument(
-                "tracking_scale", default_value="0.4",
-                description="KCF 内部跟踪缩放比例；默认以约 614×512 追求最高稳定帧率。",
+                "tracking_scale", default_value="1.0",
+                description="内部跟踪保留640像素宽度，节点仍以tracking_max_width限制大图。",
             ),
+            DeclareLaunchArgument("tracking_backend", default_value="nanotrack", description="物体追踪后端：nanotrack 或 kcf。"),
             DeclareLaunchArgument("roi_x", default_value="0", description="无界面模式初始框左上角 x。"),
             DeclareLaunchArgument("roi_y", default_value="0", description="无界面模式初始框左上角 y。"),
             DeclareLaunchArgument("roi_width", default_value="0", description="无界面模式初始框宽度。"),
@@ -45,6 +46,7 @@ def generate_launch_description():
                     "enable_motion": LaunchConfiguration("enable_motion"),
                     "use_gui": LaunchConfiguration("use_gui"),
                     "tracking_scale": LaunchConfiguration("tracking_scale"),
+                    "tracking_backend": LaunchConfiguration("tracking_backend"),
                     "roi_x": LaunchConfiguration("roi_x"),
                     "roi_y": LaunchConfiguration("roi_y"),
                     "roi_width": LaunchConfiguration("roi_width"),

@@ -4,17 +4,17 @@ This is a modified version of LOAM which is original algorithm is described in t
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/fast_livo2_ros2`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下未发现同名目录；按源代码/备用组件登记，不能称为已部署运行。
+- 状态（2026-11-06目录核对）：当前 install 下未发现同名目录；按源代码/备用组件登记，不能称为已部署运行。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [launch/](launch)：ROS启动入口。现有项：`mapping_avia_marslvig.launch.py`、`mapping_aviz.launch.py`、`mapping_hesaixt32_hilti22.launch`、`mapping_ouster_ntu.launch.py`。
-- [config/](config)：业务/算法运行配置。现有项：`HILTI22.yaml`、`MARS_LVIG.yaml`、`NTU_VIRAL.yaml`、`avia.yaml`、`camera_MARS_LVIG.yaml`、`camera_NTU_VIRAL.yaml`、`camera_fisheye_HILTI22.yaml`、`camera_pinhole.yaml`。
-- [scripts/](scripts)：可执行脚本。现有项：`colmap_output.sh`、`mesh.py`。
-- [test/](test)：测试。现有项：`test_airy_preprocess.cpp`。
+- [launch/](launch)：ROS启动入口。当前项：`mapping_avia_marslvig.launch.py`、`mapping_aviz.launch.py`、`mapping_hesaixt32_hilti22.launch`、`mapping_ouster_ntu.launch.py`。
+- [config/](config)：业务/算法运行配置。当前项：`HILTI22.yaml`、`MARS_LVIG.yaml`、`NTU_VIRAL.yaml`、`avia.yaml`、`camera_MARS_LVIG.yaml`、`camera_NTU_VIRAL.yaml`、`camera_fisheye_HILTI22.yaml`、`camera_pinhole.yaml`。
+- [scripts/](scripts)：可执行脚本。当前项：`colmap_output.sh`、`mesh.py`。
+- [test/](test)：测试。当前项：`test_airy_preprocess.cpp`。
 
 ## 工作区内声明依赖
 

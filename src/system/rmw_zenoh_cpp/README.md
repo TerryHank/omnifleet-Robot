@@ -4,14 +4,14 @@ ROS 2 的 Zenoh RMW 与路由器；域号和机器人命名空间是两个不同
 
 - 功能域：`system`；源码：`/home/iecme/omnifleet_ws/src/system/rmw_zenoh_cpp`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [config/](config)：业务/算法运行配置。现有项：`DEFAULT_RMW_ZENOH_ROUTER_CONFIG.json5`、`DEFAULT_RMW_ZENOH_SESSION_CONFIG.json5`。
+- [config/](config)：业务/算法运行配置。当前项：`DEFAULT_RMW_ZENOH_ROUTER_CONFIG.json5`、`DEFAULT_RMW_ZENOH_SESSION_CONFIG.json5`。
 
 ## 配置和数据边界
 

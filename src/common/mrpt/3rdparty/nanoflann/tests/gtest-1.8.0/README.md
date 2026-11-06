@@ -273,8 +273,5 @@ this is usually done by 'make'.  To run the tests, do
 
 All tests should pass.
 
-Normally you don't need to worry about regenerating the source files,
-unless you need to modify them.  In that case, you should modify the
-corresponding .pump files instead and run the pump.py Python script to
-regenerate them.  You can find pump.py in the [scripts/](scripts/) directory.
-Read the [Pump manual](docs/PumpManual.md) for how to use it.
+This vendored copy includes the generated headers and source files. The upstream
+.pump regeneration tools and Pump manual are not included in this directory.

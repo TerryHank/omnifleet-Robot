@@ -26,6 +26,11 @@ from source_time_executor import SourceTimeExecutor, velocity_command_time, with
 IMU_RAW_SCALE = 1000.0
 
 
+def stm32_imu_to_rep103(x, y, z):
+    """Undo the current ICM firmware Rx(pi) body mapping for ROS body axes."""
+    return x, -y, -z
+
+
 def sanitize_body_command(linear_x, linear_y, angular_z, max_angular):
     """Return a finite tracked-body command and lateral-input flag."""
     values = (linear_x, linear_y, angular_z)
@@ -347,8 +352,8 @@ class OmnifleetT2Driver(Node):
         if bool(self.get_parameter("publish_odom_tf").value):
             self.tf_broadcaster.sendTransform(transform)
 
-        ax, ay, az = self.car.get_accelerometer_data()
-        gx, gy, gz = self.car.get_gyroscope_data()
+        ax, ay, az = stm32_imu_to_rep103(*self.car.get_accelerometer_data())
+        gx, gy, gz = stm32_imu_to_rep103(*self.car.get_gyroscope_data())
         imu = Imu()
         imu.header.stamp = stamp
         imu.header.frame_id = self.imu_link
@@ -365,7 +370,7 @@ class OmnifleetT2Driver(Node):
         self.imu_publisher.publish(imu)
 
         if self.publish_magnetometer:
-            mx, my, mz = self.car.get_magnetometer_data()
+            mx, my, mz = stm32_imu_to_rep103(*self.car.get_magnetometer_data())
             mag = MagneticField()
             mag.header.stamp = stamp
             mag.header.frame_id = self.imu_link

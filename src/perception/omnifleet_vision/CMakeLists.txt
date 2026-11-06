@@ -43,13 +43,13 @@ ament_target_dependencies(kcf_follower_node
 # 同时加载 4.5 与 4.10；其他平台继续使用 find_package 得到的默认库。
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" AND
    EXISTS "/lib/aarch64-linux-gnu/libopencv_core.so.4.5d")
-  if(EXISTS "/usr/include/opencv4/opencv2/core.hpp")
+  if(EXISTS "/home/iecme/omnifleet_ws/third_party/opencv45/usr/include/opencv4/opencv2/core.hpp")
+    target_include_directories(kcf_follower_node BEFORE PRIVATE
+      /home/iecme/omnifleet_ws/third_party/opencv45/usr/include/opencv4
+    )
+  elseif(EXISTS "/usr/include/opencv4/opencv2/core.hpp")
     target_include_directories(kcf_follower_node BEFORE PRIVATE
       /usr/include/opencv4
-    )
-  elseif(EXISTS "/home/iecme/third_party/opencv45/usr/include/opencv4/opencv2/core.hpp")
-    target_include_directories(kcf_follower_node BEFORE PRIVATE
-      /home/iecme/third_party/opencv45/usr/include/opencv4
     )
   else()
     message(FATAL_ERROR "OpenCV 4.5 headers are required with ROS cv_bridge on aarch64")
@@ -87,6 +87,7 @@ install(FILES README.md NOTICE.md SOURCE_MANIFEST.sha256
 install(PROGRAMS
   scripts/course_gui_overlay_node.py
   scripts/image_display_node.py
+  scripts/kcf_follower_python_node.py
   scripts/classical/apriltag_recognition_node.py
   scripts/classical/camera_monitor_node.py
   scripts/classical/color_recognition_node.py
@@ -97,7 +98,9 @@ install(PROGRAMS
   scripts/classical/synthetic_scene_publisher.py
   scripts/classical/traffic_light_dual_node.py
   scripts/integration/detection_tracker_node.py
+  scripts/integration/nanotrack_node.py
   scripts/integration/detection_aggregator_node.py
+  scripts/integration/gesture_person_follow_node.py
   scripts/integration/lane_follow_controller_node.py
   scripts/integration/multimodal_risk_node.py
   scripts/integration/safe_behavior_controller_node.py
@@ -105,6 +108,7 @@ install(PROGRAMS
   scripts/integration/traffic_course_state_node.py
   scripts/integration/traffic_event_node.py
   scripts/integration/target_follow_controller_node.py
+  scripts/integration/target_sparse_depth_node.py
   scripts/integration/vision_nav_target_node.py
   scripts/ml/face_detection_node.py
   scripts/ml/inference_status_node.py
@@ -121,7 +125,13 @@ install(PROGRAMS
 install(FILES
   scripts/classical/algorithms.py
   scripts/classical/ros_support.py
+  scripts/classical/color_picker.py
   scripts/integration/course_controllers_core.py
+  scripts/integration/standoff_strategy.py
+  scripts/integration/foreground_ros.py
+  scripts/integration/marker_follow.py
+  scripts/integration/nanotrack_core.py
+  scripts/integration/nanotrack_tracker.py
   scripts/integration/vision_integration_core.py
   scripts/ml/onnx_yolo_core.py
   DESTINATION lib/${PROJECT_NAME}
@@ -135,12 +145,17 @@ install(DIRECTORY models
 
 if(BUILD_TESTING)
   find_package(ament_cmake_pytest REQUIRED)
+  ament_add_pytest_test(test_nanotrack test/test_nanotrack.py)
+  ament_add_pytest_test(test_nanotrack_scale test/test_nanotrack_scale.py)
+  ament_add_pytest_test(test_roi_template_guard test/test_roi_template_guard.py)
+  ament_add_pytest_test(test_standoff_strategy test/test_standoff_strategy.py)
   ament_add_pytest_test(test_kcf_contract test/test_kcf_contract.py)
   ament_add_pytest_test(test_classical_vision test/test_classical_vision.py)
   ament_add_pytest_test(test_vision_integration test/test_vision_integration.py)
   ament_add_pytest_test(test_ml_vision test/test_ml_vision.py)
   ament_add_pytest_test(test_course_controllers test/test_course_controllers.py)
   ament_add_pytest_test(test_course_gui_overlay test/test_course_gui_overlay.py)
+  ament_add_pytest_test(test_gesture_person_follow test/test_gesture_person_follow.py)
 endif()
 
 ament_package()

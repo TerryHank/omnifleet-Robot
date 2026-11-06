@@ -1,3 +1,5 @@
+> 2026-11-06清理说明：本文提及的 `/home/iecme/robot_backups/` 历史副本已从104删除，不能作为当前可用回退路径；原日期的验证结论仅代表当时状态。
+
 Foxglove-only RMW subscription shutdown backport.
 Upstream: https://github.com/ros2/rmw_zenoh/pull/994
 Retain an application-thread owner until shutdown finishes, and release the

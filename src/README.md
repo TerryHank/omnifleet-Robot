@@ -128,7 +128,7 @@ Nav2 启动与规划/控制器配置、代价地图扩展和车队规划。
 
 ## system
 
-机器人启动集成、协调器、MSC 入口、通信运行脚本和运维支持。
+机器人启动集成、通信运行脚本、运维支持和独立工具。
 
 - [omnifleet_bringup](system/omnifleet_bringup/README.omnifleet.md)
 - [rmw_zenoh_cpp](system/rmw_zenoh_cpp/README.md)

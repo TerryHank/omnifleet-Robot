@@ -35,12 +35,12 @@
 
 | Package | Dataset |
 |---------|---------|
-| [`mola_input_euroc_dataset`](mola_input_euroc_dataset/) | [EuRoC MAV](https://rpg.ifi.uzh.ch/docs/IJRR17_Burri.pdf) stereo+IMU sequences |
-| [`mola_input_kitti_dataset`](mola_input_kitti_dataset/) | [KITTI](https://www.cvlibs.net/datasets/kitti/) odometry/SLAM benchmark |
-| [`mola_input_kitti360_dataset`](mola_input_kitti360_dataset/) | [KITTI-360](https://www.cvlibs.net/datasets/kitti-360/) panoramic driving dataset |
-| [`mola_input_mulran_dataset`](mola_input_mulran_dataset/) | [MulRan](https://sites.google.com/view/mulran-pr/home) urban LiDAR sequences |
-| [`mola_input_paris_luco_dataset`](mola_input_paris_luco_dataset/) | [Paris-Luco](https://github.com/CLoSER-Lab/paris-luco) outdoor LiDAR dataset |
-| [`kitti_metrics_eval`](kitti_metrics_eval/) | KITTI benchmark evaluation tools |
+| [`mola_input_euroc_dataset`](../../mola_input_euroc_dataset) | [EuRoC MAV](https://rpg.ifi.uzh.ch/docs/IJRR17_Burri.pdf) stereo+IMU sequences |
+| [`mola_input_kitti_dataset`](../../mola_input_kitti_dataset) | [KITTI](https://www.cvlibs.net/datasets/kitti/) odometry/SLAM benchmark |
+| [`mola_input_kitti360_dataset`](../../mola_input_kitti360_dataset) | [KITTI-360](https://www.cvlibs.net/datasets/kitti-360/) panoramic driving dataset |
+| [`mola_input_mulran_dataset`](../../mola_input_mulran_dataset) | [MulRan](https://sites.google.com/view/mulran-pr/home) urban LiDAR sequences |
+| [`mola_input_paris_luco_dataset`](../../mola_input_paris_luco_dataset) | [Paris-Luco](https://github.com/CLoSER-Lab/paris-luco) outdoor LiDAR dataset |
+| [`kitti_metrics_eval`](../../kitti_metrics_eval) | KITTI benchmark evaluation tools |
 
 All packages implement the `mola_kernel::RawDataSourceBase` interface and are
 plug-and-play with any MOLA pipeline.

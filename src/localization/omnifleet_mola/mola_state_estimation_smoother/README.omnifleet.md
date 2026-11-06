@@ -4,21 +4,21 @@ SE(3) pose and twist path data fusion estimator
 
 - 功能域：`localization`；源码：`/home/iecme/omnifleet_ws/src/localization/omnifleet_mola/mola_state_estimation_smoother`。
 - colcon 类型：`(ros.ament_cmake)`。
-- 状态（2026-10-14目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
+- 状态（2026-11-06目录核对）：当前 install 下存在同名目录；不等于该组件正在运行或已完成实车验收。
 - 所属域说明：[README.md](../../README.md)。
 
 ## 入口与目录
 
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [CMakeLists.txt](CMakeLists.txt)：C++/资源的构建和安装定义。
-- [test/](test)：测试。现有项：`integration`。
-- [tests/](tests)：测试。现有项：`CMakeLists.txt`、`mola-navstate-fg-params.yaml`、`test-lidar-imu-leveling.cpp`、`test-navstate-basic.cpp`、`test-navstate-odom-gnss-fusion.cpp`、`test-publish-map-to-odom.cpp`、`test-static-gnss-imu-orientation.cpp`、`test-twist-fusion.cpp`、`test-two-odometries.cpp`。
+- [test/](test)：测试。当前项：`integration`。
+- [tests/](tests)：测试。当前项：`CMakeLists.txt`、`mola-navstate-fg-params.yaml`、`test-lidar-imu-leveling.cpp`、`test-navstate-basic.cpp`、`test-navstate-odom-gnss-fusion.cpp`、`test-publish-map-to-odom.cpp`、`test-static-gnss-imu-orientation.cpp`、`test-twist-fusion.cpp`、`test-two-odometries.cpp`。
 
 ## 工作区内声明依赖
 
-- [mola_bridge_ros2](../mola_bridge_ros2/README.omnifleet.md)
+- [mola_bridge_ros2](official_runtime/mola_bridge_ros2/README.omnifleet.md)
 - [mola_common](../mola_common/README.omnifleet.md)
-- [mola_gtsam_factors](../mola_gtsam_factors/README.omnifleet.md)
+- [mola_gtsam_factors](official_runtime/mola_gtsam_factors/README.md)
 - [mola_imu_preintegration](../mola_imu_preintegration/README.omnifleet.md)
 - [mola_kernel](../mola_kernel/README.omnifleet.md)
 - [mola_launcher](../mola_launcher/README.omnifleet.md)

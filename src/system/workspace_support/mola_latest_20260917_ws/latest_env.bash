@@ -13,7 +13,7 @@ export CMAKE_PREFIX_PATH="/home/iecme/omnifleet_ws/install/mrpt:/home/iecme/omni
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}:/home/iecme/omnifleet_ws/install/mrpt/lib:/home/iecme/omnifleet_ws/install/mrpt_libros_bridge/lib:/lib/aarch64-linux-gnu:/usr/lib/aarch64-linux-gnu:/usr/local/cuda/lib64:/opt/MVS/lib/aarch64"
 export PKG_CONFIG_PATH="/home/iecme/omnifleet_ws/install/mrpt/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 
-export ROS_DOMAIN_ID=113
+export ROS_DOMAIN_ID=104
 export RMW_IMPLEMENTATION=rmw_zenoh_cpp
 
 # Load MOLA plugins only from the unified install prefix.

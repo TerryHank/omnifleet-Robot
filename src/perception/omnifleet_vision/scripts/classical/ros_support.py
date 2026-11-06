@@ -7,6 +7,7 @@ from typing import Dict
 import cv2
 from cv_bridge import CvBridge
 from rclpy.node import Node
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
 
@@ -19,7 +20,7 @@ class ClassicalVisionNode(Node):
         self.declare_parameter("input_topic", default_input_topic)
         self.declare_parameter("debug_topic", "~/debug_image")
         self.declare_parameter("result_topic", "~/result")
-        self.declare_parameter("qos_depth", 10)
+        self.declare_parameter("qos_depth", 1)
         self.declare_parameter("use_gui", True)
         self.declare_parameter("window_name", f"OmniFleet {node_name.replace('_', ' ')}")
         self.input_topic = str(self.get_parameter("input_topic").value)
@@ -34,7 +35,9 @@ class ClassicalVisionNode(Node):
         self.bridge = CvBridge()
         self.debug_publisher = self.create_publisher(Image, debug_topic, qos_depth)
         self.result_publisher = self.create_publisher(String, result_topic, qos_depth)
-        self.subscription = self.create_subscription(Image, self.input_topic, self.image_callback, qos_depth)
+        image_qos = QoSProfile(depth=qos_depth, reliability=ReliabilityPolicy.BEST_EFFORT,
+                               durability=DurabilityPolicy.VOLATILE)
+        self.subscription = self.create_subscription(Image, self.input_topic, self.image_callback, image_qos)
         self.get_logger().info(
             f"已启动：输入={self.input_topic}，调试图={debug_topic}，结果={result_topic}，"
             f"实时窗口={'开启' if self.use_gui else '关闭'}"

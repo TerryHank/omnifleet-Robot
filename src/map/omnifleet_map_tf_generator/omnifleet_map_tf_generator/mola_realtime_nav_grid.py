@@ -7,12 +7,15 @@ Deskewed PointCloud2 for obstacle marking. No saved .mm map is read.
 """
 import os
 import math
+import json
+from pathlib import Path
 import numpy as np
 from collections import deque
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
 from sensor_msgs.msg import PointCloud2
+from std_srvs.srv import Trigger
 from nav_msgs.msg import OccupancyGrid, Odometry
 from rclpy.time import Time
 from tf2_ros import Buffer, TransformListener
@@ -37,43 +40,29 @@ def select_grid_points(msg, sensor_x, sensor_y, origin_x, origin_y, res, width, 
     boundary = np.any(np.abs(distance[:, None] - np.array([.12, 6., 8.])) < 1e-12, axis=1)
     for i in np.flatnonzero(boundary):
         distance[i] = math.hypot(float(dx[i]), float(dy[i]))
-    valid = (distance >= .12) & (distance <= 8.)
+    valid = (distance >= .12) & np.isfinite(distance)
     x, y, z, dx, dy, distance = [a[valid] for a in (x, y, z, dx, dy, distance)]
-    cx = np.floor((x - origin_x) / res).astype(np.int64)
-    cy = np.floor((y - origin_y) / res).astype(np.int64)
-    valid = (cx >= 0) & (cx < width) & (cy >= 0) & (cy < height)
-    z, dx, dy, distance, cx, cy = [a[valid] for a in (z, dx, dy, distance, cx, cy)]
-    angles = (np.arctan2(dy, dx) + math.pi) * 180. / math.pi
-    boundary = np.abs(angles - np.rint(angles)) < 1e-10
-    for i in np.flatnonzero(boundary):
-        angles[i] = (math.atan2(float(dy[i]), float(dx[i])) + math.pi) * 180. / math.pi
-    bins = angles.astype(np.int64)
-    hits = (z >= -.03) & (z <= .5) & (distance <= 6.)
+    band = (z >= -.03) & (z <= .5)
+    hits = band & (distance <= 6.)
+    cx = np.floor((x[hits] - origin_x) / res).astype(np.int64)
+    cy = np.floor((y[hits] - origin_y) / res).astype(np.int64)
+    inside = (cx >= 0) & (cx < width) & (cy >= 0) & (cy < height)
+    occupied = np.unique(cy[inside] * width + cx[inside])
 
-    def select(mask, farthest):
-        indices = np.flatnonzero(mask)
-        signed = -distance[indices] if farthest else distance[indices]
-        order = indices[np.lexsort((indices, signed, bins[indices]))]
-        first = np.r_[True, bins[order[1:]] != bins[order[:-1]]] if len(order) else np.array([], dtype=bool)
-        starts = np.flatnonzero(first)
-        ends = np.r_[starts[1:], len(order)]
-        result = {}
-        for start, end in zip(starts, ends):
-            group = order[start:end]
-            i = group[0]
-            # Recheck ties with the scalar implementation; retain the first
-            # input point on equality, as the original dictionaries did.
-            tied = group[np.abs(distance[group] - distance[i]) < 1e-12]
-            chosen = min(tied, key=lambda j: ((-1 if farthest else 1) * math.hypot(float(dx[j]), float(dy[j])), j))
-            result[int(bins[i])] = (int(cx[chosen]), int(cy[chosen]))
-        return result
-
-    # A return above or below the obstacle band cannot prove that a low
-    # obstacle disappeared. Clear only toward the nearest return in the band.
-    clearing = (z >= -.03) & (z <= .5)
-    rays = select(clearing, False)
-    occupied = np.unique(cy[hits] * width + cx[hits])
-    return list(rays.values()), occupied
+    # Retain every distinct raster ray. A one-degree bin can contain several
+    # different cell paths; keeping only its nearest endpoint misses removals.
+    rx, ry, ranges = dx[band], dy[band], distance[band]
+    upper_x = np.nextafter(origin_x + width*res, origin_x)
+    upper_y = np.nextafter(origin_y + height*res, origin_y)
+    tx = np.divide(np.where(rx > 0, upper_x-sensor_x, origin_x-sensor_x), rx,
+                   out=np.full_like(rx, np.inf), where=rx != 0)
+    ty = np.divide(np.where(ry > 0, upper_y-sensor_y, origin_y-sensor_y), ry,
+                   out=np.full_like(ry, np.inf), where=ry != 0)
+    scale = np.minimum.reduce([np.ones_like(ranges), 8./ranges, tx, ty])
+    cx = np.clip(np.floor((sensor_x+scale*rx-origin_x)/res).astype(np.int64), 0, width-1)
+    cy = np.clip(np.floor((sensor_y+scale*ry-origin_y)/res).astype(np.int64), 0, height-1)
+    endpoints = np.unique(cy*width+cx)
+    return list(zip((endpoints % width).tolist(), (endpoints // width).tolist())), occupied
 
 
 class RealtimeNavGrid(Node):
@@ -88,6 +77,12 @@ class RealtimeNavGrid(Node):
         self.origin_x = -25.0
         self.origin_y = -25.0
         self.grid = [-1] * (self.width * self.height)
+        boot = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+        handoff = Path('/tmp') / f'omnifleet-nav-grid-handoff-{os.environ.get("ROS_DOMAIN_ID", "0")}-{boot}.json'
+        if handoff.is_file():
+            self.grid = json.loads(handoff.read_text())['data']
+            handoff.unlink()
+            self.get_logger().info(f'Restored live grid handoff: {self.grid.count(100)} occupied cells')
         self.sensor_frame = f'rslidar'
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
@@ -106,8 +101,20 @@ class RealtimeNavGrid(Node):
         self.update_timer = self.create_timer(0.05, self.process_pending)
         self.timer = self.create_timer(1.0, self.publish_grid)
         self.last_points = 0
+        self.create_service(Trigger, '/mola_realtime_nav_grid/clear', self.clear_grid)
         self.publish_grid()
-        self.get_logger().info(f'publishing realtime grid {self.topic} from deskewed MOLA cloud')
+        self.get_logger().info(f'publishing realtime grid {self.topic} from deskewed MOLA cloud; clearing all unique endpoint rays with current-hit occlusion')
+
+    def clear_grid(self, request, response):
+        occupied = self.grid.count(100)
+        self.grid = [-1] * (self.width * self.height)
+        self.pending_clouds.clear()
+        self.have_pose = False
+        self.last_points = 0
+        self.publish_grid()
+        response.success = True
+        response.message = f'已清空当前二维导航栅格（原占用{occupied}格）；MOLA定位及已保存地图文件保留'
+        return response
 
     def cloud_cb(self, msg):
         self.pending_clouds.append(msg)
@@ -152,6 +159,7 @@ class RealtimeNavGrid(Node):
         rays, occupied = select_grid_points(
             msg, sensor_x, sensor_y, self.origin_x, self.origin_y,
             self.res, self.width, self.height)
+        self._current_occupied = set(occupied.tolist())
         for cell in rays:
             self.mark_free_ray(origin, cell)
         for idx in occupied:
@@ -176,13 +184,14 @@ class RealtimeNavGrid(Node):
         step_x = 1 if x < end_x else -1
         step_y = 1 if y < end_y else -1
         error = dx - dy
+        occupied = getattr(self, '_current_occupied', ())
         while True:
             idx = y * self.width + x
+            if idx in occupied or (x == end_x and y == end_y):
+                break  # Foreground and return endpoints are not free-space evidence.
             # A current ray observation clears stale dynamic occupancy.
             # Current-frame hit cells are restored to occupied below.
             self.grid[idx] = 0
-            if x == end_x and y == end_y:
-                break
             twice = 2 * error
             if twice > -dy:
                 error -= dy
@@ -216,3 +225,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

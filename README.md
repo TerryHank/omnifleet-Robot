@@ -1,9 +1,9 @@
-# Robot 113 source snapshot
+# Robot 104 source snapshot
 
-Tag: `robot113-source-20261021-015022`. Source: `iecme@192.168.3.113:/home/iecme/omnifleet_ws`.
-Snapshot completed (Asia/Shanghai): 2026-10-21T01:50:22.139474+08:00.
+Tag: `robot104-source-20261106-235759`. Source: `iecme@192.168.3.104:/home/iecme/omnifleet_ws`.
+Snapshot completed (Asia/Shanghai): 2026-11-06T23:57:59.662348+08:00.
 
-The main branch contains this complete source snapshot, replacing the previous file tree while retaining Git history. The source layout is retained under `src/`, alongside workspace `env.bash`.
+Branch `104` contains this current vehicle source snapshot. Branch `main` retains the existing Robot 113 snapshot. The source layout is retained under `src/`, alongside workspace `env.bash`.
 Linux symlinks and executable flags are retained in Git. Windows checkouts can represent symlinks as text; use Linux for restoration.
 
 ## Included
@@ -23,11 +23,11 @@ This is a source backup, not an image of the robot or evidence that rebuilding a
 ## Reading
 
 ```bash
-git fetch origin tag robot113-source-20261021-015022
-git switch --detach robot113-source-20261021-015022
+git fetch origin tag robot104-source-20261106-235759
+git switch --detach robot104-source-20261106-235759
 ```
 
 After checking out this tag, start at `src/planning/omnifleet_planner/behavior_trees/` and `src/control/omnifleet_local_navigation/`.
-MOLA is under `src/localization/omnifleet_mola/`; MSC under `src/system/omnifleet_msc/`.
+MOLA is under `src/localization/omnifleet_mola/`; The chassis driver is under `src/vehicle/huaner_driver/`.
 
-Archive SHA256: `ce8f311f95d3e83bf9f13f58b882f1dffd4e45a23f79e5671e0cf0170c2a81e9`.
+Archive SHA256: `0a38566f589f5160d62fe76763695cb0adbad0ff0de6e3c76863848639d1947b`.
