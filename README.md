@@ -1,10 +1,10 @@
 # OmniFleet 单车工作区
 
-- `robot` 以原单车仓库的默认分支为基础，包含车端导航、定位、感知和底盘。
-- [`main` 分支](https://github.com/TerryHank/omnifleet_ws/tree/main) 提供中央 RMF 调度、编队和 Web。
+- 默认分支 `main` 包含车端导航、定位、感知和底盘。
+- [`dispatch` 分支](https://github.com/TerryHank/omnifleet-Robot/tree/dispatch) 提供中央 RMF 调度、编队和 Web。
 - [车端身份广播](src/system/omnifleet_fleet/README.omnifleet.md#车端身份广播) 提供接入中央调度的安装步骤。
 - [126 号车底盘备份](backups/robot-126/chassis/README.md) 包含该车驱动、STM32 固件和部署配置。按备份说明恢复 126 的驱动，常规工作区构建使用 `src/vehicle/` 中的驱动。
-- [104 号车快照](https://github.com/TerryHank/omnifleet_ws/tree/archive/omnifleet-Robot/104) 保留为独立历史分支。
+- [104 号车快照](https://github.com/TerryHank/omnifleet-Robot/tree/104) 保留为独立历史分支。
 
 # Robot 113 source snapshot
 

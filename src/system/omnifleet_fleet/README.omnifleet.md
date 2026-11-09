@@ -11,4 +11,4 @@
 
 在车端进入本目录，执行 `sudo python3 install_beacon.py`。安装器将同目录的 `fleet_beacon.py` 安装到 `/usr/local/lib/omnifleet-discovery/`，并按本地导航服务的用户和组启用 `omnifleet-discovery-beacon.service`。广播身份来自本车的 `/etc/omnifleet_t2/robot.env` 和运行中的本地导航进程，无需填写调度主机 IP。
 
-中央端的接收和部署说明见 [广播自动发现与接入](https://github.com/TerryHank/omnifleet_ws/blob/main/src/system/omnifleet_rmf_adapter/BROADCAST_DISCOVERY.md)。
+中央端的接收和部署说明见 [广播自动发现与接入](https://github.com/TerryHank/omnifleet-Robot/blob/dispatch/src/system/omnifleet_rmf_adapter/BROADCAST_DISCOVERY.md)。
