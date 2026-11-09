@@ -1,3 +1,9 @@
+# OmniFleet
+
+- `main` 是中央调度工作区，包含 RMF、编队、地图配准、Zenoh 和调度 Web。
+- [`robot` 分支](https://github.com/TerryHank/omnifleet_ws/tree/robot) 是单车工作区，包含车端导航、定位、感知、底盘及身份广播。126 号车底盘备份也在该分支。
+- 两边各自保留构建所需的 ROS 接口定义。以下部署说明适用于中央调度工作区。
+
 # 2026-10-18：广播自动接入
 
 调度连接不再从配置读取车辆 IP，改由车端 UDP 广播发现并建立独立 ROS 域连接。car1/car2 保留为中央命名与顺序，不是固定地址入口。当前部署、启动和验证边界见 [广播接入说明](src/system/omnifleet_rmf_adapter/BROADCAST_DISCOVERY.md)。

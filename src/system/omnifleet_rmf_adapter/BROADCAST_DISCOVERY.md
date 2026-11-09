@@ -32,7 +32,7 @@ data/discovery.json 和临时会话中出现的是实际发现的运行时地址
 
 ## 新车一次性部署
 
-新车必须安装广播端；仅开机但未安装广播端的设备不会凭空发出身份广播。通过当前可达的 SSH 主机执行本次交付的 deploy_beacon.py 即可部署同一脚本和服务；SSH 参数只用于安装，不写入 WSL 连接配置。广播程序读取本车 /etc/omnifleet_t2/robot.env 及实际运行的本地导航服务，不要求为新车新增专用客户端服务。
+新车广播程序和安装步骤位于 [单车分支的车端接入目录](https://github.com/TerryHank/omnifleet_ws/tree/robot/src/system/omnifleet_fleet)。在车上执行安装。广播程序读取本车 `/etc/omnifleet_t2/robot.env` 及运行中的本地导航服务，中央调度继续通过广播发现车辆。
 
 ## 当前验收
 
@@ -46,6 +46,6 @@ data/discovery.json 和临时会话中出现的是实际发现的运行时地址
 
 ## 通用移植入口（2026-10-18 23:44 更新）
 
-将 scripts/install_beacon.py 和 scripts/fleet_beacon.py 放在新车同一目录，执行 sudo python3 install_beacon.py。不填写车辆或调度主机 IP，也不依赖用户名和家目录。程序安装到 /usr/local/lib/omnifleet-discovery/，按本车导航服务的用户/组运行；身份仍来自本车 robot.env。完整打包的“新车广播接入包.zip”随本次交付提供。
+在单车分支的 `src/system/omnifleet_fleet/` 目录运行 `sudo python3 install_beacon.py`。程序安装到 `/usr/local/lib/omnifleet-discovery/`，按本车导航服务的用户和组运行。身份和 ROS 域来自本车配置，安装命令无需 IP 参数。
 
 本车身份和 ROS 域必须唯一，广播需在可互通局域网络内。克隆 machine-id 但不同 boot-id 的同时在线冲突也会拒绝。已用统一安装器更新 104、113，两车实际接入通过；不同用户名/域等移植场景通过隔离测试，最终共 286 项测试通过。未执行运动，未改车端导航参数或身份。

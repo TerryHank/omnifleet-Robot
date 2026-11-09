@@ -10,6 +10,8 @@ Excluded: build/install/log, node_modules, virtual environments, caches, active 
 
 BACKUP_MANIFEST.json records the original included files and SHA-256 values. The backup root .gitignore intentionally replaces the source version so saved mission/alignment files can be tracked. One relative .pylintrc symlink is backed up as resolved file content; its link target is recorded.
 
+The manifest applies to the original snapshot at commit `c633e3a`. The current `main` branch contains the central workspace. The onboard discovery beacon is now maintained on the `robot` branch.
+
 ## Restore
 
 Clone into a new ROS 2 Humble workspace on Ubuntu 22.04. Install dependencies from package.xml, Python requirements and frontend lockfiles; rebuild with colcon. The Web runtime and deployed static frontend must be rebuilt separately. Deployment scripts currently contain the original absolute workspace path; adapt those paths if restoring elsewhere. User systemd service definitions are supplied under the source deployment directories; external OS packages, Windows Foxglove sources and robot-side software are outside this backup.
