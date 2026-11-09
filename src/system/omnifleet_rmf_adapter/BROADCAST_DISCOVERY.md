@@ -32,7 +32,7 @@ data/discovery.json 和临时会话中出现的是实际发现的运行时地址
 
 ## 新车一次性部署
 
-新车广播程序和安装步骤位于 [单车分支的车端接入目录](https://github.com/TerryHank/omnifleet_ws/tree/robot/src/system/omnifleet_fleet)。在车上执行安装。广播程序读取本车 `/etc/omnifleet_t2/robot.env` 及运行中的本地导航服务，中央调度继续通过广播发现车辆。
+新车广播程序和安装步骤位于 [单车分支的车端接入目录](https://github.com/TerryHank/omnifleet-Robot/tree/main/src/system/omnifleet_fleet)。在车上执行安装。广播程序读取本车 `/etc/omnifleet_t2/robot.env` 及运行中的本地导航服务，中央调度继续通过广播发现车辆。
 
 ## 当前验收
 

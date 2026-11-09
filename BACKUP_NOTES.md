@@ -2,7 +2,7 @@
 
 Source: `/home/zhangwnag/workspaces/omnifleet_ws` (Ubuntu-22.04).
 
-This private repository is a source and saved-business-data snapshot, not a full WSL disk image. The original workspace was not modified. The nested rmf-web working tree is included as ordinary files, including local modifications and untracked source; its Git history is not embedded. Upstream revision is recorded in BACKUP_MANIFEST.json.
+This snapshot contains source and saved business data. The original workspace was not modified. The nested rmf-web working tree is included as ordinary files, including local modifications and untracked source; its Git history is not embedded. Upstream revision is recorded in BACKUP_MANIFEST.json.
 
 Included: source, configuration, deployment scripts, project documentation, existing backups, data/missions, data/alignment, fleet_alignment.json, robot_names.json, and shared_costmap.json.
 
@@ -10,7 +10,7 @@ Excluded: build/install/log, node_modules, virtual environments, caches, active 
 
 BACKUP_MANIFEST.json records the original included files and SHA-256 values. The backup root .gitignore intentionally replaces the source version so saved mission/alignment files can be tracked. One relative .pylintrc symlink is backed up as resolved file content; its link target is recorded.
 
-The manifest applies to the original snapshot at commit `c633e3a`. The current `main` branch contains the central workspace. The onboard discovery beacon is now maintained on the `robot` branch.
+The manifest applies to the original snapshot at commit `c633e3a`. The `dispatch` branch contains the central workspace. The onboard discovery beacon is maintained on the `main` branch.
 
 ## Restore
 
