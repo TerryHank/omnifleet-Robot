@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet LAN identity broadcast (no motion commands)
+After=network-online.target omnifleet-local-navigation.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/lib/omnifleet-discovery/fleet_beacon.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
