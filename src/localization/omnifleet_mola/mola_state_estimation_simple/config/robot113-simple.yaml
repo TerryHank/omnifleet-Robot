@@ -1,0 +1,11 @@
+params:
+  max_time_to_use_velocity_model: 0.75
+  sigma_random_walk_acceleration_linear: 0.1
+  sigma_random_walk_acceleration_angular: 0.3
+  sigma_relative_pose_linear: 0.01
+  sigma_relative_pose_angular: 0.01
+  sigma_imu_angular_velocity: 0.05
+  velocity_filter_enabled: true
+  enforce_planar_motion: false
+  do_process_imu_labels_re: ^radar_imu$
+  do_process_odometry_labels_re: ^wheel_odom$

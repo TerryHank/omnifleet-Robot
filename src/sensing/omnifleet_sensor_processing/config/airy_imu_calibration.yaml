@@ -1,0 +1,17 @@
+omnifleet_t2_experiment_imu_adapter:
+  ros__parameters:
+    input_topic: /rslidar_imu_data
+    output_topic: /rslidar_imu_data_corrected
+    output_frame: rslidar
+    linear_acceleration_scale: 9.869805429
+    angular_velocity_bias:
+    - -0.00616977452401
+    - -0.0201393211699
+    - -0.000180604914669
+    rotation_xyzw:
+    - -0.7068467736244202
+    - 0.7073657512664795
+    - -0.0005705897347070277
+    - 0.000999057781882584
+    drop_non_increasing_timestamps: true
+    use_sim_time: false

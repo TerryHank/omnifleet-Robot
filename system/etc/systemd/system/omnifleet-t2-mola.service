@@ -1,0 +1,26 @@
+[Unit]
+Description=OmniFleet T2 MOLA pure-LIO localization
+Wants=network-online.target omnifleet-t2-lidar-net.service omnifleet-t2-airy.service omnifleet-t2-chassis.service omnifleet-t2-description.service
+After=network-online.target omnifleet-t2-lidar-net.service omnifleet-t2-airy.service omnifleet-t2-chassis.service omnifleet-t2-description.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_ws
+Environment=HOME=/home/iecme
+Environment=ROS_HOME=/var/lib/omnifleet_t2/ros
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+Environment="CMAKE_PREFIX_PATH=/home/iecme/omnifleet_ws/install/mrpt_libros_bridge:/home/iecme/omnifleet_ws/install/mrpt"
+Environment="LD_LIBRARY_PATH=/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib:/home/iecme/omnifleet_ws/install/mrpt_libros_bridge/lib:/home/iecme/omnifleet_ws/install/mrpt/lib"
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash && exec ros2 launch omnifleet_bringup mola_localization.launch.py profile:=simple_direct start_chassis:=false map_dir:=/home/iecme/omnifleet_data/maps'
+ExecStartPost=/bin/bash -lc 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash && for i in $(seq 1 60); do if ros2 topic info /map 2>/dev/null | grep -qE "Publisher count: [1-9]"; then exit 0; fi; sleep 1; done; echo "MOLA did not advertise /map within 60s" >&2; exit 1'
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStartSec=90
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

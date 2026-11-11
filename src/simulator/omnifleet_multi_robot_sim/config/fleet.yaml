@@ -1,0 +1,5 @@
+fleet_controller:
+  ros__parameters:
+    auto_demo: true
+    odom_timeout: 1.0
+    startup_settle_time: 2.0

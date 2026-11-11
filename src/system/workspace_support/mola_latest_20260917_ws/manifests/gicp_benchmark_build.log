@@ -1,0 +1,37 @@
+Consolidate compiler generated dependencies of target mp2p_icp_common
+Consolidate compiler generated dependencies of target mp2p_icp_map
+[  2%] Built target mp2p_icp_common
+[ 15%] Built target mp2p_icp_map
+Consolidate compiler generated dependencies of target mp2p_icp
+Consolidate compiler generated dependencies of target mp2p_icp_filters
+[ 52%] Built target mp2p_icp
+[100%] Built target mp2p_icp_filters
+[100%] Building CXX object tests/CMakeFiles/test-mp2p_gicp_pipeline_benchmark.dir/test-mp2p_gicp_pipeline_benchmark.cpp.o
+In file included from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/mp2p_icp_map/include/mp2p_icp/IcpPrepareCapable.h:23,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/install/mola_metric_maps/include/mola_metric_maps/KeyframePointCloudMap.h:23,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/tests/test-mp2p_gicp_pipeline_benchmark.cpp:38:
+/home/iecme/omnifleet_ws/install/mrpt/include/mrpt/poses/include/mrpt/poses/CPose3D.h: In member function ‘const TPoint3D mrpt::poses::CPose3D::translation() const’:
+/home/iecme/omnifleet_ws/install/mrpt/include/mrpt/poses/include/mrpt/poses/CPose3D.h:315:3: note: parameter passing for argument of type ‘mrpt::math::TPoint3D_<double>’ when C++17 is enabled changed to match C++14 in GCC 10.1
+  315 |   {
+      |   ^
+In file included from /home/iecme/omnifleet_ws/install/mrpt/include/mrpt/math/include/mrpt/math/TSegment3D.h:13,
+                 from /home/iecme/omnifleet_ws/install/mrpt/include/mrpt/math/include/mrpt/math/TPlane.h:14,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/mp2p_icp_map/include/mp2p_icp/plane_patch.h:22,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/mp2p_icp/include/mp2p_icp/Pairings.h:22,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/mp2p_icp/include/mp2p_icp/LogRecord.h:23,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/mp2p_icp/include/mp2p_icp/ICP.h:24,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/tests/test-mp2p_gicp_pipeline_benchmark.cpp:39:
+/home/iecme/omnifleet_ws/install/mrpt/include/mrpt/math/include/mrpt/math/TSegment2D.h: In static member function ‘static mrpt::math::TSegment2D mrpt::math::TSegment2D::FromPoints(const TPoint2D&, const TPoint2D&)’:
+/home/iecme/omnifleet_ws/install/mrpt/include/mrpt/math/include/mrpt/math/TSegment2D.h:28:3: note: parameter passing for argument of type ‘mrpt::math::TSegment2D’ when C++17 is enabled changed to match C++14 in GCC 10.1
+   28 |   {
+      |   ^
+In file included from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/mp2p_icp_map/include/mp2p_icp/metricmap.h:32,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/mp2p_icp/include/mp2p_icp/LogRecord.h:26,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/mp2p_icp/include/mp2p_icp/ICP.h:24,
+                 from /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mp2p_icp/mp2p_icp_core/tests/test-mp2p_gicp_pipeline_benchmark.cpp:39:
+/home/iecme/omnifleet_ws/install/mrpt/include/mrpt/math/include/mrpt/math/geometry.h: In function ‘mrpt::math::TPoint2D mrpt::math::closestFromPointToSegment(const TPoint2D&, const TPoint2D&, const TPoint2D&)’:
+/home/iecme/omnifleet_ws/install/mrpt/include/mrpt/math/include/mrpt/math/geometry.h:897:39: note: parameter passing for argument of type ‘mrpt::math::TPoint2D_<double>’ when C++17 is enabled changed to match C++14 in GCC 10.1
+  897 |     const mrpt::math::TPoint2D& segPt2)
+      |                                       ^
+[100%] Linking CXX executable ../bin/test-mp2p_gicp_pipeline_benchmark
+[100%] Built target test-mp2p_gicp_pipeline_benchmark

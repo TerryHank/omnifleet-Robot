@@ -1,0 +1,70 @@
+--- a/src/detail/rmw_node_data.cpp
++++ b/src/detail/rmw_node_data.cpp
+@@ -247,8 +247,22 @@
+ ///=============================================================================
+ void NodeData::delete_sub_data(const rmw_subscription_t * const subscription)
+ {
+-  std::lock_guard<std::mutex> lock_guard(mutex_);
+-  subs_.erase(subscription);
++  std::shared_ptr<SubscriptionData> data;
++  {
++    std::lock_guard<std::mutex> lock_guard(mutex_);
++    auto it = subs_.find(subscription);
++    if (it == subs_.end()) {
++      return;
++    }
++    data = it->second;
++    subs_.erase(it);
++  }
++  // Keep an application-thread owner until undeclare completes. A callback
++  // dropping the last reference must not wait for its own completion.
++  if (data->shutdown() != RMW_RET_OK) {
++    RMW_ZENOH_LOG_ERROR_NAMED(
++      "rmw_zenoh_cpp", "Unable to shutdown subscription while deleting it.");
++  }
+ }
+ 
+ ///=============================================================================
+--- a/src/detail/rmw_subscription_data.cpp
++++ b/src/detail/rmw_subscription_data.cpp
+@@ -298,10 +298,15 @@
+ rmw_ret_t SubscriptionData::shutdown()
+ {
+   rmw_ret_t ret = RMW_RET_OK;
+-  std::lock_guard<std::mutex> lock(mutex_);
++  std::unique_lock<std::mutex> lock(mutex_);
+   if (is_shutdown_ || !initialized_) {
+     return ret;
+   }
++
++  is_shutdown_ = true;
++  initialized_ = false;
++  // Undeclare waits for in-flight callbacks, which also acquire mutex_.
++  lock.unlock();
+ 
+   // Remove any event callbacks registered to this subscription.
+   graph_cache_->remove_qos_event_callbacks(entity_->gid_hash());
+@@ -314,7 +319,7 @@
+       "rmw_zenoh_cpp",
+       "Unable to undeclare the liveliness token for topic '%s'",
+       entity_->topic_info().value().name_.c_str());
+-    return RMW_RET_ERROR;
++    ret = RMW_RET_ERROR;
+   }
+ 
+   if (sub_.has_value()) {
+@@ -324,13 +329,11 @@
+         "rmw_zenoh_cpp",
+         "Unable to undeclare the subscriber for topic '%s'",
+         entity_->topic_info().value().name_.c_str());
+-      return RMW_RET_ERROR;
++      ret = RMW_RET_ERROR;
+     }
+   }
+ 
+   sess_.reset();
+-  is_shutdown_ = true;
+-  initialized_ = false;
+   return ret;
+ }
+ 

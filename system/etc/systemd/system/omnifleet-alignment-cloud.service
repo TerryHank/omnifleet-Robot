@@ -1,0 +1,20 @@
+[Unit]
+Description=OmniFleet read-only compact alignment cloud
+After=omnifleet-t2-airy.service omnifleet-t2-zenoh-router.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+Environment=HOME=/home/iecme
+Environment=PYTHONUNBUFFERED=1
+WorkingDirectory=/home/iecme/omnifleet_ws
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash; exec python3 /home/iecme/omnifleet_ws/src/system/omnifleet_alignment_cloud/alignment_cloud.py'
+Restart=on-failure
+RestartSec=3
+Nice=5
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

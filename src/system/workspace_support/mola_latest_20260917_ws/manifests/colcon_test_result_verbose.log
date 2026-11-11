@@ -1,0 +1,112 @@
+build/mola_bridge_ros2/Testing/20260916-1726/Test.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_bridge_ros2/test_results/mola_bridge_ros2/xmllint.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_demos/Testing/20260916-1726/Test.xml: 3 tests, 0 errors, 0 failures, 0 skipped
+build/mola_demos/test_results/mola_demos/lint_cmake.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_demos/test_results/mola_demos/pep257.xunit.xml: 4 tests, 0 errors, 0 failures, 0 skipped
+build/mola_demos/test_results/mola_demos/xmllint.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_georeferencing/Testing/20260916-1727/Test.xml: 3 tests, 0 errors, 0 failures, 0 skipped
+build/mola_imu_preintegration/Testing/20260916-1726/Test.xml: 16 tests, 0 errors, 0 failures, 0 skipped
+build/mola_launcher/Testing/20260916-1726/Test.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_launcher/test_results/mola_launcher/xmllint.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_lidar_odometry/Testing/20260916-1728/Test.xml: 8 tests, 0 errors, 0 failures, 0 skipped
+build/mola_lidar_odometry/test_results/mola_lidar_odometry/test_gravity_map_aligner.gtest.xml: 7 tests, 0 errors, 0 failures, 0 skipped
+build/mola_lidar_odometry/test_results/mola_lidar_odometry/test_imu_scan_sync.gtest.xml: 9 tests, 0 errors, 0 failures, 0 skipped
+build/mola_lidar_odometry/test_results/mola_lidar_odometry/test_keyframe_decider.gtest.xml: 13 tests, 0 errors, 0 failures, 0 skipped
+build/mola_lidar_odometry/test_results/mola_lidar_odometry/test_lidar_odometry_kitti.gtest.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_lidar_odometry/test_results/mola_lidar_odometry/test_lidar_odometry_mulran.gtest.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_lidar_odometry/test_results/mola_lidar_odometry/test_lidar_odometry_rslidar.gtest.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_lidar_odometry/test_results/mola_lidar_odometry/test_map_frame_relevel.gtest.xml: 7 tests, 0 errors, 0 failures, 0 skipped
+build/mola_lidar_odometry/test_results/mola_lidar_odometry/xmllint.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_metric_maps/Testing/20260916-1727/Test.xml: 22 tests, 0 errors, 0 failures, 0 skipped
+build/mola_pose_list/Testing/20260916-1726/Test.xml: 2 tests, 0 errors, 0 failures, 0 skipped
+build/mola_relocalization/Testing/20260916-1728/Test.xml: 2 tests, 0 errors, 0 failures, 0 skipped
+build/mola_sm_loop_closure/Testing/20260916-1728/Test.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_sm_loop_closure/test_results/mola_sm_loop_closure/test_cli_f2f_gicp.gtest.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_state_estimation/Testing/20260916-1728/Test.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_state_estimation/test_results/mola_state_estimation/xmllint.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_state_estimation_simple/Testing/20260916-1726/Test.xml: 2 tests, 0 errors, 0 failures, 0 skipped
+build/mola_state_estimation_smoother/Testing/20260916-1726/Test.xml: 14 tests, 0 errors, 1 failure, 0 skipped
+- run_test-navstate-basic
+  <<< failure message
+    [ (  1 /   7)         test_2_poses ] Running...
+    Result:
+    pose  : Mean: (x,y,z,yaw,pitch,roll)=(0.5999,0.0000,0.0000,0.00deg,0.00deg,0.00deg)
+    Inverse cov:
+           5e-07            0            0            0            0            0
+               0  4.98755e-07            0 -2.74257e-07            0            0
+               0            0  4.98755e-07            0  2.74257e-07            0
+               0 -2.74257e-07            0  6.51069e-07            0            0
+               0            0  2.74257e-07            0  6.51069e-07            0
+               0            0            0            0            0        5e-07
+    twist : [0.999656 0.000000 0.000000  0.000000 0.000000 0.000000]
+    twist inv_cov diagonal: 3.67036 3.19641 3.19641 2.19466 2.19467 2.19467
+    
+    [ (  1 /   7)         test_2_poses ] OK.
+    [ (  2 /   7) test_2_poses_too_late ] Running...
+    [ (  2 /   7) test_2_poses_too_late ] ERROR: 
+    ==== MRPT exception ====
+    Message:  Assert condition failed: !ret2.has_value()
+    Location: /home/iecme/omnifleet_ws/mola_latest_20260917_ws/src/mola_state_estimation/mola_state_estimation_smoother/tests/test-navstate-basic.cpp:245: [void {anonymous}::test_2_poses_too_late()
+    Call stack backtrace:
+    [0 ]     0xaaaac5377f98 
+    [1 ]     0xaaaac537477c 
+    [2 ]     0xffffba0373fc 
+    [3 ] (unknown file) __libc_start_main
+    [4 ]     0xaaaac5374bf0 
+    
+    [ (  3 /   7)         test_3_poses ] Running...
+    Result:
+    pose  : Mean: (x,y,z,yaw,pitch,roll)=(2.9854,0.1047,0.0000,3.17deg,0.00deg,0.00deg)
+    Inverse cov:
+     4.99814e-07   1.9357e-10            0 -3.18352e-07            0            0
+      1.9357e-10    4.998e-07            0 -1.10826e-06            0            0
+               0            0   4.9968e-07            0  1.24926e-06  2.93155e-08
+    -3.18352e-07 -1.10826e-06            0  0.000737242            0            0
+               0            0  1.24926e-06            0  0.000283445  0.000206166
+               0            0  2.93155e-08            0  0.000206166  0.000454614
+    twist : [9.903518 0.299957 0.000000  0.000000 0.000000 9.894988]
+    twist inv_cov diagonal:  0.640909 0.0189624 0.0024929  0.763859   0.76378  0.764619
+    
+    [ (  3 /   7)         test_3_poses ] OK.
+    [ (  4 /   7)      test_init_state ] Running...
+    [ (  4 /   7)      test_init_state ] OK.
+    [ (  5 /   7)  test_noisy_straight ] Running...
+    [ (  5 /   7)  test_noisy_straight ] OK.
+    [ (  6 /   7)        test_one_pose ] Running...
+    Result:
+    pose  : Mean: (x,y,z,yaw,pitch,roll)=(0.0000,0.0000,0.0000,0.00deg,0.00deg,0.00deg)
+    Inverse cov:
+    5e-07     0     0     0     0     0
+        0 5e-07     0     0     0     0
+        0     0 5e-07     0     0     0
+        0     0     0 5e-07     0     0
+        0     0     0     0 5e-07     0
+        0     0     0     0     0 5e-07
+    twist : [0.000000 0.000000 0.000000  0.000000 0.000000 0.000000]
+    twist inv_cov diagonal:   0.0025   0.0025   0.0025 0.111111 0.111111 0.111111
+    
+    [ (  6 /   7)        test_one_pose ] OK.
+    [ (  7 /   7) test_one_pose_extrap ] Running...
+    Result:
+    pose  : Mean: (x,y,z,yaw,pitch,roll)=(0.0000,0.0000,0.0000,0.00deg,0.00deg,0.00deg)
+    Inverse cov:
+    5e-07     0     0     0     0     0
+        0 5e-07     0     0     0     0
+        0     0 5e-07     0     0     0
+        0     0     0 5e-07     0     0
+        0     0     0     0 5e-07     0
+        0     0     0     0     0 5e-07
+    twist : [0.000000 0.000000 0.000000  0.000000 0.000000 0.000000]
+    twist inv_cov diagonal: 0.00249844 0.00249844 0.00249844   0.108108   0.108108   0.108108
+    
+    [ (  7 /   7) test_one_pose_extrap ] OK.
+  >>>
+build/mola_state_estimation_smoother/test_results/mola_state_estimation_smoother/test_integration_test_moving_georef.py.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_state_estimation_smoother/test_results/mola_state_estimation_smoother/test_integration_test_static_convergence.py.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_test_datasets/Testing/20260916-1726/Test.xml: 2 tests, 0 errors, 0 failures, 0 skipped
+build/mola_test_datasets/test_results/mola_test_datasets/lint_cmake.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_test_datasets/test_results/mola_test_datasets/xmllint.xunit.xml: 1 test, 0 errors, 0 failures, 0 skipped
+build/mola_yaml/Testing/20260916-1726/Test.xml: 2 tests, 0 errors, 0 failures, 0 skipped
+build/mp2p_icp_core/Testing/20260916-1726/Test.xml: 124 tests, 0 errors, 0 failures, 0 skipped
+
+Summary: 258 tests, 0 errors, 1 failure, 0 skipped

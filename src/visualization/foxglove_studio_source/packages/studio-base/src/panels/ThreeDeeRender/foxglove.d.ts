@@ -1,0 +1,13 @@
+export declare const FRAME_TRANSFORM_DATATYPES: Set<string>;
+export declare const FRAME_TRANSFORMS_DATATYPES: Set<string>;
+export declare const POINTCLOUD_DATATYPES: Set<string>;
+export declare const LASERSCAN_DATATYPES: Set<string>;
+export declare const RAW_IMAGE_DATATYPES: Set<string>;
+export declare const COMPRESSED_IMAGE_DATATYPES: Set<string>;
+export declare const CAMERA_CALIBRATION_DATATYPES: Set<string>;
+export declare const SCENE_UPDATE_DATATYPES: Set<string>;
+export declare const POSE_IN_FRAME_DATATYPES: Set<string>;
+export declare const POSES_IN_FRAME_DATATYPES: Set<string>;
+export declare const GRID_DATATYPES: Set<string>;
+export declare const IMAGE_ANNOTATIONS_DATATYPES: Set<string>;
+export declare function addFoxgloveSchema(output: Set<string>, dataType: string): Set<string>;

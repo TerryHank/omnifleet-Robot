@@ -1,0 +1,1 @@
+SUBSYSTEM=="video4linux", ENV{ID_VENDOR_ID}=="2bc5", ENV{ID_MODEL_ID}=="0813", ENV{ID_SERIAL_SHORT}=="CPMJ863002J", ENV{ID_USB_INTERFACE_NUM}=="04", ATTR{index}=="0", SYMLINK+="omnifleet-gemini345lg-rgb"

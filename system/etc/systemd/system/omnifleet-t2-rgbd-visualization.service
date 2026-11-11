@@ -1,0 +1,16 @@
+[Unit]
+Description=104 RGB-D gray depth and registered XYZRGB visualization
+After=omnifleet-t2-rgbd-camera.service
+Wants=omnifleet-t2-rgbd-camera.service
+
+[Service]
+User=iecme
+Environment=HOME=/home/iecme
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/env.bash; export ZENOH_CONFIG_OVERRIDE="transport/shared_memory/enabled=false;transport/shared_memory/transport_optimization/enabled=false"; exec ros2 run hik_rgbd rgbd_visualization'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

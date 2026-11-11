@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>rrc_tank_bridge</name><version>0.1.0</version><description>Safe cmd_vel to Hiwonder tracked motor bridge.</description><maintainer email="iecme@localhost">iecme</maintainer><license>Apache-2.0</license><buildtool_depend>ament_python</buildtool_depend><depend>rclpy</depend><depend>geometry_msgs</depend><depend>ros_robot_controller_msgs</depend><export><build_type>ament_python</build_type></export>
+</package>

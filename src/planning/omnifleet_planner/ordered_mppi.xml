@@ -1,0 +1,1 @@
+<library path="ordered_mppi"><class name="omnifleet_planner::OrderedMPPI" type="omnifleet_planner::OrderedMPPI" base_class_type="nav2_core::Controller"><description>Full-route MPPI with ordered arclength matching for continuous navigation.</description></class></library>

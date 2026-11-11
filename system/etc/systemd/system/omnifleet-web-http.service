@@ -1,0 +1,9 @@
+[Unit]
+Description=Forward HTTP port 80 to the existing OmniFleet web frontend
+Requires=foxglove-studio-cn-104.service
+After=foxglove-studio-cn-104.service
+
+[Service]
+ExecStart=/lib/systemd/systemd-socket-proxyd 127.0.0.1:8780
+DynamicUser=yes
+NoNewPrivileges=yes

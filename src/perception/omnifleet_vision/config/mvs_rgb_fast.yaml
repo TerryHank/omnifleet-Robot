@@ -1,0 +1,73 @@
+mvs_camera_node:
+  ros__parameters:
+    camera_index: 0
+    serial_number: "DB0993529"
+    user_defined_name: "MV-DT01SNU"
+    runtime_sdk_dir: ""
+    auto_packet_size: true
+    trigger_mode: false
+    trigger_source: ""
+    grab_timeout_ms: 1000
+    exposure_time: -1.0
+    gain: -1.0
+    pixel_format: ""
+
+    # 高速彩色模式显式进入 RGB-D 固件的 Color 子模式，只发布彩色流。
+    # 若关闭 rgbd_enabled，固件会保留 DepthMode 并把 Coord3D_C16 误送入彩色转换。
+    rgbd_enabled: true
+    image_topic: "/camera/color/image_raw"
+    camera_info_topic: "/camera/color/camera_info"
+    camera_working_mode: "DepthMode"
+    image_mode: "Color"
+    # Color and Depth are mutually exclusive on this firmware；最高帧率课程只采彩色。
+    rgbd_capture_strategy: "color_only"
+    color_frames_per_cycle: 1
+    depth_frames_per_cycle: 1
+    color_image_mode: "Color"
+    depth_image_mode: "Depth"
+    # The MV-DT01SNU uses this dedicated selector for its RGB sensor.
+    # DynamicMode prevents a persisted low manual exposure from producing
+    # a nearly black RGB image and therefore a black colorized point cloud.
+    color_exposure_mode: "DynamicMode"
+    rgbd_align_coord: "TransformDepthToRGBCoordinate"
+    acquisition_mode: "Continuous"
+
+    color_frame_id: "camera_color_optical_frame"
+    depth_frame_id: "camera_color_optical_frame"
+    color_image_topic: "/camera/color/image_raw"
+    color_camera_info_topic: "/camera/color/camera_info"
+    rgbd_color_image_topic: "/camera/color/image_raw"
+    rgbd_color_camera_info_topic: "/camera/color/camera_info"
+    depth_image_topic: "/camera/depth/image_raw"
+    depth_camera_info_topic: "/camera/depth/camera_info"
+    pointcloud_topic: "/camera/points"
+    colorized_pointcloud_topic: "/camera/points_colorized"
+    # Always publish geometric depth points. Publish the colorized copy only
+    # when the adjacent one-to-one RGB and Depth captures are close enough.
+    rgbd_max_pair_delta_ms: 750
+    publish_pointcloud: false
+    # Keep 1/2 samples on each image axis (about 1/4 of the calibrated depth pixels).
+    # This is visibly denser than the former 1/4-per-axis setting without the cost
+    # of an unthrottled full-resolution cloud.
+    pointcloud_decimation: 2
+    # Reject isolated ToF flying pixels and depth-edge streaks. A point must
+    # agree with at least 6 of its 8 immediate depth neighbors. The allowed
+    # difference is max(4 cm, 2% of measured range).
+    pointcloud_spatial_filter: true
+    pointcloud_filter_min_neighbors: 6
+    pointcloud_filter_depth_tolerance: 0.04
+    pointcloud_filter_depth_tolerance_ratio: 0.02
+    # JetPack acceleration keeps the ROS interfaces unchanged: CUDA projects
+    # depth into XYZRGB, while VPI runs RGB resizing on the VIC engine.
+    jetson_cuda_pointcloud: true
+    jetson_vpi_resize: true
+
+    depth_scale: 0.001
+    depth_min: 0.2
+    depth_max: 3.5
+    camera_fx: 1019.1704230044749
+    camera_fy: 1044.3850797624254
+    camera_cx: 767.5
+    camera_cy: 639.5
+    camera_nominal_width: 1536
+    camera_nominal_height: 1280

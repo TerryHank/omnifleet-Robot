@@ -1,0 +1,4 @@
+AMENT_PREFIX_PATH=/opt/ros/humble
+CMAKE_PREFIX_PATH=/home/iecme/omnifleet_ws/install/mrpt:/home/iecme/omnifleet_ws/install/mrpt/share/mrpt:/home/iecme/omnifleet_ws/install/mrpt_libros_bridge:
+PYTHONPATH=/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages
+LD_LIBRARY_PATH=/home/iecme/omnifleet_ws/install/mrpt/lib:/home/iecme/omnifleet_ws/install/mrpt_libros_bridge/lib:/opt/ros/humble/opt/zenoh_cpp_vendor/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib

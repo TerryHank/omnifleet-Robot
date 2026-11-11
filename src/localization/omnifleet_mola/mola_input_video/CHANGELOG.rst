@@ -1,0 +1,99 @@
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package mola_input_video
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+3.2.1 (2026-09-15)
+------------------
+* mola_viz_imgui: show dataset playback time in the dataset UI panel (`#202 <https://github.com/MOLAorg/mola/issues/202>`_)
+* Contributors: Jose Luis Blanco-Claraco
+
+3.2.0 (2026-08-21)
+------------------
+* Merge remote-tracking branch 'origin/feat/map-frame-gauge-change' into feat/map-frame-gauge-change
+* Merge branch 'develop' into feat/map-frame-gauge-change
+* Contributors: Jose Luis Blanco-Claraco
+
+3.1.1 (2026-08-10)
+------------------
+
+3.1.0 (2026-08-06)
+------------------
+* Merge pull request `#187 <https://github.com/MOLAorg/mola/issues/187>`_ from MOLAorg/feat/incremental-point-cloud-kdtree-bake
+  Bake IncrementalPointCloud's k-d tree index (mm-ipc-bake-kdtree)
+* changelog
+* Contributors: Jose Luis Blanco-Claraco
+
+3.0.0 (2026-07-17)
+------------------
+
+2.9.0 (2026-05-11)
+------------------
+* Merge pull request `#143 <https://github.com/MOLAorg/mola/issues/143>`_ from MOLAorg/bump-cmake-version
+  bump min req cmake version to 3.22
+* bump min req cmake version to 3.22
+* Contributors: Jose Luis Blanco-Claraco
+
+2.8.0 (2026-04-29)
+------------------
+
+2.7.0 (2026-04-22)
+------------------
+
+2.6.1 (2026-04-02)
+------------------
+
+2.6.0 (2026-03-12)
+------------------
+* Merge pull request `#107 <https://github.com/MOLAorg/mola/issues/107>`_ from MOLAorg/fix/viz-decay-clouds
+  Fix/viz-decay-clouds
+* Update coyright notes
+* Contributors: Jose Luis Blanco-Claraco
+
+2.5.0 (2026-02-14)
+------------------
+
+2.4.0 (2025-12-28)
+------------------
+
+2.3.0 (2025-12-15)
+------------------
+
+2.2.1 (2025-11-08)
+------------------
+
+2.2.0 (2025-10-28)
+------------------
+
+2.1.0 (2025-10-20)
+------------------
+
+2.0.0 (2025-10-13)
+------------------
+* Modernize copyright notice
+* Contributors: Jose Luis Blanco-Claraco
+
+1.9.1 (2025-07-07)
+------------------
+
+1.9.0 (2025-06-06)
+------------------
+
+1.8.1 (2025-05-28)
+------------------
+
+1.8.0 (2025-05-25)
+------------------
+* Update copyright year
+* Contributors: Jose Luis Blanco-Claraco
+
+1.7.0 (2025-05-06)
+------------------
+* Implement live camera mode too
+* video input from video files also implemented now
+* Merge pull request `#85 <https://github.com/MOLAorg/mola/issues/85>`_ from MOLAorg/feat/video-input-module
+  Feature: new video input MOLA module
+* Feature: new video input MOLA module. For now, implements "image directory" input.
+* Contributors: Jose Luis Blanco-Claraco
+
+1.6.4 (2025-04-23)
+------------------

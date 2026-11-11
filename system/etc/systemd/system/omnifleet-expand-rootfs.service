@@ -1,0 +1,12 @@
+[Unit]
+Description=Expand cloned root filesystem to the installed NVMe capacity
+After=local-fs.target
+ConditionPathExists=!/var/lib/omnifleet-image/expanded
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/omnifleet-image/expand_rootfs.sh
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

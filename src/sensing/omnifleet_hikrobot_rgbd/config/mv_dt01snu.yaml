@@ -1,0 +1,26 @@
+mv_dt01snu_camera:
+  ros__parameters:
+    vendor_python_path: /opt/MVS/Samples/aarch64/Python
+    serial_number: DB0993529
+    calibration_file: /home/iecme/omnifleet_data/camera_validation/mv_dt01snu_20261020/RGBDSensorCali.mfa
+    color_topic: /camera/color/image_raw
+    color_info_topic: /camera/color/camera_info
+    depth_topic: /camera/depth/image_raw
+    depth_info_topic: /camera/depth/camera_info
+    aligned_depth_topic: /camera/aligned_depth_to_color/image_raw
+    aligned_depth_info_topic: /camera/aligned_depth_to_color/camera_info
+    color_frame_id: camera_color_optical_frame
+    depth_frame_id: camera_depth_optical_frame
+    grab_timeout_ms: 2000
+    color_exposure_mode: DynamicMode
+    # Manual fallback values; used only with SingleMode.
+    color_exposure_time_us: 16500.0
+    color_gain: 23.7
+    # Native RGB-D measured at 30 FPS; >=550us reduces this device to 15 FPS.
+    depth_exposure_time_us: 500.0
+    depth_exposure_mode: DynamicMode
+    depth_auto_exposure_max_us: 500
+    depth_gap_fill_class: Normal
+    depth_range_filter_class: Normal
+    output_color_width: 1536
+    output_color_height: 1280

@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet receiver LAN Wi-Fi configuration
+After=NetworkManager.service network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/omnifleet-wifi/service.py
+Restart=on-failure
+RestartSec=3
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

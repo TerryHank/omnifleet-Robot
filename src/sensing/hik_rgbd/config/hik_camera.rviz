@@ -1,0 +1,39 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Fixed Frame: camera_color_optical_frame
+    Frame Rate: 15
+  Displays:
+    - Class: rviz_default_plugins/Image
+      Name: RGB
+      Enabled: true
+      Topic:
+        Value: /rgb/image_raw
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: Depth Millimetres
+      Enabled: true
+      Normalize Range: true
+      Topic:
+        Value: /depth/image_raw
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: Aligned Depth Millimetres
+      Enabled: true
+      Normalize Range: true
+      Topic:
+        Value: /aligned_depth_to_color/image_raw
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: Depth Color
+      Enabled: true
+      Topic:
+        Value: /depth/image_color
+        Reliability Policy: Best Effort
+  Enabled: true
+Window Geometry:
+  Width: 1280
+  Height: 800

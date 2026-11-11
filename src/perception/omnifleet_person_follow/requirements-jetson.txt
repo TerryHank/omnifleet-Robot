@@ -1,0 +1,4 @@
+# Reuse JetPack's installed TensorRT 10.3, NVIDIA OpenCV CUDA and nvjpegenc.
+# Do not replace them with generic pip opencv-python/tensorrt wheels.
+ultralytics==8.4.124
+lap==0.5.12

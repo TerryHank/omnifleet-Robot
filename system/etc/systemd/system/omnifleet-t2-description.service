@@ -1,0 +1,19 @@
+[Unit]
+Description=OmniFleet T2 robot description and TF
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_ws
+Environment=HOME=/home/iecme
+Environment=ROS_HOME=/var/lib/omnifleet_t2/ros
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash && exec ros2 launch omnifleet_description t2_description.launch.py'
+Restart=on-failure
+RestartSec=2
+KillSignal=SIGINT
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

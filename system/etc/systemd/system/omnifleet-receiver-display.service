@@ -1,0 +1,14 @@
+[Unit]
+Description=Receiver display-only camera and point cloud relay
+After=omnifleet-t2-rgbd-camera.service omnifleet-t2-foxglove.service
+
+[Service]
+User=iecme
+Environment=HOME=/home/iecme
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/env.bash >/dev/null && exec /usr/bin/python3 /opt/omnifleet-receiver-display/receiver_display.py'
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

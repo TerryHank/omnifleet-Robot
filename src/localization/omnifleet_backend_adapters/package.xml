@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>omnifleet_backend_adapters</name>
+  <version>0.1.0</version>
+  <description>Isolated Airy launch profiles for FAST-LIVO2 LIO and native RTAB-Map LiDAR SLAM.</description>
+  <maintainer email="iecme@example.com">iecme</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>fast_livo</exec_depend>
+  <exec_depend>omnifleet_mola_grid</exec_depend>
+  <exec_depend>omnifleet_sensor_processing</exec_depend>
+  <exec_depend>omnifleet_bringup</exec_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

@@ -1,0 +1,72 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Background Color: 35; 35; 35
+    Fixed Frame: world
+    Frame Rate: 30
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: World Grid
+      Enabled: true
+    - Class: rviz_default_plugins/TF
+      Name: All Robot TF
+      Enabled: true
+      Frame Timeout: 15
+    - Class: rviz_default_plugins/RobotModel
+      Name: Robot 1 Model
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot1/robot_description
+      TF Prefix: robot1
+    - Class: rviz_default_plugins/RobotModel
+      Name: Robot 2 Model
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot2/robot_description
+      TF Prefix: robot2
+    - Class: rviz_default_plugins/RobotModel
+      Name: Robot 3 Model
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot3/robot_description
+      TF Prefix: robot3
+    - Class: rviz_default_plugins/Odometry
+      Name: Robot 1 Odometry
+      Enabled: true
+      Color: 255; 80; 80
+      Keep: 100
+      Topic:
+        Value: /robot1/odom
+    - Class: rviz_default_plugins/Odometry
+      Name: Robot 2 Odometry
+      Enabled: true
+      Color: 80; 220; 120
+      Keep: 100
+      Topic:
+        Value: /robot2/odom
+    - Class: rviz_default_plugins/Odometry
+      Name: Robot 3 Odometry
+      Enabled: true
+      Color: 80; 140; 255
+      Keep: 100
+      Topic:
+        Value: /robot3/odom
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/SetGoal
+      Topic: /fleet/goal
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: Fleet Top Down
+      Scale: 80
+Window Geometry:
+  Width: 1280
+  Height: 800

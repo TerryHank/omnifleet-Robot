@@ -1,0 +1,25 @@
+import { StoryObj } from "@storybook/react";
+import { PublishConfig } from "./types";
+type StoryArgs = {
+    allowPublish: boolean;
+    includeSettings: boolean;
+    isEmpty: boolean;
+    overrideConfig: PublishConfig;
+};
+declare const _default: import("@storybook/types").ComponentAnnotations<import("@storybook/react/dist/types-0fc72a6d").R, StoryArgs>;
+export default _default;
+type Story = StoryObj<StoryArgs>;
+export declare const Default: Story;
+export declare const PublishEnabled: Story;
+export declare const WhenSelectingATopicSchemaIsSuggested: Story;
+export declare const PublishEnabledWithTopicAndSchema: Story;
+export declare const PublishEnabledWithCustomButtonSettings: Story;
+export declare const PublishDisabledWithTopicAndSchema: Story;
+export declare const WithValidJSON: Story;
+export declare const WithInvalidJSON: Story;
+export declare const WithSchemaThatNoLongerExists: Story;
+export declare const DefaultEditingModeOff: Story;
+export declare const PublishEnabledEditingOff: Story;
+export declare const PublishEnabledWithTopicAndSchemaEditingOff: Story;
+export declare const PublishEnabledWithCustomButtonSettingsEditingOff: Story;
+export declare const PublishDisabledEditingModeOff: Story;

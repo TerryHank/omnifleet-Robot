@@ -1,0 +1,35 @@
+import type { Time } from "@foxglove/rostime";
+import { FrameTransform, FrameTransforms, NumericType } from "@foxglove/schemas";
+import type { PartialMessage } from "./SceneExtension";
+import { ColorRGBA, Header, Matrix6, PointFieldType, Quaternion, TFMessage, Transform, TransformStamped, Vector3 } from "./ros";
+import type { Pose } from "./transforms";
+type LegacyTransform = {
+    timestamp: Time;
+    translation: Vector3;
+    rotation: Quaternion;
+};
+export type LegacyFrameTransform = {
+    timestamp: Time;
+    parent_frame_id: string;
+    child_frame_id: string;
+    transform: LegacyTransform;
+};
+export declare function normalizeTime(time: Partial<Time> | undefined): Time;
+export declare function normalizeByteArray(byteArray: unknown): Uint8Array;
+export declare function normalizeInt8Array(int8Array: unknown): Int8Array;
+export declare function normalizeFloat32Array(array: unknown): Float32Array;
+export declare function normalizeVector3(vector: Partial<Vector3> | undefined): Vector3;
+export declare function normalizeVector3s(vectors: (Partial<Vector3> | undefined)[] | undefined): Vector3[];
+export declare function normalizeMatrix6(mat: number[] | undefined): Matrix6;
+export declare function normalizeQuaternion(quat: Partial<Quaternion> | undefined): Quaternion;
+export declare function normalizeColorRGBA(color: Partial<ColorRGBA> | undefined): ColorRGBA;
+export declare function normalizeColorRGBAs(colors: (Partial<ColorRGBA> | undefined)[] | undefined): ColorRGBA[];
+export declare function normalizePose(pose: PartialMessage<Pose> | undefined): Pose;
+export declare function normalizeHeader(header: PartialMessage<Header> | undefined): Header;
+export declare function normalizeTransform(transform: PartialMessage<Transform> | undefined): Transform;
+export declare function normalizeTransformStamped(transform: PartialMessage<TransformStamped> | undefined): TransformStamped;
+export declare function normalizeTFMessage(tfMessage: PartialMessage<TFMessage> | undefined): TFMessage;
+export declare function normalizeFrameTransform(frameTransform: (PartialMessage<FrameTransform> & PartialMessage<LegacyFrameTransform>) | undefined): FrameTransform;
+export declare function normalizeFrameTransforms(frameTransforms: PartialMessage<FrameTransforms> | undefined): FrameTransforms;
+export declare function numericTypeToPointFieldType(type: NumericType): PointFieldType;
+export {};

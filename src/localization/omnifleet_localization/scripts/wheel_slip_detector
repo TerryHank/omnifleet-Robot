@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+from omnifleet_chassis_driver.wheel_slip_detector import main
+
+if __name__ == "__main__":
+    main()

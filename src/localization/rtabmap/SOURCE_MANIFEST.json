@@ -1,0 +1,26 @@
+{
+  "recorded_at": "2026-10-13T06:20:24.128459+00:00",
+  "repositories": [
+    {
+      "directory": "/home/iecme/omnifleet_ws/src/localization/FAST-LIVO2",
+      "origin": "https://github.com/hku-mars/FAST-LIVO2.git",
+      "ref": "main",
+      "commit": "0d2c0346107b75b59934975adec9a6eeeb913c64"
+    },
+    {
+      "directory": "/home/iecme/omnifleet_ws/src/localization/rtabmap/rtabmap",
+      "origin": "https://github.com/introlab/rtabmap.git",
+      "ref": "0.23.7",
+      "commit": "bc724a21254a055cee7581d764e4513a0d6fa8ce"
+    },
+    {
+      "directory": "/home/iecme/omnifleet_ws/src/localization/rtabmap/rtabmap_ros",
+      "origin": "https://github.com/introlab/rtabmap_ros.git",
+      "ref": "0.23.7-humble",
+      "commit": "c25a091c2a682f0e0f4e8d19d807953e7f1a8161"
+    }
+  ],
+  "rtabmap_binary_version": "ros-humble-rtabmap\t0.23.7-1jammy.20260622.080719\nros-humble-rtabmap-ros\t0.23.7-1jammy.20260622.103000\n",
+  "fast_livo2": "Official main is ROS1/catkin; source retained but excluded from Humble colcon.",
+  "rtabmap": "Source version matches the installed 0.23.7 binaries; source snapshots excluded to preserve the working binary underlay."
+}

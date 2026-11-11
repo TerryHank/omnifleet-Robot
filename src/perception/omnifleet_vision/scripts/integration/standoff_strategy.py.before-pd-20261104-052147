@@ -1,0 +1,81 @@
+"""Target continuity and standoff control, updated once per measurement."""
+from dataclasses import dataclass
+import math
+from vision_integration_core import bbox_iou
+
+
+@dataclass
+class StandoffStrategy:
+    target_distance: float = .8
+    deadband: float = .15
+    hysteresis: float = .05
+    lock_timeout: float = 1.5
+    image_width: float = 1536.
+    linear_speed: float = .4
+    angular_gain: float = .6
+    max_angular_speed: float = .3
+    locked_id: int | None = None
+    locked_class: str | None = None
+    last_seen: float | None = None
+    last_bbox: list | None = None
+    motion_state: str = "LOST"
+    distance_state: int = 0
+    aligning: bool = False
+
+    def stop(self, reason="target_lost"):
+        self.distance_state = 0
+        self.aligning = False
+        self.motion_state = "LOST"
+        return 0., 0., reason, {"locked_id": self.locked_id, "motion_state": self.motion_state}
+
+    def update(self, payload, now, class_filter=""):
+        values = payload.get("detections", [])
+        wanted = class_filter.lower() or self.locked_class
+        values = [v for v in values if isinstance(v, dict) and
+                  (not wanted or str(v.get("class", "")).lower() == wanted)]
+        width = float(payload.get("image_width", self.image_width))
+        target = next((v for v in values if v.get("track_id") == self.locked_id), None)
+        if target is None and self.locked_id is not None and self.last_seen is not None:
+            nearby = [v for v in values if bbox_iou(v.get("bbox"), self.last_bbox) >= .2]
+            if nearby:
+                target = max(nearby, key=lambda v: bbox_iou(v["bbox"], self.last_bbox))
+            elif now - self.last_seen <= self.lock_timeout:
+                return self.stop()
+        if target is None and values:
+            target = min(values, key=lambda v: abs(v["bbox"][0] + v["bbox"][2] / 2 - width / 2))
+        if target is None:
+            return self.stop()
+        self.locked_id = target.get("track_id")
+        self.locked_class = str(target.get("class", "")).lower()
+        self.last_bbox, self.last_seen = target["bbox"], now
+        x, _, w, _ = self.last_bbox
+        offset = (x + w / 2 - width / 2) / (width / 2)
+        self.aligning = abs(offset) > (.12 if self.aligning else .25)
+        angular = max(-self.max_angular_speed, min(self.max_angular_speed, -self.angular_gain * offset))
+        if abs(offset) <= .05:
+            angular = 0.
+        distance = target.get("depth_m")
+        if distance is None or not math.isfinite(float(distance)) or float(distance) <= 0:
+            distance = None
+            self.distance_state = 0
+            self.motion_state = "WAIT_DEPTH"
+            linear = 0.
+        else:
+            error = float(distance) - self.target_distance
+            if self.distance_state == 1 and error <= self.deadband:
+                self.distance_state = 0
+            if self.distance_state == -1 and error >= -self.deadband:
+                self.distance_state = 0
+            if self.distance_state == 0:
+                if error > self.deadband + self.hysteresis:
+                    self.distance_state = 1
+                elif error < -self.deadband - self.hysteresis:
+                    self.distance_state = -1
+            linear = max(-self.linear_speed, min(self.linear_speed, .6 * error)) if self.distance_state else 0.
+            self.motion_state = {1: "FOLLOW", -1: "BACKOFF", 0: "HOLD"}[self.distance_state]
+        if self.aligning:
+            linear = 0.
+            self.motion_state = "ALIGN"
+        return linear, angular, "target_follow", {
+            "locked_id": self.locked_id, "motion_state": self.motion_state,
+            "distance_m": distance, "target_distance_m": self.target_distance}

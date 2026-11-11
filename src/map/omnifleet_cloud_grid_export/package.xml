@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>omnifleet_cloud_grid_export</name><version>0.1.0</version>
+  <description>Export registered FAST-LIVO2 point clouds with MOLA/MP2P voxel and grid tools.</description>
+  <maintainer email="iecme@example.com">iecme</maintainer><license>MIT</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <build_depend>libpcl-all-dev</build_depend>
+  <exec_depend>ament_index_python</exec_depend><exec_depend>python3-yaml</exec_depend>
+  <exec_depend>mp2p_icp_core</exec_depend><exec_depend>nav2_map_server</exec_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

@@ -1,0 +1,114 @@
+{
+  "/motor_command_sent": {
+    "count": 632,
+    "nonzero": 208,
+    "min_x": -0.20000000298023224,
+    "max_x": 0.20000000298023224,
+    "last": {
+      "x": 0.20000000298023224,
+      "z": 0.0
+    }
+  },
+  "/navigation/cmd_vel_safe": {
+    "count": 1295,
+    "nonzero": 438,
+    "min_x": -0.20000000298023224,
+    "max_x": 0.20000000298023224,
+    "last": {
+      "x": 0.20000000298023224,
+      "z": 0.0
+    }
+  },
+  "/vision/body_tracking/status": {
+    "count": 137,
+    "gestures": {
+      "one": 23,
+      "victory": 16
+    },
+    "last": {
+      "gesture": "one",
+      "body_tracking": {
+        "state": "INITING",
+        "track_id": 0,
+        "serial_lost_num": 0,
+        "has_face_head": false,
+        "source_stamp": [
+          1794433909,
+          178619586
+        ],
+        "range_base_m": null,
+        "motion_enabled": true,
+        "operator_mode": "unified",
+        "follow_active": false,
+        "distance_mode": "APPROACH_FOR_DEPTH",
+        "control_mode": "GESTURE_FORWARD",
+        "target_distance_m": 1.2,
+        "heading_error_rad": 0,
+        "gesture_motion": "GESTURE_FORWARD",
+        "rotation_degrees": 0,
+        "rotation_active": false,
+        "rotation_done": false,
+        "tuning": {
+          "reverse_max_speed": 0.25,
+          "reverse_p": 1,
+          "steering_p": 1.8,
+          "steering_d": 0.35,
+          "steering_max_speed": 0.8,
+          "derivative_weight": 0.7
+        }
+      },
+      "velocity_request": {
+        "linear_x": 0.20000000298023224,
+        "angular_z": 0.0
+      },
+      "hand_ms": 259.75,
+      "hand_age_ms": 367.62967399954505
+    }
+  },
+  "/vel_raw": {
+    "count": 316,
+    "nonzero": 115,
+    "min_x": -0.205,
+    "max_x": 0.205,
+    "last": {
+      "x": 0.098,
+      "z": -0.025
+    }
+  },
+  "/navigation/local_status": {
+    "count": 158,
+    "last": {
+      "control_gate_ready": true,
+      "control_mode": "MANUAL",
+      "manual_active": true,
+      "joystick_priority": false,
+      "joystick_stop_gear": false,
+      "expired_velocity_commands": {
+        "nav": 0,
+        "manual": 0
+      },
+      "estop": false,
+      "safety_stop_reason": ""
+    }
+  },
+  "/vision/body_tracking/cmd_vel": {
+    "count": 54,
+    "nonzero": 47,
+    "min_x": -0.20000000298023224,
+    "max_x": 0.20000000298023224,
+    "last": {
+      "x": 0.20000000298023224,
+      "z": 0.0
+    }
+  },
+  "/cmd_vel": {
+    "count": 54,
+    "nonzero": 47,
+    "min_x": -0.20000000298023224,
+    "max_x": 0.20000000298023224,
+    "last": {
+      "x": 0.20000000298023224,
+      "z": 0.0
+    }
+  }
+}

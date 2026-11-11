@@ -1,0 +1,252 @@
+#!/usr/bin/env python3
+"""远端履带底盘 RoboSense Airy + MOLA + Nav2 生产链只读体检工具。"""
+
+import argparse
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+
+LEVELS = {"PASS": 0, "WARN": 1, "FAIL": 2}
+class Doctor:
+    def __init__(self, timeout):
+        self.timeout = timeout
+        self.results = []
+
+    def run(self, command, timeout=None):
+        try:
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=timeout or self.timeout,
+                check=False,
+            )
+            output = "\n".join(
+                part.strip() for part in (result.stdout, result.stderr) if part.strip()
+            )
+            return result.returncode, output
+        except subprocess.TimeoutExpired as error:
+            stdout = error.stdout.decode() if isinstance(error.stdout, bytes) else error.stdout
+            stderr = error.stderr.decode() if isinstance(error.stderr, bytes) else error.stderr
+            output = "\n".join(part.strip() for part in (stdout, stderr) if part)
+            return 124, output
+        except FileNotFoundError as error:
+            return 127, str(error)
+
+    def record(self, status, name, evidence, fault_unit):
+        self.results.append((status, name, evidence, fault_unit))
+
+    def command_contains(self, name, command, expected, fault_unit, timeout=None):
+        code, output = self.run(command, timeout=timeout)
+        found = code == 0 and all(token in output for token in expected)
+        status = "PASS" if found else "FAIL"
+        compact = " | ".join(line.strip() for line in output.splitlines() if line.strip())
+        if len(compact) > 220:
+            compact = compact[:217] + "..."
+        self.record(
+            status,
+            name,
+            compact or f"命令退出码={code}，无输出",
+            fault_unit,
+        )
+        return found
+
+    def service(self, unit):
+        self.command_contains(
+            f"systemd {unit}",
+            ["systemctl", "is-active", unit],
+            ["active"],
+            f"{unit}或其硬件接口",
+        )
+
+    def topic_sample(self, topic, field, fault_unit, durability=None):
+        command = [
+            "ros2", "topic", "echo", topic, "--field", field, "--once",
+        ]
+        if durability:
+            command.extend(["--qos-durability", durability])
+        code, output = self.run(command)
+        has_sample = code == 0 and bool(output.strip())
+        compact = " | ".join(line.strip() for line in output.splitlines() if line.strip())
+        if len(compact) > 160:
+            compact = compact[:157] + "..."
+        self.record(
+            "PASS" if has_sample else "FAIL",
+            f"实时消息 {topic}",
+            compact or f"{self.timeout:.1f}s内未收到消息",
+            fault_unit,
+        )
+        return has_sample
+
+    def topic_graph(self, topic, expected_nodes, fault_unit):
+        return self.command_contains(
+            f"话题拓扑 {topic}",
+            ["ros2", "topic", "info", topic, "-v"],
+            expected_nodes,
+            fault_unit,
+        )
+
+    def lifecycle(self, node):
+        self.command_contains(
+            f"Lifecycle {node}",
+            ["ros2", "lifecycle", "get", node],
+            ["active"],
+            f"{node}或定位生命周期管理器",
+        )
+
+    def parameter(self, nodes, parameter, expected, name, fault_unit):
+        outputs = []
+        for node in nodes:
+            code, output = self.run(["ros2", "param", "get", node, parameter])
+            outputs.append(f"{node}: {output}")
+            if code == 0 and all(token in output for token in expected):
+                self.record("PASS", name, outputs[-1], fault_unit)
+                return True
+        self.record("FAIL", name, " | ".join(outputs), fault_unit)
+        return False
+
+    def tf(self, source, target, fault_unit):
+        code, output = self.run(
+            ["timeout", "8", "ros2", "run", "tf2_ros", "tf2_echo", source, target],
+            timeout=10,
+        )
+        found = "Translation:" in output and "Rotation:" in output
+        evidence = "TF可查询" if found else (output.strip() or f"退出码={code}")
+        self.record("PASS" if found else "FAIL", f"TF {source} -> {target}", evidence, fault_unit)
+
+    def base(self):
+        self.service("omnifleet-t2-chassis.service")
+        self.service("omnifleet-t2-airy.service")
+
+        serial = Path("/dev/omnifleet_t2_stm32")
+        if serial.exists():
+            self.record("PASS", "STM32串口绑定", str(serial.resolve()), "无")
+        else:
+            self.record("FAIL", "STM32串口绑定", "/dev/omnifleet_t2_stm32不存在", "udev规则、USB线或STM32枚举")
+
+        self.topic_sample("/rslidar_points", "width", "Airy点云驱动或网络")
+        self.topic_sample("/rslidar_imu_data", "linear_acceleration", "Airy内置IMU或RoboSense驱动")
+        self.topic_sample("/odom", "twist.twist", "STM32串口接收、Hall反馈或底盘驱动")
+        self.topic_graph(
+            "/cmd_vel",
+            ["Node name: omnifleet_t2_driver"],
+            "履带速度命令到底盘驱动的连接",
+        )
+
+    def slam(self):
+        self.topic_graph(
+            "/map",
+            ["Node name: mola_bridge_ros2"],
+            "MOLA官方二维地图输出",
+        )
+        self.topic_sample("/map", "info.width", "MOLA地图会话")
+        self.command_contains(
+            "MOLA地图保存服务",
+            ["ros2", "service", "type", "/map_save"],
+            ["mola_msgs/srv/MapSave"],
+            "MOLA BridgeROS2地图服务",
+        )
+        self.tf("map", "odom", "MOLA REP-105定位TF")
+        self.tf("odom", "base_link", "STM32底盘里程计TF")
+
+    def nav(self):
+        self.topic_graph(
+            "/rslidar_points",
+            ["Node name: rslidar_points_destination_0", "Node name: local_costmap"],
+            "Airy原始点云到官方Local Costmap障碍层",
+        )
+        self.lifecycle("/planner_server")
+        self.lifecycle("/controller_server")
+        self.lifecycle("/bt_navigator")
+        self.command_contains(
+            "NavigateToPose动作服务",
+            ["ros2", "action", "info", "/navigate_to_pose"],
+            ["Action servers: 1"],
+            "BT Navigator或Nav2生命周期",
+        )
+
+        self.parameter(
+            ["/local_costmap/local_costmap", "/local_costmap"],
+            "plugins",
+            ["obstacle_layer", "inflation_layer"],
+            "履带Local Costmap",
+            "Airy原始点云障碍层或膨胀层配置",
+        )
+        self.parameter(
+            ["/global_costmap/global_costmap", "/global_costmap"],
+            "plugins",
+            ["static_layer", "inflation_layer"],
+            "履带Global Costmap",
+            "MOLA二维地图静态层或膨胀层配置",
+        )
+        self.parameter(
+            ["/planner_server"], "GridBased.plugin",
+            ["SmacPlanner2D"], "全局规划器=SmacPlanner2D", "全局规划参数",
+        )
+        self.parameter(
+            ["/controller_server"], "FollowPath.plugin",
+            ["DWBLocalPlanner"], "局部控制器=DWB", "局部控制参数",
+        )
+
+        self.topic_graph(
+            "/cmd_vel",
+            ["Node name: controller_server", "Node name: omnifleet_t2_driver"],
+            "DWB控制器直接到底盘驱动的标准命令链",
+        )
+
+    def report(self):
+        print("\n远端机器人只读体检结果")
+        print("=" * 72)
+        first_fail = None
+        worst = 0
+        for status, name, evidence, fault_unit in self.results:
+            worst = max(worst, LEVELS[status])
+            print(f"[{status:4}] {name}")
+            print(f"       证据: {evidence}")
+            if status != "PASS":
+                print(f"       最小故障单元: {fault_unit}")
+            if status == "FAIL" and first_fail is None:
+                first_fail = (name, fault_unit)
+        print("-" * 72)
+        if first_fail:
+            print(f"结论: 首个失败项是“{first_fail[0]}”，先隔离“{first_fail[1]}”。")
+            print("不要同时修改上游算法、Costmap和底盘参数。")
+        else:
+            print("结论: 所选范围全部通过；若仍有异常，执行同目标单变量替换与回装验证。")
+        return 1 if worst >= LEVELS["FAIL"] else 0
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(
+        description="远端履带底盘 Airy + MOLA + Nav2 生产链只读体检"
+    )
+    parser.add_argument(
+        "--scope", choices=("base", "slam", "nav"), default="base",
+        help="检查范围：base仅硬件底座，slam追加MOLA/地图，nav追加Nav2全链；默认base",
+    )
+    parser.add_argument(
+        "--timeout", type=float, default=15.0,
+        help="单项实时消息等待秒数；默认15秒，覆盖MOLA全局地图的低频发布周期",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args(argv or sys.argv[1:])
+    if not os.environ.get("ROS_DISTRO"):
+        print("错误：尚未source ROS 2环境。", file=sys.stderr)
+        return 2
+
+    doctor = Doctor(args.timeout)
+    doctor.base()
+    if args.scope in ("slam", "nav"):
+        doctor.slam()
+    if args.scope == "nav":
+        doctor.nav()
+    return doctor.report()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

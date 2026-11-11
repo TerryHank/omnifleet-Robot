@@ -1,0 +1,14 @@
+[Unit]
+Description=OmniFleet local Zenoh router with independent peer reconnect
+After=network.target
+[Service]
+Environment=RMW_IMPLEMENTATION=rmw_zenoh_cpp
+Environment=ROS_DOMAIN_ID=0
+User=iecme
+Environment=ZENOH_ROUTER_CONFIG_URI=/etc/omnifleet_t2/zenoh-router.json5
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash && export LD_LIBRARY_PATH=/home/iecme/omnifleet_ws/src/system/omnifleet_fleet/zenoh-patched-v2/lib:${LD_LIBRARY_PATH:-} && exec /home/iecme/omnifleet_ws/install/rmw_zenoh_cpp/lib/rmw_zenoh_cpp/rmw_zenohd'
+Restart=always
+RestartSec=2
+KillSignal=SIGINT
+[Install]
+WantedBy=multi-user.target

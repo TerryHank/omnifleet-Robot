@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>omnifleet_chassis_driver</name>
+  <version>0.1.0</version>
+  <description>Tracked chassis transport, raw PWM and wheel-slip detection.</description>
+  <maintainer email="iecme@example.com">iecme</maintainer>
+  <license>MIT</license>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>omnifleet_interfaces</depend>
+  <depend>python3-serial</depend>
+  <depend>rcl_interfaces</depend>
+  <depend>rclpy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>tf2_ros</depend>
+  <export><build_type>ament_python</build_type></export>
+</package>

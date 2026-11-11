@@ -1,0 +1,26 @@
+=head1 NAME
+
+robot-map-gui - Gui application for opening and editing robot-made maps (* .simplemap and * .simplemap.gz)
+
+=head1 DESCRIPTION
+
+B<robot-map-gui> displays simple maps depending on the config file.
+It can be used to editing the robot-made maps.
+
+=head1 BUGS
+
+Please report bugs at https://github.com/MRPT/mrpt/issues
+
+=head1 SEE ALSO
+
+The application list and their documentation: https://docs.mrpt.org/reference/latest/applications.html
+
+=head1 AUTHORS
+
+B<observations2map> is part of the Mobile Robot Programming Toolkit (MRPT), and was originally 
+written by Alisa Chukaeva<alred402@gmail.com>.
+
+This manual page was written by Alisa Chukaeva<alred402@gmail.com>.
+
+=cut
+

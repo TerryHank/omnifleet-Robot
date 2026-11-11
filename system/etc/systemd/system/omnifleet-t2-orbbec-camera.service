@@ -1,0 +1,17 @@
+[Unit]
+Description=OmniFleet T2 robot_101 Orbbec RGB camera
+After=omnifleet-t2-zenoh-router.service
+Wants=omnifleet-t2-zenoh-router.service
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+Environment=HOME=/home/iecme
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStart=/bin/bash /home/iecme/omnifleet_ws/src/system/omnifleet_fleet/start.sh launch orbbec_camera ob_camera.launch.py camera_name:=camera color_width:=640 color_height:=480 color_fps:=30 color_format:=MJPG enable_depth:=false enable_ir:=false depth_registration:=false enable_point_cloud:=false enable_colored_point_cloud:=false
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=15
+[Install]
+WantedBy=multi-user.target

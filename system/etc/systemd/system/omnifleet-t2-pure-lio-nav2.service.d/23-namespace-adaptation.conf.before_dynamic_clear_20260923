@@ -1,0 +1,5 @@
+[Service]
+# Namespace adaptation: derive all Nav2 sensor inputs from the saved robot identity.
+ExecStart=
+ExecStart=/bin/bash -lc 'source /opt/ros/humble/setup.bash && source /home/iecme/omnifleet_ws/hardware_drivers_ws/install/local_setup.bash && source /home/iecme/omnifleet_ws/mola_latest_20260917_ws/install/local_setup.bash && source /home/iecme/omnifleet_ws/omnifleet_t2_ws/install/local_setup.bash && source /home/iecme/omnifleet_ws/omnifleet_t2_mola_experiments_ws/install/local_setup.bash && python3 -c "import fleet_scope; fleet_scope.resolve_scope()" && exec ros2 launch omnifleet_t2_mola_experiments nav2_direct.launch.py transform_tolerance:=0.8 odom_topic:=/$OMNIFLEET_ROBOT_ID/lidar_odometry/pose obstacle_topic:=/$OMNIFLEET_ROBOT_ID/navigation/deskewed_points obstacle_clearing:=false use_sim_time:=false autostart:=true params_file:=/home/iecme/omnifleet_ws/omnifleet_t2_ws/install/omnifleet_planner/share/omnifleet_planner/config/nav2_t2.yaml'
+

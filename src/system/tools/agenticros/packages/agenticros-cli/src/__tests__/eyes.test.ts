@@ -1,0 +1,117 @@
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+
+import {
+  areEyesDepsInstalled,
+  cameraTopicFromConfig,
+  cmdVelTopicFromConfig,
+  safetyLimitsFromConfig,
+  toCompressedCameraTopic,
+} from "../util/eyes.js";
+
+describe("eyes config helpers", () => {
+  it("uses explicit topic override", () => {
+    assert.equal(
+      cmdVelTopicFromConfig({ robot: { namespace: "bot" } }, "custom/cmd_vel"),
+      "/custom/cmd_vel",
+    );
+  });
+
+  it("prefers teleop.cmdVelTopic over namespace", () => {
+    assert.equal(
+      cmdVelTopicFromConfig({
+        robot: { namespace: "bot" },
+        teleop: { cmdVelTopic: "/my/cmd_vel" },
+      }),
+      "/my/cmd_vel",
+    );
+  });
+
+  it("namespaces /cmd_vel from robot.namespace", () => {
+    assert.equal(
+      cmdVelTopicFromConfig({ robot: { namespace: "3946b404-c33e-4aa3-9a8d-16deb1c5c593" } }),
+      "/3946b404-c33e-4aa3-9a8d-16deb1c5c593/cmd_vel",
+    );
+  });
+
+  it("falls back to /cmd_vel with empty namespace", () => {
+    assert.equal(cmdVelTopicFromConfig({}), "/cmd_vel");
+  });
+
+  it("reads safety limits with defaults", () => {
+    assert.deepEqual(safetyLimitsFromConfig({}), {
+      maxLinearVelocity: 1.0,
+      maxAngularVelocity: 1.5,
+    });
+    assert.deepEqual(
+      safetyLimitsFromConfig({
+        safety: { maxLinearVelocity: 0.4, maxAngularVelocity: 0.8 },
+      }),
+      { maxLinearVelocity: 0.4, maxAngularVelocity: 0.8 },
+    );
+    assert.deepEqual(
+      safetyLimitsFromConfig({
+        safety: { maxLinearVelocity: 1.0, maxAngularVelocity: 1.5 },
+        robots: [
+          {
+            id: "slow",
+            namespace: "slow",
+            default: true,
+            safety: { maxLinearVelocity: 0.2 },
+          },
+        ],
+      }),
+      { maxLinearVelocity: 0.2, maxAngularVelocity: 1.5 },
+    );
+  });
+
+  it("areEyesDepsInstalled requires node_modules/ws", () => {
+    const dir = mkdtempSync(join(tmpdir(), "eyes-deps-"));
+    try {
+      assert.equal(areEyesDepsInstalled(dir), false);
+      mkdirSync(join(dir, "node_modules", "ws"), { recursive: true });
+      writeFileSync(join(dir, "node_modules", "ws", "package.json"), "{}");
+      assert.equal(areEyesDepsInstalled(dir), true);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("toCompressedCameraTopic appends /compressed for raw Image topics", () => {
+    assert.equal(
+      toCompressedCameraTopic("/camera/camera/color/image_raw"),
+      "/camera/camera/color/image_raw/compressed",
+    );
+    assert.equal(
+      toCompressedCameraTopic("/camera/camera/color/image_raw/compressed"),
+      "/camera/camera/color/image_raw/compressed",
+    );
+    assert.equal(
+      toCompressedCameraTopic(""),
+      "/camera/camera/color/image_raw/compressed",
+    );
+  });
+
+  it("cameraTopicFromConfig uses robot.cameraTopic then RealSense default", () => {
+    assert.equal(
+      cameraTopicFromConfig({}),
+      "/camera/camera/color/image_raw/compressed",
+    );
+    assert.equal(
+      cameraTopicFromConfig({
+        robot: { cameraTopic: "/camera/camera/color/image_raw" },
+      }),
+      "/camera/camera/color/image_raw/compressed",
+    );
+    assert.equal(
+      cameraTopicFromConfig(
+        { robot: { cameraTopic: "/other/cam" } },
+        "/override/image_raw",
+      ),
+      "/override/image_raw/compressed",
+    );
+  });
+});

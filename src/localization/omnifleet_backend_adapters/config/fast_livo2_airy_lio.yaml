@@ -1,0 +1,52 @@
+/**:
+  ros__parameters:
+    common:
+      img_en: 0
+      lidar_en: 1
+      img_topic: /fast_livo2_camera_disabled
+      ros_driver_bug_fix: false
+    extrin_calib:
+      # Input IMU is already rotated into the rslidar frame by the existing Airy adapter.
+      extrinsic_T: [0.0, 0.0, 0.0]
+      extrinsic_R: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+    preprocess:
+      lidar_type: 7
+      scan_line: 32
+      point_filter_num: 2
+      feature_extract_enabled: false
+      filter_size_surf: 0.2
+      blind: 0.3
+    imu:
+      imu_en: true
+      imu_int_frame: 30
+      acc_cov: 0.5
+      gyr_cov: 0.3
+      gravity_est_en: true
+      ba_bg_est_en: true
+    lio:
+      max_iterations: 5
+      dept_err: 0.02
+      beam_err: 0.05
+      min_eigen_value: 0.0025
+      voxel_size: 0.5
+      max_layer: 2
+      max_points_num: 50
+      layer_init_num: [5, 5, 5, 5, 5]
+    local_map:
+      map_sliding_en: true
+      half_map_size: 30
+      sliding_thresh: 8.0
+    uav:
+      imu_rate_odom: false
+      gravity_align_en: true
+    publish:
+      dense_map_en: true
+      pub_scan_num: 1
+      pub_effect_point_en: false
+    pcd_save:
+      pcd_save_en: false
+      colmap_output_en: false
+    image_save:
+      img_save_en: false
+    evo:
+      pose_output_en: false

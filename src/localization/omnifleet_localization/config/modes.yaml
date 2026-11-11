@@ -1,0 +1,45 @@
+schema_version: 1
+modes:
+  cartographer_3d:
+    launch_package: omnifleet_localization
+    launch_file: cartographer_3d_backend.launch.py
+    operations: [mapping, slam_navigation]
+    required_topics:
+      [/rslidar_points, /rslidar_imu_data_corrected, /omnifleet_t2/chassis/wheel_odometry]
+    required_outputs: [/submap_list, /odom]
+    operation_required_outputs:
+      mapping: [/map]
+      slam_navigation: [/map]
+    map_to_odom_owner: cartographer_node
+    odom_to_base_owner: cartographer_node
+    odom_message_owner: omnifleet_t2_cartographer_odom_adapter
+    navigation_capable: true
+    navigation_operations: [slam_navigation]
+    shutdown_timeout_sec: 30.0
+    required_saved_artifacts: [map.pbstream]
+    software_versions:
+      omnifleet_localization: "0.3.0"
+      cartographer: "2.0.9004"
+      cartographer_ros: "2.0.9002"
+  mola:
+    launch_package: omnifleet_localization
+    launch_file: mola_backend.launch.py
+    operations: [mapping, slam_navigation]
+    required_topics: [/rslidar_points]
+    required_outputs: [/odom]
+    operation_required_outputs:
+      mapping: [/map]
+      slam_navigation: [/map]
+    map_to_odom_owner: mola_bridge_ros2
+    odom_to_base_owner: omnifleet_t2_driver
+    odom_message_owner: omnifleet_t2_driver
+    navigation_capable: true
+    navigation_operations: [slam_navigation]
+    shutdown_timeout_sec: 30.0
+    required_saved_artifacts: [local_map.mm]
+    software_versions:
+      omnifleet_localization: "0.3.0"
+      mola_lidar_odometry: "3.2.0"
+      mola_launcher: "3.2.0"
+      mola_kernel: "3.2.0"
+      mola_bridge_ros2: "3.2.0"

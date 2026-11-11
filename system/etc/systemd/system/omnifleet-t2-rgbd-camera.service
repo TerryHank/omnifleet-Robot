@@ -1,0 +1,22 @@
+[Unit]
+Description=OmniFleet T2 robot_101 Hikrobot MV-DT01SNU ROS2 SDK
+After=omnifleet-t2-zenoh-router.service
+Wants=omnifleet-t2-zenoh-router.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+Environment=HOME=/home/iecme
+Environment=MVCAM_COMMON_RUNENV=/opt/MVS/lib
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStartPre=+/usr/bin/usbreset 2bdf:0001
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/env.bash; export LD_LIBRARY_PATH=/opt/MVS/lib/aarch64:${LD_LIBRARY_PATH:-}; export ZENOH_CONFIG_OVERRIDE="transport/shared_memory/enabled=false;transport/shared_memory/transport_optimization/enabled=false"; exec ros2 launch hik_rgbd hik_rgbd_launch.py start_camera:=true use_rviz:=false'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

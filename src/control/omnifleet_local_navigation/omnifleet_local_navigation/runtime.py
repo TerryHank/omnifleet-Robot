@@ -1,0 +1,625 @@
+"""One onboard navigation owner; UI and fleet are clients of this node."""
+import argparse,copy,json,math,os,time
+from array import array
+from dataclasses import dataclass
+from types import SimpleNamespace
+import rclpy
+from rclpy.action import ActionServer,ActionClient,CancelResponse,GoalResponse
+from rclpy.task import Future
+from rclpy.qos import QoSProfile,DurabilityPolicy,ReliabilityPolicy
+from nav2_msgs.action import NavigateToPose,NavigateThroughPoses
+from nav2_msgs.msg import Costmap
+from nav_msgs.msg import Path
+from geometry_msgs.msg import PointStamped,PoseStamped
+from rclpy.time import Time
+from tf2_ros import TransformException
+from tf2_geometry_msgs import do_transform_point
+from std_msgs.msg import Bool,String
+from std_srvs.srv import Trigger,SetBool
+from omnifleet_navigation_interfaces.action import ExecuteNavigation, ExecuteFormation
+from omnifleet_navigation_interfaces.msg import NavigationPoint
+from .control import LocalControl
+from .route_execution import ContinuousRoute
+from .scope import topic,frame
+from .task_policy import TaskPolicy,Ticket
+from .native_modes import NATIVE_BACKENDS,native_tree
+from .fleet_lease import FleetLease
+from .traffic_pause import receive_pause,update_pause
+from .trail_follow import receive_trail
+from .formation_follow import receive_formation
+from .clearance_recovery import ClearanceEscape,unknown_cells,recovery_heading,recovery_config,grid_body_blocked,local_body_collision
+from .bounded_turn import BoundedTurn,body_velocity
+from source_time_executor import SourceTimeExecutor
+
+@dataclass
+class Job:
+    ticket: Ticket
+    points: list
+    single: bool
+    radius: float
+    handle: object
+    action_type: object
+    done: object
+    tree: str = ''
+    backend: str = ''
+    @property
+    def source(self):return self.ticket.source
+
+class LocalNavigation(LocalControl):
+    def __init__(self,config):
+        self.policy=TaskPolicy();self.current_job=None;self.pending_job=None
+        self.clearance_escape=None;self.recovery_pending=None;self.escape_grid=None;self.escape_unknown=[];self.recovery_pose_history=[]
+        self.near_turn=None;self.near_turn_ticket=None
+        self.navigation_active=False;self.inhibited=True;self.message='等待本地导航后端'
+        self.armed=False
+        self.fleet_enabled=False;self.completed={};self.cancel_deadline=0.
+        self.fleet_permission_epoch=0
+        self.stop_generation=0;self.accepted_generations={}
+        self.fleet_lease=FleetLease()
+        self.traffic_paused=self.traffic_suspended=False;self.traffic_sequence=-1
+        super().__init__(config)
+        self.frame_id=frame('map');self.pass_radius=.25
+        self.preview_planner_id=config.get('default_planner','GridBased')
+        self.preview_revision=0;self.preview_dirty=False;self.preview_goal_handle=None
+        q=QoSProfile(depth=1,reliability=ReliabilityPolicy.RELIABLE,durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        self.path_pub=self.create_publisher(Path,'/omnifleet_t2/waypoints/path',q)
+        self.create_subscription(String,'/omnifleet_t2/waypoints/catalog',self.on_preview_catalog,q)
+        self.status_pub=self.create_publisher(String,'/navigation/status',q)
+        self.recovery_costmap_pub = self.create_publisher(Costmap, '/navigation/recovery_costmap_raw', q)
+        self.create_subscription(Costmap, '/local_costmap/costmap_raw', self.relay_recovery_costmap, q)
+        self.execution=ContinuousRoute(self)
+        self.servers=[
+            ActionServer(self,ExecuteNavigation,topic('/navigation/execute'),self.execute_task,goal_callback=self.accept_goal,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
+            ActionServer(self,ExecuteFormation,topic('/navigation/formation'),self.execute_formation,goal_callback=self.accept_goal,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
+            ActionServer(self,NavigateToPose,topic('/navigate_to_pose'),self.execute_single,goal_callback=self.accept_goal,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
+            ActionServer(self,NavigateThroughPoses,topic('/navigate_through_poses'),self.execute_route,goal_callback=self.accept_goal,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
+        ]
+        self.create_service(Trigger,topic('/navigation/stop'),self.stop_request)
+        self.create_subscription(Bool,'/navigation/joystick_stop_gear',self.on_stop_gear,
+            QoSProfile(depth=1,durability=DurabilityPolicy.TRANSIENT_LOCAL))
+        self.create_service(SetBool,topic('/navigation/allow_fleet'),self.allow_fleet)
+        self.create_service(Trigger,topic('/navigation/fleet/acquire'),self.acquire_fleet)
+        self.create_subscription(String,'/navigation/fleet/heartbeat',self.renew_fleet,1)
+        self.create_subscription(String,'/navigation/fleet/traffic_pause',lambda m:receive_pause(self,m),1)
+        self.create_subscription(String,'/navigation/fleet/follow_trail',lambda m:(receive_trail(self,m),receive_formation(self,m)),1)
+        self.create_service(Trigger,topic('/navigation/reset_estop'),self.reset_estop)
+        self.topic_client=ActionClient(self,ExecuteNavigation,topic('/navigation/execute'))
+        self.point_client=ActionClient(self,NavigateToPose,topic('/navigate_to_pose'))
+        self.create_subscription(PoseStamped,'/goal_pose',self.goal_pose,10)
+        self.create_subscription(PointStamped,topic('/navigation/goal_point'),self.goal_point,10)
+        self.create_timer(.05,self.update_jobs)
+        self.get_logger().info('恢复运动忽略致命格；退出脱困时按原代价地图检查车体')
+
+    def relay_recovery_costmap(self, message):
+        # Nav2 raw costs use 254 for lethal and 255 for unknown.
+        data = bytes(message.data)
+        message.data = array('B', data.replace(b'\xfe', b'\x00'))
+        self.recovery_costmap_pub.publish(message)
+
+    def clear_preview(self):
+        if getattr(self,'preview_empty',False):return
+        path=Path();path.header.frame_id=self.frame_id;path.header.stamp=self.get_clock().now().to_msg()
+        self.path_pub.publish(path)
+        self.preview_empty=True
+
+    def on_preview_catalog(self,message):
+        try:
+            catalog=json.loads(message.data)
+            if catalog.get('frame_id')==self.frame_id and catalog.get('waypoints')==[] and not self.navigation_active:
+                self.clear_preview()
+        except (ValueError,TypeError,AttributeError):pass
+
+    def goal_point(self,message):
+        target=PoseStamped();target.header=copy.deepcopy(message.header)
+        point=message.point
+        if message.header.frame_id!=self.frame_id:
+            try:
+                transform=self.tf.lookup_transform(self.frame_id,message.header.frame_id,Time())
+                point=do_transform_point(message,transform).point
+            except TransformException as error:
+                self.publish_status('点目标坐标转换失败：'+str(error))
+                return
+        target.header.frame_id=self.frame_id
+        target.pose.position=copy.deepcopy(point)
+        heading=0.
+        if self.local_pose is not None:
+            dx=point.x-self.local_pose[0];dy=point.y-self.local_pose[1]
+            heading=math.atan2(dy,dx) if math.hypot(dx,dy)>1e-4 else self.local_pose[2]
+        target.pose.orientation.z=math.sin(heading/2);target.pose.orientation.w=math.cos(heading/2)
+        planner=self.selection.get('planner',self.preview_planner_id)
+        request=NavigateToPose.Goal()
+        request.pose=target
+        try:
+            request.behavior_tree=native_tree(planner,goal_checker='point_goal_checker')
+        except OSError as error:
+            self.publish_status('点目标导航树准备失败：'+str(error))
+            return
+        self.send_topic_goal(self.point_client,request)
+
+    def goal_pose(self,message):
+        request=ExecuteNavigation.Goal();request.task_id='map-click-'+str(self.get_clock().now().nanoseconds)
+        request.source=ExecuteNavigation.Goal.LOCAL;request.single_point=True
+        p=NavigationPoint();p.name='地图目标';p.pose=message;p.kind=NavigationPoint.STOP;request.waypoints=[p]
+        self.send_topic_goal(self.topic_client,request)
+
+    def send_topic_goal(self,client,request):
+        if self.stop_gear:
+            self.publish_status('遥控最低档停车，目标未发送')
+            return
+        generation=self.stop_generation
+        def accepted(f):
+            try:
+                h=f.result()
+                if h.accepted and generation!=self.stop_generation:h.cancel_goal_async()
+                elif not h.accepted:self.publish_status('本地导航模块拒绝地图目标')
+            except Exception as error:self.publish_status('地图目标提交失败：'+str(error))
+        client.send_goal_async(request).add_done_callback(accepted)
+
+    def inhibit_output(self):self.inhibited=True;self.armed=False;self.nav_time=0.
+
+    def arm_navigation_output(self):
+        if not self.armed:self.nav_time=0.
+        self.armed=True
+
+    def accept_goal(self,request):
+        return GoalResponse.REJECT if self.stop_gear else GoalResponse.ACCEPT
+
+    def accept_handle(self,handle):
+        self.accepted_generations[bytes(handle.goal_id.uuid).hex()]=self.stop_generation
+        handle.execute()
+
+    def output_permitted(self):
+        return self.armed and not self.inhibited and not self.traffic_suspended and super().output_permitted()
+
+    def publish_status(self,text):
+        if hasattr(self,'execution') and self.execution.active and self.execution.phase in ('tracking','replanning','preplanning') and not self.policy.canceling:self.inhibited=False
+        self.message=text;self.get_logger().info(text);self.publish_catalog()
+
+    def readiness_reason(self):
+        if getattr(self,'stop_gear',False):return '遥控最低档停车'
+        if getattr(self,'stop_gear_canceling',False):return '正在确认最低档取消导航'
+        if self.estop:return '急停或接触保护尚未解除'
+        if self.clearance_escape:return '正在低速脱困，完成并停稳后继续原任务'
+        if self.policy.canceling or self.execution.phase in ('canceling','cancel_unconfirmed'):return '正在取消或确认停稳，尚不能启动后续任务'
+        if not self.control_gate_ready:return '本地底盘控制通道尚未就绪'
+        if not self.execution.single.server_is_ready() or not self.execution.navigator.server_is_ready():return '本地Nav2执行接口尚未就绪'
+        if not all(name in self.states and self.states[name][0]==3 and time.monotonic()-self.states[name][1]<2 for name in self.state_clients):return 'Nav2生命周期尚未激活'
+        if not self.startup_done:return '启动时的目标取消及停稳确认尚未完成'
+        if not self.execution.inputs_ready():return self.execution.input_reason()
+        return ''
+
+    def publish_catalog(self):
+        if not hasattr(self,'execution'):return
+        reason=self.readiness_reason()
+        data={**self.execution.catalog(),'robot_id':self.config['robot_id'],
+              'task_id':self.current_job.ticket.task_id if self.current_job else '',
+              'source':self.current_job.source if self.current_job else 'NONE',
+              'execution_backend':self.current_job.backend if self.current_job else '',
+              'supports_nav2_modes':self.execution.waypoints.server_is_ready(),
+              'navigation_parameter_source':'onboard_permanent',
+              'selected_planner':self.selection.get('planner',self.preview_planner_id),
+              'selected_controller':self.selection.get('controller',self.execution.controller),
+              'navigation_active':self.navigation_active,'local_ready':not bool(reason),
+              'readiness_reason':reason,'message':self.message,'local_override':self.policy.local_override,
+              'fleet_enabled':self.fleet_enabled,'control_mode':self.mode,
+              'traffic_paused':self.traffic_paused,'traffic_suspended':self.traffic_suspended,
+              'fleet_control_available':True,'fleet_lease_fresh':self.fleet_lease.fresh(time.monotonic()),
+              'fleet_lease_sequence':self.fleet_lease.sequence,
+              'last_fleet_failure':getattr(self,'last_fleet_failure',None),
+              'fleet_lease_task_id':self.fleet_lease.task_id,'fleet_lease_revision':self.fleet_lease.revision,
+              'localization_epoch':self.epoch}
+        self.status_pub.publish(String(data=json.dumps(data,ensure_ascii=False)))
+        if self.current_job and self.current_job.action_type in (ExecuteNavigation,ExecuteFormation) and self.current_job.handle.is_active:
+            f=self.current_job.action_type.Feedback();f.task_id=self.current_job.ticket.task_id
+            f.phase=self.execution.phase;f.message=self.message
+            f.passed_points=sum(s in ('已通过','已停靠') for s in self.execution.states)
+            f.tf_age_ms=float(self.execution.health.age_ms if self.execution.health.age_ms is not None else -1)
+            self.current_job.handle.publish_feedback(f)
+
+    def request_route_preview(self):pass
+
+    def navigation_feedback(self,message):
+        job=self.current_job
+        if job and job.handle.is_active and job.action_type not in (ExecuteNavigation,ExecuteFormation):
+            job.handle.publish_feedback(message.feedback)
+
+    def points(self,values):
+        result=[]
+        for i,v in enumerate(values):
+            stamped=v.pose if hasattr(v,'kind') else v
+            if stamped.header.frame_id not in (self.frame_id,'map'):raise ValueError('目标必须在本车map坐标系')
+            p=stamped.pose;q=p.orientation
+            nums=[p.position.x,p.position.y,p.position.z,q.x,q.y,q.z,q.w]
+            if not all(math.isfinite(x) for x in nums) or abs(sum(x*x for x in nums[3:])-1)>.01:raise ValueError('目标坐标或四元数无效')
+            kind=getattr(v,'kind',0);wait=float(getattr(v,'dwell_seconds',0))
+            if kind not in (0,1) or not math.isfinite(wait) or not 0<=wait<=600:raise ValueError('航点类型或等待时间无效')
+            result.append(SimpleNamespace(name=getattr(v,'name','') or f'航点{i+1}',pose=copy.deepcopy(p),kind='stop' if kind==1 else 'pass',dwell_seconds=wait))
+        if not 1<=len(result)<=100:raise ValueError('航点数量必须为1～100')
+        result[-1].kind='stop'
+        return result
+
+    async def execute_task(self,handle):
+        request=handle.request
+        ticket=Ticket(request.task_id or bytes(handle.goal_id.uuid).hex(),{0:'LOCAL',1:'FLEET'}.get(request.source,'INVALID'),request.revision,request.command_epoch)
+        return await self.admit(handle,ExecuteNavigation,ticket,request.waypoints,request.single_point or len(request.waypoints)==1,request.pass_radius,backend='trail_follow' if request.follow_trail else '')
+
+    async def execute_formation(self,handle):
+        request=handle.request
+        ticket=Ticket(request.task_id or bytes(handle.goal_id.uuid).hex(),'FLEET',request.revision,request.command_epoch)
+        return await self.admit(handle,ExecuteFormation,ticket,request.waypoints,True,request.pass_radius,backend='formation_follow')
+
+    async def execute_single(self,handle):
+        return await self.admit(handle,NavigateToPose,Ticket(bytes(handle.goal_id.uuid).hex(),'LOCAL'),[handle.request.pose],True,.25,handle.request.behavior_tree)
+
+    async def execute_route(self,handle):
+        return await self.admit(handle,NavigateThroughPoses,Ticket(bytes(handle.goal_id.uuid).hex(),'LOCAL'),handle.request.poses,False,.25,handle.request.behavior_tree)
+
+    async def admit(self,handle,action_type,ticket,values,single,radius,tree='',backend=''):
+        job=Job(ticket,[],single,radius,handle,action_type,Future(),tree,backend)
+        try:
+            generation=self.accepted_generations.pop(bytes(handle.goal_id.uuid).hex(),self.stop_generation)
+            if handle.is_cancel_requested or generation!=self.stop_generation:
+                self.finish_job(job,False,'CANCELED','目标接受前已被取消')
+                return await job.done
+            job.points=self.points(values)
+            if backend in ('trail_follow','formation_follow') and ticket.source!='FLEET':raise ValueError('轨迹跟随需要车队任务和有效租约')
+            if not 0.05<=radius<=.5 or not math.isfinite(radius):raise ValueError('途经半径必须为0.05～0.50米')
+            if single and len(job.points)!=1:raise ValueError('单点任务只允许一个目标')
+            if not ticket.task_id or len(ticket.task_id)>160:raise ValueError('任务编号无效')
+            if ticket in self.completed:
+                ok,code,message=self.completed[ticket];self.finish_job(job,ok,code,message)
+                return await job.done
+            reason=self.readiness_reason()
+            if reason:raise RuntimeError(reason)
+            if self.mode=='MANUAL':
+                if time.monotonic()-self.manual_time<.35 or not self.stationary():raise RuntimeError('人工遥控尚未停止')
+                self.mode='LOCAL';self.manual_blocked_goals.clear()
+            if ticket.source=='FLEET':
+                if not self.fleet_enabled or self.fleet_localization_epoch!=self.epoch or not self.fleet_lease.matches(ticket,time.monotonic()):
+                    raise RuntimeError('车队许可或独立控制租约无效')
+            decision=self.policy.request(ticket)
+            if decision=='START':self.start_job(job)
+            elif decision=='CANCEL_THEN_TAKEOVER':
+                self.pending_job=job;self.mode='TAKEOVER';self.inhibited=True;self.cancel_deadline=time.monotonic()+5
+                self.execution.stop('本地请求接管：取消当前任务并等待底盘停稳')
+            else:self.finish_job(job,False,decision,decision)
+        except ValueError as error:self.finish_job(job,False,'INVALID_GOAL',str(error))
+        except RuntimeError as error:self.finish_job(job,False,'NOT_READY',str(error))
+        return await job.done
+
+    def start_job(self,job):
+        self.traffic_paused=self.traffic_suspended=False;self.traffic_sequence=-1
+        self.current_job=job;self.pending_job=None;self.inhibited=False;self.goal_error=''
+        self.planned_path=[];self.tracking_guard.reset();self.tracking_stop_reason=''
+        self.armed=False;self.nav_time=0.
+        self.mode=job.source;self.fleet_hold=False;self.pass_radius=job.radius
+        if job.source=='FLEET':
+            self.applied_seq=job.ticket.revision;self.command_epoch=job.ticket.command_epoch
+        p=job.points[-1].pose;q=p.orientation
+        self.goal=[p.position.x,p.position.y,math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))]
+        self.preview_planner_id=self.selection.get('planner',self.preview_planner_id)
+        self.execution.native_behavior_tree=native_tree(self.preview_planner_id,job.backend=='nav2_dynamic') if job.backend in NATIVE_BACKENDS else job.tree
+        self.execution.start(job.points,single_point=job.single,execution_backend=job.backend)
+        if not self.execution.active:
+            self.policy.finish(job.ticket);self.current_job=None;self.inhibited=True
+            self.finish_job(job,False,'NOT_READY',self.message)
+
+
+    def finish_job(self,job,success,code,message):
+        if job.done.done():return
+        if code=='NOT_READY' and self.current_job is None:self.publish_status('导航未启动：'+message)
+        if job.handle.is_active:
+            if success:job.handle.succeed()
+            elif job.handle.is_cancel_requested:job.handle.canceled()
+            else:job.handle.abort()
+        result=job.action_type.Result()
+        if job.action_type in (ExecuteNavigation,ExecuteFormation):
+            result.success=success;result.code=code;result.message=message
+        if code not in ('NOT_READY','BUSY','BUSY_CANCELING'):self.completed[job.ticket]=(success,code,message)
+        while len(self.completed)>128:self.completed.pop(next(iter(self.completed)))
+        job.done.set_result(result)
+
+    def cancel_request(self,handle):
+        if self.pending_job and self.pending_job.handle==handle:
+            job=self.pending_job;self.pending_job=None;self.policy.pending=None
+            # Result is completed by the next timer after ROS marks canceling.
+            self.cancelled_pending=job
+        elif self.current_job and self.current_job.handle==handle:self.stop_owned('调用方取消导航')
+        return CancelResponse.ACCEPT
+
+    def stop_owned(self,reason):
+        self.traffic_paused=self.traffic_suspended=False
+        self.recovery_pending=None
+        if self.clearance_escape:
+            self.clearance_escape=None;self.execution.finish('canceled',reason)
+        if self.pending_job:self.finish_job(self.pending_job,False,'CANCELED',reason);self.pending_job=None
+        self.policy.cancel();self.inhibited=True;self.cancel_deadline=time.monotonic()+5
+        if self.execution.active:self.execution.stop(reason)
+
+    def on_stop_gear(self,msg):
+        if self.stop_gear==bool(msg.data):return
+        self.stop_gear=bool(msg.data)
+        self.stop_generation+=1
+        self.manual=[0.,0.];self.manual_time=0.;self.joystick_time=0.
+        self.nav=[0.,0.];self.inhibit_output()
+        if self.stop_gear:
+            reason='遥控最低档停车，取消导航'
+            self.fleet_hold=True
+            self.stop_owned(reason)
+            self.clear_preview()
+            self.stop_gear_canceling=True
+            self.cancel_backend_goals()
+            self.publish_status(reason)
+        else:
+            self.publish_status('遥控已离开最低档，可重新下发目标')
+
+    def stop_request(self,request,response):
+        self.stop_generation+=1
+        self.manual=[0.,0.];self.manual_time=0.
+        if self.mode=='MANUAL':self.mode='LOCAL'
+        self.stop_owned('用户停止本车导航')
+        self.clear_preview()
+        response.success=True;response.message='已请求停止；请观察状态确认取消和停稳'
+        return response
+
+    def reset_estop(self,request,response):
+        response.success=not self.estop_input and not self.contact and self.stationary() and not self.navigation_active and not self.execution.requests
+        if response.success:
+            from .storage import save
+            self.safety_latched=False;self.estop=False
+            save(self.state_path,{'safety_latched':False})
+        response.message='已解除本地急停锁存' if response.success else '需释放物理急停/接触输入，取消导航并确认停稳'
+        return response
+
+    def allow_fleet(self,request,response):
+        if not request.data:
+            self.fleet_enabled=False;self.fleet_lease.revoke()
+            if self.current_job and self.current_job.source=='FLEET':self.stop_owned('车队控制已关闭')
+            response.success=True
+        else:
+            response.success=(not self.readiness_reason() and self.stationary() and
+                              self.policy.release_to_fleet(True))
+            self.fleet_enabled=response.success
+            if response.success:self.mode='LOCAL'
+        response.message='车队许可已开启，仍需独立租约' if self.fleet_enabled else '车队关闭或本地任务尚未停稳'
+        return response
+
+    def acquire_fleet(self,request,response):
+        if not self.fleet_enabled or self.current_job or not self.stationary() or self.readiness_reason():
+            response.success=False;response.message='需要车队许可、本地就绪且无活动任务';return response
+        epoch=self.fleet_lease.acquire(time.monotonic())
+        if epoch:self.fleet_localization_epoch=self.epoch
+        response.success=bool(epoch)
+        response.message=json.dumps({'epoch':epoch,'timeout_seconds':self.fleet_lease.timeout})
+        return response
+
+    def renew_fleet(self,message):
+        if not self.fleet_enabled:return
+        try:
+            payload=json.loads(message.data);now=time.monotonic()
+            previous=getattr(self,'fleet_rx',{})
+            age=now-self.fleet_lease.received if self.fleet_lease.received is not None else None
+            self.fleet_rx={'sequence':payload.get('sequence'),'at':now,'age_before':age,
+                'callback_gap':now-previous.get('at',now),'epoch_match':payload.get('epoch')==self.fleet_lease.epoch,
+                'task_id':payload.get('task_id'),'revision':payload.get('revision'),
+                'accepted':self.fleet_lease.renew(payload,now)}
+            self.fleet_rx_history=(getattr(self,'fleet_rx_history',[])+[dict(self.fleet_rx)])[-16:]
+        except (ValueError,TypeError):return
+
+    def expire_fleet(self):
+        # Preserve the first failure before revoke clears the receiver evidence.
+        if self.fleet_enabled or self.fleet_lease.epoch:
+            now=time.monotonic();lease=self.fleet_lease
+            if not self.fleet_enabled:reason='permission_disabled'
+            elif not lease.fresh(now):reason='receiver_timeout'
+            elif self.fleet_localization_epoch!=self.epoch:reason='localization_epoch_changed'
+            else:reason='task_binding_mismatch'
+            self.last_fleet_failure={'reason':reason,'monotonic':now,
+                'lease_age':None if lease.received is None else now-lease.received,
+                'timeout':lease.timeout,'sequence':lease.sequence,
+                'task_id':lease.task_id,'revision':lease.revision,
+                'job_task_id':self.current_job.ticket.task_id if self.current_job else None,
+                'localization_epoch_match':self.fleet_localization_epoch==self.epoch,
+                'receiver_history':copy.deepcopy(getattr(self,'fleet_rx_history',[]))}
+            self.get_logger().error('fleet_lease_failure '+json.dumps(self.last_fleet_failure))
+        self.fleet_enabled=False;self.fleet_lease.revoke();self.fleet_hold=True
+        self.inhibited=True;self.safety_reason='fleet lease expired or replaced'
+        if self.current_job and self.current_job.source=='FLEET':self.stop_owned(self.safety_reason)
+
+    def recover_from_nav2_failure(self):
+        job=self.current_job
+        if (not job or job.source!='LOCAL' or self.mode!='LOCAL' or self.estop or self.policy.canceling or
+                not self.execution.active or self.clearance_escape or
+                self.local_pose is None or not self.obstacle_complete):return False
+        if (self.execution.phase not in ('tracking','replanning','preplanning') or
+                (self.execution.phase=='preplanning' and self.execution.preflight_only)):return False
+        recovery=self.runtime_parameters.get('omnifleet_navigation_policy',{}).get('values',{})
+        if recovery.get('automatic_recovery',True) is False:return False
+        values=self.runtime_parameters.get('local_costmap/local_costmap',{}).get('values',{})
+        body_collision=local_body_collision(self.local_pose,self.obstacles,self.config,
+            self.obstacle_resolution,values,getattr(self,'obstacle_yaw',0.))
+        global_values=self.runtime_parameters.get('global_costmap/global_costmap',{}).get('values',{})
+        global_start=grid_body_blocked(getattr(self,'grid',None),self.local_pose,self.config,global_values) if getattr(self,'grid',None) is not None else False
+        if body_collision:
+            if global_start:self.prepare_clearance_recovery(timeout_retry=True)
+            else:self.prepare_clearance_recovery()
+        elif global_start:
+            self.recovery_pending={'ticket':job.ticket,'epoch':self.epoch}
+        else:return False
+        if not self.recovery_pending:return False
+        self.policy.cancel();self.cancel_deadline=time.monotonic()+5;self.inhibited=True;self.armed=False
+        self.execution.stop('局部代价地图确认车体覆盖致命格，停稳后脱困；原路线与目标保留' if body_collision else '全局规划车体起点受阻；沿局部可行退路脱困后继续原目标')
+        return True
+
+    def prepare_clearance_recovery(self, timeout_retry=False):
+        job=self.current_job
+        if (not job or job.source!='LOCAL' or self.mode!='LOCAL' or self.clearance_escape or self.recovery_pending):return
+        block=getattr(getattr(self,'execution',None),'block',0)
+        if getattr(job,'clearance_block',block)!=block:
+            job.clearance_attempts=0
+        job.clearance_block=block
+        if not timeout_retry:
+            if getattr(job,'clearance_attempts',0)>=2:return
+            job.clearance_attempts=getattr(job,'clearance_attempts',0)+1
+        heading=getattr(job,'clearance_heading',None)
+        if getattr(job,'single',False) and self.goal and (heading is None or any(abs(v)>1e-5 for v in self.nav)):
+            heading=recovery_heading(self.local_pose,self.goal,self.nav)
+        job.clearance_heading=heading
+        self.recovery_pending={'ticket':job.ticket,'epoch':self.epoch,'heading':heading}
+
+    def recovery_unknown(self):
+        if self.obstacle_grid is not self.escape_grid:
+            self.escape_unknown=unknown_cells(self.obstacle_grid,self.clearance_escape.start if self.clearance_escape else self.local_pose)
+            self.escape_grid=self.obstacle_grid
+        return self.escape_unknown
+
+    def recovery_command(self,now):
+        recovery=self.clearance_escape
+        try:
+            fresh=(self.control_gate_ready and self.obstacle_complete and self.pose_age<.3 and
+                   now-self.pose_time<.3 and now-self.obstacle_stamp<.4 and now-self.velocity_time<.2)
+            velocity,source_fresh=body_velocity(self.recovery_pose_history,self.execution.pose,now)
+            return recovery.command(now,self.local_pose,[],self.recovery_unknown(),velocity,fresh and source_fresh,self.epoch)
+        except (ValueError,TypeError) as error:
+            recovery.abort(str(error));return [0.,0.]
+
+    def bounded_turn_command(self,now,command,start=False):
+        job=self.current_job
+        if (not job or job.source!='LOCAL' or self.mode!='LOCAL' or self.estop or self.policy.canceling or
+                not self.output_permitted() or abs(command[0])>=.02 or abs(command[1])<.01):return None
+        if self.near_turn_ticket!=job.ticket:
+            if not start:return None
+            self.near_turn=BoundedTurn(self.local_pose,self.config,self.obstacle_resolution,now,self.epoch)
+            self.near_turn_ticket=job.ticket
+            self.get_logger().info('近障低速转向：保留原导航任务，按完整车体预测限制输出')
+        if abs(self.near_turn.resolution-self.obstacle_resolution)>1e-6:return None
+        try:
+            velocity,source_fresh=body_velocity(self.recovery_pose_history,self.execution.pose,now)
+            fresh=(source_fresh and self.control_gate_ready and self.obstacle_complete and self.pose_age<.3 and
+                   now-self.pose_time<.3 and now-self.obstacle_stamp<.4 and now-self.velocity_time<.2)
+            return self.near_turn.command(now,self.local_pose,command,self.obstacles,self.recovery_unknown(),velocity,fresh,self.epoch)
+        except (ValueError,TypeError):return None
+
+    def update_clearance_recovery(self):
+        recovery=self.clearance_escape
+        if not recovery:return False
+        if self.mode!='LOCAL':
+            self.clearance_escape=None;self.execution.finish('canceled','人工接管，脱困已停止');return False
+        if self.estop or self.epoch!=recovery.epoch:
+            self.stop_owned('急停或定位变化，脱困已停止');return False
+        if recovery.state=='moving' and time.monotonic()-recovery.started>recovery.timeout:
+            recovery.abort('脱困超过轨迹限时',timed_out=True)
+        if recovery.state=='failed':
+            self.get_logger().warning('clearance recovery rejected: '+json.dumps({'reason':recovery.reason,'detail':recovery.diagnostic},ensure_ascii=False))
+            timed_out=getattr(recovery,'timed_out',False)
+            if recovery.replan_allowed and self.current_job and (timed_out or getattr(self.current_job,'clearance_attempts',0)<2):
+                self.clearance_escape=None
+                if timed_out:self.prepare_clearance_recovery(timeout_retry=True)
+                else:self.prepare_clearance_recovery()
+                self.policy.cancel();self.cancel_deadline=time.monotonic()+5;self.inhibited=True;self.armed=False
+                message='脱困超时，停稳后重新修正；原路线与目标保留' if timed_out else '环境变化，停稳后重新规划脱困；原目标保留'
+                self.execution.finish('canceled',message)
+                return False
+            self.clearance_escape=None;self.execution.finish('failed',recovery.reason);return False
+        if recovery.state=='stopping' and self.stationary():
+            if recovery.start_blocked and recovery.start_blocked(self.local_pose):
+                recovery.abort('脱困停稳后车身仍与受阻栅格重叠',replan=True);return True
+            self.clearance_escape=None;self.tracking_stop_reason='';self.goal_error=''
+            self.inhibited=False;self.armed=False;self.nav=[0.,0.];self.nav_time=0.;self.tracking_guard.reset()
+            self.execution.resume_after_clearance();return True
+        self.message=recovery.reason or '低速脱困中；停稳后重新规划并继续原任务'
+        self.publish_catalog();return True
+
+    def update_jobs(self):
+        if self.update_clearance_recovery():return
+        if hasattr(self,'cancelled_pending'):
+            self.finish_job(self.cancelled_pending,False,'CANCELED','已取消待接管任务');del self.cancelled_pending
+        job=self.current_job
+        if update_pause(self):return
+        if job:
+            if self.execution.phase in ('canceling','cancel_unconfirmed') and not self.policy.canceling:
+                self.policy.cancel();self.cancel_deadline=time.monotonic()+5;self.inhibited=True
+            if self.policy.canceling:
+                if not self.execution.active and not self.execution.requests and self.stationary():
+                    pending=self.recovery_pending;self.recovery_pending=None
+                    if pending and not self.pending_job and pending['ticket']==job.ticket and pending['epoch']==self.epoch and not self.estop and self.mode=='LOCAL':
+                        self.policy.canceled_and_stopped();self.policy.request(job.ticket)
+                        try:
+                            self.escape_grid=None
+                            self.recovery_pose_history=[]
+                            values=self.runtime_parameters.get('controller_server',{}).get('values',{})
+                            controller=self.selection.get('controller',self.execution.controller)
+                            turn_speed=values.get(controller+'.rotate_to_heading_angular_vel',values.get(controller+'.max_vel_theta',values.get(controller+'.wz_max',1.2)))
+                            heading=pending.get('heading')
+                            local_values=self.runtime_parameters.get('local_costmap/local_costmap',{}).get('values',{})
+                            global_values=self.runtime_parameters.get('global_costmap/global_costmap',{}).get('values',{})
+                            def start_blocked(pose):
+                                return (grid_body_blocked(self.grid,pose,self.config,global_values)
+                                        or grid_body_blocked(self.obstacle_grid,pose,self.config,local_values))
+                            if not start_blocked(self.local_pose):
+                                self.tracking_stop_reason='';self.goal_error=''
+                                self.inhibited=False;self.armed=False;self.nav=[0.,0.];self.nav_time=0.;self.tracking_guard.reset()
+                                self.execution.resume_after_clearance()
+                                return
+                            config=recovery_config(self.config,local_values)
+                            self.clearance_escape=ClearanceEscape(self.local_pose,[],self.recovery_unknown(),config,
+                                                                 self.obstacle_resolution,time.monotonic(),self.epoch,turn_speed=turn_speed,target_heading=heading,start_blocked=start_blocked,crawl_near_exit=True)
+                            self.sync_clearance_speed(self.clearance_escape,values,controller)
+                            self.navigation_active=True;self.inhibited=True;self.armed=False
+                            self.get_logger().info('clearance recovery plan: '+json.dumps({'distance':self.clearance_escape.distance,'direction':self.clearance_escape.direction,'curvature':self.clearance_escape.curvature,'speed':self.clearance_escape.speed,'timeout':self.clearance_escape.timeout}))
+                            self.execution.set_phase('recovering',f'近障脱困：以不超过{self.clearance_escape.angular_speed:.2f} rad/s转向原目标，停稳后继续' if getattr(self.clearance_escape,'turn_target',None) is not None else f'近障脱困：以{self.clearance_escape.speed:.2f} m/s{"前进" if self.clearance_escape.direction>0 else "后退"}约{self.clearance_escape.distance:.2f} m，停稳后继续原任务')
+                        except ValueError as error:
+                            self.execution.finish('failed','没有可验证的脱困轨迹：'+str(error))
+                        return
+                    next_job=self.pending_job
+                    code=('PREEMPTED_BY_LOCAL' if next_job.source=='LOCAL' else 'ROUTE_UPDATED') if next_job else ('NAVIGATION_FAILED' if getattr(self.execution,'failed',False) else 'CANCELED')
+                    self.finish_job(job,False,code,self.message)
+                    self.policy.canceled_and_stopped();self.current_job=None;self.pending_job=None
+                    if next_job:self.start_job(next_job)
+                    elif self.mode=='TAKEOVER':self.mode='LOCAL'
+                elif time.monotonic()>self.cancel_deadline:
+                    self.inhibited=True;self.message='取消或停稳尚未确认，不允许后续目标启动'
+                    if self.pending_job:self.finish_job(self.pending_job,False,'CANCEL_UNCONFIRMED',self.message);self.pending_job=None;self.policy.pending=None
+                    self.finish_job(job,False,'CANCEL_UNCONFIRMED',self.message)
+            elif not self.execution.active:
+                success=self.execution.phase=='completed'
+                self.finish_job(job,success,'SUCCEEDED' if success else 'NAVIGATION_FAILED',self.message)
+                if job.source=='FLEET':
+                    if success:self.completed_seq=job.ticket.revision
+                    else:self.goal_error=self.message
+                self.policy.finish(job.ticket);self.current_job=None;self.inhibited=True
+        self.publish_catalog()
+
+    @staticmethod
+    def sync_clearance_speed(escape, values, controller):
+        prefix=controller+'.'
+        angular=values.get(prefix+'wz_max') or values.get(prefix+'max_vel_theta') or values.get(prefix+'rotate_to_heading_angular_vel')
+        if angular is not None and math.isfinite(angular) and angular>0.:
+            if escape.turn_target is not None:
+                escape.timeout=4.+(escape.timeout-4.)*escape.angular_speed/angular
+            escape.angular_speed=angular
+        if escape.turn_target is not None:
+            return
+
+        linear=values.get(prefix+'vx_max') or values.get(prefix+'max_vel_x') or values.get(prefix+'desired_linear_vel')
+        reverse=values.get(prefix+'vx_min',values.get(prefix+'min_vel_x'))
+        if escape.direction<0 and reverse is not None and math.isfinite(reverse):
+            linear=-reverse if reverse<0. else None
+        if linear is not None and math.isfinite(linear) and linear>0.:
+            escape.speed=linear
+            if abs(escape.curvature)>1e-6:
+                escape.speed=min(escape.speed,escape.angular_speed/abs(escape.curvature))
+            escape.timeout=escape.distance/escape.speed+4.
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--config',required=True);args,ros=p.parse_known_args()
+    with open(args.config) as f:config=json.load(f)
+    os.environ['OMNIFLEET_ROBOT_ID']=config['robot_id']
+    rclpy.init(args=ros);node=LocalNavigation(config)
+    try:rclpy.spin(node,executor=SourceTimeExecutor())
+    except (KeyboardInterrupt,rclpy.executors.ExternalShutdownException):pass
+    finally:
+        node.inhibited=True
+        if rclpy.ok():node.cancel_all()
+        node.destroy_node()
+        if rclpy.ok():rclpy.try_shutdown()

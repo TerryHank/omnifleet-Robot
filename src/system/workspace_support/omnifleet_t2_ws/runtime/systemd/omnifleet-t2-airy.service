@@ -1,0 +1,19 @@
+[Unit]
+Description=OmniFleet T2 RoboSense Airy driver
+Wants=network-online.target omnifleet-t2-lidar-net.service
+After=network-online.target omnifleet-t2-lidar-net.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_ws/hardware_drivers_ws
+Environment=HOME=/home/iecme
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStart=/bin/bash -lc 'source /opt/ros/$ROS_DISTRO/setup.bash && source $OMNIFLEET_T2_SENSOR_WS/install/setup.bash && exec ros2 run rslidar_sdk rslidar_sdk_node --ros-args -p config_path:=$OMNIFLEET_T2_SENSOR_WS/src/rslidar_sdk/config/config.yaml'
+Restart=always
+RestartSec=2
+TimeoutStopSec=5
+
+[Install]
+WantedBy=multi-user.target

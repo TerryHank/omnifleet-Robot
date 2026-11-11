@@ -1,0 +1,278 @@
+# AgenticROS Roadmap
+
+> Dual roadmap for the open-source platform and monetizable services.
+> Complements the positioning memo in
+> [strategy-ai-agents-plus-ros.md](strategy-ai-agents-plus-ros.md).
+> Strategy answers *why* and *what phases*; this doc answers *what to
+> ship next* for advanced physical AI and for users/developers.
+
+**Last updated:** 2026-08-21
+
+---
+
+## Positioning (one paragraph)
+
+AgenticROS accelerates physical AI by giving AI agents a body: agents
+(Grok, OpenClaw, Claude, Codex, Gemini, …) see through RealSense and
+other sensors, act through ROS 2 (`cmd_vel`, actions, services), and
+compose behavior via a **skills marketplace**, **mission chaining**, and
+**cross-agent memory**. The open-source core is the agent↔ROS contract
+layer. Paid services sit on discovery, fleet ops, hosted memory, and
+premium skills — never on the real-time control path.
+
+---
+
+## Where we are today
+
+| Area | Status |
+|------|--------|
+| Transports (local, Zenoh, rosbridge, WebRTC) | Shipped |
+| Adapters (OpenClaw, MCP/Codex/Claude, Gemini) | Shipped |
+| Core tools + camera/depth | Shipped |
+| Capabilities, `run_mission`, NL planner, cancel, pause/resume | Shipped |
+| Mission retries / backoff + mid-step cancel (interruptible) | Shipped |
+| Fleet list / find-for / heartbeat online / `fleet.json` | Shipped |
+| Robot hardware profiles (features + ROS bindings, verb gating) | Shipped (`@agenticros/core` 0.8.4) |
+| Dynamic mission bindings + Gemini find/follow | Shipped |
+| External ROS-node skill loader | Shipped |
+| Seed catalog — navigate / through-poses / detect / slam (+load) / explore+wander / follow-ros / moveit-pick / dock | Shipped (operator bringup on real robots) |
+| Sim AMR + Nav2 (`agenticros up sim-amr --nav2`) | Shipped (`/odom` fixed; map + AMCL + Nav2; smoke script) |
+| Sim arm MoveIt2 (named pose, local smoke) | Shipped (`agenticros up sim-arm --moveit`; no GHA) |
+| Headless GHA mission CI | Planned |
+| `skillRefs` + `~/.agenticros/skills-cache/` (git + npm) | Shipped |
+| Discoverable marketplace capabilities in `ros2_list_capabilities` | Shipped |
+| Marketplace npm `@agenticros/*` + CLI auto-restart | Shipped (true mid-session hot-reload still blocked on OpenClaw) |
+| Skills marketplace (metadata + git/npm install) | Live at [skills.agenticros.com](https://skills.agenticros.com) (robot skills). Third-party Agent Skills: [skills.sh/official](https://www.skills.sh/official) |
+| Cross-adapter memory (local / mem0) | Shipped, off by default |
+| Safety (per-robot velocity, optional `workspaceLimits`, fail-safe stop, `doctor --live`) | Shipped (`@agenticros/core` 0.8.5); MCP/Gemini `ros2_estop` shipped; `blocks_base` mutex still open |
+| AgenticROS Cloud (ARC) — P2P teleop, register, presence | Live at [cloud.agenticros.com](https://cloud.agenticros.com) |
+| ARC organizations + teams (invite by GitHub, shared fleet) | Shipped on Teams / Enterprise |
+| Published packages | `@agenticros/core` **0.8.9**, CLI `agenticros` **0.7.20** |
+| Parallel mission steps + true hot-reload + paid licenses | Planned |
+| Spatial memory | Planned |
+| ACP / A2A multi-agent mesh | Planned |
+| Fleet mission console (live timeline / cancel / replay) | Planned |
+
+**Highest-leverage gaps for advanced physical AI**
+
+1. Headless GHA mission CI (Nav2 + sim-arm `--moveit` bringup shipped locally).
+2. Missions are sequential — **parallel** step groups still deferred (retries + mid-step cancel shipped).
+3. Memory is flat facts, not spatial.
+4. Safety geofence + per-robot velocity shipped; MCP/Gemini `ros2_estop` shipped; **`blocks_base` cmd_vel mutex** still open.
+5. True mid-session OpenClaw tool injection (without gateway restart) still open.
+6. Observability is logs/transcripts — no **mission dashboard**; ARC orgs/teams share teleop today, not live mission replay.
+
+Write-ups: [contract layer](blog/phase-1-complete.md) · [seed catalog & skillRefs](blog/seed-catalog-and-skillrefs.md).
+
+---
+
+## Guiding principles
+
+**Open source**
+
+- Transports, safety clamps, capability/mission contracts, basic memory,
+  and seed skills stay free forever.
+- Skills always execute **in-process** on the gateway/robot (no
+  skill-as-a-service for control loops).
+- Auto-fetch installs pinned versions; never auto-upgrades by default.
+
+**Commercial**
+
+- Monetize discovery, sync, fleet ops, premium skills, and hosted
+  memory — not a tax on embodiment itself.
+- Cloud is optional; edge-first deployments must keep working offline
+  when the skills cache is warm.
+- Paid skills get a review bar (manifest correctness, safety contracts);
+  free skills publish instantly.
+
+---
+
+## Roadmap 1 — Open source
+
+Goal: make AgenticROS the default **open contract + skill catalog** for
+embodied agents.
+
+### Shipped — contract layer + marketplace UX v2 + mission runner v2 (partial)
+
+- **Contract:** capabilities, missions (pause/resume + cancel + retries +
+  mid-step cancel for interruptible skills), fleet heartbeats /
+  `fleet.json`, hardware profiles, per-robot safety / `workspaceLimits`,
+  dynamic bindings, Gemini find/follow, `external_ros_node` dispatch.
+- **Seeds (adjacent repos / npm `@agenticros/*`):** `navigate-to`,
+  `navigate-through-poses`, `detect-humans`, `start-slam` (+ `load_map`),
+  `explore` / `wander`, `follow-me-ros`, `moveit-pick`, `dock-to-charger`, plus in-process
+  `find` / `followme`. Nav2 on Gazebo AMR shipped (`--nav2`); sim-arm `--moveit` shipped (local smoke, no GHA).
+- **Marketplace UX v1+v2:** `skillRefs` → `~/.agenticros/skills-cache/`
+  (git **and** npm pack), discoverable caps, CLI install prefers npm when
+  advertised, auto-restarts OpenClaw gateway (`--no-restart` to skip).
+  True mid-session tool injection still blocked on OpenClaw sync register.
+
+See [missions.md](missions.md), [skills.md](skills.md),
+[blog/phase-1-complete.md](blog/phase-1-complete.md), and
+[blog/seed-catalog-and-skillrefs.md](blog/seed-catalog-and-skillrefs.md).
+
+### Near term (0–3 months) — Harden + deepen the catalog
+
+| # | Deliverable | Why |
+|---|-------------|-----|
+| 1 | **Headless GHA mission CI** | Nav2 + sim-arm `--moveit` shipped locally; no `.github/workflows` yet |
+| 2 | **Mission parallel steps** — DAG / parallel groups where safe (`blocks_base` mutex) | Retries + mid-step cancel shipped; parallel still deferred |
+| 3 | **Optional LLM planner** behind the same `compileGoalToMission` contract | Rule-based planner stays default; LLM expands coverage without changing the API |
+| 4 | **Safety remainder** — `blocks_base` cmd_vel mutex | Per-robot velocity + `workspaceLimits` + fail-safe stop + `doctor --live` + MCP/Gemini `ros2_estop` shipped |
+| 5 | **Sim polish** — docking sim bringup, richer mission CI recipes | Nav2 bringup + smoke script shipped; expand coverage |
+| 6 | **True OpenClaw hot-reload** — mid-session tool injection without gateway restart | npm + auto-restart shipped; needs OpenClaw upstream contract |
+| 7 | **Observability baseline** — structured mission JSONL, `mission_status` tool, simple local view of recent missions / heartbeats | Debuggability for users and skill authors |
+| 8 | **Doc / DX polish** — architecture drift, keep published CLI free of `workspace:` deps | `doctor --live` shipped; remaining is docs + tarball hygiene |
+
+### Mid term (3–9 months) — Physical AI substrate
+
+| # | Deliverable | Why |
+|---|-------------|-----|
+| 9 | **Broader seed catalog** — VSLAM/VIO, basic MoveIt pick/place, depth→stop, docking, battery-aware behaviors | Catalog compounds; marketplace launches non-empty for both audiences |
+| 10 | **Spatial memory (OSS)** — schema `(content, pose, frame, time, confidence)`; local backend first; optional ReMEmbR adapter as a skill | Answers “where was the wrench?”; enables closest-robot selection |
+| 11 | **Richer fleet IaC** — robots + skills + transports in `fleet.json`, richer discovery | Treat fleets like infrastructure (basic `fleet.json` already shipped) |
+| 12 | **Cross-robot handoff missions** — A finds → B navigates / approaches | First real multi-robot physical AI demos |
+| 13 | **Closed-loop templates** — sense → decide → act → verify; recovery skills (`replan`, `return_home`, `ask_human`) | Agents need failure modes, not only demos |
+| 14 | **Memory attribution** — `agent_id` / adapter on writes | Multi-agent embodiment without confusion |
+| 15 | **More adapters** — LangGraph / Cursor / Cline / OpenAI Agents SDK thin adapters | Network effect without fragmenting the skill contract |
+
+### Longer term (9–18 months) — Multi-agent body
+
+| # | Deliverable | Why |
+|---|-------------|-----|
+| 16 | **ACP / A2A adapters** (protocol-agnostic; adopt what peers speak) | Cross-vendor delegation without custom glue |
+| 17 | **`run_mission` with `agent_id` per step** | Planner agent + specialist agents on one robot/fleet |
+| 18 | **World-model hooks** — map + object graph APIs skills publish into | “What changed since yesterday?” over shared state |
+| 19 | **Hardware bringup kits** — reference AMR + RealSense, Jetson/NemoClaw, arm golden demos | Reduce time-to-first-embodiment for new users |
+
+### OSS non-goals (unchanged from strategy)
+
+- Do not build another DDS / robot OS / HAL — ROS won.
+- Do not fork Nav2, MoveIt2, or rosbridge.
+- Do not invent a proprietary inter-agent protocol.
+- Do not require cloud for local Twist / safety loops.
+
+---
+
+## Roadmap 2 — Paid / monetizable services
+
+Goal: revenue that funds the OSS core and creates a developer economy,
+without making real-time control a SaaS round-trip.
+
+### Tier A — Marketplace economy
+
+| Product | Model | Notes |
+|---------|--------|--------|
+| **Paid skills** | One-time, per-robot-month, or per-robot-year; ~70/30 developer/platform | License check at load; Stripe Connect for payouts |
+| **Verified / featured listings** | Listing fee or rev-share boost | Trust + SEO for Nav2 / warehouse / inventory skills |
+| **Private org catalogs** | Org / seat subscription | Internal `@org/*` **skills** for enterprise fleets — distinct from ARC orgs/teams (shared robots), which already shipped |
+| **Skill CI / signing** | Per-publish or org plan | Signed manifests, SBOM, “works on these robots” badges |
+
+**First paid skill candidates:** spatial memory, warehouse inventory
+scan, docking, MoveIt pick templates, fleet analytics exporters.
+
+**Kickoff trigger (from strategy):** ~10 free skills from ~3 outside
+contributors before turning on paid listings — avoid monetizing an
+empty market.
+
+### Tier B — Cloud control plane (fleet SaaS)
+
+[AgenticROS Cloud (ARC)](https://cloud.agenticros.com) is live: P2P teleop, robot
+register / presence, CLI `login` / `register` / `connect` / `remote`.
+**Organizations and teams** shipped on Teams / Enterprise — create an org,
+invite teammates by GitHub username, share teleop, APIs, and dashboards
+across the same fleet. Individual accounts stay single-user.
+
+| Product | Model | Notes |
+|---------|--------|--------|
+| **Organizations + teams** (shipped) | Teams / Enterprise | Shared org membership, GitHub invites, one fleet for every member |
+| **Fleet registry & remote ops** | Per-robot / month | Cloud discovery (extends Mode C WebRTC), online status, `agenticros remote` presets. Capability inventory + remote **mission** dispatch still to build |
+| **Mission console** | Included in fleet plan or add-on | Live timeline, cancel, replay, multi-agent attribution — remaining SaaS surface on top of orgs |
+| **Hosted signaling / TURN** | Usage-based | Productize Mode C for NAT; keep data plane optional (edge-first) |
+| **Config & skill rollout** | Fleet plan | Push `fleet.json` / skill versions to N robots; audit log |
+
+Natural upsell once OSS fleet tools exist: “run a warehouse from
+OpenClaw / Grok.”
+
+### Tier C — Memory & intelligence
+
+| Product | Model | Notes |
+|---------|--------|--------|
+| **Hosted semantic memory** | Per-robot or per-GB | Cross-site sync, backup, retention — local mem0/JSON stays free |
+| **Fleet hive** | Org add-on (Teams+ for managed hosting) | Shared fleet notes + camera-watch recipes via optional Corebrum (`:6502`). Self-host with `agenticros hive on`; ARC org checkbox for managed. Not a `memory.backend`. See [hive.md](hive.md). |
+| **Spatial memory cloud** | Premium | Map-linked recall, multi-robot shared maps, ReMEmbR-class pipelines |
+| **Embedder / VLM gateway** | Usage | Optional cloud embeddings/VLM when Ollama isn’t available |
+| **Mission transcript vault** | Retention add-on | Compliance, debugging; customer-owned data |
+
+### Tier D — Support, hardware, services
+
+| Product | Model |
+|---------|--------|
+| **Support / SLA** | Annual for teams integrating AgenticROS |
+| **Certified robot profiles** | Partner fee (“AgenticROS Ready” OEMs) |
+| **Professional services** | Custom skill packs, plant integration |
+| **Training / certification** | Skill-author courses |
+
+### Commercial sequence
+
+| Window | Focus |
+|--------|--------|
+| **Now** | ARC orgs + teams live on Teams / Enterprise; OSS safety/profile ABI on core 0.8.9 / CLI 0.7.20 |
+| **0–3 months** | Soft-launch paid skill licenses + Stripe Connect once quality catalog exists; remote mission dispatch on the org fleet |
+| **3–6 months** | Fleet **mission console** (live timeline / cancel / replay) on top of shipped orgs |
+| **6–12 months** | Hosted / spatial memory as enterprise wedge |
+| **12+ months** | Private skill catalogs, certified OEMs, ACP/A2A “agent mesh” for enterprises |
+
+---
+
+## How the two roadmaps reinforce each other
+
+```text
+OSS contract (capabilities, missions, safety, seed skills, profiles)  ← shipped
+        ↓ compounds
+Marketplace UX v1 (skillRefs, discoverable)                           ← shipped
+        ↓ compounds
+Marketplace UX v2 (npm @agenticros/* + auto-restart)                  ← shipped
+        ↓ compounds
+ARC orgs + teams (shared fleet, GitHub invites)                       ← shipped
+        ↓ needs ops
+Fleet mission console + remote mission dispatch
+        ↓ needs continuity
+Hosted / spatial memory + multi-agent mesh
+```
+
+| Theme | OSS focus | Paid focus |
+|-------|-----------|------------|
+| **Contract layer** (shipped) | Capabilities, missions, fleet, external ROS nodes, hardware profiles | — |
+| **Marketplace UX v1** (shipped) | `skillRefs`, skills-cache, discoverable caps | — |
+| **Marketplace UX v2** (shipped) | npm `@agenticros/*`, CLI auto-restart | — |
+| **True hot-reload** | Mid-session OpenClaw tool injection | — |
+| **ARC identity** (shipped) | CLI `login` / `register` / `connect` / `remote` | Organizations + teams on Teams / Enterprise |
+| **Marketplace economy** | Client license hooks (open) | Paid skills + commissions |
+| **Spatial memory** | Schema + local backend | Hosted spatial memory / first paid skill |
+| **Multi-agent mesh** | ACP/A2A adapters | Enterprise agent-mesh / private fleets |
+
+---
+
+## If we only do five things next
+
+1. **GHA mission CI** (Nav2 + sim-arm `--moveit` already shipped locally).
+2. **Mission parallel steps** (retries + mid-step cancel already shipped).
+3. **True OpenClaw hot-reload** (npm + auto-restart already shipped).
+4. **Spatial memory** (OSS schema first; paid hosted later).
+5. **Fleet mission console** on top of shipped ARC orgs/teams (live timeline / cancel / replay).
+
+---
+
+## Related docs
+
+- [Strategy: AI Agents + ROS](strategy-ai-agents-plus-ros.md) — positioning, phases, non-goals, open questions
+- [Blog: contract layer](blog/phase-1-complete.md) — capabilities, missions, fleet, external skills
+- [Blog: seed catalog & skillRefs](blog/seed-catalog-and-skillrefs.md) — external seeds, auto-fetch, discoverable capabilities
+- [Missions](missions.md) — capability chaining and fleet orchestration today
+- [Skills](skills.md) — skill contract and marketplace install/publish
+- [Memory](memory.md) — cross-adapter memory backends and recipes
+- [Simulation](simulation.md) — Gazebo AMR / arm status and sharp edges
+- [Architecture](architecture.md) — transports and deployment modes
+- [CLI](cli.md) — `agenticros` commands including robots, skills, and Cloud login
+- [AgenticROS Cloud](https://cloud.agenticros.com) — P2P teleop, orgs/teams, remote ops

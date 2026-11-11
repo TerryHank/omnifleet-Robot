@@ -1,0 +1,15 @@
+export const topicList = {
+    anErrorOccurred: "エラーが発生しました",
+    clearFilter: "フィルターをクリア",
+    copyMessagePath: "メッセージパスをコピー",
+    copyMessagePaths: "選択したメッセージパスをコピー",
+    copySchemaName: "スキーマ名をコピー",
+    copyTopicName: "トピック名をコピー",
+    copyTopicNames: "選択したトピック名をコピー",
+    noDataSourceSelected: "データソースが選択されていません",
+    noTopicsAvailable: "利用可能なトピックがありません。",
+    noTopicsOrDatatypesMatching: "一致するトピックやデータタイプがありません",
+    searchBarPlaceholder: "トピックまたはスキーマ名でフィルター…",
+    waitingForConnection: "接続を待っています",
+    waitingForData: "データ待ち…",
+};

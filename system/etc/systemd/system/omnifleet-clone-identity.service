@@ -1,0 +1,13 @@
+[Unit]
+Description=Initialize cloned NX identity from its DHCP LAN address
+Wants=network-online.target
+After=network-online.target omnifleet-expand-rootfs.service
+Before=omnifleet-alignment-cloud.service omnifleet-discovery-beacon.service omnifleet-fleet-local.service omnifleet-fleet-network.service omnifleet-gr01-camera.service omnifleet-local-navigation.service omnifleet-t2-airy.service omnifleet-t2-chassis.service omnifleet-t2-description.service omnifleet-t2-dsh-diagnostics.service omnifleet-t2-foxglove.service omnifleet-t2-height-cloud.service omnifleet-t2-jetson-performance.service omnifleet-t2-lidar-net.service omnifleet-t2-mola.service omnifleet-t2-nav2-parameters.service omnifleet-t2-navigation.service omnifleet-t2-orbbec-camera.service omnifleet-t2-pure-lio-nav2.service omnifleet-t2-rgbd-camera.service omnifleet-t2-rgbd-visualization.service omnifleet-t2-road-network.service omnifleet-t2-usb-camera.service omnifleet-t2-vision-demo.service omnifleet-t2-vision-display-bridge.service omnifleet-t2-vr-adapter.service omnifleet-t2-waypoints.service omnifleet-t2-zenoh-router.service easytier.service foxglove-studio-cn-104.service ssh.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/lib/omnifleet-image/clone_identity.py
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

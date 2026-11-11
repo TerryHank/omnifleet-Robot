@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-06",
+  "host": "iecme@10.0.0.198",
+  "workspace": "/home/iecme/omnifleet_ws",
+  "mola_source_root": "/home/iecme/omnifleet_ws/src/localization/omnifleet_mola",
+  "duration_s": 8,
+  "odom_topic": "/robot_113/odom",
+  "odom_samples": 81,
+  "finite_poses": true,
+  "endpoint_displacement_m": 0.0,
+  "nav_cmd_vel_topic": "/robot_113/msc/nav_cmd_vel",
+  "nav_cmd_vel_samples": 0,
+  "map_topic": "/robot_113/map",
+  "map": {
+    "width": 500,
+    "height": 500,
+    "resolution_m": 0.10000000149011612,
+    "data_length": 250000
+  },
+  "mola_bridge_node_seen": true,
+  "nav2_controller_planner_active": true,
+  "omnifleet_services_active": 16,
+  "chassis_motion_commands_sent": false
+}

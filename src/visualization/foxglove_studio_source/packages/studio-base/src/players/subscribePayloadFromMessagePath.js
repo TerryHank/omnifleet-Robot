@@ -1,0 +1,23 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/
+import { parseMessagePath } from "@foxglove/message-path";
+/**
+ * Builds a SubscribePayload from a message path, requesting a specific field of the message if the
+ * message path resolves to a field name.
+ */
+export function subscribePayloadFromMessagePath(path, preloadType) {
+    const parsedPath = parseMessagePath(path);
+    if (!parsedPath) {
+        return undefined;
+    }
+    const firstField = parsedPath.messagePath.find((element) => element.type === "name");
+    if (!firstField) {
+        return { topic: parsedPath.topicName, preloadType: preloadType ?? "partial" };
+    }
+    return {
+        topic: parsedPath.topicName,
+        preloadType: preloadType ?? "partial",
+        fields: [firstField.name],
+    };
+}

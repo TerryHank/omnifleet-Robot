@@ -1,0 +1,995 @@
+#include <algorithm>
+#include <chrono>
+#include <condition_variable>
+#include <cmath>
+#include <cstdint>
+#include <cstdlib>
+#include <cstdio>
+#include <functional>
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
+#include <limits>
+#include <memory>
+#include <mutex>
+#include <optional>
+#include <stdexcept>
+#include <sstream>
+#include <string>
+#include <thread>
+#include <utility>
+#include <vector>
+
+#if __has_include(<cv_bridge/cv_bridge.hpp>)
+#include <cv_bridge/cv_bridge.hpp>
+#else
+#include <cv_bridge/cv_bridge.h>
+#endif
+#include <geometry_msgs/msg/twist.hpp>
+#include <message_filters/subscriber.h>
+#include <message_filters/sync_policies/approximate_time.h>
+#include <message_filters/synchronizer.h>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <rcl_interfaces/msg/set_parameters_result.hpp>
+#include <sensor_msgs/image_encodings.hpp>
+#include <sensor_msgs/msg/image.hpp>
+#include <sensor_msgs/msg/compressed_image.hpp>
+#include <sensor_msgs/msg/range.hpp>
+#include <sensor_msgs/msg/region_of_interest.hpp>
+#include <std_msgs/msg/header.hpp>
+#include <std_msgs/msg/string.hpp>
+#include <nlohmann/json.hpp>
+
+#include "kcftracker.h"
+
+class KcfFollowerNode : public rclcpp::Node
+{
+public:
+  using Image = sensor_msgs::msg::Image;
+  using SyncPolicy = message_filters::sync_policies::ApproximateTime<Image, Image>;
+  using SteadyClock = std::chrono::steady_clock;
+
+  KcfFollowerNode()
+  : Node("kcf_follower")
+  {
+    tracker_color_topic_ = declare_parameter<std::string>(
+      "tracker_color_topic", "/camera/color/image_raw");
+    aligned_color_topic_ = declare_parameter<std::string>(
+      "aligned_color_topic", "/camera/color/image_raw");
+    depth_topic_ = declare_parameter<std::string>(
+      "depth_topic", "/camera/depth/image_raw");
+    output_image_topic_ = declare_parameter<std::string>(
+      "output_image_topic", "/omnifleet_vision/kcf/image");
+    cmd_vel_topic_ = declare_parameter<std::string>(
+      "cmd_vel_topic", "/cmd_vel_vision");
+
+    enable_motion_ = declare_parameter<bool>("enable_motion", false);
+    use_gui_ = declare_parameter<bool>("use_gui", true);
+    tracking_scale_ = declare_parameter<double>("tracking_scale", 0.4);
+    tracking_max_width_ = declare_parameter<int>("tracking_max_width", 640);
+    sync_queue_size_ = declare_parameter<int>("sync_queue_size", 10);
+    max_pair_delta_ = declare_parameter<double>("max_pair_delta", 0.8);
+    tracking_timeout_ = declare_parameter<double>("tracking_timeout", 0.5);
+    depth_timeout_ = declare_parameter<double>("depth_timeout", 0.5);
+    control_rate_ = declare_parameter<double>("control_rate", 10.0);
+
+    roi_x_ = declare_parameter<int>("roi_x", 0);
+    roi_y_ = declare_parameter<int>("roi_y", 0);
+    roi_width_ = declare_parameter<int>("roi_width", 0);
+    roi_height_ = declare_parameter<int>("roi_height", 0);
+
+    target_distance_ = declare_parameter<double>("target_distance", 2.0);
+    distance_hysteresis_ = declare_parameter<double>("distance_hysteresis", 0.05);
+    depth_scale_16u_ = declare_parameter<double>("depth_scale_16u", 0.001);
+    depth_scale_32f_ = declare_parameter<double>("depth_scale_32f", 1.0);
+    min_depth_ = declare_parameter<double>("min_depth", 0.2);
+    max_depth_ = declare_parameter<double>("max_depth", 3.5);
+    linear_kp_ = declare_parameter<double>("linear_kp", 0.6);
+    angular_kp_ = declare_parameter<double>("angular_kp", 0.8);
+    linear_deadband_ = declare_parameter<double>("linear_deadband", 0.15);
+    angular_deadband_ = declare_parameter<double>("angular_deadband", 0.05);
+    minimum_linear_speed_ = declare_parameter<double>("minimum_linear_speed", 0.40);
+    max_linear_speed_ = declare_parameter<double>("max_linear_speed", 0.40);
+    max_angular_speed_ = declare_parameter<double>("max_angular_speed", 0.30);
+
+    sparse_depth_ = declare_parameter<bool>("sparse_depth", false);
+    inline_sparse_depth_ = declare_parameter<bool>("inline_sparse_depth", false);
+    remote_roi_ = declare_parameter<bool>("remote_roi", false);
+    external_tracker_ = declare_parameter<bool>("external_tracker", false);
+    const std::vector<double> finite_parameters = {
+      max_pair_delta_, tracking_timeout_, depth_timeout_, control_rate_, target_distance_,
+      depth_scale_16u_, depth_scale_32f_, min_depth_, max_depth_, linear_kp_, angular_kp_,
+      linear_deadband_, angular_deadband_, minimum_linear_speed_, max_linear_speed_,
+      max_angular_speed_, tracking_scale_, distance_hysteresis_};
+    if (std::any_of(
+        finite_parameters.begin(), finite_parameters.end(),
+        [](double value) {return !std::isfinite(value);} ))
+    {
+      throw std::invalid_argument("all numeric control parameters must be finite");
+    }
+    if (sync_queue_size_ < 1) {
+      throw std::invalid_argument("sync_queue_size must be positive");
+    }
+    if (max_pair_delta_ <= 0.0 || tracking_timeout_ <= 0.0 || depth_timeout_ <= 0.0 ||
+      control_rate_ <= 0.0)
+    {
+      throw std::invalid_argument(
+              "max_pair_delta, tracking_timeout, depth_timeout and control_rate must be positive");
+    }
+    if (tracking_max_width_ < 1) throw std::invalid_argument("tracking_max_width must be positive");
+    if (tracking_scale_ <= 0.0 || tracking_scale_ > 1.0) {
+      throw std::invalid_argument("tracking_scale must be in the interval (0, 1]");
+    }
+    if (minimum_linear_speed_ < 0.0 || max_linear_speed_ < minimum_linear_speed_) {
+      throw std::invalid_argument(
+              "max_linear_speed must be greater than or equal to minimum_linear_speed");
+    }
+    if (linear_kp_ < 0.0 || angular_kp_ < 0.0 || linear_deadband_ < 0.0 ||
+      angular_deadband_ < 0.0 || max_angular_speed_ < 0.0)
+    {
+      throw std::invalid_argument("gains, deadbands and speed limits must not be negative");
+    }
+    if (distance_hysteresis_ < 0.0 || depth_scale_16u_ <= 0.0 || depth_scale_32f_ <= 0.0 || min_depth_ < 0.0 ||
+      max_depth_ <= min_depth_ || target_distance_ <= min_depth_ || target_distance_ >= max_depth_)
+    {
+      throw std::invalid_argument(
+              "depth scales and min_depth < target_distance < max_depth must be valid");
+    }
+    if (cmd_vel_topic_ != "/cmd_vel_vision") {
+      throw std::invalid_argument(
+              "cmd_vel_topic must be exactly /cmd_vel_vision; direct or relative cmd_vel is forbidden");
+    }
+
+    std::ifstream saved_distance(distance_file());
+    double restored_distance;
+    if (saved_distance >> restored_distance && std::isfinite(restored_distance) &&
+      restored_distance > min_depth_ && restored_distance < max_depth_)
+    {
+      target_distance_ = restored_distance;
+      set_parameter(rclcpp::Parameter("target_distance", target_distance_));
+      distance_persistent_ = true;
+    }
+
+    parameter_callback_ = add_on_set_parameters_callback(
+      [this](const std::vector<rclcpp::Parameter> & parameters) {
+        rcl_interfaces::msg::SetParametersResult result;
+        result.successful = true;
+        double distance = target_distance_;
+        bool motion = enable_motion_;
+        bool distance_requested = false;
+        for (const auto & parameter : parameters) {
+          if (parameter.get_name() == "enable_motion") {
+            if (parameter.get_type() != rclcpp::ParameterType::PARAMETER_BOOL) {
+              result.successful = false;
+              result.reason = "enable_motion must be bool";
+              return result;
+            }
+            motion = parameter.as_bool();
+            continue;
+          }
+          if (parameter.get_name() != "target_distance") continue;
+          if (parameter.get_type() != rclcpp::ParameterType::PARAMETER_DOUBLE ||
+            !std::isfinite(parameter.as_double()) ||
+            parameter.as_double() <= min_depth_ || parameter.as_double() >= max_depth_)
+          {
+            result.successful = false;
+            result.reason = "target_distance must be finite and between min_depth and max_depth";
+            return result;
+          }
+          distance = parameter.as_double();
+          distance_requested = true;
+        }
+        if (distance_requested && !save_distance(distance)) {
+          result.successful = false;
+          result.reason = "Unable to save target_distance on 104";
+          return result;
+        }
+        if (distance_requested) distance_persistent_ = true;
+        if (distance != target_distance_) {
+          target_distance_ = distance;
+          distance_state_ = 0;
+        }
+        if (enable_motion_ && !motion) publish_stop();
+        enable_motion_ = motion;
+        return result;
+      });
+
+    debug_image_pub_ = create_publisher<Image>(
+      output_image_topic_, rclcpp::QoS(1));
+    compressed_debug_pub_ = create_publisher<sensor_msgs::msg::CompressedImage>(
+      output_image_topic_ + "/compressed", rclcpp::QoS(1));
+    cmd_vel_pub_ = create_publisher<geometry_msgs::msg::Twist>(cmd_vel_topic_, 10);
+
+    tracker_color_sub_ = create_subscription<Image>(
+      tracker_color_topic_, rclcpp::SensorDataQoS().keep_last(1),
+      std::bind(&KcfFollowerNode::tracker_color_callback, this, std::placeholders::_1));
+    roi_sub_ = create_subscription<sensor_msgs::msg::RegionOfInterest>(
+      "/omnifleet_vision/kcf/roi", 1,
+      [this](sensor_msgs::msg::RegionOfInterest::ConstSharedPtr roi) {
+        if (roi->width <= 1 || roi->height <= 1) return;
+        pending_roi_ = *roi;
+        external_box_.reset();
+        lose_target();
+        // External selections are forwarded on a frame after the backend connects.
+      });
+    if (external_tracker_) {
+      external_roi_pub_ = create_publisher<sensor_msgs::msg::RegionOfInterest>("/vision/nanotrack/roi",rclcpp::QoS(1));
+      processing_pub_ = create_publisher<Image>("/vision/nanotrack/input",rclcpp::SensorDataQoS().keep_last(1));
+      external_sub_ = create_subscription<std_msgs::msg::String>("/vision/nanotrack/selected", 1,
+        [this](std_msgs::msg::String::ConstSharedPtr message) {
+          try {
+            const auto value = nlohmann::json::parse(message->data);
+            external_runtime_ = value.value("runtime",std::string("unknown"));
+            external_backend_ = value.value("tracker",std::string("nanotrack"));
+            if (value.at("tracks").empty()) {
+              external_box_.reset();
+              lose_target();
+              if (inline_sparse_depth_) consume_inline_depth(value);
+              return;
+            }
+            const auto & target = value.at("tracks").at(0);
+            const auto box = target.at("bbox").get<std::vector<double>>();
+            if (box.size() != 4 || std::any_of(box.begin(),box.end(),[](double x){return !std::isfinite(x);}) || box[2] <= 1 || box[3] <= 1) return;
+            const int identity = target.at("track_id").get<int>();
+            const double stamp = value.at("source_stamp").get<double>();
+            if (identity != target_id_) {
+              invalidate_depth_candidate();
+              tracking_epoch_ = stamp;
+            }
+            target_id_ = identity;
+            external_box_ = cv::Rect2d(box[0],box[1],box[2],box[3]);
+            external_received_ = SteadyClock::now();
+            external_stamp_ = stamp;
+            external_score_ = target.value("tracking_score",0.0);
+            external_inference_ms_ = value.value("inference_ms",0.0);
+            update_external_roi();
+            if (inline_sparse_depth_) consume_inline_depth(value);
+          } catch (const std::exception & error) {
+            RCLCPP_WARN_THROTTLE(get_logger(),*get_clock(),5000,"NanoTrack message: %s",error.what());
+          }
+        });
+    }
+    status_pub_ = create_publisher<std_msgs::msg::String>("/omnifleet_vision/kcf/status", 10);
+    if (sparse_depth_) {
+      if (inline_sparse_depth_) {
+        inline_range_pub_ = create_publisher<sensor_msgs::msg::Range>("/omnifleet_vision/kcf/depth", 10);
+        inline_targets_pub_ = create_publisher<std_msgs::msg::String>("/omnifleet_vision/kcf/targets_3d", 10);
+      } else {
+      sparse_depth_sub_ = create_subscription<sensor_msgs::msg::Range>(
+        "/omnifleet_vision/kcf/depth", 10, [this](sensor_msgs::msg::Range::ConstSharedPtr value) {
+          accept_sparse_depth(rclcpp::Time(value->header.stamp).seconds(), value->range);
+        });
+      }
+    } else {
+    aligned_color_sub_.subscribe(this, aligned_color_topic_, rmw_qos_profile_sensor_data);
+    depth_sub_.subscribe(this, depth_topic_, rmw_qos_profile_sensor_data);
+    sync_ = std::make_shared<message_filters::Synchronizer<SyncPolicy>>(
+      SyncPolicy(sync_queue_size_), aligned_color_sub_, depth_sub_);
+    sync_->registerCallback(
+      std::bind(
+        &KcfFollowerNode::aligned_depth_callback, this,
+        std::placeholders::_1, std::placeholders::_2));
+
+    }
+
+    const auto control_period = std::chrono::duration_cast<std::chrono::nanoseconds>(
+      std::chrono::duration<double>(1.0 / control_rate_));
+    control_timer_ = create_wall_timer(
+      control_period, std::bind(&KcfFollowerNode::control_timer_callback, this));
+
+    tracker_ = make_tracker();
+    RCLCPP_INFO(
+      get_logger(),
+      "KCF ready: tracker=%s aligned=%s depth=%s output=%s motion=%s cmd=%s scale=%.2f",
+      tracker_color_topic_.c_str(), aligned_color_topic_.c_str(), depth_topic_.c_str(),
+      output_image_topic_.c_str(), enable_motion_ ? "enabled" : "disabled",
+      cmd_vel_topic_.c_str(), tracking_scale_);
+    if (!enable_motion_) {
+      RCLCPP_WARN(
+        get_logger(),
+        "Motion is disabled. Tracking and debug image output remain active.");
+    }
+    jpeg_worker_ = std::thread([this]() { encode_debug_frames(); });
+  }
+
+  ~KcfFollowerNode() override
+  {
+    publish_stop();
+    {
+      std::lock_guard<std::mutex> lock(jpeg_mutex_);
+      jpeg_stopping_ = true;
+    }
+    jpeg_ready_.notify_one();
+    if (jpeg_worker_.joinable()) jpeg_worker_.join();
+    if (use_gui_) {
+      cv::destroyAllWindows();
+    }
+  }
+
+private:
+  std::string distance_file() const
+  {
+    const char * home = std::getenv("HOME");
+    return std::string(home ? home : ".") + "/.config/omnifleet/follow_distance_" + get_name();
+  }
+
+  bool save_distance(double distance) const
+  {
+    const std::filesystem::path path(distance_file());
+    std::error_code error;
+    std::filesystem::create_directories(path.parent_path(), error);
+    if (error) return false;
+    const auto temporary = path.string() + ".tmp";
+    std::ofstream output(temporary);
+    output << std::setprecision(17) << distance << '\n';
+    output.close();
+    return output && std::rename(temporary.c_str(), path.c_str()) == 0;
+  }
+
+  bool distance_persistent_ = false;
+  struct RoiSelectorState
+  {
+    cv::Point origin;
+    cv::Point current;
+    cv::Rect result;
+    bool dragging = false;
+    bool finished = false;
+    bool cancelled = false;
+  };
+
+  static void roi_mouse_callback(int event, int x, int y, int, void * user_data)
+  {
+    auto * state = static_cast<RoiSelectorState *>(user_data);
+    if (event == cv::EVENT_LBUTTONDOWN) {
+      state->origin = cv::Point(x, y);
+      state->current = state->origin;
+      state->dragging = true;
+    } else if (event == cv::EVENT_MOUSEMOVE && state->dragging) {
+      state->current = cv::Point(x, y);
+    } else if (event == cv::EVENT_LBUTTONUP && state->dragging) {
+      state->current = cv::Point(x, y);
+      state->dragging = false;
+      const int left = std::min(state->origin.x, state->current.x);
+      const int top = std::min(state->origin.y, state->current.y);
+      state->result = cv::Rect(
+        left, top, std::abs(state->current.x - state->origin.x),
+        std::abs(state->current.y - state->origin.y));
+      // 学生松开鼠标后直接确认，避免焦点留在 SSH 终端时回车无效。
+      state->finished = state->result.width > 5 && state->result.height > 5;
+    }
+  }
+
+  cv::Rect select_roi(const cv::Mat & frame) const
+  {
+    RoiSelectorState state;
+    // 固定按原图像素显示，保证鼠标坐标与相机帧坐标一一对应。
+    cv::namedWindow(window_name_, cv::WINDOW_AUTOSIZE);
+    cv::setMouseCallback(window_name_, roi_mouse_callback, &state);
+    while (rclcpp::ok() && !state.finished && !state.cancelled) {
+      cv::Mat canvas = frame.clone();
+      cv::Rect preview = state.result;
+      if (state.dragging) {
+        const int left = std::min(state.origin.x, state.current.x);
+        const int top = std::min(state.origin.y, state.current.y);
+        preview = cv::Rect(
+          left, top, std::abs(state.current.x - state.origin.x),
+          std::abs(state.current.y - state.origin.y));
+      }
+      if (preview.width > 1 && preview.height > 1) {
+        cv::rectangle(canvas, preview, cv::Scalar(0, 255, 255), 2);
+      }
+      cv::imshow(window_name_, canvas);
+      const int key = cv::waitKey(20) & 0xff;
+      if ((key == 13 || key == 32) && state.result.width > 1 && state.result.height > 1) {
+        state.finished = true;
+      } else if (key == 27 || key == 'q') {
+        state.cancelled = true;
+      }
+    }
+    cv::setMouseCallback(window_name_, nullptr, nullptr);
+    return state.cancelled ? cv::Rect() : state.result;
+  }
+
+  static std::unique_ptr<KCFTracker> make_tracker()
+  {
+    return std::make_unique<KCFTracker>(true, false, true, false);
+  }
+
+  cv::Rect configured_roi(const cv::Mat & frame) const
+  {
+    cv::Rect roi(roi_x_, roi_y_, roi_width_, roi_height_);
+    roi &= cv::Rect(0, 0, frame.cols, frame.rows);
+    return roi;
+  }
+
+  bool initialize_tracker(const cv::Mat & frame)
+  {
+    cv::Rect roi = configured_roi(frame);
+    if (pending_roi_.has_value()) {
+      const auto selected = *pending_roi_;
+      const double sx = static_cast<double>(frame.cols) / image_width_;
+      const double sy = static_cast<double>(frame.rows) / image_height_;
+      roi = cv::Rect(cvRound(selected.x_offset * sx), cvRound(selected.y_offset * sy),
+        cvRound(selected.width * sx), cvRound(selected.height * sy));
+      roi &= cv::Rect(0, 0, frame.cols, frame.rows);
+      pending_roi_.reset();
+    }
+    if (roi.width <= 0 || roi.height <= 0) {
+      if (remote_roi_) return false;
+      if (!use_gui_) {
+        RCLCPP_ERROR_THROTTLE(
+          get_logger(), *get_clock(), 5000,
+          "No valid initial ROI. Set roi_x/roi_y/roi_width/roi_height or enable GUI.");
+        return false;
+      }
+      const char * display = std::getenv("DISPLAY");
+      if (display == nullptr || display[0] == '\0') {
+        RCLCPP_ERROR_THROTTLE(
+          get_logger(), *get_clock(), 5000,
+          "use_gui=true but DISPLAY is unavailable; pass an initial ROI for headless use.");
+        return false;
+      }
+      RCLCPP_INFO(
+        get_logger(),
+        "Drag a target ROI in the OmniFleet KCF window; release mouse to confirm "
+        "(ENTER/SPACE also accepted). Keyboard focus must be on the image window.");
+      roi = select_roi(frame);
+    }
+
+    if (roi.width <= 1 || roi.height <= 1) {
+      RCLCPP_WARN(get_logger(), "ROI selection was cancelled or too small.");
+      return false;
+    }
+    tracker_ = make_tracker();
+    tracker_->init(roi, frame);
+    tracked_roi_ = roi;
+    tracker_width_ = frame.cols;
+    tracker_height_ = frame.rows;
+    tracker_initialized_ = true;
+    last_tracking_update_ = SteadyClock::now();
+    invalidate_depth_candidate();
+    RCLCPP_INFO(
+      get_logger(), "KCF initialized at x=%d y=%d w=%d h=%d",
+      roi.x, roi.y, roi.width, roi.height);
+    return true;
+  }
+
+  void update_external_roi()
+  {
+    if (tracker_width_ <= 0 || tracker_height_ <= 0 || image_width_ <= 0 || image_height_ <= 0) return;
+    if (!external_box_ || std::chrono::duration<double>(SteadyClock::now()-external_received_).count() > tracking_timeout_) {
+      lose_target();
+      return;
+    }
+    const auto box = *external_box_;
+    const double sx = static_cast<double>(tracker_width_)/image_width_;
+    const double sy = static_cast<double>(tracker_height_)/image_height_;
+    tracked_roi_ = cv::Rect(cvRound(box.x*sx),cvRound(box.y*sy),cvRound(box.width*sx),cvRound(box.height*sy));
+    tracked_roi_ &= cv::Rect(0,0,tracker_width_,tracker_height_);
+    tracker_initialized_ = tracked_roi_.width>1 && tracked_roi_.height>1;
+    last_tracking_update_ = external_received_;
+  }
+
+  void accept_sparse_depth(double stamp, double range)
+  {
+    const double age = now().seconds() - stamp;
+    if (!tracker_initialized_ || stamp < tracking_epoch_ || age > depth_timeout_ || age < -0.2 ||
+      !std::isfinite(range) || range < min_depth_ || range > max_depth_)
+    {
+      invalidate_depth_candidate();
+      publish_stop();
+      return;
+    }
+    depth_candidate_ = range;
+    depth_candidate_valid_ = true;
+    last_depth_update_ = SteadyClock::now();
+  }
+
+  void consume_inline_depth(const nlohmann::json & value)
+  {
+    const double source_stamp = value.at("source_stamp").get<double>();
+    auto detections = value.at("tracks");
+    double measured_stamp = source_stamp;
+    double range = std::numeric_limits<double>::quiet_NaN();
+    bool aligned = false;
+    for (auto & target : detections) {
+      target["depth_m"] = nullptr;
+      target["position_3d"] = nullptr;
+      if (!target.contains("foreground")) continue;
+      const auto & foreground = target.at("foreground");
+      aligned = aligned || foreground.value("projection_backend",std::string()) == "aligned_depth_direct";
+      if (!foreground.contains("depth_m") || foreground.at("depth_m").is_null() ||
+        !foreground.contains("depth_stamp") || foreground.at("depth_stamp").is_null()) continue;
+      const double stamp = foreground.at("depth_stamp").get<double>();
+      if (std::abs(stamp-source_stamp) > 0.2) continue;
+      target["depth_m"] = foreground.at("depth_m");
+      const auto & xyz = foreground.at("rgb_xyz_m");
+      target["position_3d"] = {{"x",xyz.at(0)},{"y",xyz.at(1)},{"z",xyz.at(2)}};
+      target["sampled_count"] = target["inlier_count"] = foreground.at("sampled_count");
+    }
+    if (!detections.empty() && !detections.at(0).at("depth_m").is_null()) {
+      range = detections.at(0).at("depth_m").get<double>();
+      measured_stamp = detections.at(0).at("foreground").at("depth_stamp").get<double>();
+    }
+    accept_sparse_depth(measured_stamp,range);
+    sensor_msgs::msg::Range measurement;
+    measurement.header.stamp = rclcpp::Time(static_cast<int64_t>(std::llround(measured_stamp*1e9)));
+    measurement.min_range = min_depth_;
+    measurement.max_range = max_depth_;
+    measurement.range = range;
+    inline_range_pub_->publish(measurement);
+    nlohmann::json result = {{"stamp",now().seconds()},{"source_stamp",source_stamp},
+      {"detections",detections},{"frame_id",value.value("frame_id",std::string())},
+      {"image_width",value.value("image_width",0)},
+      {"depth_method",aligned ? "foreground_aligned_16x16" : "foreground_native_16x16"},
+      {"calibration_ready",value.value("foreground_depth_ready",false)}};
+    std_msgs::msg::String message;
+    message.data = result.dump();
+    inline_targets_pub_->publish(message);
+  }
+
+  static double median(std::vector<double> values)
+  {
+    if (values.empty()) {
+      return std::numeric_limits<double>::quiet_NaN();
+    }
+    const auto middle = values.begin() + static_cast<long>(values.size() / 2);
+    std::nth_element(values.begin(), middle, values.end());
+    return *middle;
+  }
+
+  double depth_at_target(
+    const cv::Mat & depth, const std::string & encoding,
+    const cv::Rect & tracker_roi, int tracker_width, int tracker_height,
+    int aligned_width, int aligned_height) const
+  {
+    if (depth.empty() || tracker_roi.width <= 0 || tracker_roi.height <= 0 ||
+      tracker_width <= 0 || tracker_height <= 0 || aligned_width <= 0 || aligned_height <= 0)
+    {
+      return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    const double normalized_x =
+      (tracker_roi.x + tracker_roi.width * 0.5) / static_cast<double>(tracker_width);
+    const double normalized_y =
+      (tracker_roi.y + tracker_roi.height * 0.5) / static_cast<double>(tracker_height);
+    const double aligned_x = normalized_x * aligned_width;
+    const double aligned_y = normalized_y * aligned_height;
+    const int depth_x = std::clamp(
+      static_cast<int>(aligned_x * depth.cols / aligned_width), 0, depth.cols - 1);
+    const int depth_y = std::clamp(
+      static_cast<int>(aligned_y * depth.rows / aligned_height), 0, depth.rows - 1);
+
+    std::vector<double> samples;
+    for (int dy = -2; dy <= 2; ++dy) {
+      for (int dx = -2; dx <= 2; ++dx) {
+        const int x = std::clamp(depth_x + dx, 0, depth.cols - 1);
+        const int y = std::clamp(depth_y + dy, 0, depth.rows - 1);
+        double meters = std::numeric_limits<double>::quiet_NaN();
+        if (encoding == sensor_msgs::image_encodings::TYPE_16UC1) {
+          meters = static_cast<double>(depth.at<uint16_t>(y, x)) * depth_scale_16u_;
+        } else if (encoding == sensor_msgs::image_encodings::TYPE_32FC1) {
+          meters = static_cast<double>(depth.at<float>(y, x)) * depth_scale_32f_;
+        }
+        if (std::isfinite(meters) && meters >= min_depth_ && meters <= max_depth_) {
+          samples.push_back(meters);
+        }
+      }
+    }
+    return median(std::move(samples));
+  }
+
+  void invalidate_depth_candidate()
+  {
+    distance_state_ = 0;
+    depth_candidate_valid_ = false;
+    last_depth_update_.reset();
+  }
+
+  void lose_target()
+  {
+    tracker_initialized_ = false;
+    last_tracking_update_.reset();
+    invalidate_depth_candidate();
+    publish_stop();
+  }
+
+  void publish_stop()
+  {
+    distance_state_ = 0;
+    aligning_ = false;
+    motion_state_ = tracker_initialized_ ? "WAIT_DEPTH" : "LOST";
+    last_linear_ = last_angular_ = 0.0;
+    if (enable_motion_ && cmd_vel_pub_) {
+      cmd_vel_pub_->publish(geometry_msgs::msg::Twist());
+    }
+  }
+
+  void publish_motion_candidate(bool depth_valid = true)
+  {
+    const double distance_error = depth_valid ? depth_candidate_ - target_distance_ : 0.0;
+    if (!depth_valid) distance_state_ = 0;
+    const double normalized_x_error =
+      ((tracked_roi_.x + tracked_roi_.width * 0.5) - tracker_width_ * 0.5) /
+      (tracker_width_ * 0.5);
+    geometry_msgs::msg::Twist command;
+    const double enter = linear_deadband_ + distance_hysteresis_;
+    if (distance_state_ == 1 && distance_error <= linear_deadband_) distance_state_ = 0;
+    if (distance_state_ == -1 && distance_error >= -linear_deadband_) distance_state_ = 0;
+    if (distance_state_ == 0 && distance_error > enter) distance_state_ = 1;
+    if (distance_state_ == 0 && distance_error < -enter) distance_state_ = -1;
+    if (distance_state_ != 0) {
+      const double requested_linear = std::clamp(
+        linear_kp_ * distance_error, -max_linear_speed_, max_linear_speed_);
+      command.linear.x = std::abs(requested_linear) > 1.0e-9 &&
+        std::abs(requested_linear) < minimum_linear_speed_ ?
+        std::copysign(minimum_linear_speed_, requested_linear) : requested_linear;
+    }
+    if (std::abs(normalized_x_error) > angular_deadband_) {
+      command.angular.z = std::clamp(
+        -angular_kp_ * normalized_x_error,
+        -max_angular_speed_, max_angular_speed_);
+    }
+    aligning_ = std::abs(normalized_x_error) > (aligning_ ? 0.12 : 0.25);
+    motion_state_ = distance_state_ == 1 ? "FOLLOW" : distance_state_ == -1 ? "BACKOFF" : "HOLD";
+    if (aligning_) {
+      command.linear.x = 0.0;
+      motion_state_ = "ALIGN";
+    }
+    if (!depth_valid && !aligning_) motion_state_ = "WAIT_DEPTH";
+    last_linear_ = command.linear.x;
+    last_angular_ = command.angular.z;
+    if (enable_motion_) cmd_vel_pub_->publish(command);
+  }
+
+  void control_timer_callback()
+  {
+    const auto now = SteadyClock::now();
+    const bool tracking_fresh = tracker_initialized_ && last_tracking_update_.has_value() &&
+      std::chrono::duration<double>(now - *last_tracking_update_).count() <= tracking_timeout_;
+    const bool depth_fresh = depth_candidate_valid_ && last_depth_update_.has_value() &&
+      std::chrono::duration<double>(now - *last_depth_update_).count() <= depth_timeout_;
+    if (!tracking_fresh) {
+      publish_stop();
+      return;
+    }
+    publish_motion_candidate(depth_fresh);
+  }
+
+  void publish_debug_image(const cv::Mat & frame, const std_msgs::msg::Header & header)
+  {
+    if (debug_image_pub_->get_subscription_count()) {
+      auto message = cv_bridge::CvImage(
+        header, sensor_msgs::image_encodings::BGR8, frame).toImageMsg();
+      debug_image_pub_->publish(*message);
+    }
+    if (compressed_debug_pub_->get_subscription_count()) {
+      {
+        std::lock_guard<std::mutex> lock(jpeg_mutex_);
+        pending_jpeg_ = DebugFrame{frame, header};
+      }
+      jpeg_ready_.notify_one();
+    }
+  }
+
+  void encode_debug_frames()
+  {
+    while (true) {
+      std::unique_lock<std::mutex> lock(jpeg_mutex_);
+      jpeg_ready_.wait(lock, [this]() { return jpeg_stopping_ || pending_jpeg_.has_value(); });
+      if (jpeg_stopping_) return;
+      auto frame = std::move(*pending_jpeg_);
+      pending_jpeg_.reset();
+      lock.unlock();
+      try {
+        sensor_msgs::msg::CompressedImage compressed;
+        compressed.header = frame.header;
+        compressed.format = "jpeg";
+        cv::imencode(".jpg", frame.image, compressed.data, {cv::IMWRITE_JPEG_QUALITY, 85});
+        compressed_debug_pub_->publish(compressed);
+      } catch (const std::exception & error) {
+        RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 5000, "JPEG display: %s", error.what());
+      }
+    }
+  }
+
+  void render_and_publish_tracker_frame(
+    const cv::Mat & tracked_frame, const std_msgs::msg::Header & header,
+    const cv::Mat & original)
+  {
+    cv::Mat display = original.clone();
+    const double sx = static_cast<double>(original.cols) / tracked_frame.cols;
+    const double sy = static_cast<double>(original.rows) / tracked_frame.rows;
+    const cv::Rect display_roi(cvRound(tracked_roi_.x * sx), cvRound(tracked_roi_.y * sy),
+      cvRound(tracked_roi_.width * sx), cvRound(tracked_roi_.height * sy));
+    if (tracker_initialized_) {
+      cv::rectangle(display, display_roi, cv::Scalar(0, 255, 255), 2);
+      cv::circle(
+        display,
+        cv::Point(
+          display_roi.x + display_roi.width / 2,
+          display_roi.y + display_roi.height / 2),
+        3, cv::Scalar(0, 0, 255), -1);
+    }
+
+    const auto now = SteadyClock::now();
+    const bool depth_fresh = depth_candidate_valid_ && last_depth_update_.has_value() &&
+      std::chrono::duration<double>(now - *last_depth_update_).count() <= depth_timeout_;
+    const std::string distance_text = depth_fresh ?
+      cv::format("%.2f m", depth_candidate_) : "depth invalid/stale";
+    const std::string tracker_text = (external_tracker_ ? external_backend_ + " " : std::string("KCF ")) +
+      (tracker_initialized_ ? "tracking" : "waiting") + " | " + distance_text +
+      " | motion=" + (enable_motion_ ? "ON" : "OFF");
+    cv::Point text_origin = tracker_initialized_ ?
+      cv::Point(display_roi.x, std::max(20, display_roi.y - 8)) : cv::Point(10, 25);
+    if (external_tracker_ && external_backend_ == "qr_kcf") {
+      cv::copyMakeBorder(display, display, 0, 32, 0, 0, cv::BORDER_CONSTANT, cv::Scalar(24, 24, 24));
+      text_origin = cv::Point(10, original.rows + 24);
+    }
+    cv::putText(
+      display, tracker_text, text_origin,
+      cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(0, 255, 255), 2);
+
+    std::ostringstream data;
+    const double gain = sx;
+    data << "{\"source_stamp\":" << std::fixed << std::setprecision(9)
+         << (external_tracker_ && tracker_initialized_ ? external_stamp_ : rclcpp::Time(header.stamp).seconds()) << ",\"image_width\":" << image_width_
+         << ",\"tracking_width\":" << tracked_frame.cols
+         << ",\"tracking_height\":" << tracked_frame.rows
+         << ",\"display_width\":" << display.cols
+         << ",\"display_height\":" << display.rows
+         << ",\"tracker_backend\":\"" << (external_tracker_ ? external_backend_ : std::string("kcf"))
+         << "\",\"tracking_runtime\":\"" << (external_tracker_ ? external_runtime_ : "cpu")
+         << "\",\"tracking_score\":" << external_score_
+         << ",\"tracking_inference_ms\":" << external_inference_ms_
+         << ",\"motion_state\":\"" << motion_state_ << "\",\"enable_motion\":"
+         << (enable_motion_ ? "true" : "false") << ",\"linear_x\":" << (enable_motion_ ? last_linear_ : 0.0)
+         << ",\"angular_z\":" << (enable_motion_ ? last_angular_ : 0.0)
+         << ",\"depth_m\":" << (depth_candidate_valid_ ? std::to_string(depth_candidate_) : "null")
+         << ",\"target_distance_m\":" << target_distance_
+         << ",\"distance_persistent\":" << (distance_persistent_ ? "true" : "false")
+         << ",\"locked_id\":" << target_id_
+         << ",\"tracks\":[";
+    if (tracker_initialized_) {
+      data << "{\"track_id\":" << target_id_ << ",\"class\":\"kcf\",\"bbox\":["
+           << tracked_roi_.x * gain << "," << tracked_roi_.y * sy << ","
+           << tracked_roi_.width * gain << "," << tracked_roi_.height * sy << "]}";
+    }
+    data << "]}";
+    std_msgs::msg::String status;
+    status.data = data.str();
+    status_pub_->publish(status);
+    publish_debug_image(display, header);
+    if (use_gui_) {
+      cv::imshow(window_name_, display);
+      const int key = cv::waitKey(1) & 0xff;
+      if (key == 'r') {
+        lose_target();
+      } else if (key == 'q') {
+        publish_stop();
+        rclcpp::shutdown();
+      }
+    }
+  }
+
+  void tracker_color_callback(const Image::ConstSharedPtr color_msg)
+  {
+    cv_bridge::CvImageConstPtr color_ptr;
+    try {
+      color_ptr = cv_bridge::toCvShare(color_msg, sensor_msgs::image_encodings::BGR8);
+    } catch (const cv_bridge::Exception & error) {
+      RCLCPP_ERROR_THROTTLE(
+        get_logger(), *get_clock(), 5000, "tracker cv_bridge error: %s", error.what());
+      lose_target();
+      return;
+    }
+
+    image_width_ = color_msg->width;
+    image_height_ = color_msg->height;
+    cv::Mat display;
+    const double effective_scale = std::min(tracking_scale_, static_cast<double>(tracking_max_width_) / color_ptr->image.cols);
+    if (effective_scale < 0.999) {
+      // Only the tracker is resized; annotations are rendered on the original RGB frame.
+      cv::resize(
+        color_ptr->image, display, cv::Size(), effective_scale, effective_scale,
+        cv::INTER_AREA);
+    } else {
+      display = external_tracker_ ? color_ptr->image : color_ptr->image.clone();
+    }
+    if (external_tracker_) {
+      if (pending_roi_ && external_roi_pub_->get_subscription_count() > 0) {
+        external_roi_pub_->publish(*pending_roi_);
+        pending_roi_.reset();
+      }
+      if (processing_pub_->get_subscription_count()) {
+        auto processing = cv_bridge::CvImage(color_msg->header,sensor_msgs::image_encodings::BGR8,display).toImageMsg();
+        processing_pub_->publish(*processing);
+      }
+      tracker_width_ = display.cols;
+      tracker_height_ = display.rows;
+      update_external_roi();
+      render_and_publish_tracker_frame(display,color_msg->header,color_ptr->image);
+      return;
+    }
+    if (!tracker_initialized_) {
+      if (!initialize_tracker(display)) {
+        publish_stop();
+      } else {
+        tracking_epoch_ = rclcpp::Time(color_msg->header.stamp).seconds();
+        ++target_id_;
+      }
+      render_and_publish_tracker_frame(display, color_msg->header, color_ptr->image);
+      return;
+    }
+
+    tracked_roi_ = tracker_->update(display);
+    tracked_roi_ &= cv::Rect(0, 0, display.cols, display.rows);
+    tracker_width_ = display.cols;
+    tracker_height_ = display.rows;
+    if (tracked_roi_.width <= 1 || tracked_roi_.height <= 1) {
+      RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "KCF lost the target.");
+      lose_target();
+      render_and_publish_tracker_frame(display, color_msg->header, color_ptr->image);
+      return;
+    }
+    last_tracking_update_ = SteadyClock::now();
+    render_and_publish_tracker_frame(display, color_msg->header, color_ptr->image);
+  }
+
+  void aligned_depth_callback(
+    const Image::ConstSharedPtr & aligned_color_msg,
+    const Image::ConstSharedPtr & depth_msg)
+  {
+    const double pair_delta = std::fabs(
+      (rclcpp::Time(aligned_color_msg->header.stamp) -
+      rclcpp::Time(depth_msg->header.stamp)).seconds());
+    if (pair_delta > max_pair_delta_) {
+      RCLCPP_WARN_THROTTLE(
+        get_logger(), *get_clock(), 2000,
+        "Rejected RGB-D pair with %.3f s timestamp delta (limit %.3f s).",
+        pair_delta, max_pair_delta_);
+      invalidate_depth_candidate();
+      publish_stop();
+      return;
+    }
+    if (!tracker_initialized_ || tracked_roi_.width <= 1 || tracked_roi_.height <= 1) {
+      invalidate_depth_candidate();
+      publish_stop();
+      return;
+    }
+
+    cv_bridge::CvImageConstPtr depth_ptr;
+    try {
+      if (depth_msg->encoding == sensor_msgs::image_encodings::TYPE_16UC1) {
+        depth_ptr = cv_bridge::toCvShare(
+          depth_msg, sensor_msgs::image_encodings::TYPE_16UC1);
+      } else if (depth_msg->encoding == sensor_msgs::image_encodings::TYPE_32FC1) {
+        depth_ptr = cv_bridge::toCvShare(
+          depth_msg, sensor_msgs::image_encodings::TYPE_32FC1);
+      } else {
+        RCLCPP_ERROR_THROTTLE(
+          get_logger(), *get_clock(), 5000,
+          "Unsupported depth encoding '%s'; expected 16UC1 or 32FC1.",
+          depth_msg->encoding.c_str());
+        invalidate_depth_candidate();
+        publish_stop();
+        return;
+      }
+    } catch (const cv_bridge::Exception & error) {
+      RCLCPP_ERROR_THROTTLE(
+        get_logger(), *get_clock(), 5000, "depth cv_bridge error: %s", error.what());
+      invalidate_depth_candidate();
+      publish_stop();
+      return;
+    }
+
+    const double distance = depth_at_target(
+      depth_ptr->image, depth_msg->encoding, tracked_roi_, tracker_width_, tracker_height_,
+      static_cast<int>(aligned_color_msg->width), static_cast<int>(aligned_color_msg->height));
+    if (!std::isfinite(distance)) {
+      invalidate_depth_candidate();
+      publish_stop();
+      return;
+    }
+
+    depth_candidate_ = distance;
+    depth_candidate_valid_ = true;
+    last_depth_update_ = SteadyClock::now();
+  }
+
+  rclcpp::Publisher<sensor_msgs::msg::RegionOfInterest>::SharedPtr external_roi_pub_;
+  rclcpp::Publisher<Image>::SharedPtr processing_pub_;
+  bool external_tracker_ = false;
+  std::optional<cv::Rect2d> external_box_;
+  SteadyClock::time_point external_received_;
+  double external_stamp_ = 0.0, external_score_ = 0.0, external_inference_ms_ = 0.0;
+  std::string external_runtime_ = "unknown";
+  std::string external_backend_ = "nanotrack";
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr external_sub_;
+  bool remote_roi_ = false;
+  int image_height_ = 0;
+  std::optional<sensor_msgs::msg::RegionOfInterest> pending_roi_;
+  rclcpp::Subscription<sensor_msgs::msg::RegionOfInterest>::SharedPtr roi_sub_;
+  bool sparse_depth_ = false;
+  bool inline_sparse_depth_ = false;
+  rclcpp::Publisher<sensor_msgs::msg::Range>::SharedPtr inline_range_pub_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr inline_targets_pub_;
+  bool aligning_ = false;
+  int image_width_ = 0;
+  int target_id_ = 0;
+  double tracking_epoch_ = 0.0;
+  double last_linear_ = 0.0, last_angular_ = 0.0;
+  std::string motion_state_ = "LOST";
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
+  rclcpp::Subscription<sensor_msgs::msg::Range>::SharedPtr sparse_depth_sub_;
+  std::string tracker_color_topic_;
+  std::string aligned_color_topic_;
+  std::string depth_topic_;
+  std::string output_image_topic_;
+  std::string cmd_vel_topic_;
+  bool enable_motion_;
+  bool use_gui_;
+  double tracking_scale_;
+  int tracking_max_width_;
+  int sync_queue_size_;
+  double max_pair_delta_;
+  double tracking_timeout_;
+  double depth_timeout_;
+  double control_rate_;
+  int roi_x_;
+  int roi_y_;
+  int roi_width_;
+  int roi_height_;
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr parameter_callback_;
+  double target_distance_;
+  double distance_hysteresis_;
+  double depth_scale_16u_;
+  double depth_scale_32f_;
+  double min_depth_;
+  double max_depth_;
+  double linear_kp_;
+  double angular_kp_;
+  double linear_deadband_;
+  double angular_deadband_;
+  double minimum_linear_speed_;
+  double max_linear_speed_;
+  double max_angular_speed_;
+  int distance_state_ = 0;
+
+  const std::string window_name_ = "OmniFleet KCF";
+  bool tracker_initialized_ = false;
+  int tracker_width_ = 0;
+  int tracker_height_ = 0;
+  cv::Rect tracked_roi_;
+  std::unique_ptr<KCFTracker> tracker_;
+  std::optional<SteadyClock::time_point> last_tracking_update_;
+  bool depth_candidate_valid_ = false;
+  double depth_candidate_ = std::numeric_limits<double>::quiet_NaN();
+  std::optional<SteadyClock::time_point> last_depth_update_;
+
+  rclcpp::Publisher<Image>::SharedPtr debug_image_pub_;
+  struct DebugFrame { cv::Mat image; std_msgs::msg::Header header; };
+  std::mutex jpeg_mutex_;
+  std::condition_variable jpeg_ready_;
+  std::optional<DebugFrame> pending_jpeg_;
+  bool jpeg_stopping_ = false;
+  std::thread jpeg_worker_;
+  rclcpp::Publisher<sensor_msgs::msg::CompressedImage>::SharedPtr compressed_debug_pub_;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
+  rclcpp::Subscription<Image>::SharedPtr tracker_color_sub_;
+  message_filters::Subscriber<Image> aligned_color_sub_;
+  message_filters::Subscriber<Image> depth_sub_;
+  std::shared_ptr<message_filters::Synchronizer<SyncPolicy>> sync_;
+  rclcpp::TimerBase::SharedPtr control_timer_;
+};
+
+int main(int argc, char ** argv)
+{
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<KcfFollowerNode>());
+  rclcpp::shutdown();
+  return 0;
+}

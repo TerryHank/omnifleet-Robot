@@ -1,0 +1,94 @@
+{
+  "name": "foxglove-studio-cn-desktop",
+  "version": "1.86.0-cn.8",
+  "description": "基于 AD-EYE/foxglove-opensource 的中文开源机器人可视化桌面端",
+  "homepage": "https://github.com/AD-EYE/foxglove-opensource",
+  "author": {
+    "name": "iecme"
+  },
+  "license": "MPL-2.0",
+  "main": "main.cjs",
+  "desktopName": "foxglove-studio-cn.desktop",
+  "private": true,
+  "scripts": {
+    "dist:arm64": "electron-builder --linux deb --arm64"
+  },
+  "devDependencies": {
+    "electron": "43.0.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "dev.foxglove.studio.opensource.cn",
+    "productName": "Foxglove-Studio-CN",
+    "artifactName": "foxglove-studio-cn_${version}_${arch}.${ext}",
+    "asar": true,
+    "npmRebuild": false,
+    "protocols": [
+      {
+        "name": "Foxglove Studio 中文版",
+        "schemes": [
+          "foxglove-cn"
+        ]
+      }
+    ],
+    "files": [
+      "main.cjs",
+      "NOTICE.zh-CN.txt",
+      "build/icon.png"
+    ],
+    "extraResources": [
+      {
+        "from": "../web/.webpack",
+        "to": "app-web"
+      },
+      {
+        "from": "../LICENSE",
+        "to": "LICENSE"
+      }
+    ],
+    "linux": {
+      "target": [
+        "deb"
+      ],
+      "category": "Development;Science",
+      "executableName": "foxglove-studio-cn",
+      "syncDesktopName": true,
+      "desktop": {
+        "entry": {
+          "Name": "Foxglove Studio 中文版",
+          "Comment": "ROS 与机器人数据可视化桌面应用"
+        }
+      },
+      "icon": "build/icon.png",
+      "fileAssociations": [
+        {
+          "ext": "bag",
+          "name": "ROS Bag 文件",
+          "mimeType": "application/octet-stream"
+        },
+        {
+          "ext": "mcap",
+          "name": "MCAP 文件",
+          "mimeType": "application/octet-stream"
+        }
+      ],
+      "maintainer": "iecme",
+      "synopsis": "Foxglove Studio 开源中文版",
+      "description": "基于 AD-EYE/foxglove-opensource 构建的 ARM64 中文桌面应用，用于 ROS 与机器人数据可视化。"
+    },
+    "deb": {
+      "depends": [
+        "libgtk-3-0",
+        "libnotify4",
+        "libnss3",
+        "libxtst6",
+        "xdg-utils",
+        "libatspi2.0-0",
+        "libdrm2",
+        "libgbm1",
+        "libxcb-dri3-0"
+      ],
+      "afterInstall": "build/linux/deb/postinst"
+    }
+  }
+}

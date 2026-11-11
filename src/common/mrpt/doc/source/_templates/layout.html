@@ -1,0 +1,70 @@
+{% extends "!layout.html" %}
+
+{% block scripts %}
+{{ super() }}
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-21128561-10"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-21128561-10');
+</script>
+{% endblock %}
+
+
+{% block sidebartitle %}
+{{ super() }}
+<script>
+function onMRPTVersionChange() {
+    var selectBox = document.getElementById("docsVersionSelectBox");
+    const newVersion = selectBox.options[selectBox.selectedIndex].value;
+    var curURL = window.location.href;
+    const lastURLSegment = curURL;
+    const newURL = window.location.protocol + "//" + window.location.host + "/" +
+        "reference/" + newVersion + "/" +
+        window.location.pathname.split("/").pop();
+    window.location.href = newURL;
+}
+var req = new XMLHttpRequest();
+ req.onload = function(){
+     var versions = JSON.parse(this.responseText);
+     var versionDiv = document.getElementsByClassName('version')[0];
+     var curVer = versionDiv.innerHTML.trim();
+     var s='<select id="docsVersionSelectBox" onchange="onMRPTVersionChange();">\n';
+     for(var i = 0; i < versions.length; i++) {
+       var v = versions[i];
+       var vstr = v;
+       if (v.charAt(0)>='0' && v.charAt(0)<='9') {
+         vstr = 'v'+vstr;
+       }
+       s=s+ '<option value="' +v+'"';
+       if (curVer==v) {s=s+' selected';}
+       s=s+'">'+ vstr + '</option>\n';
+     }
+     s = s + '</select>\n';
+     versionDiv.innerHTML = s;
+ };
+ req.open('GET', '../versions.txt');
+ req.send();
+</script>
+{% endblock %}
+
+{% block footer %}
+{{ super() }}
+<!-- Default Statcounter code for MRPT reference -->
+<script type="text/javascript">
+var sc_project=2835288;
+var sc_invisible=1;
+var sc_security="862cd600";
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="Web Analytics"
+href="https://statcounter.com/" target="_blank"><img
+class="statcounter"
+src="https://c.statcounter.com/2835288/0/862cd600/1/"
+alt="Web Analytics"></a></div></noscript>
+<!-- End of Statcounter Code -->
+{% endblock %}

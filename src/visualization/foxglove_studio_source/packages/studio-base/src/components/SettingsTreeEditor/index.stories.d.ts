@@ -1,0 +1,27 @@
+import { StoryObj } from "@storybook/react";
+import SettingsTreeEditor from "@foxglove/studio-base/components/SettingsTreeEditor";
+declare const _default: {
+    title: string;
+    component: typeof SettingsTreeEditor;
+};
+export default _default;
+export declare const Basics: StoryObj;
+export declare const BasicsChinese: StoryObj;
+export declare const BasicsJapanese: StoryObj;
+export declare const DisabledFields: StoryObj;
+export declare const ReadonlyFields: StoryObj;
+export declare const PanelExamples: StoryObj;
+export declare const IconExamples: StoryObj;
+export declare const Topics: StoryObj;
+export declare const Filter: StoryObj;
+export declare const Colors: StoryObj;
+export declare const EmptyValue: StoryObj;
+export declare const SetHiddenValueToTrue: StoryObj;
+export declare const Vec2: StoryObj;
+export declare const Vec3: StoryObj;
+export declare const SelectInvalidWithUndefined: StoryObj;
+export declare const SelectInvalidWithoutUndefined: StoryObj;
+export declare const SelectValidWithUndefined: StoryObj;
+export declare const SelectValidWithEmptyString: StoryObj;
+export declare const SelectEmpty: StoryObj;
+export declare const SelectEmptyInvalid: StoryObj;

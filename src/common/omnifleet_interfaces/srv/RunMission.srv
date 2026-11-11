@@ -1,0 +1,7 @@
+string mission_id
+uint64 revision
+string policy
+---
+bool accepted
+string transaction_id
+string message

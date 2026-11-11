@@ -1,0 +1,16 @@
+[Unit]
+Description=104 visual tutorial demonstration manager
+After=omnifleet-t2-zenoh-router.service
+
+[Service]
+User=iecme
+Environment=HOME=/home/iecme
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/env.bash; export ZENOH_CONFIG_OVERRIDE="transport/shared_memory/enabled=false;transport/shared_memory/transport_optimization/enabled=false"; exec ros2 run omnifleet_tutorials vision_demo_manager.py'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

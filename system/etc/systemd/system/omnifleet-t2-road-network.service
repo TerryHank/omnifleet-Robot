@@ -1,0 +1,19 @@
+[Unit]
+Description=OmniFleet Foxglove route graph planning preview
+After=omnifleet-t2-zenoh-router.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_ws
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+Environment=OMNIFLEET_ZENOH_OBSERVER=1
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/env.bash; exec python3 -B /home/iecme/omnifleet_ws/src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/road_network_bridge.py'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
