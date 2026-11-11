@@ -1,0 +1,63 @@
+112 对齐 111 的代码补全结果
+日期：2026-11-02
+
+结果
+已把 111 的分层源码补入 112 的 /home/iecme/omnifleet_a2_ws/src，保留原来的 11 个 A2 包及原 install 目录，新增独立安装目录 install_111。
+111 快照中 14,870 个常规源码/资源文件均已落地，未发现缺失；另补入雷达驱动所需的两个诊断头文件。
+当前运行服务仍使用原 112 栈。新增服务定义是部署模板，未安装到 /etc/systemd/system，未启用新服务。
+
+补全内容
+- 111 的导航接口、A2 调度网关、跟随/编队接口、本地导航、地图配准及快照、点云可视化和永久参数代码。
+- 111 的 Nav2 规划、定位、传感器处理、车辆描述、视觉、VR、课程和仿真等分层工程源码及构建资源。
+- 与 111 相同平台的 MOLA/MRPT/Zenoh 等预编译依赖，放在独立前缀中；没有覆盖系统库。MOLA/MRPT 没有在本轮全量重新编译。
+- 发现广播源码及 11 个服务模板位于 deploy/111-standard；配置已适配 robot_112、ROS 域 42、eno1、192.168.1.5 / 192.168.1.200。
+
+修复的实际问题
+- 111 雷达源码存在四处指向旧 robot_backups 目录的绝对头文件引用。已把 detail_trace.hpp / causal_trace.hpp 纳入工程，并改用内部 include。
+- 修复移植后的运行路径、安装前缀及 Python 环境路径；补齐构建依赖，重新编译依赖本机 ROS/原生库的模块。
+- 保留 112 自有视觉模型和现成环境，模型使用 src/omnifleet_a2_vision/models，环境使用 /home/iecme/omnifleet_vision_runtime。
+- 在新增视觉入口中保留 112 已有的 JSON/目标位置叠加显示，补上叠加节点的安装规则，雷达输入使用 112 的 /rslidar_points。
+- 适配网关的 112 编码器反馈话题；就绪节点列表按 112 实际链路配置，未要求额外安装 111 的碰撞监控节点。
+- 修复旧测试夹具及目录迁移后的路径；没有安装未被基线安装的交通灯导航监督入口。
+
+保留的 112 差异
+- 转向限幅 15 度、转向中心、电机死区参数和现有底盘命令链。
+- 1.35 米规划转弯半径、112 车体轮廓、雷达及相机外参。
+- 112 原有 IMU 加速度比例 9.80665 和零偏设置；没有应用 111 的测量噪声标定。
+- 112 固件具备的可配置转向限幅、中心与参数回读功能：111 对应源码没有这些接口，未做倒退覆盖。
+- 原地图、任务数据、系统配置及现有服务。
+
+验证
+- 37 个包在 112 本机编译通过，包含 Nav2 costmap/Smac、雷达驱动、接口、网关、地图处理、视觉和 VR 等。
+- 274 项回归测试通过。
+- 363 个新增工程 Python 文件语法检查通过。
+- MOLA 主程序与定位插件、Zenoh RMW、雷达驱动、地图转换和 KCF 的动态库检查未发现缺失依赖。
+- chassis_core、mola_localization、production_nav2 三个启动文件的 --show-args 检查通过。
+- 1,276 个原有受保护文件哈希一致。
+- 原 chassis / airy / foxglove / waypoints 四个服务仍 active，PID 分别为 1710 / 1029 / 1035 / 1041，与检查前相同。
+- 未刷写固件，未发送运动命令，未做实车行驶或新栈联调验收。
+- 临时打包、编译和测试进程均已结束；没有新增后台 ROS 进程。
+
+目录
+112 工程：/home/iecme/omnifleet_a2_ws
+新增安装前缀：/home/iecme/omnifleet_a2_ws/install_111
+112 适配配置与服务模板：/home/iecme/omnifleet_a2_ws/deploy/111-standard
+远端证据及备份：/home/iecme/omnifleet_a2_backups/align111_20261102
+111 固件对照源码：/home/iecme/omnifleet_a2_ws/firmware/111_reference_20261102
+本地原 112 源码备份：112-before-source.tar.gz
+
+手动复现本轮已验证的入口检查（登录 112 后执行）
+cd /home/iecme/omnifleet_a2_ws
+source /opt/ros/humble/setup.bash
+source src/system/workspace_support/robot_fleet_env.bash
+ros2 launch omnifleet_bringup chassis_core.launch.py --show-args
+ros2 launch omnifleet_bringup mola_localization.launch.py --show-args
+ros2 launch omnifleet_bringup production_nav2.launch.py --show-args
+MOLA 后续运行时的 112 地图参数为 map_dir:=/var/lib/omnifleet_a2/maps；本轮没有加载或修改现有地图。
+
+当前原 112 四项服务的手动启动命令（保持原栈入口）
+sudo systemctl start omnifleet-a2-airy.service omnifleet-a2-chassis.service omnifleet-a2-foxglove-bridge.service omnifleet-a2-waypoints.service
+
+限制
+这是源码补全、独立编译和离线回归交付。当前进程仍运行原 112 栈，新网关、Zenoh 调度、MOLA/Nav2、视觉/VR 等整套新入口没有切换为主运行服务，也没有进行新栈的传感器、TF、调度或运动联调。
+不能据此宣称 112 已经获得与 111 相同的在线运行表现或实车验收结果。

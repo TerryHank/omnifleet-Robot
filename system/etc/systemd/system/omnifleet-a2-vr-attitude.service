@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet 112 VR tilt from STM32 IMU
+After=omnifleet-a2-chassis.service
+
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+ExecStart=/bin/bash -c 'source deploy/vr-debug/vr_env.bash && exec ros2 run imu_filter_madgwick imu_filter_madgwick_node --ros-args -p use_mag:=false -p publish_tf:=false -p world_frame:=ned -r imu/data_raw:=/imu/data_raw -r imu/data:=/vr/imu/filtered'
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

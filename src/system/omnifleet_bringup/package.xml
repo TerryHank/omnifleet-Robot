@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>omnifleet_bringup</name>
+  <version>0.3.0</version>
+  <description>Whole-robot drivers, safety chain, unified launch, and production diagnostics.</description>
+  <maintainer email="iecme@example.com">iecme</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>std_msgs</depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>nav2_collision_monitor</exec_depend>
+  <exec_depend>nav2_lifecycle_manager</exec_depend>
+  <exec_depend>omnifleet_behaviors</exec_depend>
+  <exec_depend>omnifleet_description</exec_depend>
+  <exec_depend>omnifleet_localization</exec_depend>
+  <exec_depend>omnifleet_planner</exec_depend>
+  <exec_depend>python3-serial</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>ros2cli</exec_depend>
+  <exec_depend>ros2lifecycle</exec_depend>
+  <exec_depend>ros2param</exec_depend>
+  <exec_depend>ros2topic</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  <exec_depend>teleop_twist_keyboard</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>twist_mux</exec_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
+  <export><build_type>ament_cmake</build_type></export>
+  <exec_depend>omnifleet_teleop</exec_depend>
+  <exec_depend>omnifleet_interfaces</exec_depend>
+</package>

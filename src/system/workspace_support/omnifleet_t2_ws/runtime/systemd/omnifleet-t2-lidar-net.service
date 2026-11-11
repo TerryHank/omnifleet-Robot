@@ -1,0 +1,12 @@
+[Unit]
+Description=OmniFleet T2 RoboSense Airy destination IP compatibility alias
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -lc '/sbin/ip addr show dev eno1 | /bin/grep -q "192.168.1.102/24" || /sbin/ip addr add 192.168.1.102/24 dev eno1'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

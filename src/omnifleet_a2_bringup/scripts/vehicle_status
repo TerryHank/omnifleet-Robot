@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+import json
+from pathlib import Path
+import subprocess
+
+from omnifleet_a2_bringup.boot_selfcheck import render_report
+from omnifleet_a2_bringup.vehicle_task_log import load_issues, render_event, render_issue, state_root
+
+
+SERVICES = (
+    ("底盘", "omnifleet-a2-chassis.service"),
+    ("雷达", "omnifleet-a2-airy.service"),
+    ("Foxglove", "omnifleet-a2-foxglove-bridge.service"),
+)
+
+
+def service_state(unit):
+    result = subprocess.run(
+        [
+            "systemctl", "show", unit, "--no-pager",
+            "--property=ActiveState", "--property=SubState", "--property=Result",
+            "--property=NRestarts",
+        ],
+        capture_output=True, text=True, check=False, timeout=3.0,
+    )
+    values = {}
+    for line in result.stdout.splitlines():
+        key, _, value = line.partition("=")
+        values[key] = value
+    return (
+        values.get("ActiveState", "unknown"),
+        values.get("SubState", "unknown"),
+        values.get("Result", "unknown"),
+        int(values.get("NRestarts", "0") or 0),
+    )
+
+
+def recent_log(unit):
+    result = subprocess.run(
+        [
+            "journalctl", "-u", unit, "--since", "24 hours ago", "-n", "20",
+            "--no-pager", "-o", "cat",
+            "--grep=STM32 did not echo|RuntimeError|Traceback|process has died|Permission denied|No such file|Failed",
+        ],
+        capture_output=True, text=True, check=False, timeout=3.0,
+    )
+    return result.stdout
+
+
+def state_hint(label, active, substate, result, restarts, log_text):
+    if active == "active":
+        return "正常"
+    if label == "雷达" and active == "activating" and substate == "start-pre":
+        return f"正在等待雷达 IP 连通；此前已重试 {restarts} 次"
+    if label == "底盘" and "STM32 did not echo Ackermann dead-zone PWM parameters" in log_text:
+        return "服务已停止；近期错误：STM32 未回显死区 PWM 参数"
+    if active == "activating" and substate == "start-pre":
+        return "正在等待硬件或网络启动条件"
+    if active == "inactive" and result == "success":
+        return "服务已被停止，需确认是否为有意操作"
+    if active == "failed":
+        return "启动失败，需查看该服务日志"
+    return f"异常：{label}未运行"
+
+
+def main():
+    print("=== OmniFleet 整车状态 ===")
+    unhealthy = []
+    for label, unit in SERVICES:
+        active, substate, result, restarts = service_state(unit)
+        log_text = recent_log(unit) if active != "active" else ""
+        hint = state_hint(label, active, substate, result, restarts, log_text)
+        print(f"{label}：{active}/{substate}（{hint}）")
+        if active != "active":
+            unhealthy.append(label)
+
+    print("\n=== 最后一次整车任务 ===")
+    latest = state_root() / "last_status.json"
+    if latest.exists():
+        print(render_event(json.loads(latest.read_text(encoding="utf-8"))))
+    else:
+        print("暂无持久任务记录")
+
+    print("\n=== 最近一次拒绝/失败（不会被自检通过覆盖） ===")
+    failure = state_root() / "last_failure.json"
+    if failure.exists():
+        print(render_event(json.loads(failure.read_text(encoding="utf-8"))))
+    else:
+        print("暂无拒绝或失败记录")
+
+    print("\n=== 最近一次开机自检（问题状态按当前台账刷新） ===")
+    boot_report = state_root() / "last_boot_report.json"
+    if boot_report.exists():
+        report = json.loads(boot_report.read_text(encoding="utf-8"))
+        report["issues"] = load_issues()
+        print(render_report(report).rstrip())
+        print(f"原始历史快照：{state_root() / 'boot_reports'}")
+    else:
+        print("暂无开机自检报告")
+
+    print("\n=== 问题闭环台账 ===")
+    issues = load_issues()
+    if issues:
+        ordered = sorted(issues.values(), key=lambda item: item.get("closure_status") == "RESOLVED")
+        print("\n\n".join(render_issue(issue) for issue in ordered))
+    else:
+        print("暂无问题记录")
+
+    if unhealthy:
+        print("\n需要处理：" + "、".join(unhealthy) + "未处于 active")
+        return 2
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

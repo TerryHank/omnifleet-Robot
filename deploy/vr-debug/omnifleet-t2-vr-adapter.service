@@ -1,0 +1,21 @@
+[Unit]
+Description=OmniFleet 112 VR protocol discovery and debug adapter
+After=network-online.target omnifleet-a2-chassis.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+Environment=HOME=/home/iecme
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/etc/omnifleet_a2/robot.env
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_a2_ws/deploy/vr-debug/vr_env.bash && exec ros2 run omnifleet_bringup vr_protocol_adapter --ros-args --params-file /home/iecme/omnifleet_a2_ws/deploy/vr-debug/vr-adapter.yaml'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

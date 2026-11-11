@@ -1,0 +1,10 @@
+{
+  "source": "MediaPipe 0.10.18 wheel: mediapipe/modules/palm_detection/palm_detection_full.tflite",
+  "license": "Apache-2.0; existing MediaPipe attribution in the vendor directory applies",
+  "tflite_sha256": "1b14e9422c6ad006cde6581a46c8b90dd573c07ab7f3934b5589e7cea3f89a54",
+  "conversion": "side-palm-opt/convert_palm.py; process-local PReLU layout correction",
+  "onnx_sha256": "e516ab5aeb9f01ec5704c069231240d4a677e226cf04a8b96901dd541ef68840",
+  "runtime": "TensorRT FP32, --noTF32, model engine built on each robot",
+  "proposal_selection": "score>=0.001, weighted NMS IoU 0.3, up to 8 proposals/person; proposals alone never issue commands",
+  "landmark_model": "Unchanged MediaPipe Full FP32, presence>=0.5, recentered complete-hand ROI and 0/+20/-20 degree same-frame fusion"
+}

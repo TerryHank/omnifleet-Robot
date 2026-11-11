@@ -1,0 +1,204 @@
+import type { PanelExtensionContext } from "@foxglove/extension";
+
+type ParamSpec = {
+  key: string;
+  label: string;
+  nodeLabel: string;
+  unit: string;
+  min: number;
+  max: number;
+  step: number;
+};
+
+const PARAMS: ParamSpec[] = [
+  {
+    key: "/local_costmap/local_costmap.inflation_layer.inflation_radius",
+    label: "局部膨胀半径",
+    nodeLabel: "local_costmap",
+    unit: "m",
+    min: 0,
+    max: 3,
+    step: 0.05,
+  },
+  {
+    key: "/local_costmap/local_costmap.inflation_layer.cost_scaling_factor",
+    label: "局部代价缩放因子",
+    nodeLabel: "local_costmap",
+    unit: "",
+    min: 0.01,
+    max: 20,
+    step: 0.1,
+  },
+  {
+    key: "/global_costmap/global_costmap.inflation_layer.inflation_radius",
+    label: "全局膨胀半径",
+    nodeLabel: "global_costmap",
+    unit: "m",
+    min: 0,
+    max: 3,
+    step: 0.05,
+  },
+  {
+    key: "/global_costmap/global_costmap.inflation_layer.cost_scaling_factor",
+    label: "全局代价缩放因子",
+    nodeLabel: "global_costmap",
+    unit: "",
+    min: 0.01,
+    max: 20,
+    step: 0.1,
+  },
+];
+
+function numericValue(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
+export function initNav2HotParamsPanel(context: PanelExtensionContext): () => void {
+  const root = context.panelElement;
+  root.className = "omnifleet-nav2-hot-params";
+  root.innerHTML = `
+    <style>
+      .omnifleet-nav2-hot-params { box-sizing: border-box; height: 100%; overflow: auto; padding: 14px; color: var(--fg-default, #f5f5f5); background: var(--background-default, #11151b); font: 14px/1.4 system-ui, "Microsoft YaHei", sans-serif; }
+      .omnifleet-nav2-hot-params * { box-sizing: border-box; }
+      .omnifleet-nav2-hot-params h2 { margin: 0 0 6px; font-size: 18px; }
+      .omnifleet-nav2-hot-params .hint { margin: 0 0 12px; color: #aeb8c5; }
+      .omnifleet-nav2-hot-params .status { margin: 0 0 12px; padding: 9px 10px; border-radius: 6px; background: #1d2631; color: #aeb8c5; white-space: pre-wrap; }
+      .omnifleet-nav2-hot-params .status.ok { color: #45d483; }
+      .omnifleet-nav2-hot-params .status.error { color: #ff8585; }
+      .omnifleet-nav2-hot-params .group { margin: 12px 0; padding: 10px; border: 1px solid #354151; border-radius: 7px; background: #171e27; }
+      .omnifleet-nav2-hot-params h3 { margin: 0 0 8px; font-size: 14px; color: #d6deea; }
+      .omnifleet-nav2-hot-params .row { display: grid; grid-template-columns: minmax(0, 1fr) 100px auto; align-items: center; gap: 8px; margin: 8px 0; }
+      .omnifleet-nav2-hot-params label { min-width: 0; }
+      .omnifleet-nav2-hot-params .live { display: block; color: #8fa0b3; font-size: 11px; }
+      .omnifleet-nav2-hot-params input { width: 100%; padding: 7px 8px; border: 1px solid #556170; border-radius: 5px; color: inherit; background: #141b23; }
+      .omnifleet-nav2-hot-params button { padding: 7px 9px; border: 0; border-radius: 5px; color: white; background: #3478f6; cursor: pointer; font-weight: 650; white-space: nowrap; }
+      .omnifleet-nav2-hot-params button:disabled, .omnifleet-nav2-hot-params input:disabled { opacity: .45; cursor: not-allowed; }
+      .omnifleet-nav2-hot-params .footer { margin-top: 12px; color: #aeb8c5; font-size: 12px; }
+    </style>
+    <h2>Nav2 膨胀参数热加载</h2>
+    <p class="hint">修改只作用于当前运行实例；要永久保存仍需修改 YAML。</p>
+    <div id="status" class="status">等待 Foxglove Bridge 返回当前参数……</div>
+    <div id="groups"></div>
+    <div class="footer">每次应用后会等待 /parameter_events 回读确认。节点未启动或未激活时不会生效。</div>
+  `;
+
+  const status = root.querySelector<HTMLDivElement>("#status");
+  const groups = root.querySelector<HTMLDivElement>("#groups");
+  if (status == undefined || groups == undefined) {
+    throw new Error("Nav2 热参数面板初始化失败");
+  }
+
+  const inputs = new Map<string, HTMLInputElement>();
+  const liveValues = new Map<string, HTMLSpanElement>();
+  const buttons = new Map<string, HTMLButtonElement>();
+
+  const setStatus = (message: string, kind: "normal" | "ok" | "error" = "normal"): void => {
+    status.textContent = message;
+    status.className = `status ${kind}`;
+  };
+
+  const apply = (spec: ParamSpec): void => {
+    const input = inputs.get(spec.key);
+    if (input == undefined) {
+      return;
+    }
+    const value = Number(input.value);
+    if (!Number.isFinite(value) || value < spec.min || value > spec.max) {
+      setStatus(`${spec.label} 必须在 ${spec.min} 到 ${spec.max} ${spec.unit} 之间`, "error");
+      return;
+    }
+    try {
+      context.setParameter(spec.key, value);
+      setStatus(`已发送 ${spec.nodeLabel} / ${spec.label} = ${value}${spec.unit ? ` ${spec.unit}` : ""}，等待运行节点回读……`);
+    } catch (error) {
+      setStatus(`发送失败：${String(error)}`, "error");
+    }
+  };
+
+  const grouped = new Map<string, ParamSpec[]>();
+  for (const spec of PARAMS) {
+    const existing = grouped.get(spec.nodeLabel) ?? [];
+    existing.push(spec);
+    grouped.set(spec.nodeLabel, existing);
+  }
+
+  for (const [nodeLabel, specs] of grouped) {
+    const group = document.createElement("section");
+    group.className = "group";
+    const heading = document.createElement("h3");
+    heading.textContent = nodeLabel === "local_costmap" ? "局部代价地图" : "全局代价地图";
+    group.append(heading);
+    for (const spec of specs) {
+      const row = document.createElement("div");
+      row.className = "row";
+      const label = document.createElement("label");
+      label.textContent = spec.label;
+      const live = document.createElement("span");
+      live.className = "live";
+      live.textContent = "运行值：未读取";
+      label.append(live);
+      const input = document.createElement("input");
+      input.type = "number";
+      input.min = String(spec.min);
+      input.max = String(spec.max);
+      input.step = String(spec.step);
+      input.disabled = true;
+      const button = document.createElement("button");
+      button.textContent = "应用";
+      button.disabled = true;
+      button.addEventListener("click", () => apply(spec));
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          apply(spec);
+        }
+      });
+      inputs.set(spec.key, input);
+      liveValues.set(spec.key, live);
+      buttons.set(spec.key, button);
+      row.append(label, input, button);
+      group.append(row);
+    }
+    groups.append(group);
+  }
+
+  context.watch("parameters");
+  context.onRender = (renderState, done) => {
+    try {
+      const parameters = renderState.parameters;
+      if (parameters == undefined) {
+        setStatus("当前数据源不提供 ROS 参数；请确认已连接 Foxglove Bridge。", "error");
+        return;
+      }
+      let found = 0;
+      for (const spec of PARAMS) {
+        const value = numericValue(parameters.get(spec.key));
+        const input = inputs.get(spec.key);
+        const live = liveValues.get(spec.key);
+        const button = buttons.get(spec.key);
+        if (value == undefined || input == undefined || live == undefined || button == undefined) {
+          continue;
+        }
+        found += 1;
+        if (document.activeElement !== input) {
+          input.value = String(value);
+        }
+        input.disabled = false;
+        button.disabled = false;
+        live.textContent = `运行值：${value}${spec.unit ? ` ${spec.unit}` : ""}`;
+      }
+      if (found === PARAMS.length) {
+        setStatus("已连接：四个参数均来自运行中的 Nav2 节点。", "ok");
+      } else if (found === 0) {
+        setStatus("尚未发现 Nav2 costmap 参数；请先启动并激活 Nav2。", "error");
+      } else {
+        setStatus(`已发现 ${found}/${PARAMS.length} 个参数，等待其余 costmap 节点……`);
+      }
+    } finally {
+      done();
+    }
+  };
+
+  return () => {
+    context.onRender = undefined;
+  };
+}

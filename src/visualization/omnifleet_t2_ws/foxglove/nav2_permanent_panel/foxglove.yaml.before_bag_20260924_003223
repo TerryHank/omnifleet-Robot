@@ -1,0 +1,49 @@
+robot_113:
+  omnifleet_t2_foxglove_bridge:
+    ros__parameters:
+      topic_whitelist:
+      - .*
+      client_topic_whitelist:
+      - "^/omnifleet_t2/diagnostics/question$"
+      - ^/robot_113/cmd_vel$
+      - ^/robot_113/omnifleet_t2/diagnostics/question$
+      - ^/robot_113/goal_pose$
+      - ^/robot_113/initialpose$
+      - ^/robot_113/(planner_selector|controller_selector)$
+      - ^/robot_113/omnifleet_t2/waypoints/(add_pose|next_name|rename|navigate_to|start|stop|undo|clear|update)$
+      - ^/fleet/ui/(command|add_point|add_pose)$
+      service_whitelist:
+      - "^/omnifleet_t2/nav2/(read_saved|save_parameters)$"
+      - ^/robot_113/omnifleet_t2/nav2/reset_map$
+      - ^/robot_113/omnifleet_t2/nav2/(read_saved|save_parameters)$
+      - ^/robot_113/map_save$
+      - ^/robot_113/map_load$
+      param_whitelist:
+      - ^/robot_113/planner_server[./]GridBased\.(cost_travel_multiplier|allow_unknown)$
+      - ^/robot_113/planner_server[./](GridBased|GridNavFn|GridThetaStar)\.(cost_travel_multiplier|allow_unknown|tolerance|max_planning_time|max_iterations|downsample_costmap|use_astar|use_final_approach_orientation|how_many_corners|w_euc_cost|w_traversal_cost)$
+      - ^/robot_113/controller_server[./]FollowPath\.(BaseObstacle|PathAlign|PathDist)\.scale$
+      - ^/robot_113/controller_server[./]FollowPath\.BaseObstacle\.scale$
+      - ^/robot_113/(local_costmap/local_costmap|global_costmap/global_costmap)[./]footprint_padding$
+      - ^/robot_113/controller_server[./]FollowPath\.(max_vel_x|max_speed_xy|max_vel_theta)$
+      - ^/robot_113/controller_server[./](FollowPath|FollowPathRPP|FollowPathMPPI)\.(max_vel_x|max_speed_xy|max_vel_theta|sim_time|vx_samples|vtheta_samples|desired_linear_vel|lookahead_dist|min_lookahead_dist|max_lookahead_dist|lookahead_time|rotate_to_heading_angular_vel|max_angular_accel|use_regulated_linear_velocity_scaling|use_cost_regulated_linear_velocity_scaling|cost_scaling_dist|cost_scaling_gain|inflation_cost_scaling_factor|use_rotate_to_heading|time_steps|model_dt|batch_size|iteration_count|vx_max|vx_min|wz_max|temperature|gamma)$
+      - ^/robot_113/planner_server[./]GridBased\.(tolerance|max_planning_time|max_iterations|downsample_costmap|smooth_path|use_astar|use_final_approach_orientation|max_cycles_factor|how_many_corners|w_euc_cost|w_traversal_cost)$
+      - ^/robot_113/controller_server[./]FollowPath\.(sim_time|vx_samples|vtheta_samples|desired_linear_vel|lookahead_dist|min_lookahead_dist|max_lookahead_dist|lookahead_time|rotate_to_heading_angular_vel|max_angular_accel|use_regulated_linear_velocity_scaling|use_cost_regulated_linear_velocity_scaling|cost_scaling_dist|cost_scaling_gain|inflation_cost_scaling_factor|use_rotate_to_heading|time_steps|model_dt|batch_size|iteration_count|vx_max|vx_min|wz_max|temperature|gamma|motion_model)$
+      - ^.*inflation_layer\.(cost_scaling_factor|inflation_radius)$
+      capabilities:
+      - clientPublish
+      - parameters
+      - parametersSubscribe
+      - services
+      - assets
+      best_effort_qos_topic_whitelist:
+      - ^/robot_113/tf$
+      - ^/robot_113/odom$
+      - ^/robot_113/plan$
+      - ^/robot_113/local_plan$
+      - ^/robot_113/(local_costmap|global_costmap)/published_footprint$
+      max_qos_depth: 1
+      min_qos_depth: 1
+      message_backlog_size: 20
+      send_buffer_limit: 2000000
+      include_hidden: false
+      sysinfo: false

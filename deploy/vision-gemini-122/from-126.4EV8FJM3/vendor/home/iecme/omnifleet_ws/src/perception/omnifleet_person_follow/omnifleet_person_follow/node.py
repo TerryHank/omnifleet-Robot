@@ -1,0 +1,807 @@
+"""Latest-frame RGB-D perception with ID-bound gestures and an owned Nav2 task."""
+import array
+from collections import OrderedDict
+import json
+import math
+import multiprocessing
+import os
+from pathlib import Path
+from queue import Empty as QueueEmpty
+from queue import Full
+import threading
+import time
+from types import SimpleNamespace
+
+import cv2
+import numpy as np
+import rclpy
+import yaml
+from ament_index_python.packages import get_package_share_directory
+from geometry_msgs.msg import PoseStamped, TransformStamped, Point
+from builtin_interfaces.msg import Duration
+from visualization_msgs.msg import Marker, MarkerArray
+from nav_msgs.msg import OccupancyGrid
+from rclpy.node import Node
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
+from rclpy.time import Time
+from sensor_msgs.msg import CameraInfo, CompressedImage, Image
+from std_msgs.msg import Empty, Header, String, ColorRGBA
+from rcl_interfaces.msg import SetParametersResult
+from tf2_ros import Buffer, TransformListener, StaticTransformBroadcaster
+
+from omnifleet_hikrobot_rgbd.camera_node import load_calibration
+from omnifleet_hikrobot_rgbd.depth_foreground import depth_foreground
+from omnifleet_hikrobot_rgbd.aligned_depth import aligned_depth_foreground
+from omnifleet_hikrobot_rgbd.foreground_tracking import ForegroundQuery, summary as foreground_summary
+from omnifleet_hikrobot_rgbd.local_frames import LocalFrameReader, LocalFrameWriter, read_native_mjpeg, rectify_native_color
+from .display import display_process
+from .core import FollowManager, trailing_goal
+from .navigation import DynamicNavigation
+from .perception import Perception
+from .identity import FollowIdentity
+from .recovery import SearchRecovery
+from .following import StandoffGoal, ImageCentering, VisualApproach
+
+
+def quaternion(rpy):
+    r, p, y = np.asarray(rpy) / 2
+    cr, sr, cp, sp, cy, sy = math.cos(r), math.sin(r), math.cos(p), math.sin(p), math.cos(y), math.sin(y)
+    return [sr*cp*cy-cr*sp*sy, cr*sp*cy+sr*cp*sy, cr*cp*sy-sr*sp*cy, cr*cp*cy+sr*sp*sy]
+
+
+def transform_point(point, transform):
+    q = transform.transform.rotation
+    u = np.array([q.x, q.y, q.z])
+    v = np.asarray(point)
+    rotated = v + 2 * np.cross(u, np.cross(u, v) + q.w * v)
+    t = transform.transform.translation
+    return rotated + [t.x, t.y, t.z]
+
+
+class PersonFollowNode(Node):
+    def __init__(self):
+        super().__init__('course_gesture_person_follow')
+        p = lambda name, value: self.declare_parameter(name, value).value
+        self.enable_motion = bool(p('enable_motion', False))
+        self.vision_active = bool(p('vision_active', not os.environ.get('OMNIFLEET_WARM_CASE')))
+        self.vision_warmed = False
+        self.auto_follow = bool(p('auto_follow',False))
+        self.controller_backend = str(p('controller_backend', 'python'))
+        self.tros = None
+        self.global_frame = str(p('global_frame', 'map'))
+        self.minimum, self.maximum = float(p('depth_min_m', .2)), float(p('depth_max_m', 1.5))
+        self.camera_backend = str(p('camera_backend', 'hikrobot'))
+        self.depth_pair_skew_ms = None
+        self.rgb_distortion = None
+        if self.camera_backend == 'orbbec':
+            self.depth_k, self.depth_to_rgb, self.native_depth_size = None, None, None
+        else:
+            camera_config = Path(get_package_share_directory('omnifleet_hikrobot_rgbd')) / 'config/mv_dt01snu.yaml'
+            camera_params = yaml.safe_load(camera_config.read_text())['mv_dt01snu_camera']['ros__parameters']
+            self.depth_k, _, self.depth_to_rgb, self.native_depth_size, _ = load_calibration(
+                camera_params['calibration_file'], camera_params['serial_number'])
+        self.depth_query_calls, self.depth_query_ms, self.depth_query_result = 0, 0., None
+        self.candidate_depth_at, self.candidate_depth_index = 0., 0
+        self.candidate_depth_queries = 0
+        self.recovery = SearchRecovery(float(p('search_timeout', 30.)), int(p('search_max_rounds', 2)))
+        self.costmap, self.last_recovery_phase = None, 'OFF'
+        self.person_confidence = float(p('confidence', .7))
+        self.jpeg_quality = int(p('jpeg_quality', 85))
+        self.preview_interval = float(p('preview_interval_s', 0.0))
+        self.last_preview = 0.0
+        self.jpeg_backend = 'nvjpegenc'
+        display_context = multiprocessing.get_context('spawn')
+        self.display_queue,self.display_results = display_context.Queue(maxsize=1),display_context.Queue(maxsize=1)
+        self.display_queue.cancel_join_thread()
+        self.display_results.cancel_join_thread()
+        self.display_stop = display_context.Event()
+        self.display_writer = None
+        self.display_empty_depth = np.empty((0,0),np.uint16)
+        self.display_stale = 0
+        self.display_process = display_context.Process(target=display_process,
+            args=(self.display_queue,self.display_results,self.display_stop,self.jpeg_quality),
+            name='person-follow-display',daemon=True)
+        self.display_process.start()
+        self.display_ms, self.display_frames, self.display_dropped = 0., 0, 0
+        self.manager = FollowManager(**{name: float(p(name, default)) for name, default in
+            [('follow_distance', 1.), ('tracking_to_lost_timeout', 1.), ('prediction_window', 6.),
+             ('prediction_lead', 2.), ('prediction_max_distance', 3.), ('prediction_timeout', 5.)]})
+        self.following = StandoffGoal(self.manager.follow_distance,
+            float(p('follow_distance_tolerance', .05)),float(p('follow_distance_hysteresis', .05)),
+            float(p('target_smoothing_time', .25)),float(p('follow_goal_step', .15)))
+        self.centering = ImageCentering(float(p('center_start_angle', .12)),float(p('center_stop_angle', .06)))
+        self.approach = VisualApproach(float(p('approach_step', .2)))
+        self.lock_source,self.operator_message = '', '自动模式：等待人物进入画面' if self.auto_follow else '等待手势或面板选人'
+        cv2.setNumThreads(1)
+        self.lock = threading.RLock()
+        if self.controller_backend != 'body_tracking':
+            self.create_subscription(OccupancyGrid, '/global_costmap/costmap', self.on_costmap,
+                QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.TRANSIENT_LOCAL))
+        self.event, self.closed = threading.Event(), threading.Event()
+        self.latest, self.info = None, None
+        self.fusion_cache = OrderedDict()
+        self.positions = {}
+        self.depths = OrderedDict()
+        self.depth_received_at = self.last_fused_at = 0.
+        self.fused_pairs = 0
+        self.last_fused_key = None
+        self.tracks, self.last_frame, self.coordinate_error = [], 0., ''
+        self.dropped = 0
+        self.rgb_received = 0
+        self.tf = Buffer()
+        self.listener = TransformListener(self.tf, self)
+        self.mount = StaticTransformBroadcaster(self)
+        transform = TransformStamped()
+        transform.header.stamp = self.get_clock().now().to_msg()
+        transform.header.frame_id = str(p('camera_mount_parent', 'rslidar'))
+        transform.child_frame_id = str(p('camera_mount_child', 'rgbd_view_z_up'))
+        xyz = p('camera_mount_xyz', [.05, 0., 0.])
+        transform.transform.translation.x, transform.transform.translation.y, transform.transform.translation.z = xyz
+        q = quaternion(p('camera_mount_rpy', [0., 0., 0.]))
+        (transform.transform.rotation.x, transform.transform.rotation.y,
+         transform.transform.rotation.z, transform.transform.rotation.w) = q
+        self.mount.sendTransform(transform)
+        share = Path(get_package_share_directory('omnifleet_person_follow'))
+        self.navigation = DynamicNavigation(self, str(p('navigation_action', '/navigate_to_pose')),
+            str(p('goal_update_topic', '/goal_update')), str(share / 'config/follow_dynamic.xml'),
+            self.enable_motion and self.controller_backend == 'python')
+        self.status_pub = self.create_publisher(String, str(p('status_topic', '/vision/gesture_follow/status')), 1)
+        latest_qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.BEST_EFFORT)
+        self.raw_pub = self.create_publisher(Image, str(p('debug_image_topic', '/vision/gesture_follow/debug')), latest_qos)
+        self.jpeg_pub = self.create_publisher(CompressedImage,
+            str(p('debug_compressed_topic', '/vision/course_gui/course_04_08_gesture_person_follow/debug/compressed')), latest_qos)
+        self.target_pub = self.create_publisher(PoseStamped, '/vision/person_follow/target', 1)
+        self.goal_pub = self.create_publisher(PoseStamped, '/vision/person_follow/nav_goal', 1)
+        self.goal_marker_pub = self.create_publisher(MarkerArray,'/vision/person_follow/goal_markers',
+            QoSProfile(depth=1,reliability=ReliabilityPolicy.RELIABLE,durability=DurabilityPolicy.TRANSIENT_LOCAL))
+        self.current_goal = None
+        self.local_reader = LocalFrameReader() if bool(p('use_local_frames',True)) else None
+        self.source_frame_number = None
+        self.native_color_stamp = None
+        image_topic = str(p('image_topic', '/camera/color/image_raw'))
+        depth_topic = str(p('depth_topic', '/camera/depth/image_raw'))
+        if self.local_reader is not None:
+            self.create_subscription(String,'/camera/rgbd/local_frame',self.on_image,latest_qos)
+        else:
+            color_type = Header if image_topic == '/camera/color/native1080' else (CompressedImage if image_topic.endswith('/compressed') else Image)
+            self.create_subscription(color_type, image_topic, self.on_image, latest_qos)
+            self.create_subscription(Image, depth_topic, self.on_depth, latest_qos)
+        self.create_subscription(CameraInfo, str(p('camera_info_topic', '/camera/color/camera_info')),
+                                 self.on_color_info, latest_qos)
+        if self.camera_backend == 'orbbec':
+            from orbbec_camera_msgs.msg import Extrinsics
+            calibration_qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
+                                        durability=DurabilityPolicy.TRANSIENT_LOCAL)
+            self.create_subscription(CameraInfo, '/camera/depth/camera_info', self.on_depth_info, latest_qos)
+            self.create_subscription(Extrinsics, '/camera/depth_to_color', self.on_extrinsics, calibration_qos)
+        if self.controller_backend != 'body_tracking':
+            self.create_subscription(String,str(p('operator_control_topic','/vision/person_follow/control')),self.on_operator_control,10)
+        self.identity = FollowIdentity()
+        self.hand_status_pub = (
+            self.create_publisher(String, '/vision/body_tracking/hand_overlay', latest_qos)
+            if image_topic == '/camera/color/native1080' and self.controller_backend == 'body_tracking'
+            else None
+        )
+        self.perception = Perception(str(p('engine_path', '')), str(p('tracker_config', str(share/'config/botsort.yaml'))),
+            str(p('zoo_root', '')), str(p('model_root', '')), int(p('image_size', 512)), self.person_confidence,
+            gestures_enabled=not self.auto_follow,
+            hand_overlay=self.publish_hand_overlay if self.hand_status_pub is not None else None)
+        if self.controller_backend == 'tros':
+            from .tros_adapter import TrosAdapter
+            self.tros = TrosAdapter(self)
+        elif self.controller_backend == 'body_tracking':
+            from .body_adapter import BodyTrackingAdapter
+            self.tros = BodyTrackingAdapter(self)
+        self.create_timer(.1, self.tros.tick if self.tros is not None else self.navigation_tick)
+        self.worker = threading.Thread(target=self.run, name='person-follow-latest-frame', daemon=True)
+        self.display_worker = threading.Thread(target=self.display_run, name='person-follow-display', daemon=True)
+        self.display_worker.start()
+        self.add_on_set_parameters_callback(self.set_vision_parameters)
+        self.worker.start()
+        self.get_logger().info(f'YOLO26n-seg TensorRT + {self.perception.tracker_name}; hands={self.perception.hand_backend}; auto_follow={self.auto_follow}; motion={self.enable_motion}')
+
+    @staticmethod
+    def key(message):
+        return message.header.stamp.sec, message.header.stamp.nanosec
+
+    def publish_hand_overlay(self, hands, shape):
+        if not self.vision_active or self.closed.is_set() or not rclpy.ok():
+            return
+        self.hand_status_pub.publish(String(data=json.dumps({
+            'rgb_resolution': [shape[1], shape[0]],
+            'hands': [{'landmarks': hand['points'].round(2).tolist(),
+                       'gesture': hand['gesture']} for hand in hands],
+        }, separators=(',', ':'))))
+
+    def set_vision_parameters(self, parameters):
+        for parameter in parameters:
+            if parameter.name != 'vision_active':
+                continue
+            if not isinstance(parameter.value, bool):
+                return SetParametersResult(successful=False, reason='vision_active must be boolean')
+            with self.lock:
+                self.vision_active = parameter.value
+                self.latest = None
+                if not self.vision_active and self.controller_backend == 'body_tracking':
+                    self.tros.click_target = None
+                    self.tros.visible_ids.clear()
+                    self.tros.cancel_pub.publish(Empty())
+        return SetParametersResult(successful=True)
+
+    def on_image(self, message):
+        with self.lock:
+            if not self.vision_active and self.vision_warmed:
+                return
+            self.rgb_received += 1
+            if self.latest is not None:
+                self.dropped += 1
+            self.latest = message
+            self.event.set()
+
+    def on_depth(self, message):
+        if not self.vision_active or message.encoding != '16UC1':
+            return
+        with self.lock:
+            key = self.key(message)
+            self.depth_received_at = time.monotonic()
+            self.depths[key] = message
+            while len(self.depths) > 4:
+                self.depths.popitem(last=False)
+        self.fuse(key)
+
+    def on_color_info(self, message):
+        if message.k[0] <= 0 or message.k[4] <= 0:
+            self.coordinate_error = 'RGB CameraInfo has zero focal length; depth lookup unavailable'
+            return
+        if self.camera_backend == 'orbbec':
+            from copy import deepcopy
+            from omnifleet_hikrobot_rgbd.local_frames import native_color_geometry
+            geometry, _ = native_color_geometry((message.width,message.height), (message.width,message.height))
+            message = deepcopy(message)
+            message.k, message.p, message.d = geometry['k'], geometry['p'], geometry['d']
+        self.info = message
+
+    def on_depth_info(self, message):
+        if message.k[0] <= 0 or message.k[4] <= 0:
+            self.coordinate_error = 'Depth CameraInfo has zero focal length; depth lookup unavailable'
+            return
+        self.depth_k = np.asarray(message.k).reshape(3, 3)
+        self.native_depth_size = (message.width, message.height)
+
+    def on_extrinsics(self, message):
+        self.depth_to_rgb = np.eye(4)
+        # Match the SDK 3D transform utility; ROS translation is already metres.
+        self.depth_to_rgb[:3, :3] = np.asarray(message.rotation).reshape(3, 3)
+        self.depth_to_rgb[:3, 3] = message.translation
+
+    def on_costmap(self, message):
+        if message.header.frame_id == self.global_frame and message.info.resolution > 0:
+            self.costmap = message
+
+    def on_operator_control(self, message):
+        try:
+            request = json.loads(message.data)
+            if self.tros is not None:
+                self.tros.control(request)
+                return
+            with self.lock:
+                if request.get('op') == 'lock':
+                    identity = int(request['track_id'])
+                    track = next((t for t in self.tracks if t['id'] == identity),None)
+                    if track is None or time.monotonic()-self.last_frame > self.manager.tracking_to_lost_timeout:
+                        raise ValueError('所选人物当前不在画面中')
+                    self.manager.track_id,self.manager.state = identity,'TRACKING'
+                    self.manager.history.clear();self.manager.candidates.clear()
+                    self.manager.last_seen,self.manager.lost_since = time.monotonic(),None
+                    self.lock_source,self.operator_message = 'fox_operator',f'面板锁定人物 ID {identity}'
+                elif request.get('op') == 'pause':
+                    self.manager.state = 'PAUSED'
+                    self.operator_message = '面板暂停跟随'
+                else:
+                    raise ValueError('操作只能是 lock 或 pause')
+                self.following.reset();self.centering.reset();self.approach.reset();self.recovery.reset()
+                self.navigation.update(None)
+            self.get_logger().info(self.operator_message)
+        except (ValueError,KeyError,TypeError) as error:
+            self.operator_message = str(error)
+
+    def fuse(self, key):
+        with self.lock:
+            from .frame_pairing import pop_frame_pair
+            tolerance_ns = 50_000_000 if getattr(self, 'camera_backend', 'hikrobot') == 'orbbec' else 0
+            pair = pop_frame_pair(self.fusion_cache, self.depths, key, tolerance_ns)
+            if pair is None:
+                return
+            key, (tracks, shape, header), message, self.depth_pair_skew_ms = pair
+            info = self.info
+            identity = self.manager.track_id
+            requested = self.tros is not None or self.manager.state in ('TRACKING', 'LOST')
+        track = next((track for track in tracks if track['id'] == identity), None)
+        if self.tros is not None and track is None:
+            now = time.monotonic()
+            candidates = [item for item in tracks if item.get('confidence', 0.) >= self.person_confidence]
+            if not candidates or now-self.candidate_depth_at < .1:
+                return
+            track = candidates[self.candidate_depth_index % len(candidates)]
+            identity = track['id']
+            self.candidate_depth_at, self.candidate_depth_index = now, self.candidate_depth_index+1
+            self.candidate_depth_queries += 1
+        elif requested and self.manager.state == 'LOST':
+            now = time.monotonic()
+            candidates = [item for item in tracks if item['id'] != identity and item.get('confidence', 0.) >= .5]
+            if candidates and now-getattr(self, 'candidate_depth_at', 0.) >= .1:
+                index = getattr(self, 'candidate_depth_index', 0)
+                track = candidates[index % len(candidates)]
+                identity = track['id']
+                self.candidate_depth_at, self.candidate_depth_index = now, index+1
+                self.candidate_depth_queries = getattr(self, 'candidate_depth_queries', 0)+1
+        if not requested or track is None:
+            return
+        if info is None or self.depth_k is None or self.depth_to_rgb is None:
+            return
+        if (info.width, info.height) != (shape[1], shape[0]) or (message.width, message.height) != self.native_depth_size:
+            self.coordinate_error = 'Native depth or RGB CameraInfo resolution mismatch'
+            return
+        dtype = '>u2' if message.is_bigendian else '<u2'
+        depth = np.ndarray((message.height, message.width), dtype=dtype,
+                           buffer=message.data, strides=(message.step, 2))
+        started = time.perf_counter()
+        sample=track.get('foreground_result')
+        if sample is None or sample.get('depth_m') is None:
+            x,y,x2,y2=track['bbox']
+            if message.header.frame_id==info.header.frame_id:
+                sample=aligned_depth_foreground(depth,[x,y,x2-x,y2-y],(shape[1],shape[0]),
+                    np.asarray(info.k).reshape(3,3),semantic_mask=track['mask'],
+                    min_depth_m=self.minimum,max_depth_m=self.maximum,rgb_distortion=info.d)
+            else:
+                sample = depth_foreground(depth,[x,y,x2-x,y2-y],(shape[1],shape[0]),
+                    self.depth_k,np.asarray(info.k).reshape(3,3),self.depth_to_rgb,
+                    semantic_mask=track['mask'],min_depth_m=self.minimum,max_depth_m=self.maximum,
+                    rgb_distortion=info.d if getattr(self,'camera_backend','hikrobot')=='orbbec' else None)
+            track['foreground_result']=sample
+        with self.lock:
+            self.depth_query_calls += 1
+            self.depth_query_ms = (time.perf_counter()-started)*1000.
+            self.depth_query_result = None if sample is None else dict(
+                grid_size=16,sampled_count=sample['depth_sample_count'],
+                mask_valid_count=sample['foreground_grid_pixels'],inlier_count=sample['depth_sample_count'],
+                depth_mad_m=float(np.median(np.abs(sample['sampled_depth_m']-sample['depth_m']))),
+                inspected_pixels=sample['projected_grid_pixels'])
+        if sample is None:
+            return
+        transform = None
+        if self.tros is None or self.controller_backend == 'tros':
+            try:
+                transform = self.tf.lookup_transform(self.global_frame, header.frame_id, Time())
+                self.coordinate_error = ''
+            except Exception as error:
+                self.coordinate_error = str(error)
+        now = time.monotonic()
+        xyz = sample['rgb_xyz_m']
+        value = dict(xyz=xyz, position_time=now, depth_header=header, depth_key=key)
+        if transform is not None:
+            value['world'] = transform_point(xyz, transform)
+        with self.lock:
+            old = self.positions.get(identity)
+            if old is None or key > old['depth_key']:
+                self.positions[identity] = value
+            self.fused_pairs += 1
+            self.last_fused_at, self.last_fused_key = now, key
+
+    def run(self):
+        previous = time.monotonic()
+        previous_received = 0
+        while not self.closed.is_set():
+            if not self.event.wait(.2):
+                continue
+            with self.lock:
+                message, self.latest = self.latest, None
+                self.event.clear()
+                locked_id = self.manager.track_id
+                gesture_id = None if self.manager.state == 'LOST' else locked_id
+            if message is None:
+                continue
+            started = time.perf_counter()
+            try:
+                if self.local_reader is not None:
+                    notification = json.loads(message.data)
+                    pair = self.local_reader.read(notification)
+                    if pair is None:
+                        continue
+                    image,depth,sec,nanosec,self.source_frame_number = pair
+                    message = Image(height=image.shape[0],width=image.shape[1],encoding='bgr8')
+                    message.header.stamp.sec,message.header.stamp.nanosec = sec,nanosec
+                    message.header.frame_id = notification['color_frame_id']
+                    self.on_depth(SimpleNamespace(
+                        header=Header(stamp=message.header.stamp,frame_id=notification['depth_frame_id']),
+                        encoding='16UC1',height=depth.shape[0],width=depth.shape[1],
+                        step=depth.shape[1]*2,is_bigendian=False,data=depth))
+                elif isinstance(message, Header):
+                    packet = read_native_mjpeg()
+                    if packet is None or packet[0] == self.native_color_stamp:
+                        continue
+                    stamp, jpeg = packet
+                    image = cv2.imdecode(np.frombuffer(jpeg, np.uint8), cv2.IMREAD_COLOR)
+                    if image is None:
+                        continue
+                    image = rectify_native_color(image)
+                    self.native_color_stamp = stamp
+                    message.stamp.sec, message.stamp.nanosec = divmod(stamp, 1_000_000_000)
+                    message = Image(header=message, height=image.shape[0], width=image.shape[1], encoding='bgr8')
+                elif isinstance(message, CompressedImage):
+                    image = cv2.imdecode(np.frombuffer(message.data, np.uint8), cv2.IMREAD_COLOR)
+                    if image is None:
+                        continue
+                    message = Image(header=message.header, height=image.shape[0], width=image.shape[1], encoding='bgr8')
+                else:
+                    if message.encoding not in ('bgr8', 'rgb8'):
+                        raise ValueError(f'Unsupported RGB encoding: {message.encoding}')
+                    image = np.ndarray((message.height, message.width, 3), dtype=np.uint8,
+                                       buffer=message.data, strides=(message.step, 3, 1))
+                    if message.encoding == 'rgb8':
+                        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                    if self.camera_backend == 'orbbec':
+                        image = rectify_native_color(image)
+                if not self.vision_active:
+                    if not self.vision_warmed:
+                        self.perception.people(image)
+                        self.vision_warmed = True
+                        self.get_logger().info('人体模型预加载完成')
+                    continue
+                perception_id = (self.identity.tracker_id if gesture_id is not None
+                                 and gesture_id == self.identity.identity else gesture_id)
+                foreground=ForegroundQuery(self.minimum,self.maximum)
+                foreground.rgb_size=(image.shape[1],image.shape[0])
+                stamp_ns=lambda key:key[0]*1_000_000_000+key[1]
+                current_ns=stamp_ns(self.key(message))
+                with self.lock:
+                    nearest=min(self.depths,key=lambda k:abs(stamp_ns(k)-current_ns)) if self.depths else None
+                    native=self.depths[nearest] if nearest is not None else None
+                tolerance=50_000_000 if self.camera_backend=='orbbec' else 0
+                if (native is not None and abs(stamp_ns(nearest)-current_ns)<=tolerance and self.info is not None
+                        and self.depth_k is not None and self.depth_to_rgb is not None
+                        and (self.info.width,self.info.height)==foreground.rgb_size
+                        and (native.width,native.height)==self.native_depth_size):
+                    foreground.depth=np.ndarray((native.height,native.width),dtype='>u2' if native.is_bigendian else '<u2',
+                        buffer=native.data,strides=(native.step,2))
+                    foreground.depth_k=self.depth_k;foreground.rgb_k=np.asarray(self.info.k).reshape(3,3)
+                    foreground.transform=self.depth_to_rgb
+                    foreground.distortion=self.info.d if self.camera_backend=='orbbec' else None
+                    foreground.depth_is_aligned=native.header.frame_id==message.header.frame_id
+                hand_only = self.controller_backend == 'body_tracking'
+                self.perception.follow_active = bool(self.tros.native.get('follow_active', False)) if self.tros else False
+                tracks, hands = self.perception.infer(
+                    image, None if hand_only else perception_id, foreground, hand_only=hand_only)
+                self.vision_warmed = True
+                if not self.vision_active:
+                    continue
+                with self.lock:
+                    self.identity.apply(tracks, image, locked_id, time.monotonic(),
+                                        self.perception.camera_warp, self.positions)
+                    for hand in hands:
+                        if hand['owner'] == self.identity.tracker_id:
+                            hand['owner'] = self.identity.identity
+                    key = self.key(message)
+                    self.fusion_cache[key] = tracks, image.shape, message.header
+                    while len(self.fusion_cache) > (24 if self.camera_backend == 'orbbec' else 4):
+                        self.fusion_cache.popitem(last=False)
+                self.fuse(key)
+                self.identity.observe_depth(self.positions)
+                now = time.monotonic()
+                gesture, owner = 'disabled' if self.auto_follow else 'unknown', None
+                with self.lock:
+                    self.positions = {identity:value for identity,value in self.positions.items()
+                                      if now-value['position_time'] <= self.manager.prediction_window}
+                    for track in tracks:
+                        position = self.positions.get(track['id'])
+                        if position is not None and now-position['position_time'] <= self.manager.tracking_to_lost_timeout:
+                            track.update(position)
+                    if self.auto_follow and self.tros is None:
+                        automatic = self.manager.auto_lock(tracks,now,image.shape[1])
+                        if automatic is not None:
+                            self.lock_source = 'auto_person_detection'
+                            self.operator_message = f'自动锁定人物 ID {automatic["id"]}'
+                            self.get_logger().info(self.operator_message)
+                    relevant = [] if self.auto_follow else [
+                        hand for hand in hands if (hand['gesture'] != 'victory' or self.controller_backend == 'body_tracking') and (
+                            self.manager.track_id is None or hand['owner'] == self.manager.track_id
+                            or self.manager.state == 'LOST' and hand['gesture'] == 'okay'
+                        )]
+                    if relevant:
+                        hand = max(relevant, key=lambda h: (
+                            h['gesture'] == 'open_palm' and h['owner'] == self.manager.track_id,
+                            h['gesture'] == 'okay', h['score']))
+                        gesture, owner = hand['gesture'], hand['owner']
+                        event = None if self.controller_backend == 'body_tracking' else self.manager.gesture(gesture, owner)
+                        if event:
+                            if event in ('locked', 'relocked', 'resumed'):
+                                self.manager.last_seen = now
+                                self.lock_source = 'gesture'
+                            self.get_logger().info(f'gesture={gesture} owner={owner} state={self.manager.state}')
+                    previous_id = self.manager.track_id
+                    if self.tros is not None:
+                        self.manager.state, self.manager.track_id = self.tros.state, self.tros.track_id
+                        selected = next((track for track in tracks if track['id'] == self.tros.track_id), None)
+                    else:
+                        selected = self.manager.observe(tracks, now)
+                    if previous_id != self.manager.track_id:
+                        self.get_logger().info(f'relock {previous_id} -> {self.manager.track_id}: {self.manager.relock_reason}')
+                    self.tracks, self.last_frame = tracks, now
+                    state, target_id = self.manager.state, self.manager.track_id
+                if self.tros is not None:
+                    if self.controller_backend == 'body_tracking':
+                        self.tros.detect_faces(image, tracks)
+                        self.tros.publish(tracks, message.header, self.info, transform_point, hands=hands)
+                    else:
+                        self.tros.publish(tracks, message.header, self.info, transform_point)
+                if selected is not None and selected.get('xyz') is not None:
+                    target = PoseStamped()
+                    target.header = selected['depth_header']
+                    target.pose.position.x, target.pose.position.y, target.pose.position.z = map(float, selected['xyz'])
+                    target.pose.orientation.w = 1.
+                    self.target_pub.publish(target)
+                inference_ms = (time.perf_counter() - started) * 1000
+                jpeg_requested,raw_requested = self.jpeg_pub.get_subscription_count(),self.raw_pub.get_subscription_count()
+                preview_now = time.monotonic()
+                if (jpeg_requested or raw_requested) and preview_now - self.last_preview >= self.preview_interval:
+                    self.last_preview = preview_now
+                    if self.display_writer is None:
+                        self.display_writer = LocalFrameWriter(image.shape,(0,0))
+                    frame = self.display_writer.write(image,self.display_empty_depth,message.header.stamp,self.source_frame_number or 0)
+                    self.queue_display(dict(frame=frame,frame_id=message.header.frame_id,
+                        queued_at=preview_now, max_age=0.25 if self.preview_interval else 0.0,
+                        tracks=[dict(id=t['id'],bbox=t['bbox'],confidence=t['confidence']) for t in tracks],hands=[h['points'] for h in hands],
+                        state=state,target_id=target_id,gesture=gesture,inference_ms=inference_ms,
+                        search_phase=self.recovery.phase,
+                        follow_mode=self.following.mode, range_m=self.following.range_m,follow_distance_m=self.manager.follow_distance,
+                        center_error_rad=self.centering.error_rad, centering=self.centering.goal is not None,
+                        jpeg=bool(jpeg_requested),raw=bool(raw_requested)))
+                finished = time.monotonic()
+                status = dict(mode='follow' if state in ('TRACKING', 'LOST') else state.lower(), state=state,
+                    gesture=gesture, gesture_owner=owner, track_id=target_id, person=bool(tracks),
+                    auto_follow=self.auto_follow,gestures_enabled=not self.auto_follow,
+                    target_depth_m=float(selected['xyz'][2]) if selected is not None and selected.get('xyz') is not None else None,
+                    inference_ms=round(inference_ms, 2), **self.perception.timings,
+                    display_ms=round(self.display_ms,2),display_async=True,
+                    display_frames=self.display_frames,display_dropped_frames=self.display_dropped,
+                    display_process=True,display_stale_frames=self.display_stale,
+                    processing_fps=round(1/max(.001, finished-previous), 2),
+                    rgb_input_fps=round((self.rgb_received-previous_received)/max(.001, finished-previous), 2),
+                    jpeg_backend=self.jpeg_backend,
+                    dropped_rgb_frames=self.dropped, rgb_resolution=[message.width, message.height],
+                    rgb_received_frames=self.rgb_received,jpeg_subscribers=jpeg_requested,raw_image_subscribers=raw_requested,
+                    frame_transport='local_shared_memory' if self.local_reader is not None else 'ros_images',
+                    source_frame_number=self.source_frame_number,
+                    depth_received=now-self.depth_received_at < 2.5, depth_topic=self.get_parameter('depth_topic').value,
+                    fused_depth_frames=self.fused_pairs, last_fused_stamp=self.last_fused_key,
+                    depth_query_mode='locked_foreground_16x16_on_demand', full_frame_registration=False,
+                    camera_backend=self.camera_backend, depth_pair_skew_ms=self.depth_pair_skew_ms,
+                    depth_query_calls=self.depth_query_calls, depth_query_ms=round(self.depth_query_ms,3),
+                    depth_query_result=self.depth_query_result,
+                    depth_fusion_age_ms=round((now-self.last_fused_at)*1000,2) if self.last_fused_at else None,
+                    execution_provider='TensorRT FP16 / '+self.perception.hand_backend, motion_enabled=self.enable_motion,
+                    confidence_threshold=self.person_confidence, search_phase=self.recovery.phase,
+                    follow_identity_id=self.identity.identity, detector_track_id=self.identity.tracker_id,
+                    identity_rebindings=self.identity.rebindings, identity_rebind_reason=self.identity.reason,
+                    search_round=self.recovery.round, relock_reason=self.manager.relock_reason,
+                    candidate_depth_queries=self.candidate_depth_queries,
+                    follow_distance_m=self.manager.follow_distance,
+                    person_range_m=self.following.range_m, filtered_person_range_m=self.following.filtered_range_m,
+                    follow_control_state=self.following.mode, follow_goal_blocked=self.following.blocked,
+                    center_error_rad=self.centering.error_rad, centering=self.centering.goal is not None,
+                    lock_source=self.lock_source, operator_message=self.operator_message,
+                    nav2_controller='FollowPathMPPI', obstacle_avoidance='Nav2 global/local costmaps + MPPI footprint cost',
+                    source_stamp=[message.header.stamp.sec,message.header.stamp.nanosec],
+                    navigation_message=self.navigation.message, coordinate_error=self.coordinate_error,
+                    navigation_actions=self.navigation.actions_sent, goal_updates=self.navigation.updates_sent,
+                    nav_goal=self.current_goal,
+                    hands=[dict(owner=h['owner'], gesture=h['gesture'], confidence=h['score'],
+                                landmarks=h['points'].round(3).tolist()) for h in hands],
+                    tracks=[dict(id=t['id'], tracker_id=t['tracker_id'], bbox=t['bbox'], confidence=t['confidence'],
+                                 foreground=foreground_summary(t.get('foreground_result')),
+                                 xyz=t['xyz'].tolist() if t.get('xyz') is not None else None) for t in tracks])
+                previous = finished
+                previous_received = self.rgb_received
+                if self.tros is not None:
+                    self.tros.annotate(status)
+                self.status_pub.publish(String(data=json.dumps(status)))
+            except Exception as error:
+                self.get_logger().error(f'Person follow frame failed: {error}', throttle_duration_sec=2.)
+
+    def queue_display(self, job):
+        try:
+            self.display_queue.put_nowait(job)
+        except Full:
+            try:
+                self.display_queue.get_nowait()
+                self.display_dropped += 1
+            except QueueEmpty:
+                self.display_dropped += 1
+                return
+            self.display_queue.put_nowait(job)
+
+    def display_run(self):
+        while not self.closed.is_set():
+            try:
+                result = self.display_results.get(timeout=.2)
+            except QueueEmpty:
+                continue
+            try:
+                if result['error']:
+                    raise RuntimeError(result['error'])
+                self.publish_display(result)
+                self.display_ms = result['display_ms']
+                self.display_stale = result['stale_frames']
+                self.jpeg_backend = result['backend']
+                self.display_frames += 1
+            except Exception as error:
+                self.get_logger().error(f'Person follow display failed: {error}',throttle_duration_sec=2.)
+
+    def publish_display(self, result):
+        header = Header(frame_id=result['frame_id'])
+        header.stamp.sec,header.stamp.nanosec = result['sec'],result['nanosec']
+        if result['jpeg'] is not None and self.jpeg_pub.get_subscription_count():
+            out = CompressedImage(header=header,format='jpeg')
+            out.data = array.array('B')
+            out.data.frombytes(result['jpeg'])
+            self.jpeg_pub.publish(out)
+        canvas = result['raw']
+        if canvas is not None and self.raw_pub.get_subscription_count():
+            out = Image(header=header,height=canvas.shape[0],width=canvas.shape[1],
+                        encoding='bgr8',step=canvas.shape[1]*3)
+            out.data = array.array('B')
+            out.data.frombytes(memoryview(canvas).cast('B'))
+            self.raw_pub.publish(out)
+
+    def navigation_tick(self):
+        now = time.monotonic()
+        with self.lock:
+            if self.navigation.failed and self.navigation.outcome == 'canceled' and self.manager.state in ('TRACKING','LOST'):
+                self.manager.state = 'PAUSED'
+            if self.navigation.failed and self.navigation.task in ('follow','backoff') and self.navigation.outcome != 'aborted' and self.manager.state == 'TRACKING':
+                self.manager.state = 'PAUSED'
+            if self.last_frame and now - self.last_frame > self.manager.tracking_to_lost_timeout:
+                self.manager.observe([], now)
+            track = next((t for t in self.tracks if t['id'] == self.manager.track_id), None)
+            target = self.manager.target(track, now)
+            state, identity = self.manager.state, self.manager.track_id
+            history = list(self.manager.history)
+            bbox = self.manager.last_bbox
+        goal,robot = None,None
+        task, token = 'follow', identity
+        spin_angle = None
+        if state in ('TRACKING','LOST'):
+            try:
+                transform = self.tf.lookup_transform(self.global_frame, 'base_link', Time()).transform
+                t, q = transform.translation, transform.rotation
+                robot = [t.x, t.y, math.atan2(2*(q.w*q.z+q.x*q.y), 1-2*(q.y*q.y+q.z*q.z))]
+                visible = track is not None and 'bbox' in track and now-self.last_frame < .5
+                if visible:
+                    self.recovery.reset()
+                    measured = state == 'TRACKING' and target is not None
+                    if measured:
+                        self.approach.reset()
+                        stamp = track.get('position_time',now) if track.get('world') is not None else history[-1][0]
+                        value = self.following.update(robot,target,stamp,identity,self.costmap)
+                        if self.following.mode == 'BACKOFF':
+                            task = 'backoff'
+                    else:
+                        self.following.reset()
+                        self.following.mode = 'VISIBLE_NO_DEPTH'
+                        value = None
+                    centered = None
+                    if self.info is not None:
+                        complete = self.navigation.task_key == ('center',self.centering.token) and self.navigation.completed and not self.navigation.failed
+                        centered = self.centering.update(robot,track['bbox'],self.info.width,self.info.k[0],complete)
+                    if centered is not None:
+                        self.approach.reset()
+                        value,task,token = centered,'center',self.centering.token
+                        spin_angle = self.centering.spin_angle
+                    elif not measured:
+                        if self.info is not None:
+                            complete = self.navigation.task_key == ('approach',self.approach.token) and self.navigation.completed and not self.navigation.failed
+                            value = self.approach.update(robot,self.centering.error_rad,complete)
+                            task,token = 'approach',self.approach.token
+                            self.following.mode = 'APPROACH_FOR_DEPTH'
+                elif state == 'LOST':
+                    self.approach.reset()
+                    self.centering.reset()
+                    self.following.reset()
+                    if self.recovery.phase == 'OFF':
+                        direction = -1. if bbox is not None and self.info is not None and (bbox[0]+bbox[2])/2 > self.info.k[2] else 1.
+                        self.recovery.start(history, target, robot, self.costmap, now, direction)
+                    current = self.navigation.task_key == ('search', self.recovery.token)
+                    value = self.recovery.update(robot, now, current and self.navigation.completed,
+                                                 current and self.navigation.failed)
+                    task, token = 'search', self.recovery.token
+                else:
+                    self.approach.reset()
+                    self.centering.reset()
+                    self.recovery.reset()
+                    value = None
+                    if target is not None:
+                        stamp = track.get('position_time',now) if track is not None and track.get('world') is not None else history[-1][0]
+                        value = self.following.update(robot,target,stamp,identity,self.costmap)
+                        if self.following.mode == 'BACKOFF':
+                            task = 'backoff'
+                    else:
+                        self.following.reset()
+                if value is not None:
+                    goal = PoseStamped()
+                    goal.header.frame_id = self.global_frame
+                    goal.header.stamp = self.get_clock().now().to_msg()
+                    goal.pose.position.x, goal.pose.position.y = value[:2]
+                    goal.pose.orientation.z, goal.pose.orientation.w = math.sin(value[2]/2), math.cos(value[2]/2)
+                    self.goal_pub.publish(goal)
+            except Exception as error:
+                self.coordinate_error = str(error)
+        else:
+            self.approach.reset()
+            self.centering.reset()
+            self.recovery.reset()
+            self.following.reset()
+        if self.recovery.phase != self.last_recovery_phase:
+            self.get_logger().info(f'person recovery: {self.last_recovery_phase} -> {self.recovery.phase}')
+            self.last_recovery_phase = self.recovery.phase
+        if task == 'center':
+            self.navigation.update(goal,task=task,token=token,spin_angle=spin_angle)
+        else:
+            self.navigation.update(goal, task=task, token=token)
+        self.current_goal = dict(x=goal.pose.position.x,y=goal.pose.position.y,task=task) if goal else None
+        self.publish_goal_markers(goal,robot,task,state)
+
+    def publish_goal_markers(self,goal,robot,task,state):
+        holding=goal is None and robot is not None and state=='TRACKING' and self.following.mode=='HOLD'
+        markers=[] if goal is not None else [Marker(ns='current_goal',id=i,action=Marker.DELETE) for i in (0,1)] if holding else [Marker(action=Marker.DELETEALL)]
+        if goal is not None or holding:
+            header=Header(frame_id=self.global_frame,stamp=self.get_clock().now().to_msg())
+            x,y=(goal.pose.position.x,goal.pose.position.y) if goal else robot[:2]
+            point=Point(x=float(x),y=float(y),z=.45)
+            active=goal is not None and self.navigation.handle is not None and not self.navigation.canceling
+            color=ColorRGBA(r=1. if active else 0.,g=.85,b=0. if active else 1.,a=1.)
+            if goal is not None:
+                sphere=Marker(header=header,ns='current_goal',id=0,type=Marker.SPHERE,action=Marker.ADD,lifetime=Duration(sec=1))
+                sphere.pose.position=point;sphere.pose.orientation.w=1.
+                sphere.scale.x=sphere.scale.y=sphere.scale.z=.16;sphere.color=color
+                line=Marker(header=header,ns='current_goal',id=1,type=Marker.LINE_STRIP,action=Marker.ADD,lifetime=Duration(sec=1))
+                line.points=[Point(x=float(robot[0]),y=float(robot[1]),z=.02),Point(x=point.x,y=point.y,z=.02),point]
+                line.scale.x=.025;line.color=color;markers.extend([sphere,line])
+            label=Marker(header=header,ns='current_goal',id=2,type=Marker.TEXT_VIEW_FACING,action=Marker.ADD,lifetime=Duration(sec=1))
+            label.pose.position=Point(x=point.x,y=point.y,z=.7);label.pose.orientation.w=1.
+            label.scale.z=.2;label.color=ColorRGBA(r=1.,g=1.,b=1.,a=1.)
+            mode={'follow':'跟随','backoff':'后退','center':'居中','approach':'取深度','search':'搜索'}[task]
+            label.text=(('Nav2目标' if active else '候选目标')+' · '+mode) if goal else f'保持{self.following.distance:.2f}m · 无移动目标'
+            markers.append(label)
+        self.goal_marker_pub.publish(MarkerArray(markers=markers))
+
+    def close(self):
+        self.closed.set()
+        self.display_stop.set()
+        self.event.set()
+        self.worker.join(timeout=3.)
+        self.display_worker.join(timeout=3.)
+        self.display_process.join(timeout=3.)
+        if self.display_process.is_alive():
+            self.display_process.terminate()
+            self.display_process.join(timeout=1.)
+        if self.display_writer is not None:
+            self.display_writer.close()
+        self.perception.close()
+        if self.local_reader is not None:
+            self.local_reader.close()
+        self.navigation.wanted = False
+        self.navigation.stop()
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = PersonFollowNode()
+    try:
+        rclpy.spin(node)
+    except (KeyboardInterrupt, rclpy.executors.ExternalShutdownException):
+        pass
+    finally:
+        node.close()
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()

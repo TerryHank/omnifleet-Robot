@@ -1,0 +1,366 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="lunshi_ackermann_lite">
+  <material name="mesh_default">
+    <color rgba="0.62 0.64 0.66 1" />
+  </material>
+  <material name="wheel_black">
+    <color rgba="0.02 0.02 0.02 1" />
+  </material>
+  <material name="sensor_dark">
+    <color rgba="0.02 0.02 0.02 1" />
+  </material>
+  <material name="sensor_glass">
+    <color rgba="0.01 0.01 0.015 0.85" />
+  </material>
+  <material name="hik_orange">
+    <color rgba="1.0 0.45 0.05 1" />
+  </material>
+  <material name="hik_body">
+    <color rgba="0.08 0.08 0.085 1" />
+  </material>
+  <material name="mount_black">
+    <color rgba="0.05 0.05 0.055 1" />
+  </material>
+  <material name="laser_window">
+    <color rgba="0.0 0.05 0.18 0.6" />
+  </material>
+  <!--
+    REP-103/105 convention: base_link is the rear-axle midpoint at wheel-center
+    height (X forward, Y left, Z up). GLIM and the Ackermann kinematics use this
+    same reference point.
+  -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.181147972 0 0" rpy="0 0 0" />
+      <mass value="4" />
+      <inertia ixx="0.0229666667" ixy="0" ixz="0" iyy="0.0637666667" iyz="0" izz="0.0824666667" />
+    </inertial>
+    <visual name="base_plate_visual">
+      <origin xyz="0.201147972 0 0.024" rpy="0 0 0" />
+      <geometry>
+        <box size="0.43 0.25 0.005" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="rear_body_visual">
+      <origin xyz="0.081147972 0 0.054" rpy="0 0 0" />
+      <geometry>
+        <box size="0.02 0.16 0.06" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="front_body_visual">
+      <origin xyz="0.362147972 0 0.055" rpy="0 0 0" />
+      <geometry>
+        <box size="0.03 0.10 0.064" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <collision name="base_plate_collision">
+      <origin xyz="0.201147972 0 0.024" rpy="0 0 0" />
+      <geometry>
+        <box size="0.43 0.25 0.005" />
+      </geometry>
+    </collision>
+    <collision name="rear_body_collision">
+      <origin xyz="0.081147972 0 0.054" rpy="0 0 0" />
+      <geometry>
+        <box size="0.02 0.16 0.06" />
+      </geometry>
+    </collision>
+    <collision name="front_body_collision">
+      <origin xyz="0.362147972 0 0.055" rpy="0 0 0" />
+      <geometry>
+        <box size="0.03 0.10 0.064" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="front_left_steering_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.08" />
+      <inertia ixx="1.63333333e-05" ixy="0" ixz="0" iyy="1.63333333e-05" iyz="0" izz="1.63333333e-05" />
+    </inertial>
+    <visual name="front_left_steering_knuckle_visual">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.035 0.045" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <collision name="front_left_steering_knuckle_collision">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.035 0.045" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="front_right_steering_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.08" />
+      <inertia ixx="1.63333333e-05" ixy="0" ixz="0" iyy="1.63333333e-05" iyz="0" izz="1.63333333e-05" />
+    </inertial>
+    <visual name="front_right_steering_knuckle_visual">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.035 0.045" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <collision name="front_right_steering_knuckle_collision">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.035 0.045" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="front_left_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.45" />
+      <inertia ixx="0.000467840625" ixy="0" ixz="0" iyy="0.000467840625" iyz="0" izz="0.00077000625" />
+    </inertial>
+    <visual name="front_left_wheel_visual">
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.058528263" length="0.047" />
+      </geometry>
+      <material name="wheel_black" />
+    </visual>
+    <collision name="front_left_wheel_collision">
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.058528263" length="0.047" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="front_right_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.45" />
+      <inertia ixx="0.000467840625" ixy="0" ixz="0" iyy="0.000467840625" iyz="0" izz="0.00077000625" />
+    </inertial>
+    <visual name="front_right_wheel_visual">
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.058528263" length="0.047" />
+      </geometry>
+      <material name="wheel_black" />
+    </visual>
+    <collision name="front_right_wheel_collision">
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.058528263" length="0.047" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="rear_left_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.45" />
+      <inertia ixx="0.000467840625" ixy="0" ixz="0" iyy="0.000467840625" iyz="0" izz="0.00077000625" />
+    </inertial>
+    <visual name="rear_left_wheel_visual">
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.058528263" length="0.047" />
+      </geometry>
+      <material name="wheel_black" />
+    </visual>
+    <collision name="rear_left_wheel_collision">
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.058528263" length="0.047" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="rear_right_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.45" />
+      <inertia ixx="0.000467840625" ixy="0" ixz="0" iyy="0.000467840625" iyz="0" izz="0.00077000625" />
+    </inertial>
+    <visual name="rear_right_wheel_visual">
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.058528263" length="0.047" />
+      </geometry>
+      <material name="wheel_black" />
+    </visual>
+    <collision name="rear_right_wheel_collision">
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.058528263" length="0.047" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="hik_camera_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.07" />
+      <inertia ixx="5.22491667e-05" ixy="0" ixz="0" iyy="9.62173333e-06" iyz="0" izz="5.39842333e-05" />
+    </inertial>
+    <visual name="hik_camera_body">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.0312 0.091 0.026" />
+      </geometry>
+      <material name="hik_body" />
+    </visual>
+    <visual name="hik_camera_top_orange_strip">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.032 0.085 0.004" />
+      </geometry>
+      <material name="hik_orange" />
+    </visual>
+    <visual name="hik_camera_left_depth_lens">
+      <origin xyz="0.0175 0.026 0" rpy="0 1.57079632679 0" />
+      <geometry>
+        <cylinder radius="0.008" length="0.004" />
+      </geometry>
+      <material name="sensor_glass" />
+    </visual>
+    <visual name="hik_camera_rgb_lens">
+      <origin xyz="0.0175 0.0 0" rpy="0 1.57079632679 0" />
+      <geometry>
+        <cylinder radius="0.006" length="0.004" />
+      </geometry>
+      <material name="sensor_glass" />
+    </visual>
+    <visual name="hik_camera_right_depth_lens">
+      <origin xyz="0.0175 -0.026 0" rpy="0 1.57079632679 0" />
+      <geometry>
+        <cylinder radius="0.008" length="0.004" />
+      </geometry>
+      <material name="sensor_glass" />
+    </visual>
+    <collision name="hik_camera_collision">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.0312 0.091 0.026" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="camera_color_optical_frame">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1.66666667e-10" ixy="0" ixz="0" iyy="1.66666667e-10" iyz="0" izz="1.66666667e-10" />
+    </inertial>
+  </link>
+  <!-- All production sensor extrinsics are owned by this URDF. -->
+  <link name="imu_link" />
+  <link name="livox_frame" />
+  <joint name="front_left_steering_joint" type="revolute">
+    <origin xyz="0.362232603 0.132478341 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="front_left_steering_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.523599" upper="0.523599" effort="8" velocity="3.0" />
+    <dynamics damping="0.2" friction="0.05" />
+  </joint>
+  <joint name="front_left_wheel_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="front_left_steering_link" />
+    <child link="front_left_wheel" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="0.02" friction="0.01" />
+  </joint>
+  <joint name="front_right_steering_joint" type="revolute">
+    <origin xyz="0.362359284 -0.132478458 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="front_right_steering_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.523599" upper="0.523599" effort="8" velocity="3.0" />
+    <dynamics damping="0.2" friction="0.05" />
+  </joint>
+  <joint name="front_right_wheel_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="front_right_steering_link" />
+    <child link="front_right_wheel" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="0.02" friction="0.01" />
+  </joint>
+  <joint name="rear_left_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rear_left_wheel" />
+    <origin xyz="0 0.122700068 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="0.05" friction="0.0" />
+  </joint>
+  <joint name="rear_right_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rear_right_wheel" />
+    <origin xyz="0 -0.122699951 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="0.05" friction="0.0" />
+  </joint>
+  <!-- STM32 IMU translation is not calibrated; only its yaw rate is visualized. -->
+  <joint name="stm32_imu_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="imu_link" />
+  </joint>
+  <joint name="livox_joint" type="fixed">
+    <origin xyz="0.00523090362549 2.51457095146e-08 0.316025078297" rpy="-3.48706456905e-07 -2.34943204895e-07 -1.57079632679" />
+    <parent link="base_link" />
+    <child link="livox_frame" />
+  </joint>
+  <joint name="hik_camera_joint" type="fixed">
+    <origin xyz="0.239999994636 0 0.125" rpy="0.024859535234 -0.0430526811853 -0.0252014322581" />
+    <parent link="base_link" />
+    <child link="hik_camera_link" />
+  </joint>
+  <joint name="camera_color_optical_joint" type="fixed">
+    <origin xyz="0.015603 0 0" rpy="-1.57079632679 0 -1.57079632679" />
+    <parent link="hik_camera_link" />
+    <child link="camera_color_optical_frame" />
+  </joint>
+  <ros2_control name="LunshiAckermannSystem" type="system">
+    <hardware>
+      <plugin>mock_components/GenericSystem</plugin>
+    </hardware>
+    <joint name="front_left_steering_joint">
+      <command_interface name="position">
+        <param name="min">-0.523599</param>
+        <param name="max">0.523599</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="front_right_steering_joint">
+      <command_interface name="position">
+        <param name="min">-0.523599</param>
+        <param name="max">0.523599</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="rear_left_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-30</param>
+        <param name="max">30</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="rear_right_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-30</param>
+        <param name="max">30</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="front_left_wheel_joint">
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="front_right_wheel_joint">
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+  </ros2_control>
+</robot>

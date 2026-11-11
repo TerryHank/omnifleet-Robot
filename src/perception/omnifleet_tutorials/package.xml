@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>omnifleet_tutorials</name>
+  <version>0.5.0</version>
+  <description>Operator-facing mapping, navigation and vision teaching workflows.</description>
+  <maintainer email="iecme@example.com">iecme</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>omnifleet_behaviors</exec_depend>
+  <exec_depend>omnifleet_bringup</exec_depend>
+  <exec_depend>omnifleet_vision</exec_depend>
+  <exec_depend>mvs_camera_driver</exec_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

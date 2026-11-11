@@ -1,0 +1,21 @@
+[Unit]
+Description=OmniFleet RoboSense Airy driver
+Wants=network-online.target airy-lidar-network.service
+After=network-online.target airy-lidar-network.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+Environment=HOME=/home/iecme
+EnvironmentFile=/home/iecme/omnifleet_a2_ws/deploy/111-standard/config/robot.env
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_a2_ws/src/system/workspace_support/robot_fleet_env.bash && exec ros2 run rslidar_sdk rslidar_sdk_node --ros-args -p config_path:=/home/iecme/omnifleet_a2_ws/src/sensing/rslidar_sdk/config/config.yaml'
+Restart=always
+RestartSec=2
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

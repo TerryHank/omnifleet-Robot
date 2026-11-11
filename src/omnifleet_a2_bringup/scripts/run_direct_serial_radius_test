@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+set -o pipefail
+
+target_angle="${1:-40}"
+test_script="${OMNIFLEET_A2_DIRECT_TEST_SCRIPT:-/tmp/codex_direct_serial_radius_40.py}"
+task_name="direct_serial_radius_test"
+service_name="omnifleet-a2-chassis.service"
+task_log_root="${OMNIFLEET_A2_TASK_LOG_DIR:-/var/log/omnifleet_a2/vehicle_tasks}"
+session_dir="${task_log_root}/sessions"
+lock_file="${XDG_RUNTIME_DIR:-/tmp}/omnifleet-motion-test.lock"
+service_before="$(systemctl is-active "${service_name}" 2>/dev/null || true)"
+service_after="${service_before}"
+service_stopped=0
+final_logged=0
+
+source /opt/ros/humble/setup.bash
+cd /home/iecme/ackermann_mid360_glim_ws
+source install/setup.bash
+set -u
+export ROS_DOMAIN_ID=42
+export ROS_LOCALHOST_ONLY=0
+
+task_log() {
+  python3 -m omnifleet_a2_bringup.vehicle_task_log "$@"
+}
+
+record_event() {
+  local code="$1"
+  local event_status="$2"
+  local reason_code="$3"
+  local reason="$4"
+  local raw_log="${5:-}"
+  local nonzero_sent="${6:-unknown}"
+  if ! task_log record \
+    --task "${task_name}" --target "舵角 ${target_angle}°" \
+    --status "${event_status}" --phase 预检 --reason-code "${reason_code}" --reason "${reason}" \
+    --nonzero-command-sent "${nonzero_sent}" --exit-code "${code}" \
+    --service-before "${service_before:-unknown}" --service-after "${service_after:-unknown}" \
+    --raw-log "${raw_log}" >/dev/null; then
+    local fallback="任务=${task_name} 结果=${event_status} 阶段=预检 原因=${reason} 非零速度=${nonzero_sent} 退出码=${code}"
+    logger -t omnifleet-task -- "${fallback}" || true
+    printf 'OMNIFLEET_A2_TASK_LOG_FALLBACK: %s\n' "${fallback}" >&2
+  fi
+}
+
+restore_chassis() {
+  if (( service_stopped )); then
+    sudo -n systemctl start "${service_name}" >/dev/null 2>&1 || true
+    for _ in $(seq 1 60); do
+      service_after="$(systemctl is-active "${service_name}" 2>/dev/null || true)"
+      [[ "${service_after}" == active ]] && break
+      sleep 0.2
+    done
+    [[ "${service_after}" == active ]] && service_stopped=0
+  else
+    service_after="$(systemctl is-active "${service_name}" 2>/dev/null || true)"
+  fi
+}
+
+on_exit() {
+  local status=$?
+  trap - EXIT INT TERM
+  restore_chassis
+  if (( ! final_logged )); then
+    record_event "${status}" FAILED INTERRUPTED "测试被中断；已执行零速清理并尝试恢复底盘服务" "" unknown
+  fi
+  exit "${status}"
+}
+trap on_exit EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+mkdir -p "${session_dir}"
+exec 9>"${lock_file}"
+if ! flock -n 9; then
+  record_event 23 REJECTED TEST_BUSY "已有另一个整车运动测试占用安全锁，已拒绝启动" "" false
+  final_logged=1
+  exit 23
+fi
+
+if [[ "${service_before}" != active ]]; then
+  record_event 22 REJECTED CHASSIS_SERVICE_NOT_ACTIVE "底盘服务当前不是 active，已拒绝启动" "" false
+  final_logged=1
+  exit 22
+fi
+if [[ ! -f "${test_script}" ]]; then
+  record_event 24 REJECTED TEST_SCRIPT_MISSING "直串测试脚本不存在，已拒绝启动" "" false
+  final_logged=1
+  exit 24
+fi
+if pgrep -af 'codex_ground_supervisor.py|codex_motion_watchdog.py' >/dev/null 2>&1; then
+  record_event 25 REJECTED MOTION_OWNER_CONFLICT "检测到其他运动监督脚本，已拒绝并发启动" "" false
+  final_logged=1
+  exit 25
+fi
+
+timestamp="$(date +%Y%m%d-%H%M%S)"
+safe_angle="${target_angle//[^0-9+-]/_}"
+session_log="${session_dir}/${timestamp}_steering_${safe_angle}.log"
+task_log record \
+  --task "${task_name}" --target "舵角 ${target_angle}°" \
+  --status RUNNING --phase 预检 --reason-code STARTED --reason "开始直串转弯测试" \
+  --nonzero-command-sent false --service-before "${service_before}" --service-after "测试中" \
+  --raw-log "${session_log}" >/dev/null
+
+sudo -n systemctl stop "${service_name}"
+service_stopped=1
+for _ in $(seq 1 30); do
+  [[ "$(systemctl is-active "${service_name}" 2>/dev/null || true)" == inactive ]] && break
+  sleep 0.1
+done
+if [[ "$(systemctl is-active "${service_name}" 2>/dev/null || true)" != inactive ]]; then
+  restore_chassis
+  record_event 20 REJECTED CHASSIS_STOP_FAILED "无法独占底盘串口，已拒绝启动" "${session_log}" false
+  final_logged=1
+  exit 20
+fi
+
+set +e
+timeout --signal=INT --kill-after=2s 20s python3 "${test_script}" "${target_angle}" 2>&1 | tee "${session_log}"
+probe_status=${PIPESTATUS[0]}
+set -e
+
+restore_chassis
+task_log ingest \
+  --task "${task_name}" --target "舵角 ${target_angle}°" \
+  --exit-code "${probe_status}" --service-before "${service_before}" \
+  --service-after "${service_after}" --result-file "${session_log}"
+
+if [[ "${service_after}" != active ]]; then
+  record_event 21 FAILED SERVICE_RESTORE_FAILED "测试已结束，但底盘服务恢复失败，需要立即处理" "${session_log}" unknown
+  final_logged=1
+  exit 21
+fi
+final_logged=1
+exit "${probe_status}"

@@ -1,0 +1,30 @@
+# 可选局部障碍模式：Nav2内部维护三维体素，再压缩为二维Local Costmap。
+# 这不是2.5D高程地图，也不生成坡度、粗糙度或可通行性。
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      plugins: [voxel_layer, inflation_layer]
+      voxel_layer:
+        plugin: nav2_costmap_2d::VoxelLayer
+        enabled: true
+        footprint_clearing_enabled: true
+        publish_voxel_map: true
+        origin_z: 0.0
+        z_resolution: 0.05
+        z_voxels: 16
+        unknown_threshold: 15
+        mark_threshold: 0
+        max_obstacle_height: 0.80
+        observation_sources: lidar
+        lidar:
+          topic: /rslidar_points
+          clearing: true
+          marking: true
+          data_type: PointCloud2
+          raytrace_max_range: 8.0
+          raytrace_min_range: 0.12
+          obstacle_max_range: 6.0
+          obstacle_min_range: 0.12
+          min_obstacle_height: -0.03
+          max_obstacle_height: 0.80
+          observation_persistence: 0.0

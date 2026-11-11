@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OmniFleet · 112 单车</title>
+<style>
+:root{color-scheme:dark;font:15px system-ui;background:#15171c;color:#e8edf5}
+*{box-sizing:border-box}body{margin:0}header{height:56px;background:#282c34;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #414754}header strong{letter-spacing:.05em}header span{color:#9caac0}main{display:grid;grid-template-columns:minmax(220px,1fr) minmax(340px,2.4fr) minmax(210px,1fr);gap:8px;padding:8px;min-height:calc(100vh - 56px)}.column{display:flex;flex-direction:column;gap:8px}section{background:#20232a;border:1px solid #373d49;border-radius:7px;overflow:hidden}h2{font-size:14px;font-weight:600;margin:0;background:#2b303a;padding:11px 14px}.body{padding:15px}p{color:#aab6c9;line-height:1.6;margin:6px 0}dl{display:grid;grid-template-columns:1fr auto;gap:10px;margin:0}dt{color:#aab6c9}dd{margin:0;font-variant-numeric:tabular-nums}canvas{display:block;width:100%;height:clamp(330px,58vh,740px);background:#171a21}label{display:flex;align-items:center;gap:10px;color:#aab6c9;padding:8px 14px}input{width:110px}meter{width:100%;height:25px;accent-color:#65b4ff}output{display:block;font-size:32px;font-weight:650;font-variant-numeric:tabular-nums}.image{display:block;width:100%;min-height:100px;object-fit:contain}small{color:#aab6c9} @media(max-width:850px){main{grid-template-columns:1fr}.center{order:-1}}
+.stick{width:min(180px,100%);aspect-ratio:1;margin:4px auto 12px;position:relative;border:2px solid #56657a;border-radius:50%;background:radial-gradient(circle,#283648,#171b22);touch-action:none;user-select:none;cursor:grab}.stick:active{cursor:grabbing}.stick::before,.stick::after{content:"";position:absolute;background:#46546a;pointer-events:none}.stick::before{width:1px;height:100%;left:50%}.stick::after{height:1px;width:100%;top:50%}.knob{position:absolute;z-index:1;left:50%;top:50%;width:46px;height:46px;border-radius:50%;background:#67b6ff;border:2px solid #b2ddff;transform:translate(-50%,-50%);pointer-events:none}.drive-readout{text-align:center;min-height:1.6em}
+.views{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.views canvas{height:clamp(300px,52vh,620px)}
+#cloud{touch-action:none;cursor:grab}#cloud:active{cursor:grabbing}
+.cloud-tools{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:8px 14px}
+.cloud-tools label{padding:0}.cloud-tools input{width:80px}
+@media(max-width:600px){.views{grid-template-columns:1fr}}#mapStatus{padding:8px 14px;display:block}
+</style>
+<header><strong>OmniFleet / 112 单车</strong><span id="link">正在连接</span></header>
+<main>
+<div class="column">
+<section><h2>车身航向</h2><div class="body"><output id="yaw">—</output><p>逆时针为正，单位 °</p><dl><dt>俯仰</dt><dd id="bodyPitch">—</dd><dt>横滚</dt><dd id="bodyRoll">—</dd></dl><button id="headingReset" type="button">重置航向</button><p id="headingResetStatus" role="status"></p></div></section>
+<section><h2>112 · 航点与定位</h2><div class="body"><p id="waypoints">等待航点状态</p></div></section>
+<section><h2>MOLA · 地图定位</h2><div class="body"><dl><dt>X</dt><dd id="mx">—</dd><dt>Y</dt><dd id="my">—</dd></dl></div></section>
+<section><h2>底盘里程计</h2><div class="body"><dl><dt>X</dt><dd id="x">—</dd><dt>Y</dt><dd id="y">—</dd><dt>车速</dt><dd id="speed">—</dd></dl></div></section>
+</div>
+<div class="column center">
+<div class="views">
+<section><h2>MOLA · 实时占据地图</h2><canvas id="map"></canvas><small id="mapStatus">等待地图</small></section>
+<section><h2>112 · Airy 3D 点云</h2><canvas id="cloud"></canvas><div class="cloud-tools"><label>视角 <input id="angle" type="range" min="-180" max="180" step="any" value="30"></label><label>范围 <input id="range" type="range" min="3" max="30" step="any" value="12"></label><small id="cloudStatus">等待点云</small><small>拖动旋转，滚轮缩放</small></div></section>
+</div>
+<section><h2>Airy 角速度 · °/s</h2><div class="body"><output id="angular">—</output><meter id="gauge" min="-1" max="1" value="0"></meter></div></section>
+</div>
+<div class="column">
+<section><h2>电池电压</h2><div class="body"><output id="voltage">—</output></div></section>
+<section><h2>阿克曼摇杆控制</h2><div class="body"><div id="stick" class="stick" aria-label="拖动控制前后与转向"><div id="knob" class="knob"></div></div><p class="drive-readout" id="driveStatus">拖动行驶，松手停止</p></div></section>
+<section><h2>前视摄像头</h2><img class="image" id="camera" alt="等待摄像头画面"></section>
+</div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const canvas = $('cloud'), ctx = canvas.getContext('2d');
+let points = [], pose, grid, raster;
+let elevation = 35.5, drag = null;
+let mapZoom = 1;
+function drawMap() {
+  const canvas=$('map'), dpr=devicePixelRatio;
+  const w=canvas.clientWidth,h=canvas.clientHeight;
+  canvas.width=Math.round(w*dpr); canvas.height=Math.round(h*dpr);
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  if (!grid || !raster) return;
+  const scale=Math.min(w/grid.width,h/grid.height)*mapZoom;
+  const dx=(w-grid.width*scale)/2,dy=(h-grid.height*scale)/2;
+  ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(raster,dx,dy,grid.width*scale,grid.height*scale);
+  if (!pose) return;
+  const [ox,oy,angle]=grid.origin, c=Math.cos(angle),s=Math.sin(angle);
+  const x=pose[0]-ox,y=pose[1]-oy;
+  ctx.translate(dx+(c*x+s*y)*scale/grid.resolution,
+                dy+(grid.height-(-s*x+c*y)/grid.resolution)*scale);
+  ctx.rotate(angle-pose[2]);
+  ctx.fillStyle='#ffbe68';
+  ctx.beginPath();ctx.moveTo(11,0);ctx.lineTo(-6,-6);ctx.lineTo(-6,6);ctx.closePath();ctx.fill();
+}
+async function refreshMap() {
+  try {
+    const response=await fetch('/api/map',{signal:AbortSignal.timeout(2000)});
+    if (!response.ok) throw Error(response.status);
+    const {value,age}=await response.json();
+    grid=value;
+    raster=document.createElement('canvas');raster.width=grid.width;raster.height=grid.height;
+    const ctx=raster.getContext('2d'), image=ctx.createImageData(grid.width,grid.height);
+    const cells=atob(grid.cells);
+    for(let y=0;y<grid.height;y++) for(let x=0;x<grid.width;x++){
+      const cell=cells.charCodeAt((grid.height-1-y)*grid.width+x);
+      const shade=cell===255?38:Math.round(235-2*cell);
+      const i=(y*grid.width+x)*4;
+      image.data[i]=shade;image.data[i+1]=shade;image.data[i+2]=shade;image.data[i+3]=255;
+    }
+    ctx.putImageData(image,0,0);
+    $('mapStatus').textContent=(age<3?'实时':'最后一帧')+' · '+grid.width+' × '+grid.height+' · '+grid.resolution.toFixed(2)+' m/格';
+    drawMap();
+  } catch { $('mapStatus').textContent='等待地图'; }
+  setTimeout(refreshMap,1000);
+}
+function draw() {
+  const w = canvas.clientWidth, h = canvas.clientHeight, dpr = devicePixelRatio;
+  if (canvas.width !== Math.round(w*dpr) || canvas.height !== Math.round(h*dpr)) {
+    canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr);
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  const a = +$('angle').value*Math.PI/180, r = +$('range').value;
+  const c = Math.cos(a), s = Math.sin(a), scale = Math.min(w,h)*0.43/r;
+  const tilt=elevation*Math.PI/180;
+  const vertical=Math.sin(tilt), height=Math.cos(tilt);
+  const project = (x,y,z) => [w/2+(x*c-y*s)*scale, h/2+((x*s+y*c)*vertical-z*height)*scale];
+  ctx.strokeStyle='#343f50';
+  for (let i=-r;i<=r;i++) {
+    ctx.beginPath();
+    ctx.moveTo(...project(-r,i,0)); ctx.lineTo(...project(r,i,0));
+    ctx.moveTo(...project(i,-r,0)); ctx.lineTo(...project(i,r,0)); ctx.stroke();
+  }
+  for (const [x,y,z] of points) {
+    if (Math.hypot(x,y)>r) continue;
+    const [u,v]=project(x,y,z);
+    ctx.fillStyle = z > .25 ? '#6ed6ff' : '#647f9b';
+    ctx.fillRect(u,v,2,2);
+  }
+  ctx.fillStyle='#f7be65'; ctx.fillRect(w/2-3,h/2-3,6,6);
+}
+const toDegrees = radians => radians * 180 / Math.PI;
+function set(id,value,unit,digits=2) {
+  $(id).textContent=Number.isFinite(value)?value.toFixed(digits)+unit:'—';
+}
+async function refresh() {
+  try {
+    const response=await fetch('/api/state',{signal:AbortSignal.timeout(2000)});
+    if (!response.ok) throw Error(response.status);
+    const data=await response.json();
+    const fresh = (name, seconds=3) => data[name]?.age < seconds ? data[name].value : undefined;
+    const [x,y,,speed]=fresh('odom') ?? [];
+    $('link').textContent=Number.isFinite(x)?'● 实时连接 · 112':'等待里程计';
+    pose=fresh('localization');
+    set('mx',pose?.[0],' m'); set('my',pose?.[1],' m');
+    drawMap();
+    set('x',x,' m'); set('y',y,' m'); set('yaw',toDegrees(fresh('heading')),'°');
+    const [roll,pitch]=fresh('attitude') ?? [];
+    set('bodyRoll',toDegrees(roll),'°'); set('bodyPitch',toDegrees(pitch),'°'); set('speed',speed,' m/s');
+    set('voltage',fresh('voltage'),' V',1);
+    set('angular',toDegrees(fresh('angular')),' °/s');
+    $('gauge').value=fresh('angular')??0;
+    $('waypoints').textContent=data.waypoints?.value || '等待航点状态';
+    points=fresh('points')??[];
+    $('cloudStatus').textContent=points.length?points.length+' 点 · 采样':'等待点云';
+    draw();
+  } catch {
+    $('link').textContent='连接中断';
+  }
+  setTimeout(refresh,500);
+}
+$('angle').oninput=$('range').oninput=draw;
+function wheelZoom(event, value, minimum, maximum) {
+  event.preventDefault();
+  const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 240 : 1);
+  return Math.max(minimum, Math.min(maximum, value * Math.exp(-delta * 0.002)));
+}
+canvas.addEventListener('wheel', event=>{
+  const range=$('range');
+  range.value=1/wheelZoom(event,1/Number(range.value),1/Number(range.max),1/Number(range.min));
+  draw();
+},{passive:false});
+$('map').addEventListener('wheel', event=>{
+  mapZoom=wheelZoom(event,mapZoom,1,20);
+  drawMap();
+},{passive:false});
+canvas.addEventListener('pointerdown', event=>{
+  if (drag || event.button!==0) return;
+  drag={id:event.pointerId,x:event.clientX,y:event.clientY};
+  canvas.setPointerCapture(event.pointerId);
+});
+canvas.addEventListener('pointermove', event=>{
+  if (drag?.id!==event.pointerId) return;
+  const angle=$('angle');
+  const yaw=Number(angle.value)+(event.clientX-drag.x)*0.45;
+  angle.value=((yaw+180)%360+360)%360-180;
+  elevation=Math.max(5,Math.min(85,elevation+(event.clientY-drag.y)*0.35));
+  drag.x=event.clientX;
+  drag.y=event.clientY;
+  draw();
+});
+for (const type of ['pointerup','pointercancel','lostpointercapture']) {
+  canvas.addEventListener(type,event=>{if (drag?.id===event.pointerId) drag=null;});
+}
+window.addEventListener('resize',draw);
+function refreshCamera() { $('camera').src='/camera.jpg?t='+Date.now(); }
+$('camera').onload=()=>setTimeout(refreshCamera,500);
+$('camera').onerror=()=>setTimeout(refreshCamera,2000);
+const stick = $('stick'), knob = $('knob');
+let pointer = null, timer = null, inFlight = null, target = {linear:0,angular:0};
+function transmit(command, keepalive=false) {
+  return fetch('/api/drive', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(command), keepalive, signal:AbortSignal.timeout(250)
+  }).then(response => {
+    if (!response.ok) throw Error(response.status);
+  });
+}
+function updateStick(event) {
+  const rect=stick.getBoundingClientRect(), radius=rect.width/2;
+  let x=(event.clientX-rect.left-radius)/radius, y=(event.clientY-rect.top-radius)/radius;
+  const length=Math.max(1,Math.hypot(x,y));
+  x/=length; y/=length;
+  knob.style.left=(50+x*36)+'%'; knob.style.top=(50+y*36)+'%';
+  target={linear:-y*0.4,angular:-x*0.3};
+  $('driveStatus').textContent=target.linear.toFixed(2)+' m/s · '+toDegrees(target.angular).toFixed(2)+' °/s';
+}
+function pulse() {
+  if (pointer===null || inFlight) return;
+  inFlight=transmit(target).catch(()=>stop('控制连接中断')).finally(()=>{inFlight=null;});
+}
+function stop(label='拖动行驶，松手停止') {
+  if (pointer===null) return;
+  pointer=null;
+  clearInterval(timer);
+  knob.style.left=knob.style.top='50%';
+  target={linear:0,angular:0};
+  $('driveStatus').textContent=label;
+  const zero=target;
+  Promise.resolve(inFlight).finally(()=>transmit(zero,true).catch(()=>{}));
+}
+stick.addEventListener('pointerdown', event=>{
+  if (pointer!==null || event.button!==0) return;
+  pointer=event.pointerId;
+  stick.setPointerCapture(pointer);
+  updateStick(event);
+  pulse();
+  timer=setInterval(pulse,100);
+});
+stick.addEventListener('pointermove',event=>{if(event.pointerId===pointer) updateStick(event);});
+for (const type of ['pointerup','pointercancel','lostpointercapture']) {
+  stick.addEventListener(type,event=>{if(event.pointerId===pointer) stop();});
+}
+window.addEventListener('blur',()=>stop());
+window.addEventListener('pagehide',()=>stop());
+document.addEventListener('visibilitychange',()=>{if(document.hidden) stop();});
+$('headingReset').onclick=async ()=>{
+  const button=$('headingReset'), status=$('headingResetStatus');
+  button.disabled=true;
+  status.textContent='';
+  try {
+    const response=await fetch('/api/heading/reset', {
+      method:'POST', headers:{'Content-Type':'application/json'}, signal:AbortSignal.timeout(3000)
+    });
+    if (!response.ok) throw Error(response.status);
+    status.textContent='已将当前朝向设为 0°';
+  } catch {
+    status.textContent='未收到重置确认，请重试';
+  } finally {
+    button.disabled=false;
+  }
+};
+draw(); refresh(); refreshMap(); refreshCamera();
+</script>
+</html>

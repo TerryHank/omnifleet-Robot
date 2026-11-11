@@ -1,0 +1,169 @@
+/*               _
+ _ __ ___   ___ | | __ _
+| '_ ` _ \ / _ \| |/ _` | Modular Optimization framework for
+| | | | | | (_) | | (_| | Localization and mApping (MOLA)
+|_| |_| |_|\___/|_|\__,_| https://github.com/MOLAorg/mola
+
+ Copyright (C) 2018-2026 Jose Luis Blanco, University of Almeria,
+                         and individual contributors.
+ SPDX-License-Identifier: GPL-3.0
+ See LICENSE for full license information.
+ Closed-source licenses available upon request, for this odometry package
+ alone or in combination with the complete SLAM system.
+*/
+
+/**
+ * @file   extrapolation.h
+ * @brief  Kinematic short-term extrapolation shared by the backend smoother and
+ *         the fast predictor, so both integrate a body twist identically.
+ * @author Jose Luis Blanco Claraco
+ */
+#pragma once
+
+#include <mola_state_estimation_smoother/Parameters.h>
+#include <mrpt/core/bits_math.h>  // mrpt::square
+#include <mrpt/math/CMatrixFixed.h>
+#include <mrpt/math/CVectorFixed.h>
+#include <mrpt/math/TTwist3D.h>
+#include <mrpt/poses/CPose3D.h>
+#include <mrpt/poses/CPose3DPDFGaussian.h>
+#include <mrpt/poses/Lie/SE.h>
+
+#include <array>
+#include <cmath>
+
+namespace mola::state_estimation_smoother
+{
+/** Integrates a constant body-frame twist over `dt` seconds, returning the
+ *  relative pose increment T_i_to_j (right-composed onto an anchor: T_j = T_i
+ *  (+) delta). Branches on the configured kinematic model so the short-term
+ *  extrapolation matches the motion model used to build the inter-keyframe
+ *  factors: full SE(3) exp of the 6D body twist for ConstantVelocity; the planar
+ *  arc from forward velocity v=vx and yaw rate w=wz for Tricycle, mirroring
+ *  mola::factors::FactorTricycleKinematic exactly.
+ */
+inline mrpt::poses::CPose3D body_twist_delta(
+    const Parameters& params, const mrpt::math::TTwist3D& twist, double dt)
+{
+    switch (params.kinematic_model)
+    {
+        case KinematicModel::Tricycle:
+        {
+            constexpr double w_threshold = 1e-4;  // [rad/s], as FactorTricycleKinematic
+            const double     v           = twist.vx;
+            const double     w           = twist.wz;
+            if (std::abs(w) < w_threshold)
+            {
+                return mrpt::poses::CPose3D(v * dt, .0, .0, .0, .0, .0);
+            }
+            const double R     = v / w;
+            const double theta = w * dt;
+            const double dx    = R * std::sin(theta);
+            const double dy    = R * (1.0 - std::cos(theta));
+            // CPose3D(x, y, z, yaw, pitch, roll); the arc rotates about +z (yaw).
+            return mrpt::poses::CPose3D(dx, dy, .0, theta, .0, .0);
+        }
+        case KinematicModel::ConstantVelocity:
+        default:
+        {
+            mrpt::math::CVectorFixed<double, 6> twistDt;
+            twistDt[0] = twist.vx;
+            twistDt[1] = twist.vy;
+            twistDt[2] = twist.vz;
+            twistDt[3] = twist.wx;
+            twistDt[4] = twist.wy;
+            twistDt[5] = twist.wz;
+            twistDt *= dt;
+            return mrpt::poses::CPose3D(mrpt::poses::Lie::SE<3>::exp(twistDt));
+        }
+    }
+}
+
+/** Covariance-aware short-term pose extrapolation: returns the pose PDF of
+ *  `anchorPose` (+) Exp(twist*dt) with first-order uncertainty propagation.
+ *
+ *  Two sources of uncertainty are combined:
+ *   - the anchor pose covariance, transported through the composition (handled
+ *     exactly by MRPT's CPose3DPDFGaussian::operator+, i.e. the Adjoint term);
+ *   - the body-frame increment covariance: the current-velocity uncertainty
+ *     `twistCov` carried over the interval (dt^2 * twistCov), plus an
+ *     acceleration process-noise term (~ 0.5*a*dt^2 position/attitude drift).
+ *
+ *  The increment covariance is first built in the body tangent [vx vy vz wx wy
+ *  wz] (the ordering of NavState::twist_inv_cov) and then mapped to the
+ *  increment's CPose3DPDFGaussian ordering [x y z yaw pitch roll] with
+ *  J = d(pose)/d(tangent). To first order at a small increment J reduces to a
+ *  coordinate relabeling: identity on translation, and the body angular rates
+ *  map to the Euler rates as yaw<-wz, pitch<-wy, roll<-wx. The residual
+ *  Jacobian curvature is the higher-order term neglected in this sub-second
+ *  regime; swap in the exact SE(3) exp Jacobian if the rotation channel ever
+ *  needs it.
+ */
+inline mrpt::poses::CPose3DPDFGaussian extrapolate_pose_pdf(
+    const Parameters& params, const mrpt::poses::CPose3DPDFGaussian& anchorPose,
+    const mrpt::math::TTwist3D& twist, const mrpt::math::CMatrixDouble66& twistCov, double dt)
+{
+    mrpt::poses::CPose3DPDFGaussian deltaPdf;
+    deltaPdf.mean = body_twist_delta(params, twist, dt);
+
+    mrpt::math::CMatrixDouble66 incrCov = twistCov;
+    incrCov *= mrpt::square(dt);
+
+    const double halfDt2 = 0.5 * dt * dt;
+    for (int i = 0; i < 3; i++)
+    {
+        incrCov(i, i) += mrpt::square(params.sigma_random_walk_acceleration_linear * halfDt2);
+        incrCov(3 + i, 3 + i) +=
+            mrpt::square(params.sigma_random_walk_acceleration_angular * halfDt2);
+    }
+
+    // Relabel from the body tangent [vx vy vz wx wy wz] to the pose-covariance
+    // ordering [x y z yaw pitch roll] (yaw<-wz, pitch<-wy, roll<-wx). This is a
+    // permutation of the angular block, exact at first order.
+    constexpr std::array<int, 6> tangentOfPoseParam = {0, 1, 2, 5, 4, 3};
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+            deltaPdf.cov(i, j) = incrCov(tangentOfPoseParam[i], tangentOfPoseParam[j]);
+        }
+    }
+
+    return anchorPose + deltaPdf;
+}
+
+/** Adds the flat, dt-independent floor of sigma_relative_pose_{linear,angular}
+ *  to a pose PDF's covariance, in place. A no-op when both are 0, which is the
+ *  shipped default.
+ *
+ *  Call this as the LAST step of every path that returns a pose to a caller,
+ *  i.e. AFTER any frame conversion. The floor is a statement about the pose the
+ *  caller asked for, and SE(3) composition mixes the angular block into the
+ *  translation one through the lever arm -- so a floor applied before a frame
+ *  change is not a floor in the frame that comes out of it.
+ *
+ *  Isotropic within each block, so it does not depend on whether the consumer
+ *  reads the rotation entries in Euler or Lie-tangent order: adding the same
+ *  variance to all three commutes with any permutation of them.
+ */
+inline void apply_pose_sigma_floor(const Parameters& params, mrpt::poses::CPose3DPDFGaussian& pdf)
+{
+    if (params.sigma_relative_pose_linear > 0)
+    {
+        const double var = mrpt::square(params.sigma_relative_pose_linear);
+        for (int i = 0; i < 3; i++)
+        {
+            pdf.cov(i, i) += var;
+        }
+    }
+    if (params.sigma_relative_pose_angular > 0)
+    {
+        const double var = mrpt::square(params.sigma_relative_pose_angular);
+        for (int i = 3; i < 6; i++)
+        {
+            pdf.cov(i, i) += var;
+        }
+    }
+}
+
+}  // namespace mola::state_estimation_smoother

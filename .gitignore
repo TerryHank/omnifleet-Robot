@@ -1,0 +1,38 @@
+# ROS 2 generated workspaces
+/build/
+/install/
+/log/
+/.ros/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Runtime artifacts and local editor state
+*.log
+*.pid
+*.tmp
+*.bak*
+*.orig*
+*~
+*.db3
+*.mcap
+*.bag
+*.bag.active
+*.yaml.tmp
+/maps/
+/missions/
+/calibration/
+/rosbags/
+.vscode/
+.idea/
+
+# Firmware build output; source and the verified release HEX stay tracked
+/firmware/**/build/
+/firmware/**/stdout.txt
+/firmware/**/stderr.txt
+/firmware/**/build_log.txt
+/firmware/**/*.uvguix.*
+
+# Foxglove extension dependencies/output
+/foxglove/**/node_modules/
+/foxglove/**/dist/

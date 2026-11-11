@@ -1,0 +1,69 @@
+from pathlib import Path
+
+
+PACKAGE = Path(__file__).resolve().parents[1]
+DRIVER = (PACKAGE / "omnifleet_bringup" / "omnifleet_t2_driver.py").read_text()
+ROSMASTER = (PACKAGE / "omnifleet_bringup" / "Rosmaster_Lib.py").read_text()
+CHASSIS = (PACKAGE / "launch" / "chassis_core.launch.py").read_text()
+ROBOT = (PACKAGE / "launch" / "robot.launch.py").read_text()
+PRODUCTION = (PACKAGE / "launch" / "production.launch.py").read_text()
+PRODUCTION_MOLA = (PACKAGE / "launch" / "production_mola.launch.py").read_text()
+PRODUCTION_NAV2 = (PACKAGE / "launch" / "production_nav2.launch.py").read_text()
+DOCTOR = (PACKAGE / "scripts" / "robot_doctor").read_text()
+
+
+def test_driver_owns_standard_odometry_and_tf():
+    assert 'self.create_publisher(Odometry, "/odom", 50)' in DRIVER
+    assert "TransformBroadcaster(self)" in DRIVER
+    assert "transform.header.frame_id = self.odom_frame" in DRIVER
+    assert "transform.child_frame_id = self.base_frame" in DRIVER
+    assert 'track_separation_m", 0.33' in DRIVER
+
+
+def test_all_host_side_tracked_kinematics_use_330_mm_separation():
+    assert "track_width_mm = 330.0" in ROSMASTER
+    assert "track_width_mm = 369.0" not in ROSMASTER
+
+
+def test_driver_publishes_human_readable_voltage_for_foxglove():
+    assert 'String, "/voltage/display", 20' in DRIVER
+    assert 'voltage_display.data = f"{voltage.data:.1f} V"' in DRIVER
+
+
+def test_production_chain_has_no_adapter_or_mux():
+    assert "stm32_feedback_adapter" not in CHASSIS
+    assert "/cmd_vel_nav_raw" not in ROBOT
+    assert "nav_steering_adapter" not in ROBOT
+    assert 'localization_backend", default_value="mola"' in ROBOT
+    assert 'planner_mode", default_value="smac_2d"' in ROBOT
+    assert 'controller_mode", default_value="dwb"' in ROBOT
+
+
+def test_real_robot_production_entries_split_mola_from_nav2():
+    assert '"operation": "mapping"' in PRODUCTION
+    assert '"use_sim_time": "false"' in PRODUCTION
+    assert '"operation": "mapping"' in PRODUCTION_MOLA
+    assert '"use_sim_time": "false"' in PRODUCTION_MOLA
+    assert '"operation": "slam_navigation"' not in PRODUCTION_MOLA
+    assert '"use_sim_time": "false"' in PRODUCTION_NAV2
+    assert '"autostart": "true"' in PRODUCTION_NAV2
+    assert "mola_backend.launch.py" not in PRODUCTION_NAV2
+
+
+def test_t2_serial_alias_is_the_only_default():
+    assert "/dev/omnifleet_t2_stm32" in DRIVER
+    assert "/dev/omnifleet_t2_stm32" in CHASSIS
+
+
+def test_robot_doctor_matches_the_mola_dwb_direct_command_chain():
+    assert "MOLA + Nav2" in DOCTOR
+    assert '局部控制器=DWB' in DOCTOR
+    assert '"/cmd_vel"' in DOCTOR
+    assert '"/odom"' in DOCTOR
+    for stale in (
+        "/scan",
+        "/wheel/odometry",
+        "RegulatedPurePursuitController",
+        "/cmd_vel_nav_raw",
+    ):
+        assert stale not in DOCTOR

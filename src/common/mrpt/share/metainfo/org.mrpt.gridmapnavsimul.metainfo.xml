@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.mrpt.gridmapnavsimul</id>
+  <metadata_license>MIT</metadata_license>
+  <name>Gridmap-based 2D robot simulator</name>
+  <summary>Gridmap Navigation Simulator</summary>
+  <content_rating type="oars-1.0" />
+  <description>
+    <p>Mobile robot navigation simulator for 2D wheeled robots equipped with a 2D LiDAR.</p>
+  </description>
+  <launchable type="desktop-id">gridmapnavsimul.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+        <caption>Application screenshot</caption>
+        <image>https://static.mrpt.org/screenshots/gridmapnavsimul.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://www.mrpt.org/</url>
+  <update_contact>joseluisblancoc@gmail.com</update_contact>
+</component>

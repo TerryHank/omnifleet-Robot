@@ -1,0 +1,26 @@
+[Unit]
+Description=OmniFleet A2 Cartographer 3D slam-navigation and Nav2
+Wants=network-online.target omnifleet-a2-airy.service omnifleet-a2-chassis.service
+After=network-online.target omnifleet-a2-airy.service omnifleet-a2-chassis.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+Environment=HOME=/home/iecme
+Environment=ROS_HOME=/var/lib/omnifleet_a2/ros
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/etc/omnifleet_a2/robot.env
+ExecStart=/bin/bash -lc 'set -e && source /opt/ros/$ROS_DISTRO/setup.bash && source $OMNIFLEET_A2_SENSOR_WS/install/setup.bash && source $OMNIFLEET_A2_WS/install/setup.bash && exec ros2 launch omnifleet_a2_bringup robot.launch.py operation:=slam_navigation mapping_profile:=lidar localization_backend:=cartographer_3d planner_mode:=hybrid_astar controller_mode:=rpp start_chassis:=false start_airy:=false use_camera:=false map_dir:=/var/lib/omnifleet_a2/maps'
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=5
+UMask=0007
+
+[Install]
+WantedBy=multi-user.target

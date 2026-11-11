@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+from omnifleet_bringup.teleop_command_repeater import main
+
+
+if __name__ == "__main__":
+    main()

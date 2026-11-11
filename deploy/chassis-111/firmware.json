@@ -1,0 +1,28 @@
+{
+  "baseline": "111 live firmware 3.8, bb44c916bee34afbf0170eb94ec3d9f9880010b3fadeb53e93d65e5c53ac81a4",
+  "source": "/home/iecme/omnifleet_a2_ws/firmware/112_ftservo_20261103",
+  "target_difference": "112 per-wheel dead zones retained; both vehicles now use +/-25 degree steering",
+  "odom": "112 original wheel-velocity integration retained in matching 111 driver",
+  "domain": 42,
+  "middleware": "rmw_fastrtps_cpp",
+  "active_binary": "/home/iecme/omnifleet_a2_ws/firmware/112_ftservo_20261103/build_s4_direction/rosmaster.bin",
+  "active_sha256": "7349eabbca498620d7823fd29719b60ea91fa1224a2e3c3387c08bc60aebefd7",
+  "forward_deadzone_pwm": [
+    2050,
+    2250
+  ],
+  "reverse_deadzone_pwm": [
+    2000,
+    2200
+  ],
+  "startup_pwm_increment_range": [
+    80,
+    250
+  ],
+  "stationary_steering": "111 native hold sentinel 0xff while wheels braked",
+  "test_limitations": "encoder/firmware feedback only; physical direction not confirmed; asymmetric short-pulse turning response",
+  "maximum_steering_degrees": 25,
+  "gimbal": "113 FTServo bridge 0x28; USART3 defaults to 1000000 baud",
+  "steering_pwm_port": "S4",
+  "steering_pwm_polarity": -1
+}

@@ -1,0 +1,16 @@
+[Unit]
+Description=OmniFleet 112 MOLA Airy mapping and localization
+After=omnifleet-a2-airy.service omnifleet-a2-chassis.service
+Wants=omnifleet-a2-airy.service
+
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+ExecStart=/bin/bash -c 'source src/system/workspace_support/robot_fleet_env.bash && export RMW_IMPLEMENTATION=rmw_fastrtps_cpp ROS_DOMAIN_ID=42 && exec ros2 launch omnifleet_bringup mola_localization.launch.py profile:=integrated map_dir:=/var/lib/omnifleet_a2/maps/112-live'
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

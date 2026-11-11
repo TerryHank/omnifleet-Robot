@@ -1,0 +1,18 @@
+/**:
+  ros__parameters:
+    ai_msg_sub_topic_name: /vision/body_tracking/targets
+    activate_wakeup_gesture: 1
+    track_body: 1
+    img_width: 640
+    img_height: 480
+    track_serial_lost_num_thr: 90
+    linear_velocity: 0.2
+    angular_velocity: 0.4
+    activate_robot_move_thr: 5
+    follow_distance: 1.5
+    reverse_max_speed: 0.25
+    reverse_p: 1.0
+    steering_p: 1.8
+    steering_d: 0.35
+    steering_max_speed: 0.8
+    derivative_weight: 0.7

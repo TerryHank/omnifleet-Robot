@@ -1,0 +1,24 @@
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <KeepRunningUntilFailure>
+      <ForceSuccess>
+        <PipelineSequence name="AckermannFollow">
+          <RateController hz="2.0">
+            <GoalUpdater input_goal="{goal}" output_goal="{updated_goal}">
+              <Sequence>
+                <ComputePathToPose goal="{updated_goal}" path="{raw_path}" planner_id="GridBased"/>
+                <SmoothPath unsmoothed_path="{raw_path}" smoothed_path="{path}" smoother_id="SmoothPath" max_smoothing_duration="0.3" check_for_collisions="true"/>
+              </Sequence>
+            </GoalUpdater>
+          </RateController>
+          <KeepRunningUntilFailure>
+            <ReactiveFallback>
+              <GoalReached goal="{updated_goal}" robot_base_frame="base_link" global_frame="map"/>
+              <FollowPath path="{path}" controller_id="FollowPath" goal_checker_id="general_goal_checker"/>
+            </ReactiveFallback>
+          </KeepRunningUntilFailure>
+        </PipelineSequence>
+      </ForceSuccess>
+    </KeepRunningUntilFailure>
+  </BehaviorTree>
+</root>

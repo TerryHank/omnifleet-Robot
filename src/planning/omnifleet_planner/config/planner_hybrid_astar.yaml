@@ -1,0 +1,7 @@
+planner_server:
+  ros__parameters:
+    planner_plugins: ["GridBased"]
+    GridBased:
+      # 生产默认。Hybrid-A*结合Reeds-Shepp，保留阿克曼转弯约束和倒车段。
+      plugin: "nav2_smac_planner/SmacPlannerHybrid"
+      motion_model_for_search: "REEDS_SHEPP"

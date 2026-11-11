@@ -1,0 +1,114 @@
+{
+  "wheelbase_m": 0.362295943330746,
+  "front_track_m": 0.2649567994515497,
+  "rear_track_m": 0.24540001928639496,
+  "average_wheel_diameter_m": 0.11705652594197262,
+  "wheel_radius_m": 0.05852826297098631,
+  "mesh_count": 172,
+  "export_offset_mm": [
+    167.72219027822277,
+    336.21472016845496,
+    96.78097412146899
+  ],
+  "wheel_modeling_strategy": {
+    "independent_templates": {
+      "left": {
+        "source": "full_assembly - AKM__1_AKM__25_02_0001-1.STL",
+        "component": "front_left_wheel"
+      },
+      "right": {
+        "source": "full_assembly - AKM__1_AKM__25_02_0001-2.STL",
+        "component": "front_right_wheel"
+      }
+    },
+    "copied_to_links": {
+      "front_left_wheel": "left",
+      "rear_left_wheel": "left",
+      "front_right_wheel": "right",
+      "rear_right_wheel": "right"
+    },
+    "deleted_assembled_rear_sources": [
+      "full_assembly - AKM__2-2937770001-1 AKM__AKM__25_02_060006-1.STL",
+      "full_assembly - AKM__2-2937770001-1 AKM__AKM__25_02_060006-2.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0001-1 10_MANIFOLD_SOLID_BREP__164899-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0001-2 10_MANIFOLD_SOLID_BREP__164899-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0002-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0002-2.STL"
+    ],
+    "base_link_exclude_patterns": [
+      "AKM__1_AKM__25_02_0001",
+      "AKM__AKM__25_02_060002",
+      "AKM__AKM__25_02_060003",
+      "AKM__AKM__25_02_060006",
+      "_AKM__25_02_06-AKM0001",
+      "_AKM__25_02_06-AKM0002"
+    ],
+    "excluded_from_base_link": [
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 0001-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 0001-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 AKM________1_32_MANIFOLD-681352-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 AKM________1_32_MANIFOLD-681352-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 NAUO113___-__2-106082-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 NAUO113___-__2-106082-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 NAUO114___3-147426-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 NAUO114___3-147426-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 NAUO118___1-167159-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060002-1 NAUO118___1-167159-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 0001-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 0001-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 AKM________1_32_MANIFOLD-681352-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 AKM________1_32_MANIFOLD-681352-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 NAUO113___-__2-106082-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 NAUO113___-__2-106082-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 NAUO114___3-147426-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 NAUO114___3-147426-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 NAUO118___1-167159-1-1.STL",
+      "full_assembly - 00-A-DP_AF0-1 AKM__AKM__25_02_060003-1 NAUO118___1-167159-1.STL",
+      "full_assembly - AKM__1_AKM__25_02_0001-1-1.STL",
+      "full_assembly - AKM__1_AKM__25_02_0001-1.STL",
+      "full_assembly - AKM__1_AKM__25_02_0001-2-1.STL",
+      "full_assembly - AKM__1_AKM__25_02_0001-2.STL",
+      "full_assembly - AKM__2-2937770001-1 AKM__AKM__25_02_060006-1-1.STL",
+      "full_assembly - AKM__2-2937770001-1 AKM__AKM__25_02_060006-1.STL",
+      "full_assembly - AKM__2-2937770001-1 AKM__AKM__25_02_060006-2-1.STL",
+      "full_assembly - AKM__2-2937770001-1 AKM__AKM__25_02_060006-2.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0001-1 10_MANIFOLD_SOLID_BREP__164899-1-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0001-1 10_MANIFOLD_SOLID_BREP__164899-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0001-2 10_MANIFOLD_SOLID_BREP__164899-1-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0001-2 10_MANIFOLD_SOLID_BREP__164899-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0002-1-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0002-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0002-2-1.STL",
+      "full_assembly - AKM__2-2937770001-1 _AKM__25_02_06-AKM0002-2.STL"
+    ],
+    "note": "Each wheel link contains concentric *_wheel_global cylinder geometry and *_wheel_sw_visual mesh geometry. Two wheels are independent SW parts; the two assembled rear wheel instances are not used as wheel links and are replaced by copied independent templates."
+  },
+  "coordinate_convention": {
+    "urdf_x": "SolidWorks Y forward",
+    "urdf_y": "SolidWorks X left",
+    "urdf_z": "SolidWorks Z up",
+    "visual_meshes": "transformed from SolidWorks exported global-millimeter STL into URDF meters"
+  },
+  "wheel_joint_origins_m": {
+    "front_left_wheel": [
+      0.18108463099411487,
+      0.13247834104047895,
+      0.021207019260416307
+    ],
+    "front_right_wheel": [
+      0.18121131233663113,
+      -0.13247845841107075,
+      0.021907019260416306
+    ],
+    "rear_left_wheel": [
+      -0.18114797166536234,
+      0.12270006832849338,
+      0.04202826297121192
+    ],
+    "rear_right_wheel": [
+      -0.18114797166538366,
+      -0.12269995095790158,
+      0.042028262971211865
+    ]
+  }
+}

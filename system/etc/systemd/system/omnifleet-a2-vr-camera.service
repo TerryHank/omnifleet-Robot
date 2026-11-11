@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet 112 AR0234 VR camera
+After=omnifleet-t2-vr-adapter.service
+
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+ExecStart=/bin/bash -c 'source deploy/vr-debug/vr_env.bash && exec ros2 run omnifleet_sensor_processing usb_camera_publisher --ros-args -p device:=/dev/v4l/by-id/usb-LRCP_AR0234_LRCP_AR0234_01.00.00-video-index0 -p topic:=/tof/color/image_raw/compressed'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

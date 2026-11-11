@@ -1,0 +1,32 @@
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <RecoveryNode number_of_retries="3" name="PersonFollowRecovery">
+      <PipelineSequence name="PersonFollowWithReplanning">
+        <PlannerSelector selected_planner="{selected_planner}" default_planner="GridBased" topic_name="/planner_selector"/>
+        <RateController hz="2.5">
+          <GoalUpdater input_goal="{goal}" output_goal="{updated_goal}">
+            <RecoveryNode number_of_retries="1" name="ComputePersonFollowPath">
+              <ComputePathToPose goal="{updated_goal}" path="{path}" planner_id="{selected_planner}"/>
+              <RecoveryAllowed>
+                <ClearEntireCostmap name="ClearGlobalPersonFollow" service_name="global_costmap/clear_entirely_global_costmap"/>
+              </RecoveryAllowed>
+            </RecoveryNode>
+          </GoalUpdater>
+        </RateController>
+        <RecoveryNode number_of_retries="1" name="TrackPersonFollowPath">
+          <FollowPath path="{path}" controller_id="FollowPathMPPI" goal_checker_id="general_goal_checker"/>
+          <RecoveryAllowed>
+            <ClearEntireCostmap name="ClearLocalPersonFollow" service_name="local_costmap/clear_entirely_local_costmap"/>
+          </RecoveryAllowed>
+        </RecoveryNode>
+      </PipelineSequence>
+      <RecoveryAllowed>
+        <Sequence name="PersonFollowObstacleRecovery">
+          <ClearEntireCostmap name="ClearLocalPersonFollowRecovery" service_name="local_costmap/clear_entirely_local_costmap"/>
+          <ClearEntireCostmap name="ClearGlobalPersonFollowRecovery" service_name="global_costmap/clear_entirely_global_costmap"/>
+          <Wait wait_duration="1.0"/>
+        </Sequence>
+      </RecoveryAllowed>
+    </RecoveryNode>
+  </BehaviorTree>
+</root>

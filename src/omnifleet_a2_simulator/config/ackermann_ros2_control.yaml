@@ -1,0 +1,33 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 50
+    use_sim_time: true
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    omnifleet_a2_ackermann_controller:
+      type: ackermann_steering_controller/AckermannSteeringController
+
+omnifleet_a2_ackermann_controller:
+  ros__parameters:
+    use_sim_time: true
+    rear_wheels_names: [rear_left_wheel_joint, rear_right_wheel_joint]
+    front_wheels_names: [front_left_steering_joint, front_right_steering_joint]
+    rear_wheels_state_names: [rear_left_wheel_joint, rear_right_wheel_joint]
+    front_wheels_state_names: [front_left_steering_joint, front_right_steering_joint]
+    front_steering: true
+    wheelbase: 0.362295943
+    front_wheel_track: 0.264956799
+    rear_wheel_track: 0.245400019
+    front_wheels_radius: 0.058528263
+    rear_wheels_radius: 0.058528263
+    position_feedback: false
+    open_loop: false
+    use_stamped_vel: false
+    reference_timeout: 0.5
+    base_frame_id: base_link
+    odom_frame_id: odom
+    enable_odom_tf: true
+    velocity_rolling_window_size: 10
+

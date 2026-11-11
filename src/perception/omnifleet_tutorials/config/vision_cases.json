@@ -1,0 +1,524 @@
+[
+  {
+    "id": "02_01_camera_monitor",
+    "title": "02.01 相机监视",
+    "offline": false,
+    "imageTopic": "/vision/camera/debug",
+    "statusTopics": [
+      "/vision/camera/status"
+    ],
+    "guide": "查看实时相机图像、分辨率与帧状态。",
+    "fields": []
+  },
+  {
+    "id": "02_03_opencv",
+    "title": "02.03 OpenCV基础",
+    "offline": false,
+    "imageTopic": "/vision/opencv/debug",
+    "statusTopics": [
+      "/vision/opencv/result"
+    ],
+    "guide": "观察 OpenCV 图像处理结果与原图的差异。",
+    "fields": []
+  },
+  {
+    "id": "02_04_color",
+    "title": "02.04 颜色识别",
+    "offline": false,
+    "imageTopic": "/vision/color/debug",
+    "statusTopics": [
+      "/vision/color/result"
+    ],
+    "guide": "把有颜色的物体放入视野，观察颜色区域和识别结果。",
+    "fields": []
+  },
+  {
+    "id": "02_05_qr",
+    "title": "02.05 二维码",
+    "offline": false,
+    "imageTopic": "/vision/qr/debug",
+    "statusTopics": [
+      "/vision/qr/result"
+    ],
+    "guide": "向相机展示二维码，观察框选区域与解码内容。",
+    "fields": []
+  },
+  {
+    "id": "02_06_apriltag",
+    "title": "02.06 AprilTag",
+    "offline": false,
+    "imageTopic": "/vision/apriltag/debug",
+    "statusTopics": [
+      "/vision/apriltag/result"
+    ],
+    "guide": "向相机展示 AprilTag，观察标签编号和检测结果。",
+    "fields": []
+  },
+  {
+    "id": "02_07_kcf",
+    "title": "02.07 KCF跟踪",
+    "offline": false,
+    "imageTopic": "/omnifleet_vision/kcf/image",
+    "statusTopics": [
+      "/omnifleet_vision/kcf/status"
+    ],
+    "guide": "用下方 ROI 参数指定初始目标区域，移动目标观察跟踪框。GUI 交互窗口位于104。",
+    "fields": [
+      {
+        "name": "roi_x",
+        "label": "ROI X",
+        "type": "number",
+        "default": 100
+      },
+      {
+        "name": "roi_y",
+        "label": "ROI Y",
+        "type": "number",
+        "default": 80
+      },
+      {
+        "name": "roi_width",
+        "label": "ROI 宽",
+        "type": "number",
+        "default": 200
+      },
+      {
+        "name": "roi_height",
+        "label": "ROI 高",
+        "type": "number",
+        "default": 240
+      }
+    ]
+  },
+  {
+    "id": "02_08_human_perception",
+    "title": "02.08 人体感知",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_08_human_perception/debug",
+    "statusTopics": [
+      "/vision/faces",
+      "/vision/pose"
+    ],
+    "guide": "人员进入视野，观察人体姿态关键点和人脸结果。",
+    "fields": []
+  },
+  {
+    "id": "02_09_yolo",
+    "title": "02.09 YOLO检测",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_09_yolo/debug",
+    "statusTopics": [
+      "/vision/detections"
+    ],
+    "guide": "展示常见物品，观察类别、置信度与检测框。",
+    "fields": []
+  },
+  {
+    "id": "02_10_depth",
+    "title": "02.10 深度测距",
+    "offline": false,
+    "imageTopic": "/vision/depth/debug",
+    "statusTopics": [
+      "/vision/depth/result"
+    ],
+    "guide": "展示可识别目标，观察 RGB 框中心的配准深度与测距结果。",
+    "fields": []
+  },
+  {
+    "id": "02_11_model_training",
+    "title": "02.11 模型训练",
+    "offline": true,
+    "imageTopic": "/camera/color/image_raw",
+    "statusTopics": [
+      "/camera/rgbd/status"
+    ],
+    "guide": "填写104上的数据集YAML和已有输出目录，启动模型训练；进度显示在日志中。",
+    "fields": [
+      {
+        "name": "dataset_yaml",
+        "label": "104 数据集 YAML",
+        "required": true
+      },
+      {
+        "name": "training_output",
+        "label": "104 已有训练输出目录",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "02_12_tensorrt",
+    "title": "02.12 TensorRT基准",
+    "offline": true,
+    "imageTopic": "/camera/color/image_raw",
+    "statusTopics": [
+      "/camera/rgbd/status"
+    ],
+    "guide": "选择导出或基准测试，填写104上的模型、引擎和报告路径；结果显示在日志中。",
+    "fields": [
+      {
+        "name": "tensorrt_mode",
+        "label": "操作",
+        "type": "select",
+        "default": "benchmark",
+        "options": [
+          [
+            "benchmark",
+            "引擎基准测试"
+          ],
+          [
+            "export",
+            "ONNX 导出引擎"
+          ]
+        ]
+      },
+      {
+        "name": "onnx_path",
+        "label": "104 ONNX 文件",
+        "required": true,
+        "when": {
+          "tensorrt_mode": "export"
+        }
+      },
+      {
+        "name": "engine_path",
+        "label": "104 引擎路径",
+        "required": true
+      },
+      {
+        "name": "report_path",
+        "label": "104 报告输出路径",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "02_13_pedestrian",
+    "title": "02.13 行人检测",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_13_pedestrian/debug",
+    "statusTopics": [
+      "/vision/detections"
+    ],
+    "guide": "人员进入视野，观察行人检测框。",
+    "fields": []
+  },
+  {
+    "id": "02_14_traffic_light",
+    "title": "02.14 交通灯",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_14_traffic_light/debug",
+    "statusTopics": [
+      "/vision/detections"
+    ],
+    "guide": "展示交通灯目标，观察检测类别与结果。",
+    "fields": []
+  },
+  {
+    "id": "02_16_vehicle",
+    "title": "02.16 车辆检测",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_16_vehicle/debug",
+    "statusTopics": [
+      "/vision/detections"
+    ],
+    "guide": "展示车辆目标，观察车辆检测框与类别。",
+    "fields": []
+  },
+  {
+    "id": "02_17_license_plate",
+    "title": "02.17 车牌识别",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_02_17_license_plate/debug",
+    "statusTopics": [
+      "/vision/license_plate"
+    ],
+    "guide": "展示车牌，观察车牌定位与识别结果。",
+    "fields": []
+  },
+  {
+    "id": "03_01_camera_topics",
+    "title": "03.01 相机话题",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_01_camera_topics/debug",
+    "statusTopics": [
+      "/vision/camera/status",
+      "/vision/depth/result"
+    ],
+    "guide": "核对 RGB、毫米深度、配准深度与相机信息。",
+    "fields": []
+  },
+  {
+    "id": "03_02_detection_tracking",
+    "title": "03.02 检测与跟踪",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_02_detection_tracking/debug",
+    "statusTopics": [
+      "/vision/detections",
+      "/vision/tracks"
+    ],
+    "guide": "移动目标，观察检测框和跟踪编号。",
+    "fields": []
+  },
+  {
+    "id": "03_03_target_depth",
+    "title": "03.03 目标深度",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_03_target_depth/debug",
+    "statusTopics": [
+      "/vision/tracks",
+      "/vision/targets_3d"
+    ],
+    "guide": "移动目标，观察与配准深度融合后的三维目标数据。",
+    "fields": []
+  },
+  {
+    "id": "03_04_vision_lidar",
+    "title": "03.04 视觉雷达融合",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_04_vision_lidar/debug",
+    "statusTopics": [
+      "/vision/targets_3d",
+      "/vision/risk"
+    ],
+    "guide": "观察视觉目标、深度与雷达融合的风险结果。",
+    "fields": []
+  },
+  {
+    "id": "03_05_traffic_events",
+    "title": "03.05 交通事件",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_05_traffic_events/debug",
+    "statusTopics": [
+      "/vision/detections",
+      "/vision/targets_3d",
+      "/vision/events",
+      "/vision/traffic_state"
+    ],
+    "guide": "展示交通目标，观察事件与交通状态。",
+    "fields": []
+  },
+  {
+    "id": "03_06_chassis_control",
+    "title": "03.06 底盘控制",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_06_chassis_control/debug",
+    "statusTopics": [
+      "/vision/targets_3d",
+      "/vision/events",
+      "/vision/safe_behavior/status"
+    ],
+    "guide": "观察视觉行为与底盘控制状态；当前运动输出关闭。",
+    "fields": []
+  },
+  {
+    "id": "03_07_lane_integration",
+    "title": "03.07 车道联调",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_07_lane_integration/debug",
+    "statusTopics": [
+      "/vision/lane/result",
+      "/vision/targets_3d",
+      "/vision/risk",
+      "/vision/lane_follow/status"
+    ],
+    "guide": "展示车道场景，观察车道、三维目标与跟随状态。",
+    "fields": []
+  },
+  {
+    "id": "03_08_vision_nav",
+    "title": "03.08 视觉导航",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_08_vision_nav/debug",
+    "statusTopics": [
+      "/vision/targets_3d"
+    ],
+    "guide": "观察视觉三维目标生成的导航候选；当前运动输出关闭。",
+    "fields": []
+  },
+  {
+    "id": "03_09_edge_deployment",
+    "title": "03.09 边缘部署",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_03_09_edge_deployment/debug",
+    "statusTopics": [
+      "/vision/detections",
+      "/vision/inference_status"
+    ],
+    "guide": "观察边缘设备推理输出与推理状态。",
+    "fields": []
+  },
+  {
+    "id": "04_01_color_follow",
+    "title": "04.01 颜色跟随",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_01_color_follow/debug",
+    "statusTopics": [
+      "/vision/detections",
+      "/vision/targets_3d",
+      "/vision/target_follow/status"
+    ],
+    "guide": "移动有颜色的目标，观察目标与跟随状态；当前运动输出关闭。",
+    "fields": []
+  },
+  {
+    "id": "04_02_human_object_follow",
+    "title": "04.02 人体目标跟随",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_02_human_object_follow/debug",
+    "statusTopics": [
+      "/vision/targets_3d",
+      "/vision/target_follow/status"
+    ],
+    "guide": "人员进入视野并移动，观察人体目标与跟随状态；当前运动输出关闭。",
+    "fields": []
+  },
+  {
+    "id": "04_03_lane_project",
+    "title": "04.03 车道项目",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_03_lane_project/debug",
+    "statusTopics": [
+      "/vision/lane/result",
+      "/vision/targets_3d",
+      "/vision/risk",
+      "/vision/lane_follow/status"
+    ],
+    "guide": "展示车道场景，观察车道、风险和车道跟随状态。",
+    "fields": []
+  },
+  {
+    "id": "04_04_object_navigation",
+    "title": "04.04 目标导航",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_04_object_navigation/debug",
+    "statusTopics": [
+      "/vision/targets_3d"
+    ],
+    "guide": "展示目标，观察目标导航候选；当前运动输出关闭。",
+    "fields": []
+  },
+  {
+    "id": "04_05_multimodal_avoidance",
+    "title": "04.05 多模态避障",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_05_multimodal_avoidance/debug",
+    "statusTopics": [
+      "/vision/lane/result",
+      "/vision/targets_3d",
+      "/vision/risk",
+      "/vision/lane_follow/status"
+    ],
+    "guide": "观察视觉、深度与雷达组合的避障风险状态。",
+    "fields": []
+  },
+  {
+    "id": "04_06_edge_detection",
+    "title": "04.06 边缘检测",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_06_edge_detection/debug",
+    "statusTopics": [
+      "/vision/detections",
+      "/vision/inference_status"
+    ],
+    "guide": "观察边缘设备的检测结果与推理状态。",
+    "fields": []
+  },
+  {
+    "id": "04_07_traffic_safety",
+    "title": "04.07 交通安全",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_07_traffic_safety/debug",
+    "statusTopics": [
+      "/vision/lane/result",
+      "/vision/detections",
+      "/vision/targets_3d",
+      "/vision/events",
+      "/vision/traffic_state",
+      "/vision/risk",
+      "/vision/lane_follow/status"
+    ],
+    "guide": "展示道路目标，观察车道、风险、事件与交通状态。",
+    "fields": []
+  },
+  {
+    "id": "04_08_gesture_person_follow",
+    "title": "04.08 方案A：TROS C++ + Nav2",
+    "offline": false,
+    "imageTopic": "/vision/course_gui/course_04_08_gesture_person_follow/debug",
+    "statusTopics": [
+      "/vision/gesture_follow/status"
+    ],
+    "guide": "张掌进入跟随状态，握拳停止并取消；数字1/2/3对应前进/后退/自转状态。当前仅识别，运动输出关闭。",
+    "fields": [
+      {
+        "name": "enable_motion",
+        "label": "运行模式",
+        "type": "select",
+        "default": "false",
+        "options": [
+          [
+            "false",
+            "识别展示 / 指令预览"
+          ],
+          [
+            "true",
+            "实机运动"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "04_09_body_tracking",
+    "title": "04.09 人体手势跟随 · C++深度控距",
+    "offline": false,
+    "isFinal": true,
+    "imageTopic": "/vision/body_tracking/debug",
+    "displayTopic": "/vision/course_gui/course_04_09_body_tracking/debug/compressed",
+    "statusTopics": [
+      "/vision/body_tracking/status"
+    ],
+    "fields": [
+      {
+        "name": "enable_motion",
+        "label": "运行模式",
+        "type": "select",
+        "default": "false",
+        "options": [
+          [
+            "false",
+            "识别展示 / 指令预览"
+          ],
+          [
+            "true",
+            "实机运动"
+          ]
+        ]
+      }
+    ],
+    "guide": "1前进、2后退并保持；3顺时针一圈、4逆时针一圈，完成后停车；五指张掌随时停，OK人体跟随。",
+    "ui": {
+      "defaultView": "result",
+      "focus": "官方选人/ID、原版速度指令、丢失停车；深度只显示",
+      "views": [
+        "result",
+        "data",
+        "gray",
+        "rgb"
+      ],
+      "usesDepth": true,
+      "dataTopics": [
+        [
+          "/vision/body_tracking/status",
+          "Body Tracking 状态与原版速度"
+        ],
+        [
+          "/vision/body_tracking/cmd_vel",
+          "原版速度请求 · Twist"
+        ]
+      ],
+      "dataTopic": "/vision/body_tracking/status"
+    }
+  }
+]

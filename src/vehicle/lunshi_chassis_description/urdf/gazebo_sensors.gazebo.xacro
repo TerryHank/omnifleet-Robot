@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Gazebo Sim / Gazebo Harmonic sensor extensions. Keep TF and meshes in lunshi_ackermann.urdf.xacro; keep simulated sensing here. -->
+  <xacro:macro name="lunshi_gazebo_sensors">
+    <gazebo reference="laser_frame">
+      <sensor name="rplidar_s3" type="gpu_lidar">
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <update_rate>${s3_update_rate}</update_rate>
+        <topic>/scan</topic>
+        <frame_id>laser_frame</frame_id>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>${s3_samples}</samples>
+              <resolution>1</resolution>
+              <min_angle>${s3_min_angle}</min_angle>
+              <max_angle>${s3_max_angle}</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>${s3_min_range}</min>
+            <max>${s3_max_range}</max>
+            <resolution>${s3_range_resolution}</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>${s3_noise_stddev}</stddev>
+          </noise>
+        </lidar>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="camera_color_optical_frame">
+      <sensor name="hik_mv_dt01sdu_rgb" type="camera">
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <update_rate>${mv_update_rate}</update_rate>
+        <topic>/camera/color/image_raw</topic>
+        <frame_id>camera_color_optical_frame</frame_id>
+        <camera>
+          <horizontal_fov>${mv_rgb_hfov}</horizontal_fov>
+          <image>
+            <width>${mv_rgb_width}</width>
+            <height>${mv_rgb_height}</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>${mv_near}</near>
+            <far>${mv_far}</far>
+          </clip>
+        </camera>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="camera_depth_optical_frame">
+      <sensor name="hik_mv_dt01sdu_depth" type="depth_camera">
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <update_rate>${mv_update_rate}</update_rate>
+        <topic>/camera/depth/image_raw</topic>
+        <frame_id>camera_depth_optical_frame</frame_id>
+        <camera>
+          <horizontal_fov>${mv_depth_hfov}</horizontal_fov>
+          <image>
+            <width>${mv_depth_width}</width>
+            <height>${mv_depth_height}</height>
+            <format>R_FLOAT32</format>
+          </image>
+          <clip>
+            <near>${mv_near}</near>
+            <far>${mv_far}</far>
+          </clip>
+        </camera>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

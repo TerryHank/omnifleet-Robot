@@ -1,0 +1,21 @@
+[Unit]
+Description=OmniFleet display-only cloud, 1 Hz and at most 8000 points
+After=network-online.target omnifleet-t2-zenoh-router.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+Environment=ROS_DOMAIN_ID=113
+Environment=OMNIFLEET_ZENOH_OBSERVER=1
+LimitMEMLOCK=1073741824
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_a2_ws/env.bash && exec python3 /home/iecme/omnifleet_a2_ws/src/visualization/omnifleet_t2_ws/foxglove/display_cloud.py'
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=5
+TimeoutStopFailureMode=kill
+
+[Install]
+WantedBy=multi-user.target
+

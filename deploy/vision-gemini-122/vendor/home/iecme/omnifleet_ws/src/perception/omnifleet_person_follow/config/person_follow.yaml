@@ -1,0 +1,41 @@
+course_gesture_person_follow:
+  ros__parameters:
+    use_local_frames: true
+    image_topic: /camera/color/image_raw
+    depth_topic: /camera/depth/image_raw
+    camera_info_topic: /camera/color/camera_info
+    engine_path: /home/iecme/omnifleet_data/ml_models/omnifleet_vision/vendor/yolo26_person_follow/yolo26n-seg.engine
+    zoo_root: /home/iecme/omnifleet_data/reference_sources/opencv_zoo_models
+    model_root: /home/iecme/omnifleet_data/ml_models/omnifleet_vision/vendor
+    tracker_config: /home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/config/botsort.yaml
+    enable_motion: false
+    auto_follow: true
+    controller_backend: tros
+    follow_distance: 1.0
+    follow_distance_tolerance: 0.05
+    follow_distance_hysteresis: 0.05
+    target_smoothing_time: 0.25
+    follow_goal_step: 0.15
+    tracking_to_lost_timeout: 1.0
+    prediction_window: 6.0
+    prediction_lead: 2.0
+    prediction_max_distance: 3.0
+    prediction_timeout: 5.0
+    depth_min_m: 0.2
+    depth_max_m: 1.5
+    image_size: 512
+    confidence: 0.7
+    center_start_angle: 0.12
+    center_stop_angle: 0.06
+    approach_step: 0.2
+    search_timeout: 30.0
+    search_max_rounds: 2
+    jpeg_quality: 85
+    global_frame: map
+    camera_mount_parent: rslidar
+    camera_mount_child: rgbd_view_z_up
+    camera_mount_xyz: [0.05, 0.0, 0.0]
+    # User confirmed on 2026-10-22: centered, same height, horizontal forward.
+    camera_mount_rpy: [0.0, 0.0, 0.0]
+    navigation_action: /navigate_to_pose
+    goal_update_topic: /goal_update

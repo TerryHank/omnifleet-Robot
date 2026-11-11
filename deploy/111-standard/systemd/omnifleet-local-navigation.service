@@ -1,0 +1,20 @@
+[Unit]
+Description=OmniFleet A2 Ackermann fleet task gateway
+Requires=omnifleet-t2-pure-lio-nav2.service
+After=omnifleet-t2-pure-lio-nav2.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+EnvironmentFile=/home/iecme/omnifleet_a2_ws/deploy/111-standard/config/robot.env
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_a2_ws/src/system/workspace_support/robot_fleet_env.bash && exec ros2 run omnifleet_a2_gateway local_navigation'
+ExecStopPost=/bin/bash -lc 'source /home/iecme/omnifleet_a2_ws/src/system/workspace_support/robot_fleet_env.bash && exec ros2 run omnifleet_a2_gateway stop_owned'
+Restart=on-failure
+RestartSec=2
+KillSignal=SIGINT
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

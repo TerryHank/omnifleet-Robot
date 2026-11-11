@@ -1,0 +1,27 @@
+正在读取软件包列表...
+正在分析软件包的依赖关系树...
+正在读取状态信息...
+下列软件包是自动安装的并且现在不需要了：
+  containerd docker.io gir1.2-gst-plugins-bad-1.0 libavcodec58 libavfilter7
+  libavformat58 libavutil-dev libavutil56 libcli11-dev libfreenect0.5
+  libpostproc55 libssh-gcrypt-4 libswresample-dev libswresample3 libswscale5
+  libva-x11-2 libvdpau1 libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 pigz
+  python3-wheel runc ubuntu-fan
+使用'sudo apt autoremove'来卸载它(它们)。
+下列【新】软件包将被安装：
+  ros-humble-nanoflann-vendor
+升级了 0 个软件包，新安装了 1 个软件包， 要卸载 0 个软件包，有 934 个软件包未被升级。
+需要下载 44.8 kB 的归档。
+解压缩后会消耗 206 kB 的额外空间。
+获取:1 https://mirrors.ustc.edu.cn/ros2/ubuntu jammy/main arm64 ros-humble-nanoflann-vendor arm64 1.12.1-1jammy.20260813.031146 [44.8 kB]
+debconf: 因为并未安装 apt-utils，所以软件包的设定过程将被推迟
+已下载 44.8 kB，耗时 2秒 (22.1 kB/s)
+正在选中未选择的软件包 ros-humble-nanoflann-vendor。
+(正在读取数据库 ... (正在读取数据库 ... 5%(正在读取数据库 ... 10%(正在读取数据库 ... 15%(正在读取数据库 ... 20%(正在读取数据库 ... 25%(正在读取数据库 ... 30%(正在读取数据库 ... 35%(正在读取数据库 ... 40%(正在读取数据库 ... 45%(正在读取数据库 ... 50%(正在读取数据库 ... 55%(正在读取数据库 ... 60%(正在读取数据库 ... 65%(正在读取数据库 ... 70%(正在读取数据库 ... 75%(正在读取数据库 ... 80%(正在读取数据库 ... 85%(正在读取数据库 ... 90%(正在读取数据库 ... 95%(正在读取数据库 ... 100%(正在读取数据库 ... 系统当前共安装有 286018 个文件和目录。)
+准备解压 .../ros-humble-nanoflann-vendor_1.12.1-1jammy.20260813.031146_arm64.deb  ...
+正在解压 ros-humble-nanoflann-vendor (1.12.1-1jammy.20260813.031146) ...
+dpkg: 处理归档 /var/cache/apt/archives/ros-humble-nanoflann-vendor_1.12.1-1jammy.20260813.031146_arm64.deb (--unpack)时出错：
+ 正试图覆盖 /opt/ros/humble/include/nanoflann.hpp，它同时被包含于软件包 ros-humble-nanoflann 1.11.0-1jammy.20260731.173650
+在处理时有错误发生：
+ /var/cache/apt/archives/ros-humble-nanoflann-vendor_1.12.1-1jammy.20260813.031146_arm64.deb
+E: Sub-process /usr/bin/dpkg returned an error code (1)

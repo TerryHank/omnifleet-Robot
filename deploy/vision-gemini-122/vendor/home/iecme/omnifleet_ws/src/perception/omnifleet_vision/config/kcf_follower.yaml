@@ -1,0 +1,36 @@
+kcf_follower:
+  ros__parameters:
+    tracker_color_topic: /camera/color/image_raw
+    aligned_color_topic: /camera/color/image_raw
+    depth_topic: /camera/depth/image_raw
+    output_image_topic: /omnifleet_vision/kcf/image
+    cmd_vel_topic: /cmd_vel_vision
+
+    enable_motion: false
+    use_gui: true
+    tracking_scale: 0.4
+    sync_queue_size: 10
+    max_pair_delta: 0.8
+    tracking_timeout: 0.5
+    depth_timeout: 0.5
+    control_rate: 30.0
+
+    roi_x: 0
+    roi_y: 0
+    roi_width: 0
+    roi_height: 0
+
+    target_distance: 2.0
+    distance_hysteresis: 0.05
+    depth_scale_16u: 0.001
+    depth_scale_32f: 1.0
+    min_depth: 0.2
+    max_depth: 3.5
+
+    linear_kp: 0.6
+    angular_kp: 1.0
+    linear_deadband: 0.15
+    angular_deadband: 0.05
+    minimum_linear_speed: 0.40
+    max_linear_speed: 0.40
+    max_angular_speed: 0.40

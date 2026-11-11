@@ -1,0 +1,35 @@
+{
+  "global_mapping": {
+    "so_name": "libprior_map_localization.so",
+    "enable_imu": false,
+    "enable_optimization": true,
+    "create_between_factors": false,
+    "between_registration_type": "NONE",
+    "registration_error_factor_type": "VGICP_GPU",
+    "randomsampling_rate": 0.75,
+    "submap_voxel_resolution": 0.40,
+    "submap_voxel_resolution_max": 0.80,
+    "submap_voxel_resolution_dmin": 5.0,
+    "submap_voxel_resolution_dmax": 20.0,
+    "submap_voxelmap_levels": 2,
+    "submap_voxelmap_scaling_factor": 2.0,
+    "max_implicit_loop_distance": 100.0,
+    "min_implicit_loop_overlap": 0.15,
+    "use_isam2_dogleg": false,
+    "isam2_relinearize_skip": 1,
+    "isam2_relinearize_thresh": 0.1,
+    "init_pose_damping_scale": 1e10
+  },
+  "prior_map_localization": {
+    "min_overlap": 0.15,
+    "max_candidate_distance": 12.0,
+    "max_candidates": 8,
+    "coarse_xy_window": 2.0,
+    "coarse_xy_step": 0.5,
+    "coarse_yaw_window": 1.0471975512,
+    "coarse_yaw_step": 0.1745329252,
+    "max_translation_correction": 3.0,
+    "max_yaw_correction": 1.0471975512,
+    "max_active_submaps": 8
+  }
+}

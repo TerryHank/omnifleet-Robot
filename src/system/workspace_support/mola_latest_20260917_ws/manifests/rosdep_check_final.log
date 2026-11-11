@@ -1,0 +1,18 @@
+ERROR[mola_metric_maps]: Cannot locate rosdep definition for [nanoflann_vendor]
+	rosdep key : nanoflann_vendor
+	OS name    : ubuntu
+	OS version : jammy
+	Data:
+<no data>
+System dependencies have not been satisfied:
+apt	ros-humble-mrpt-libbase
+apt	ros-humble-mrpt-libmaps
+apt	ros-humble-mrpt-libtclap
+apt	ros-humble-mrpt-libobs
+apt	ros-humble-mrpt-libposes
+apt	ros-humble-mrpt-libgui
+apt	ros-humble-mrpt-libslam
+apt	ros-humble-mrpt-libopengl
+apt	ros-humble-mrpt-libhwdrivers
+apt	ros-humble-mrpt-libros-bridge
+apt	ros-humble-mrpt-libmath

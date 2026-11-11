@@ -1,0 +1,1030 @@
+export function initNav2HotParamsPanel(context) {
+  const root = context.panelElement;
+  const panelHost = root.parentElement;
+  const hostPosition = panelHost.style.position;
+  panelHost.style.position = 'relative';
+  root.style.overflowY = 'auto';
+  root.style.overflowX = 'hidden';
+  root.className = 'omnifleet-nav2-hot-params';
+  root.innerHTML = `<style>
+  .omnifleet-nav2-hot-params{box-sizing:border-box;position:absolute;inset:0;min-height:0;overflow-y:scroll;overflow-x:hidden;scrollbar-gutter:stable;padding:10px 10px 24px;font:calc(13px * var(--panel-font-scale,1))/1.4 system-ui,sans-serif;color:#222;background:#fff;-webkit-overflow-scrolling:touch}
+  .omnifleet-nav2-hot-params *{box-sizing:border-box}
+  .omnifleet-nav2-hot-params .row[hidden]{display:none}
+  .omnifleet-nav2-hot-params .row>label{display:contents}
+  .omnifleet-nav2-hot-params .row>label>a{grid-column:1;grid-row:1}
+  .omnifleet-nav2-hot-params .row>input{grid-column:2;grid-row:1}
+  .omnifleet-nav2-hot-params .row .parameter-reference{grid-column:1 / -1;grid-row:2}
+  .omnifleet-nav2-hot-params .row .parameter-help{grid-column:1 / -1;grid-row:3}
+  .omnifleet-nav2-hot-params .row .additional-config-links{grid-column:1 / -1;grid-row:4}
+  .omnifleet-nav2-hot-params .row .additional-config-links:empty{display:none}
+  .omnifleet-nav2-hot-params h4{font-size:1em;margin:12px 0 5px;padding-top:6px;border-top:1px solid #e6e9ed;color:#34465a}
+  .omnifleet-nav2-hot-params .advanced-settings{background:#f5f7fa;border:1px solid #dde3eb;border-radius:5px;padding:8px;margin:10px 0 2px}
+  .omnifleet-nav2-hot-params .advanced-settings>summary{cursor:pointer;color:#42566f;font-weight:600}
+  .omnifleet-nav2-hot-params .algorithm-purpose{margin-bottom:6px}
+  .omnifleet-nav2-hot-params .algorithm-groups>section>b{margin-right:8px}
+  .omnifleet-nav2-hot-params a{color:#1761a8;text-decoration:underline;cursor:pointer}
+  .omnifleet-nav2-hot-params .additional-config-links{font-size:.9em}
+  .omnifleet-nav2-hot-params h3{font-size:calc(15px * var(--panel-font-scale,1));margin:0 0 5px}
+  .omnifleet-nav2-hot-params .hint{color:#666;font-size:calc(11px * var(--panel-font-scale,1));margin:5px 0}
+  .omnifleet-nav2-hot-params .status{background:#eef1f4;border-radius:4px;padding:7px;white-space:pre-wrap;margin:7px 0}
+  .omnifleet-nav2-hot-params .ok{color:#187a37}.omnifleet-nav2-hot-params .error{color:#b3261e}
+  .omnifleet-nav2-hot-params section{border:1px solid #ddd;border-radius:5px;padding:7px;margin:8px 0}
+  .omnifleet-nav2-hot-params .row{display:grid;grid-template-columns:minmax(0,1fr) calc(90px * var(--panel-font-scale,1));align-items:center;gap:5px;margin:8px 0}
+  .omnifleet-nav2-hot-params small{display:block;color:#666;font-size:calc(12px * var(--panel-font-scale,1));line-height:1.5}
+  .omnifleet-nav2-hot-params input{width:100%;border:1px solid #aaa;border-radius:3px;padding:5px}
+  .omnifleet-nav2-hot-params select{width:100%;border:1px solid #aaa;border-radius:3px;padding:5px;background:#fff}
+  .omnifleet-nav2-hot-params button{background:#3478f6;color:white;border:0;border-radius:3px;padding:5px;cursor:pointer}
+  .omnifleet-nav2-hot-params button:disabled,.omnifleet-nav2-hot-params input:disabled{opacity:.45;cursor:not-allowed}
+  .omnifleet-nav2-hot-params select:disabled{opacity:.45}
+  .omnifleet-nav2-hot-params input[aria-invalid="true"]{border-color:#b3261e}
+  .omnifleet-nav2-hot-params .algorithm-row{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:5px;margin:8px 0}
+  .omnifleet-nav2-hot-params .algorithm-note{color:#8a5200;font-size:calc(11px * var(--panel-font-scale,1));margin:4px 0}
+  .omnifleet-nav2-hot-params input,.omnifleet-nav2-hot-params select,.omnifleet-nav2-hot-params button{font-size:calc(13.3333px * var(--panel-font-scale,1))}
+  .omnifleet-nav2-hot-params .panel-heading{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;padding:4px 0 8px}
+  .omnifleet-nav2-hot-params .panel-heading h3{margin:0;min-width:0}
+  .omnifleet-nav2-hot-params .font-toolbar{display:flex;align-items:center;flex-shrink:0;gap:5px}
+  .omnifleet-nav2-hot-params .font-toolbar button{line-height:1.4;white-space:nowrap}
+  .omnifleet-nav2-hot-params{background:#f3f6fa;color:#253449;font-family:'Noto Sans CJK SC','Noto Sans',system-ui,sans-serif;line-height:1.6;padding:10px 10px 24px}
+  .omnifleet-nav2-hot-params .panel-heading{background:#f3f6fa;padding:6px 0 10px;gap:6px}
+  .omnifleet-nav2-hot-params .panel-heading h3{font-weight:700;letter-spacing:.2px;color:#1b2c44}
+  .omnifleet-nav2-hot-params .hint{line-height:1.6;color:#63738a}
+  .omnifleet-nav2-hot-params .status{background:#e9eff6;border-radius:10px;padding:9px 10px;border:1px solid #dde5ef}
+  .omnifleet-nav2-hot-params details.major-card{margin:12px 0;border:1px solid #dce5ef;border-radius:14px;background:#fff;box-shadow:0 3px 10px rgba(32,60,96,.05);overflow:hidden}
+  .omnifleet-nav2-hot-params details.major-card>summary{padding:12px 10px;color:#263f60;font-size:1.05em;font-weight:650;background:#fff}
+  .omnifleet-nav2-hot-params details.major-card[open]>summary{border-bottom:1px solid #edf1f7;background:#f9fbfe}
+  .omnifleet-nav2-hot-params details.major-card>.card-body{padding:2px 10px 10px}
+  .omnifleet-nav2-hot-params details.parameter-subgroup{margin:8px 0;border:1px solid #e5ebf3;border-radius:10px;background:#fff;overflow:hidden}
+  .omnifleet-nav2-hot-params details.parameter-subgroup>summary{padding:9px 8px;color:#465c78;font-weight:600;background:#f6f8fc}
+  .omnifleet-nav2-hot-params details.parameter-subgroup>.card-body{padding:0 8px 3px}
+  .omnifleet-nav2-hot-params details.advanced-settings{margin:10px 0 2px;padding:0;border-radius:10px;border:1px dashed #d2dce8;background:#f8fafc}
+  .omnifleet-nav2-hot-params details.advanced-settings>summary{padding:10px 8px;font-weight:500;color:#60738c}
+  .omnifleet-nav2-hot-params details.advanced-settings>.card-body{padding:0 8px 5px}
+  .omnifleet-nav2-hot-params details[data-section-key]>summary{display:flex;align-items:center;gap:7px;list-style:none;cursor:pointer;user-select:none;min-height:42px;line-height:1.5}
+  .omnifleet-nav2-hot-params details[data-section-key]>summary::-webkit-details-marker{display:none}
+  .omnifleet-nav2-hot-params details[data-section-key]>summary::before{content:'›';font-size:1.35em;flex:none;color:#7790ae;transform:rotate(0deg);transition:transform .12s}
+  .omnifleet-nav2-hot-params details[data-section-key][open]>summary::before{transform:rotate(90deg)}
+  .omnifleet-nav2-hot-params details[data-section-key]>summary:focus-visible{outline:2px solid #3b82f6;outline-offset:-3px;border-radius:10px}
+  .omnifleet-nav2-hot-params details[data-section-key]>summary:hover{background:#eef4fc}
+  .omnifleet-nav2-hot-params details.major-card>summary>b{flex:1;min-width:0}
+  .omnifleet-nav2-hot-params details.major-card>summary>a{font-size:.85em;font-weight:400;flex:none}
+  .omnifleet-nav2-hot-params .row{margin:10px 0;row-gap:3px}
+  .omnifleet-nav2-hot-params .row>label>a{overflow-wrap:anywhere;font-weight:500;text-decoration:none;color:#245c98}
+  .omnifleet-nav2-hot-params .row>label>a:hover{text-decoration:underline}
+  .omnifleet-nav2-hot-params .parameter-reference{color:#7a8799;font-size:calc(11px * var(--panel-font-scale,1))}
+  .omnifleet-nav2-hot-params .parameter-help{color:#586b83;line-height:1.65}
+  .omnifleet-nav2-hot-params input,.omnifleet-nav2-hot-params select{border:1px solid #cbd7e6;border-radius:8px;padding:6px 7px;background:#fbfdff;color:#223c5b;font-family:inherit;font-variant-numeric:tabular-nums;min-width:0}
+  .omnifleet-nav2-hot-params input:focus,.omnifleet-nav2-hot-params select:focus{outline:none;border-color:#478ae5;box-shadow:0 0 0 2px rgba(71,138,229,.14)}
+  .omnifleet-nav2-hot-params input[type=checkbox]{accent-color:#347ce0;justify-self:end;width:18px;height:18px;cursor:pointer}
+  .omnifleet-nav2-hot-params button{border-radius:8px;font-family:inherit;font-weight:500;padding:6px 9px;background:#347ce0;box-shadow:0 1px 3px rgba(45,98,169,.12)}
+  .omnifleet-nav2-hot-params button:not(:disabled):hover{background:#2568c5}
+  .omnifleet-nav2-hot-params .font-toolbar button{padding:4px 7px}
+
+  /* Hierarchy comes from weight, spacing and surfaces, not similar blue tones. */
+  .omnifleet-nav2-hot-params{background:#f3f4f6;color:#252a31}
+  .omnifleet-nav2-hot-params .panel-heading{background:#f3f4f6}
+  .omnifleet-nav2-hot-params details.major-card{border:1px solid #9db4d0;box-shadow:0 2px 7px rgba(25,30,38,.04);margin:16px 0;background:#f7faff}
+  .omnifleet-nav2-hot-params details.major-card>summary{color:#193a60;font-size:1.12em;font-weight:750;background:#e2ecf8;border-left:5px solid #4b729e}
+  .omnifleet-nav2-hot-params details.major-card[open]>summary{background:#e2ecf8;border-bottom:1px solid #b6c9df}
+  .omnifleet-nav2-hot-params details.major-card>summary a{color:#234c7c}
+  .omnifleet-nav2-hot-params details.major-card>.card-body{padding:8px 10px 12px}
+  .omnifleet-nav2-hot-params [data-algorithm-params]{margin-left:3px;padding-left:10px;border-left:2px solid #c1cfdf}
+  .omnifleet-nav2-hot-params details.parameter-subgroup{border-color:#d7dce3;border-radius:9px;margin:12px 0;background:#fff}
+  .omnifleet-nav2-hot-params details.parameter-subgroup>summary{color:#343b46;background:#f0f1f3;font-size:1em;font-weight:650;border-bottom:1px solid transparent}
+  .omnifleet-nav2-hot-params details.parameter-subgroup[open]>summary{border-bottom-color:#dce0e5}
+  .omnifleet-nav2-hot-params details[data-section-key]>summary::before{color:#525b68}
+  .omnifleet-nav2-hot-params .row{margin:0;padding:13px 0;row-gap:6px;align-items:start}
+  .omnifleet-nav2-hot-params .row+.row{border-top:1px solid #d5dbe2}
+  .omnifleet-nav2-hot-params .row[hidden]+.row{border-top-color:#d5dbe2}
+  .omnifleet-nav2-hot-params .row>label>a{color:#20252d;font-size:calc(13.5px * var(--panel-font-scale,1));line-height:1.5;font-weight:600;padding-top:5px}
+  .omnifleet-nav2-hot-params .parameter-title-cn{font-weight:750}
+  .omnifleet-nav2-hot-params .parameter-title-en{font-family:'Noto Sans Mono',ui-monospace,monospace;font-weight:400;font-size:.88em;color:#424953;overflow-wrap:anywhere}
+  .omnifleet-nav2-hot-params .parameter-reference{color:#5d6570;font-size:calc(11.5px * var(--panel-font-scale,1));line-height:1.5}
+  .omnifleet-nav2-hot-params .parameter-help{margin-top:1px;padding:8px 10px;border-left:3px solid #bdc5cf;border-radius:0 7px 7px 0;background:#f2f3f5;color:#333b45;font-size:calc(12px * var(--panel-font-scale,1));font-weight:400;line-height:1.7}
+  .omnifleet-nav2-hot-params .parameter-help>a{font-weight:700;color:#245c98;text-underline-offset:3px}
+  .omnifleet-nav2-hot-params .row>input{font-weight:650;color:#171d26;background:#fff;border-color:#aeb8c5;border-width:1px;box-shadow:inset 0 1px 2px rgba(25,30,38,.03);padding:7px 8px;font-variant-numeric:tabular-nums}
+  .omnifleet-nav2-hot-params .row>input[type=checkbox]{margin-top:9px}
+  .omnifleet-nav2-hot-params .additional-config-links{font-size:calc(11px * var(--panel-font-scale,1));line-height:1.4}
+
+  .omnifleet-nav2-hot-params{container-type:inline-size;container-name:parameter-panel}
+  @container parameter-panel (max-width:480px){
+    .omnifleet-nav2-hot-params .row>label>a{grid-column:1 / -1;grid-row:1;padding-top:0}
+    .omnifleet-nav2-hot-params .row>input{grid-column:2;grid-row:2}
+    .omnifleet-nav2-hot-params .row .parameter-reference{grid-column:1;grid-row:2;align-self:center}
+  }
+  .omnifleet-nav2-hot-params .panel-top{position:sticky;top:0;z-index:6;background:#f3f4f6;padding:2px 0 9px}
+  .omnifleet-nav2-hot-params .panel-top .panel-heading{position:static;padding-bottom:7px}
+  .omnifleet-nav2-hot-params .parameter-search{position:relative}
+  .omnifleet-nav2-hot-params .parameter-search-row{display:flex;gap:6px}
+  .omnifleet-nav2-hot-params .parameter-search-row input{flex:1;min-width:0;border:1px solid #aeb8c5;border-radius:9px;padding:8px 10px;background:#fff;color:#171d26;font:inherit}
+  .omnifleet-nav2-hot-params .parameter-search-row input:focus{outline:none;border-color:#478ae5;box-shadow:0 0 0 2px rgba(71,138,229,.14)}
+  .omnifleet-nav2-hot-params .parameter-search-row button{flex:none;background:#667085;padding:6px 9px}
+  .omnifleet-nav2-hot-params .parameter-search-results{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:8;max-height:min(46vh,420px);overflow:auto;border:1px solid #cbd3dd;border-radius:10px;background:#fff;box-shadow:0 10px 28px rgba(25,30,38,.18);padding:4px}
+  .omnifleet-nav2-hot-params .parameter-search-results[hidden]{display:none}
+  .omnifleet-nav2-hot-params .parameter-search-results button{display:block;width:100%;margin:0;padding:8px 9px;text-align:left;color:#20252d;background:#fff;border:0;border-radius:7px;box-shadow:none;font-weight:600}
+  .omnifleet-nav2-hot-params .parameter-search-results button:hover,.omnifleet-nav2-hot-params .parameter-search-results button:focus{background:#edf3fb;color:#174f8a;outline:none}
+  .omnifleet-nav2-hot-params .parameter-search-results small{margin-top:2px;color:#687281;font-size:.84em;font-weight:400}
+  .omnifleet-nav2-hot-params .parameter-search-empty{padding:9px;color:#687281}
+  .omnifleet-nav2-hot-params .row.search-located-parameter,.omnifleet-nav2-hot-params .algorithm-row.search-located-parameter{outline:2px solid #478ae5;outline-offset:3px;border-radius:8px;background:#edf3fb}
+  </style><div class="panel-top"><div class="panel-heading"><h3>Nav2 永久参数</h3><div class="font-toolbar" role="group" aria-label="面板字体大小"><button type="button" data-testid="font-decrease" title="缩小整个面板字体" aria-label="缩小字体">−</button><button type="button" data-testid="font-increase" title="放大整个面板字体" aria-label="放大字体">＋</button><button type="button" data-testid="font-reset" title="恢复原始字体大小">恢复</button></div></div><div class="parameter-search"><div class="parameter-search-row"><input type="search" data-testid="nav2-parameter-search" aria-label="搜索热修改参数" autocomplete="off" placeholder="搜索参数：中文、英文或功能关键词"><button type="button" data-testid="nav2-parameter-search-clear">清空</button></div><div class="parameter-search-results" data-testid="nav2-parameter-search-results" role="listbox" hidden></div></div></div><div class="hint">输入停止 0.8 秒后自动保存并应用；回车或离开输入框立即提交。暂不支持即时生效的参数将在下次启动时使用。</div><button data-testid="nav2-refresh-saved">读取已保存参数</button><div class="status" data-testid="nav2-save-status">正在读取永久参数……</div><div class="quick-groups"></div><div class="algorithm-groups"></div><div class="groups"></div>`;
+  const collapsedSections = {...(context.initialState?.collapsedSections || {})};
+  function saveAppearance() {
+    context.saveState({...context.initialState, fontScale, collapsedSections: {...collapsedSections}});
+  }
+  function disclosure(key, title, className = 'major-card', initiallyOpen = true) {
+    const element = document.createElement('details'); element.className = className;
+    element.dataset.sectionKey = key;
+    element.open = key in collapsedSections ? !collapsedSections[key] : initiallyOpen;
+    const summary = document.createElement('summary'); summary.textContent = title;
+    const body = document.createElement('div'); body.className = 'card-body';
+    element.append(summary, body);
+    element.addEventListener('toggle', () => {
+      if (disposed) return;
+      const wasOpen = key in collapsedSections ? !collapsedSections[key] : initiallyOpen;
+      if (wasOpen === element.open) return;
+      collapsedSections[key] = !element.open;
+      saveAppearance();
+    });
+    return {element, summary, body};
+  }
+
+  let fontScale = Number.isFinite(context.initialState?.fontScale) ? context.initialState.fontScale : 1;
+  const fontDecrease = root.querySelector('[data-testid="font-decrease"]');
+  const fontIncrease = root.querySelector('[data-testid="font-increase"]');
+  function setFontScale(value, persist = true) {
+    fontScale = Math.max(0.8, Math.min(1.8, Math.round(value * 10) / 10));
+    root.style.setProperty('--panel-font-scale', String(fontScale));
+    fontDecrease.disabled = fontScale <= 0.8;
+    fontIncrease.disabled = fontScale >= 1.8;
+    if (persist) saveAppearance();
+  }
+  fontDecrease.onclick = () => setFontScale(fontScale - 0.1);
+  fontIncrease.onclick = () => setFontScale(fontScale + 0.1);
+  root.querySelector('[data-testid="font-reset"]').onclick = () => setFontScale(1);
+  setFontScale(fontScale, false);
+  const parameterHelp = {"dwb_min_speed_xy": "与最低角速度联合筛选；只有平移和转动都低于阈值才排除，不是履带最低转速。", "dwb_min_speed_theta": "与最低平移速度联合筛选；转动达到阈值时仍可允许较低的平移速度。", "dwb_min_vel_x": "前后速度采样的有符号下界；负值允许倒车，正值会限制倒车和原地转向。", "map_z_min": "同时设置建图和全局、局部避障的最低高度；停车后修改，自动清理旧代价。", "map_z_max": "同时设置建图和全局、局部避障的最高高度；应覆盖整车最高部件并留余量，避免把门上沿算作障碍。", "linear_speed": "当前对应 DWB FollowPath.max_vel_x，同时同步 max_speed_xy。这是速度上限，不代表实车一定达到该速度。", "angular_speed": "当前对应 DWB FollowPath.max_vel_theta。RPP 和 MPPI 还会受各自的角速度参数限制。", "planner_tolerance": "允许路径终点距离目标有多远。增大后更容易规划成功，但可能停在目标附近而不是精确位置。", "planner_cost_multiplier": "规划器避开高代价区域的程度。增大后更倾向走通道中央、远离障碍；0 基本变成只判断可通行性。", "planner_allow_unknown": "是否允许路径经过未知栅格。打开后可进入未建图区域，但安全性降低。", "planner_use_final_orientation": "是否让路径终点朝向与最后一段路径的接近方向一致。", "planner_downsample_costmap": "是否用更低分辨率搜索。打开后计算更快，但窄通道和小障碍的精度下降；当前面板没有暴露 downsampling_factor。", "planner_max_iterations": "搜索最多执行多少次。太小可能找不到路径；太大可能增加计算时间。", "planner_max_planning_time": "单次规划允许使用的最长时间。太小容易超时，太大可能让规划响应变慢。", "navfn_tolerance": "允许终点偏离目标的距离。", "navfn_allow_unknown": "是否允许在未知区域中规划。", "navfn_use_astar": "打开使用 A*；关闭使用 Dijkstra。A* 通常更快，Dijkstra 会进行更广泛的搜索。", "navfn_use_final_orientation": "是否用路径接近方向作为终点朝向。", "theta_allow_unknown": "是否允许通过未知区域。", "theta_use_final_orientation": "是否让终点朝向与最后路径段一致。", "theta_how_many_corners": "4 只连接上下左右；8 允许对角连接，路径通常更直接。", "theta_w_euc_cost": "路径长度在规划代价中的权重。增大后更偏好短路径。", "theta_w_traversal_cost": "高代价栅格的惩罚强度。增大后更远离障碍和高代价区域。", "dwb_sim_time": "DWB 向前预测每条候选轨迹的时间。增大后更有预见性，但计算量更大。", "dwb_vx_samples": "候选线速度数量。增大后搜索更细，计算量增加。", "dwb_vtheta_samples": "候选角速度数量。增大后转向搜索更细，计算量增加。", "obstacle_scale": "障碍物代价在局部控制中的权重。增大后更远离障碍。", "path_align_scale": "保持机器人朝向与全局路径方向一致的权重。过大可能不愿意绕障碍。", "path_dist_scale": "保持机器人靠近全局路径的权重。过大容易贴着原路径走；减小后更容易绕开障碍。", "rpp_desired_linear_vel": "RPP 正常跟踪时希望达到的线速度。", "rpp_lookahead_dist": "固定模式下向前寻找跟踪点的距离。大一些更平滑，小一些更贴合路径但可能抖动。", "rpp_min_lookahead_dist": "速度缩放前视模式下的下限。", "rpp_max_lookahead_dist": "速度缩放前视模式下的上限。", "rpp_lookahead_time": "速度乘以前视时间得到前视距离。当前配置若未启用速度缩放，这项不会生效。", "rpp_rotate_to_heading_angular_vel": "原地转向对齐时使用的角速度。", "rpp_max_angular_accel": "限制角速度变化快慢。", "rpp_use_regulated_linear_velocity_scaling": "转弯半径小时自动减速。", "rpp_use_cost_regulated_linear_velocity_scaling": "靠近障碍或进入高代价区时自动减速。", "rpp_cost_scaling_dist": "障碍物距离小于该值时开始按代价减速。通常不应大于膨胀半径。", "rpp_cost_scaling_gain": "障碍减速强度。值越小，减速越明显；官方建议通常不超过 1.0。", "rpp_inflation_cost_scaling_factor": "RPP 将代价换算成障碍距离时使用的系数。在 Humble 中应尽量与对应膨胀层的 cost_scaling_factor 保持一致。", "rpp_use_rotate_to_heading": "是否允许先原地转向，再开始跟踪路径。", "mppi_time_steps": "每条候选轨迹包含多少个时间点。", "mppi_model_dt": "相邻预测点的时间间隔。预测时域等于 time_steps × model_dt。", "mppi_batch_size": "每轮随机生成的候选轨迹数量。增大后搜索更充分，但计算量和内存增加。", "mppi_iteration_count": "每次控制计算的优化轮数。官方通常建议保持 1，优先增大采样数量。", "mppi_vx_max": "MPPI 允许的最大正向速度。", "mppi_vx_min": "MPPI 的最小速度；允许设为负值时代表允许倒车。", "mppi_wz_max": "MPPI 允许的最大旋转速度。", "mppi_temperature": "越接近 0，越偏向代价最低的轨迹；值很大时，各轨迹权重更平均，控制更平滑但选择性变弱。", "mppi_gamma": "越大越重视控制平滑；越小越重视降低控制能量。", "local_radius": "局部控制器感知障碍影响的距离。", "local_scaling": "局部膨胀代价的衰减速度。减小后障碍影响更宽，通常更不容易贴边。", "local_padding": "局部碰撞检查额外增加的机器人外形余量。", "global_radius": "障碍物向外产生影响的最大距离。增大后全局路径更远离障碍，但狭窄通道可能不可走。", "global_scaling": "膨胀代价随距离衰减的速度。增大后代价下降更快、影响范围更窄；减小后代价下降更慢、机器人更愿意远离障碍。", "global_padding": "在机器人外形外额外增加碰撞安全余量。", "goal_yaw_tolerance": "到达目标时允许的朝向误差；越大，对最终朝向的要求越宽松。"};
+  const parameterReferences = {"dwb_min_speed_xy": "0.0", "dwb_min_speed_theta": "0.0", "dwb_min_vel_x": "0.0", "map_z_min": "-0.03", "map_z_max": "0.50", "linear_speed": "0.26", "angular_speed": "1.0", "planner_tolerance": "0.125", "planner_cost_multiplier": "1.0", "planner_allow_unknown": "true", "planner_use_final_orientation": "false", "planner_downsample_costmap": "false", "planner_max_iterations": "1000000", "planner_max_planning_time": "2.0", "navfn_tolerance": "0.5", "navfn_allow_unknown": "true", "navfn_use_astar": "false", "navfn_use_final_orientation": "false", "theta_allow_unknown": "true", "theta_use_final_orientation": "false", "theta_how_many_corners": "8", "theta_w_euc_cost": "1.0", "theta_w_traversal_cost": "2.0", "dwb_sim_time": "1.7", "dwb_vx_samples": "20", "dwb_vtheta_samples": "20", "obstacle_scale": "0.02", "path_align_scale": "32.0", "path_dist_scale": "32.0", "rpp_desired_linear_vel": "0.5", "rpp_lookahead_dist": "0.6", "rpp_min_lookahead_dist": "0.3", "rpp_max_lookahead_dist": "0.9", "rpp_lookahead_time": "1.5", "rpp_rotate_to_heading_angular_vel": "1.8", "rpp_max_angular_accel": "3.2", "rpp_use_regulated_linear_velocity_scaling": "true", "rpp_use_cost_regulated_linear_velocity_scaling": "true", "rpp_cost_scaling_dist": "0.6", "rpp_cost_scaling_gain": "1.0", "rpp_inflation_cost_scaling_factor": "3.0", "rpp_use_rotate_to_heading": "true", "mppi_time_steps": "56", "mppi_model_dt": "0.05", "mppi_batch_size": "1000", "mppi_iteration_count": "1", "mppi_vx_max": "0.5", "mppi_vx_min": "−0.35", "mppi_wz_max": "1.9", "mppi_temperature": "0.3", "mppi_gamma": "0.015", "local_radius": "0.55", "local_scaling": "10.0", "local_padding": "0.01", "global_radius": "0.55", "global_scaling": "10.0", "global_padding": "0.01", "goal_yaw_tolerance": "0.25"};
+  parameterHelp.costmap_radius = "同时设置全局和局部代价地图的障碍膨胀范围。增大后路径更远离障碍，但窄道可能不可通行。";
+  parameterHelp.costmap_scaling = "同时设置全局和局部代价地图的代价衰减速度。增大后代价下降更快；减小后高代价影响更宽。";
+  parameterHelp.costmap_padding = "同时给全局和局部碰撞检查增加车体外形余量。增大后离障碍更远，但狭窄通道可能不可通行。";
+  parameterReferences.costmap_radius = "1.0";
+  parameterReferences.costmap_scaling = "2.0";
+  parameterReferences.costmap_padding = "0.05";
+  parameterHelp.pwm_compensation_m1 = "M1 右履带的起步 PWM 补偿。只在非零电机输出上叠加；数值过大可能造成起步突跳。修改时会与 M2 成对写入 STM32 Flash。";
+  parameterHelp.pwm_compensation_m2 = "M2 左履带的起步 PWM 补偿。只在非零电机输出上叠加；数值过大可能造成起步突跳。修改时会与 M1 成对写入 STM32 Flash。";
+  parameterReferences.pwm_compensation_m1 = "2736";
+  parameterReferences.pwm_compensation_m2 = "2772";
+  let parameterLinks = {};
+  async function openParameterLink(id, index = 0, docs = false) {
+    try {
+      const response = await call('/robot_113/omnifleet_t2/nav2/save_parameters', {parameters:[{
+        name:docs ? '__open_docs' : '__open_config',
+        value:{type:4,string_value:JSON.stringify({id,index})}
+      }]});
+      if (!response.results?.[0]?.successful) throw new Error(response.results?.[0]?.reason || '无法打开链接');
+      setStatus((docs ? '已打开官方说明：' : '已打开配置位置：') + response.results[0].reason, 'ok');
+    } catch(error) {setStatus('打开失败：' + String(error), 'error');}
+  }
+  function configAnchor(id, label, index=0) {
+    const a=document.createElement('a'); a.href='#'; a.textContent=label;
+    a.dataset.configParameter=id; a.dataset.configIndex=String(index);
+    const target=parameterLinks[id]?.targets?.[index];
+    if(target){a.href='file://'+target.path+'#L'+target.line; a.title=target.path+':'+target.line+':'+target.column+' · '+target.label;}
+    a.onclick=e=>{e.preventDefault();openParameterLink(id,index);};
+    return a;
+  }
+  function updateParameterLinks() {
+    for (const a of root.querySelectorAll('[data-config-parameter]')) {
+      const target=parameterLinks[a.dataset.configParameter]?.targets?.[Number(a.dataset.configIndex)];
+      if(target){a.href='file://'+target.path+'#L'+target.line; a.title=target.path+':'+target.line+':'+target.column+' · '+target.label;}
+    }
+    for(const a of root.querySelectorAll('[data-doc-parameter]')) {
+      const docs=parameterLinks[a.dataset.docParameter]?.docs;
+      if(docs){a.href=docs.url; a.title=docs.note;}
+    }
+    for(const label of root.querySelectorAll('[data-parameter-label]')) {
+      const id=label.dataset.parameterLabel, targets=parameterLinks[id]?.targets || [];
+      if(targets.length<2 || label.querySelector('.additional-config-links'))continue;
+      const extra=document.createElement('span');extra.className='additional-config-links';
+      targets.slice(1).forEach((target,i)=>{extra.append(' · ', configAnchor(id,target.label,i+1));});
+      label.append(extra);
+    }
+  }
+  function appendParameterHelp(title, id) {
+    const name=title.textContent; title.textContent='';title.dataset.parameterLabel=id;
+    const link = configAnchor(id, name);
+    const separator = name.indexOf(' · ');
+    if (separator >= 0) {
+      const chinese = document.createElement('span'); chinese.className = 'parameter-title-cn'; chinese.textContent = name.slice(0, separator);
+      const english = document.createElement('span'); english.className = 'parameter-title-en'; english.textContent = name.slice(separator + 3);
+      link.textContent = ''; link.append(chinese, ' · ', english);
+    }
+    title.append(link);
+    const reference = document.createElement('small'); reference.className = 'parameter-reference';
+    reference.textContent = '参考值：' + parameterReferences[id];
+    const text = document.createElement('small'); text.className = 'parameter-help';
+    const explanation=document.createElement('a');explanation.textContent='说明';explanation.href='#';
+    explanation.dataset.docParameter=id;
+    explanation.onclick=e=>{e.preventDefault();openParameterLink(id,0,true);};
+    text.append(explanation, '：'+parameterHelp[id]); title.append(reference, text);
+  }
+  parameterHelp.automatic_recovery = '打开后，走不通时会自动清图、转向或后退重试；关闭后停止本次导航并提示，仍保留避障停车。';
+  parameterHelp.automatic_replanning = '打开后会定期重新找路；关闭后沿当前路线行驶，遇障仍会停车。更换目标或规划算法时仍会重新找路。';
+  parameterHelp.replanning_interval = '每隔多少秒重新找路。调大可减少换路线，但绕开新障碍会更慢；关闭自动重新规划时不生效。';
+  parameterReferences.automatic_recovery = 'true';
+  parameterReferences.automatic_replanning = 'true';
+  parameterReferences.replanning_interval = '3.0';
+  parameterHelp.rpp_rotate_to_heading_min_angle = '车头与前方路线的偏差大于此值时，先原地转向；小于此值才允许前进。0.10约为6度，0.785约为45度；太小可能在弯道反复停转，需开启允许原地转向对齐。';
+  parameterReferences.rpp_rotate_to_heading_min_angle = '0.785';
+  Object.assign(parameterHelp, {"goal_xy_tolerance": "车离路线终点多近就满足到达的距离要求。0.25表示25厘米；还要满足方向和安全检查。", "progress_distance": "在下面的等待时间内，车的位置要移动超过这个距离，否则认为卡住。只原地转向不算前进。", "progress_time": "超过这个时间仍没移动足够距离，就结束当前跟踪并按恢复设置处理。加大只是多等一会，不能解决受阻。", "rpp_approach_distance": "进入最后这段路时逐渐减速。数值大就更早慢下来；太大可能整段路都走得很慢。", "rpp_approach_min_speed": "控制最后一段减速时保留的前进速度。太低履带可能带不动，太高可能不好停准；不是左右履带各自的最低速度。", "rpp_velocity_scaled_lookahead": "打开后，速度越快看得越远，使用最小前视距离、最大前视距离和前视时间；关闭时使用固定前视距离。", "rpp_interpolation": "打开后，在路线点之间计算更准确的跟踪点，减少点太稀疏引起的突然转向；不会修改保存的地图。", "rpp_curve_radius": "转弯半径小于此值时开始减速。数值越大，较缓的弯也会减速；需开启按曲率调节线速度。", "rpp_curve_min_speed": "弯道和障碍距离调速时保留的车体速度下限；终点减速或碰撞停车仍可更低，不代表每条履带最低速度。", "dwb_accel_x": "数值越大，允许速度增加得越快；小一些起步更缓，但加速所需距离更长。", "dwb_decel_x": "填负数。绝对值越大，允许减速越快；越接近0，刹停需要的距离越长。", "dwb_accel_theta": "限制转向速度增加的快慢。小一些转向更缓，大一些转向响应更快。", "dwb_decel_theta": "填负数。绝对值越大，允许越快收住转向；越接近0，转动越不容易及时停下。", "dwb_goal_rotate_scale": "越大越重视到终点后把车头转到指定方向；这项是评分权重，不是转向速度。", "dwb_goal_slowing": "越大越倾向在终点附近先降低前进速度，再进行方向对齐；不是固定的减速倍数。", "dwb_goal_lookahead": "填-1检查整条预测轨迹的末端；填较短正数只看较近时刻，可能更快转向，也更容易转过头。", "dwb_goal_distance": "进入这个范围后，DWB开始减速并转向终点方向。这是对齐的触发距离，最终是否到达还由到点距离容差判断。", "dwb_stopped_speed": "已靠近终点且前进速度低于此值时，DWB只允许转向，不再向前走；数值大可能更早进入原地对齐。", "mppi_obstacle_weight": "越大越不愿经过高代价区域，通常离障碍更远；仍需地图正确识别障碍。", "mppi_path_align_weight": "越大越倾向沿全局路线走；太大可能不愿为了避障偏离路线。", "mppi_path_follow_weight": "越大越鼓励沿路线推进，减少原地犹豫；不能代替避障或底盘执行能力。", "mppi_goal_weight": "越大越重视缩短与终点的距离；不是到达距离容差。", "mppi_goal_angle_weight": "越大越重视车头最终朝向；只在该评分项的启用范围内起作用，不改变角度容差。", "mppi_path_angle_weight": "越大越重视车头朝着路线方向行驶，可能更积极转向纠偏。", "planner_downsampling_factor": "需开启降低代价地图采样。1不简化，2把栅格边长变成两倍；算路更快，但小障碍和窄通道更难分清。"});
+  Object.assign(parameterReferences, {"goal_xy_tolerance": "0.25", "progress_distance": "0.1", "progress_time": "10", "rpp_approach_distance": "1.0", "rpp_approach_min_speed": "0.05", "rpp_velocity_scaled_lookahead": "false", "rpp_interpolation": "false", "rpp_curve_radius": "0.9", "rpp_curve_min_speed": "0.1", "dwb_accel_x": "0.8", "dwb_decel_x": "-0.8", "dwb_accel_theta": "1.5", "dwb_decel_theta": "-1.5", "dwb_goal_rotate_scale": "32", "dwb_goal_slowing": "5", "dwb_goal_lookahead": "-1", "dwb_goal_distance": "0.2", "dwb_stopped_speed": "0.05", "mppi_obstacle_weight": "3.81", "mppi_path_align_weight": "10", "mppi_path_follow_weight": "5", "mppi_goal_weight": "5", "mppi_goal_angle_weight": "3", "mppi_path_angle_weight": "2", "planner_downsampling_factor": "1"});
+  const specs = [
+    ["automatic_recovery","自动恢复 · automatic_recovery",'导航行为','',0,1,1,'/omnifleet_navigation_policy.automatic_recovery','boolean'],
+    ["automatic_replanning","自动重规划 · automatic_replanning",'导航行为','',0,1,1,'/omnifleet_navigation_policy.automatic_replanning','boolean'],
+    ["replanning_interval","重规划周期 · replanning_interval",'导航行为','秒',.2,60,.2,'/omnifleet_navigation_policy.replanning_interval'],
+    ["costmap_radius", "障碍膨胀半径 · inflation_radius", '全局与局部代价地图共用', 'm', 0, 3, .05, '/local_costmap + /global_costmap.inflation_layer.inflation_radius'],
+    ["costmap_scaling", "膨胀代价衰减系数 · cost_scaling_factor", '全局与局部代价地图共用', '', .01, 20, .1, '/local_costmap + /global_costmap.inflation_layer.cost_scaling_factor'],
+    ["costmap_padding", "车体安全余量 · footprint_padding", '全局与局部代价地图共用', 'm', 0, .3, .01, '/local_costmap + /global_costmap.footprint_padding'],
+    ["map_z_min", "建图与避障高度下限 · slice_z_min / min_obstacle_height", '建图与避障共用高度（地图坐标系 Z）', 'm', -10, 10, .01, ''],
+    ["map_z_max", "建图与避障高度上限 · slice_z_max / max_obstacle_height", '建图与避障共用高度（地图坐标系 Z）', 'm', -10, 10, .01, ''],
+    ["linear_speed", "最大线速度 · max_vel_x / max_speed_xy", '导航速度', 'm/s', .05, 1.5, .05, '/controller_server.FollowPath.max_vel_x'],
+    ["angular_speed", "最大角速度 · max_vel_theta", '导航速度', 'rad/s', .1, 3, .1, '/controller_server.FollowPath.max_vel_theta'],
+    ["pwm_compensation_m1", "M1 PWM 起步补偿 · pwm_compensation_m1", 'STM32 底盘 PWM 补偿', 'PWM', 0, 3300, 1, '/omnifleet_t2_driver.pwm_compensation_m1', 'integer'],
+    ["pwm_compensation_m2", "M2 PWM 起步补偿 · pwm_compensation_m2", 'STM32 底盘 PWM 补偿', 'PWM', 0, 3300, 1, '/omnifleet_t2_driver.pwm_compensation_m2', 'integer'],
+  ];
+  const algorithmDescriptions = {"global": "选择 Smac 2D、NavFn 或 Theta* 生成全局路径。", "local": "选择 Hot DWB、RPP 或 MPPI 跟踪路径并输出速度。"};
+  const algorithmCommonFields = {
+    global: [],
+    local: [
+      ["goal_xy_tolerance", "到点距离容差 · xy_goal_tolerance", "m", 0.01, 1, 0.01, "/controller_server.general_goal_checker.xy_goal_tolerance"],
+      ["progress_distance", "最小进展距离 · required_movement_radius", "m", 0.01, 1, 0.01, "/controller_server.progress_checker.required_movement_radius"],
+      ["progress_time", "进展超时时间 · movement_time_allowance", "秒", 1, 120, 1, "/controller_server.progress_checker.movement_time_allowance"],
+      ["goal_yaw_tolerance", "到点角度容差 · yaw_goal_tolerance", 'rad', 0, Math.PI, .01, '/controller_server.general_goal_checker.yaw_goal_tolerance'],
+    ],
+  };
+  // Show only the active plugin profile; selector topics switch preloaded plugins.
+  const algorithmProfiles = {
+    global: {
+      smac_2d: {label: 'Smac 2D（A*）', plugin: 'nav2_smac_planner/SmacPlanner2D', fields: [
+        ["planner_tolerance", "路线终点容差 · tolerance", 'm', 0, 5, .05, '/planner_server.GridBased.tolerance'],
+        ["planner_cost_multiplier", "通行代价权重 · cost_travel_multiplier", '', 0, 20, .1, '/planner_server.GridBased.cost_travel_multiplier'],
+        ["planner_allow_unknown", "允许未知区域 · allow_unknown", '', 0, 1, 1, '/planner_server.GridBased.allow_unknown', 'boolean'],
+        ["planner_use_final_orientation", "使用最终接近方向 · use_final_approach_orientation", '', 0, 1, 1, '/planner_server.GridBased.use_final_approach_orientation', 'boolean'],
+      ["planner_downsampling_factor", "降采样倍数 · downsampling_factor", "", 1, 8, 1, "/planner_server.GridBased.downsampling_factor", "integer"],
+        ["planner_downsample_costmap", "代价地图降采样 · downsample_costmap", '', 0, 1, 1, '/planner_server.GridBased.downsample_costmap', 'boolean'],
+        ["planner_max_iterations", "最大搜索迭代次数 · max_iterations", '', 1, 5000000, 1000, '/planner_server.GridBased.max_iterations', 'integer'],
+        ["planner_max_planning_time", "最大规划时间 · max_planning_time", 's', .05, 30, .05, '/planner_server.GridBased.max_planning_time'],
+      ]},
+      navfn: {label: 'NavFn（A* / Dijkstra）', plugin: 'nav2_navfn_planner/NavfnPlanner', fields: [
+        ["navfn_tolerance", "路线终点容差 · tolerance", 'm', 0, 5, .05, '/planner_server.GridNavFn.tolerance'],
+        ["navfn_allow_unknown", "允许未知区域 · allow_unknown", '', 0, 1, 1, '/planner_server.GridNavFn.allow_unknown', 'boolean'],
+        ["navfn_use_astar", "启用 A* 搜索 · use_astar", '', 0, 1, 1, '/planner_server.GridNavFn.use_astar', 'boolean'],
+        ["navfn_use_final_orientation", "使用最终接近方向 · use_final_approach_orientation", '', 0, 1, 1, '/planner_server.GridNavFn.use_final_approach_orientation', 'boolean'],
+      ]},
+      theta_star: {label: 'Theta*', plugin: 'nav2_theta_star_planner/ThetaStarPlanner', fields: [
+        ["theta_allow_unknown", "允许未知区域 · allow_unknown", '', 0, 1, 1, '/planner_server.GridThetaStar.allow_unknown', 'boolean'],
+        ["theta_use_final_orientation", "使用最终接近方向 · use_final_approach_orientation", '', 0, 1, 1, '/planner_server.GridThetaStar.use_final_approach_orientation', 'boolean'],
+        ["theta_how_many_corners", "栅格邻接数 · how_many_corners", '', 4, 8, 4, '/planner_server.GridThetaStar.how_many_corners', 'integer'],
+        ["theta_w_euc_cost", "欧氏距离权重 · w_euc_cost", '', 0, 20, .1, '/planner_server.GridThetaStar.w_euc_cost'],
+        ["theta_w_traversal_cost", "栅格通行代价权重 · w_traversal_cost", '', 0, 20, .1, '/planner_server.GridThetaStar.w_traversal_cost'],
+      ]},
+    },
+    local: {
+      hot_dwb: {label: 'Hot DWB 动态窗口', plugin: 'omnifleet_dwb_hot::HotDWBLocalPlanner', fields: [
+      ["dwb_accel_x", "纵向加速度限制 · acc_lim_x", "m/s²", 0.01, 5, 0.05, "/controller_server.FollowPath.acc_lim_x"],
+      ["dwb_decel_x", "纵向减速度限制 · decel_lim_x", "m/s²", -5, -0.01, 0.05, "/controller_server.FollowPath.decel_lim_x"],
+      ["dwb_accel_theta", "角加速度限制 · acc_lim_theta", "rad/s²", 0.01, 10, 0.05, "/controller_server.FollowPath.acc_lim_theta"],
+      ["dwb_decel_theta", "角减速度限制 · decel_lim_theta", "rad/s²", -10, -0.01, 0.05, "/controller_server.FollowPath.decel_lim_theta"],
+      ["dwb_goal_rotate_scale", "终点转向权重 · RotateToGoal.scale", "", 0, 100, 1, "/controller_server.FollowPath.RotateToGoal.scale"],
+      ["dwb_goal_slowing", "终点减速权重 · RotateToGoal.slowing_factor", "", 0.01, 30, 0.1, "/controller_server.FollowPath.RotateToGoal.slowing_factor"],
+      ["dwb_goal_lookahead", "终点转向前视时间 · RotateToGoal.lookahead_time", "秒", -1, 5, 0.1, "/controller_server.FollowPath.RotateToGoal.lookahead_time"],
+      ["dwb_goal_distance", "终点对齐距离阈值 · xy_goal_tolerance", "m", 0.01, 1, 0.01, "/controller_server.FollowPath.xy_goal_tolerance"],
+      ["dwb_stopped_speed", "平移停止速度阈值 · trans_stopped_velocity", "m/s", 0.001, 0.5, 0.01, "/controller_server.FollowPath.trans_stopped_velocity"],
+        ["dwb_min_speed_xy", "最小平移速度阈值 · min_speed_xy", 'm/s', 0, 1.5, .01, '/controller_server.FollowPath.min_speed_xy'],
+        ["dwb_min_speed_theta", "最小旋转速度阈值 · min_speed_theta", 'rad/s', 0, 3, .01, '/controller_server.FollowPath.min_speed_theta'],
+        ["dwb_min_vel_x", "纵向速度下限 · min_vel_x", 'm/s', -1.5, 1.5, .01, '/controller_server.FollowPath.min_vel_x'],
+        ["dwb_sim_time", "轨迹预测时长 · sim_time", 's', .1, 5, .05, '/controller_server.FollowPath.sim_time'],
+        ["dwb_vx_samples", "纵向速度采样数 · vx_samples", '', 1, 100, 1, '/controller_server.FollowPath.vx_samples', 'integer'],
+        ["dwb_vtheta_samples", "角速度采样数 · vtheta_samples", '', 1, 200, 1, '/controller_server.FollowPath.vtheta_samples', 'integer'],
+        ["obstacle_scale", "障碍代价权重 · BaseObstacle.scale", '', 0, 5, .05, '/controller_server.FollowPath.BaseObstacle.scale'],
+        ["path_align_scale", "路径对齐权重 · PathAlign.scale", '', 0, 100, 1, '/controller_server.FollowPath.PathAlign.scale'],
+        ["path_dist_scale", "路径距离权重 · PathDist.scale", '', 0, 100, 1, '/controller_server.FollowPath.PathDist.scale'],
+      ]},
+      rpp: {label: 'Regulated Pure Pursuit', plugin: 'omnifleet_planner::HotRegulatedPurePursuitController', fields: [
+      ["rpp_approach_distance", "终点减速距离 · approach_velocity_scaling_dist", "m", 0.01, 3, 0.05, "/controller_server.FollowPathRPP.approach_velocity_scaling_dist"],
+      ["rpp_approach_min_speed", "终点接近最小线速度 · min_approach_linear_velocity", "m/s", 0.01, 1.5, 0.01, "/controller_server.FollowPathRPP.min_approach_linear_velocity"],
+      ["rpp_velocity_scaled_lookahead", "速度自适应前视 · use_velocity_scaled_lookahead_dist", "", 0, 1, 1, "/controller_server.FollowPathRPP.use_velocity_scaled_lookahead_dist", "boolean"],
+      ["rpp_interpolation", "路径插值 · use_interpolation", "", 0, 1, 1, "/controller_server.FollowPathRPP.use_interpolation", "boolean"],
+      ["rpp_curve_radius", "曲率减速半径阈值 · regulated_linear_scaling_min_radius", "m", 0.01, 5, 0.05, "/controller_server.FollowPathRPP.regulated_linear_scaling_min_radius"],
+      ["rpp_curve_min_speed", "调速最小线速度 · regulated_linear_scaling_min_speed", "m/s", 0.01, 1.5, 0.01, "/controller_server.FollowPathRPP.regulated_linear_scaling_min_speed"],
+        ["rpp_desired_linear_vel", "期望线速度 · desired_linear_vel", 'm/s', 0.01, 1.5, .01, '/controller_server.FollowPathRPP.desired_linear_vel'],
+        ["rpp_lookahead_dist", "固定前视距离 · lookahead_dist", 'm', .05, 5, .05, '/controller_server.FollowPathRPP.lookahead_dist'],
+        ["rpp_min_lookahead_dist", "最小前视距离 · min_lookahead_dist", 'm', .05, 5, .05, '/controller_server.FollowPathRPP.min_lookahead_dist'],
+        ["rpp_max_lookahead_dist", "最大前视距离 · max_lookahead_dist", 'm', .05, 8, .05, '/controller_server.FollowPathRPP.max_lookahead_dist'],
+        ["rpp_lookahead_time", "前视时间 · lookahead_time", 's', .05, 10, .05, '/controller_server.FollowPathRPP.lookahead_time'],
+        ["rpp_rotate_to_heading_min_angle", "航向对齐角度阈值 · rotate_to_heading_min_angle", 'rad', .01, Math.PI, .01, '/controller_server.FollowPathRPP.rotate_to_heading_min_angle'],
+        ["rpp_rotate_to_heading_angular_vel", "航向对齐角速度 · rotate_to_heading_angular_vel", 'rad/s', .05, 3, .05, '/controller_server.FollowPathRPP.rotate_to_heading_angular_vel'],
+        ["rpp_max_angular_accel", "最大角加速度 · max_angular_accel", 'rad/s²', .05, 10, .05, '/controller_server.FollowPathRPP.max_angular_accel'],
+        ["rpp_use_regulated_linear_velocity_scaling", "曲率速度调节 · use_regulated_linear_velocity_scaling", '', 0, 1, 1, '/controller_server.FollowPathRPP.use_regulated_linear_velocity_scaling', 'boolean'],
+        ["rpp_use_cost_regulated_linear_velocity_scaling", "障碍代价速度调节 · use_cost_regulated_linear_velocity_scaling", '', 0, 1, 1, '/controller_server.FollowPathRPP.use_cost_regulated_linear_velocity_scaling', 'boolean'],
+        ["rpp_cost_scaling_dist", "障碍减速距离 · cost_scaling_dist", 'm', 0, 5, .05, '/controller_server.FollowPathRPP.cost_scaling_dist'],
+        ["rpp_cost_scaling_gain", "障碍减速增益 · cost_scaling_gain", '', 0, 10, .05, '/controller_server.FollowPathRPP.cost_scaling_gain'],
+        ["rpp_inflation_cost_scaling_factor", "膨胀代价衰减系数 · inflation_cost_scaling_factor", '', .01, 20, .1, '/controller_server.FollowPathRPP.inflation_cost_scaling_factor'],
+        ["rpp_use_rotate_to_heading", "启用航向对齐 · use_rotate_to_heading", '', 0, 1, 1, '/controller_server.FollowPathRPP.use_rotate_to_heading', 'boolean'],
+      ]},
+      mppi: {label: 'MPPI 预测控制', plugin: 'nav2_mppi_controller::MPPIController', fields: [
+      ["mppi_obstacle_weight", "障碍代价权重 · CostCritic.cost_weight", "", 0, 100, 0.1, "/controller_server.FollowPathMPPI.CostCritic.cost_weight"],
+      ["mppi_path_align_weight", "路径对齐权重 · PathAlignCritic.cost_weight", "", 0, 100, 0.1, "/controller_server.FollowPathMPPI.PathAlignCritic.cost_weight"],
+      ["mppi_path_follow_weight", "路径跟随权重 · PathFollowCritic.cost_weight", "", 0, 100, 0.1, "/controller_server.FollowPathMPPI.PathFollowCritic.cost_weight"],
+      ["mppi_goal_weight", "终点距离权重 · GoalCritic.cost_weight", "", 0, 100, 0.1, "/controller_server.FollowPathMPPI.GoalCritic.cost_weight"],
+      ["mppi_goal_angle_weight", "终点角度权重 · GoalAngleCritic.cost_weight", "", 0, 100, 0.1, "/controller_server.FollowPathMPPI.GoalAngleCritic.cost_weight"],
+      ["mppi_path_angle_weight", "路径朝向权重 · PathAngleCritic.cost_weight", "", 0, 100, 0.1, "/controller_server.FollowPathMPPI.PathAngleCritic.cost_weight"],
+        ["mppi_time_steps", "预测步数 · time_steps", '', 1, 200, 1, '/controller_server.FollowPathMPPI.time_steps', 'integer'],
+        ["mppi_model_dt", "模型时间步长 · model_dt", 's', .005, 1, .005, '/controller_server.FollowPathMPPI.model_dt'],
+        ["mppi_batch_size", "轨迹采样数量 · batch_size", '', 100, 10000, 100, '/controller_server.FollowPathMPPI.batch_size', 'integer'],
+        ["mppi_iteration_count", "优化迭代次数 · iteration_count", '', 1, 10, 1, '/controller_server.FollowPathMPPI.iteration_count', 'integer'],
+        ["mppi_vx_max", "纵向速度上限 · vx_max", 'm/s', .01, 1.5, .01, '/controller_server.FollowPathMPPI.vx_max'],
+        ["mppi_vx_min", "纵向速度下限 · vx_min", 'm/s', -1.5, 1.5, .01, '/controller_server.FollowPathMPPI.vx_min'],
+        ["mppi_wz_max", "角速度上限 · wz_max", 'rad/s', .05, 5, .05, '/controller_server.FollowPathMPPI.wz_max'],
+        ["mppi_temperature", "温度系数 · temperature", '', .001, 10, .001, '/controller_server.FollowPathMPPI.temperature'],
+        ["mppi_gamma", "控制代价权重 · gamma", '', 0, 10, .001, '/controller_server.FollowPathMPPI.gamma'],
+      ]},
+    },
+  };
+  // Preserve every field and its binding; only change presentation and ordering.
+  const dwbSpeedIds = new Set(['linear_speed', 'angular_speed']);
+  const dwbSpeeds = specs.filter(s => dwbSpeedIds.has(s[0])).map(s =>
+    [s[0], s[1], s[3], s[4], s[5], s[6], s[7]]);
+  for (let i = specs.length - 1; i >= 0; i--) if (dwbSpeedIds.has(specs[i][0])) specs.splice(i, 1);
+  algorithmProfiles.local.hot_dwb.fields.unshift(...dwbSpeeds);
+
+  algorithmProfiles.global.smac_hybrid = {label: 'Smac Hybrid（前进/倒车）', plugin: 'nav2_smac_planner/SmacPlannerHybrid', fields: []};
+  algorithmDescriptions.global = 'Smac 2D、NavFn、Theta*或Smac Hybrid方向规划；新增规划器需重启导航栈加载。';
+  algorithmProfiles.local.rpp.fields.push(["rpp_allow_reversing", "允许沿倒车段行驶 · allow_reversing", "", 0, 1, 1, "/controller_server.FollowPathRPP.allow_reversing", "boolean"]);
+  parameterHelp["rpp_allow_reversing"] = "需先关闭启用航向对齐；只跟随规划路径中的倒车段，不能替代方向规划。";
+  parameterReferences["rpp_allow_reversing"] = "false";
+  algorithmProfiles.local.mppi.fields.push(["mppi_path_forward_preference", "路径评分偏好车头朝前 · PathAngleCritic.forward_preference", "", 0, 1, 1, "/controller_server.FollowPathMPPI.PathAngleCritic.forward_preference", "boolean"]);
+  parameterHelp["mppi_path_forward_preference"] = "关闭后路径角度评分接受正向或反向接近；与单独的前进偏好评分不是同一开关。";
+  parameterReferences["mppi_path_forward_preference"] = "true";
+  algorithmProfiles.local.mppi.fields.push(["mppi_prefer_forward_enabled", "启用前进偏好评分 · PreferForwardCritic.enabled", "", 0, 1, 1, "/controller_server.FollowPathMPPI.PreferForwardCritic.enabled", "boolean"]);
+  parameterHelp["mppi_prefer_forward_enabled"] = "关闭后取消该评分项对倒车的额外惩罚；不会关闭障碍检查。";
+  parameterReferences["mppi_prefer_forward_enabled"] = "true";
+  algorithmProfiles.local.mppi.fields.push(["mppi_prefer_forward_weight", "前进偏好权重 · PreferForwardCritic.cost_weight", "", 0, 100, 0.01, "/controller_server.FollowPathMPPI.PreferForwardCritic.cost_weight", "number"]);
+  parameterHelp["mppi_prefer_forward_weight"] = "越大越倾向前进；设为0取消该项惩罚，其他评分仍起作用。";
+  parameterReferences["mppi_prefer_forward_weight"] = "5.0";
+  algorithmProfiles.local.mppi.fields.push(["mppi_prefer_forward_distance", "前进偏好退出距离 · PreferForwardCritic.threshold_to_consider", "m", 0, 10, 0.01, "/controller_server.FollowPathMPPI.PreferForwardCritic.threshold_to_consider", "number"]);
+  parameterHelp["mppi_prefer_forward_distance"] = "靠近终点到此距离以内时停止前进偏好评分。";
+  parameterReferences["mppi_prefer_forward_distance"] = "0.5";
+  algorithmProfiles.local.mppi.fields.push(["mppi_path_angle_enabled", "启用路径朝向评分 · PathAngleCritic.enabled", "", 0, 1, 1, "/controller_server.FollowPathMPPI.PathAngleCritic.enabled", "boolean"]);
+  parameterHelp["mppi_path_angle_enabled"] = "建议优先调整正反向偏好；关闭整个评分项会同时失去相应航向约束。";
+  parameterReferences["mppi_path_angle_enabled"] = "true";
+  algorithmProfiles.local.mppi.fields.push(["mppi_use_path_orientations", "遵循路径中的车体朝向 · PathAlignCritic.use_path_orientations", "", 0, 1, 1, "/controller_server.FollowPathMPPI.PathAlignCritic.use_path_orientations", "boolean"]);
+  parameterHelp["mppi_use_path_orientations"] = "NavFn、Smac 2D、Theta*保持关闭；方向规划路径可开启以遵循规划的前进和倒车安排。";
+  parameterReferences["mppi_use_path_orientations"] = "false";
+  algorithmProfiles.local.mppi.fields.push(["mppi_goal_angle_enabled", "启用终点朝向评分 · GoalAngleCritic.enabled", "", 0, 1, 1, "/controller_server.FollowPathMPPI.GoalAngleCritic.enabled", "boolean"]);
+  parameterHelp["mppi_goal_angle_enabled"] = "关闭只影响局部轨迹评分，不取消终点检查器的朝向要求。";
+  parameterReferences["mppi_goal_angle_enabled"] = "true";
+  algorithmProfiles.local.mppi.fields.push(["mppi_goal_angle_distance", "终点朝向评分距离 · GoalAngleCritic.threshold_to_consider", "m", 0, 10, 0.01, "/controller_server.FollowPathMPPI.GoalAngleCritic.threshold_to_consider", "number"]);
+  parameterHelp["mppi_goal_angle_distance"] = "距终点进入该范围后考虑终点朝向评分；不是可安全旋转空间的判定。";
+  parameterReferences["mppi_goal_angle_distance"] = "0.5";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_motion_model_for_search", "搜索运动模型 · motion_model_for_search", "", 0, 0, 0.01, "/planner_server.GridHybrid.motion_model_for_search", "string"]);
+  parameterHelp["hybrid_motion_model_for_search"] = "REEDS_SHEPP允许前进和倒车；DUBIN只允许前进。此项需重启导航栈。";
+  parameterReferences["hybrid_motion_model_for_search"] = "reeds_shepp";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_minimum_turning_radius", "最小转弯半径 · minimum_turning_radius", "m", 0.05, 5, 0.01, "/planner_server.GridHybrid.minimum_turning_radius", "number"]);
+  parameterHelp["hybrid_minimum_turning_radius"] = "规划曲线的最小半径；不是原地旋转的开关，需结合实际车体和通道验证。";
+  parameterReferences["hybrid_minimum_turning_radius"] = "0.4";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_reverse_penalty", "倒车惩罚 · reverse_penalty", "", 1, 20, 0.01, "/planner_server.GridHybrid.reverse_penalty", "number"]);
+  parameterHelp["hybrid_reverse_penalty"] = "1表示不额外惩罚倒车；数值越大越偏好前进。";
+  parameterReferences["hybrid_reverse_penalty"] = "2.0";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_change_penalty", "前后换向惩罚 · change_penalty", "", 0, 20, 0.01, "/planner_server.GridHybrid.change_penalty", "number"]);
+  parameterHelp["hybrid_change_penalty"] = "增大后减少前进和倒车之间的切换。";
+  parameterReferences["hybrid_change_penalty"] = "0.0";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_non_straight_penalty", "转弯惩罚 · non_straight_penalty", "", 1, 20, 0.01, "/planner_server.GridHybrid.non_straight_penalty", "number"]);
+  parameterHelp["hybrid_non_straight_penalty"] = "增大后更偏好直线路径。";
+  parameterReferences["hybrid_non_straight_penalty"] = "1.2";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_cost_penalty", "障碍代价惩罚 · cost_penalty", "", 0, 20, 0.01, "/planner_server.GridHybrid.cost_penalty", "number"]);
+  parameterHelp["hybrid_cost_penalty"] = "提高对高代价区域的惩罚；不要用它替代真实障碍检查。";
+  parameterReferences["hybrid_cost_penalty"] = "2.0";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_angle_quantization_bins", "朝向离散数量 · angle_quantization_bins", "", 8, 360, 1, "/planner_server.GridHybrid.angle_quantization_bins", "integer"]);
+  parameterHelp["hybrid_angle_quantization_bins"] = "数量越大，方向搜索越精细，计算量也增加；必须为偶数。";
+  parameterReferences["hybrid_angle_quantization_bins"] = "72";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_analytic_expansion_ratio", "目标连接尝试比例 · analytic_expansion_ratio", "", 0.1, 20, 0.01, "/planner_server.GridHybrid.analytic_expansion_ratio", "number"]);
+  parameterHelp["hybrid_analytic_expansion_ratio"] = "控制解析连接目标的搜索尝试频率。";
+  parameterReferences["hybrid_analytic_expansion_ratio"] = "3.5";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_analytic_expansion_max_length", "目标连接最大长度 · analytic_expansion_max_length", "m", 0.1, 20, 0.01, "/planner_server.GridHybrid.analytic_expansion_max_length", "number"]);
+  parameterHelp["hybrid_analytic_expansion_max_length"] = "限制直接连接目标的长度；过长可能走不理想的高代价捷径。";
+  parameterReferences["hybrid_analytic_expansion_max_length"] = "3.0";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_tolerance", "路线终点容差 · tolerance", "m", 0, 5, 0.01, "/planner_server.GridHybrid.tolerance", "number"]);
+  parameterHelp["hybrid_tolerance"] = "允许在此距离内返回接近目标的路径；不取消终点朝向要求。";
+  parameterReferences["hybrid_tolerance"] = "0.25";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_max_planning_time", "最大规划时间 · max_planning_time", "秒", 0.05, 30, 0.01, "/planner_server.GridHybrid.max_planning_time", "number"]);
+  parameterHelp["hybrid_max_planning_time"] = "单次规划时间预算。";
+  parameterReferences["hybrid_max_planning_time"] = "3.0";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_allow_unknown", "允许经过未知区域 · allow_unknown", "", 0, 1, 1, "/planner_server.GridHybrid.allow_unknown", "boolean"]);
+  parameterHelp["hybrid_allow_unknown"] = "关闭时不规划穿过未知栅格。";
+  parameterReferences["hybrid_allow_unknown"] = "false";
+  algorithmProfiles.global.smac_hybrid.fields.push(["hybrid_smooth_path", "平滑路径 · smooth_path", "", 0, 1, 1, "/planner_server.GridHybrid.smooth_path", "boolean"]);
+  parameterHelp["hybrid_smooth_path"] = "对搜索路径进行平滑，仍需控制器和车体碰撞检查。";
+  parameterReferences["hybrid_smooth_path"] = "true";
+
+  const advancedIds = new Set([
+    'planner_downsampling_factor', 'planner_downsample_costmap', 'planner_max_iterations', 'planner_max_planning_time',
+    'theta_how_many_corners', 'theta_w_euc_cost', 'dwb_vx_samples', 'dwb_vtheta_samples',
+    'mppi_time_steps', 'mppi_model_dt', 'mppi_batch_size', 'mppi_iteration_count', 'mppi_temperature', 'mppi_gamma'
+  ]);
+  const fieldGroups = {};
+  for (const [group, ids] of Object.entries({
+    '速度与平顺': ['linear_speed','angular_speed','dwb_accel_x','dwb_decel_x','dwb_accel_theta','dwb_decel_theta','dwb_min_speed_xy','dwb_min_speed_theta','dwb_min_vel_x','rpp_desired_linear_vel','mppi_vx_max','mppi_vx_min','mppi_wz_max'],
+    '避障与路线选择': ['planner_cost_multiplier','planner_tolerance','planner_allow_unknown','planner_use_final_orientation','navfn_tolerance','navfn_allow_unknown','navfn_use_astar','navfn_use_final_orientation','theta_allow_unknown','theta_use_final_orientation','theta_w_traversal_cost','obstacle_scale','path_align_scale','path_dist_scale','dwb_sim_time','mppi_obstacle_weight','mppi_path_align_weight','mppi_path_follow_weight','mppi_path_angle_weight'],
+    '路线跟踪': ['rpp_velocity_scaled_lookahead','rpp_interpolation','rpp_lookahead_dist','rpp_min_lookahead_dist','rpp_max_lookahead_dist','rpp_lookahead_time'],
+    '先转向再走': ['rpp_use_rotate_to_heading','rpp_rotate_to_heading_min_angle','rpp_rotate_to_heading_angular_vel','rpp_max_angular_accel'],
+    '弯道与障碍减速': ['rpp_use_regulated_linear_velocity_scaling','rpp_curve_radius','rpp_use_cost_regulated_linear_velocity_scaling','rpp_cost_scaling_dist','rpp_cost_scaling_gain','rpp_curve_min_speed','rpp_inflation_cost_scaling_factor'],
+    '到点与终点对齐': ['goal_xy_tolerance','goal_yaw_tolerance','dwb_goal_distance','dwb_stopped_speed','dwb_goal_rotate_scale','dwb_goal_slowing','dwb_goal_lookahead','rpp_approach_distance','rpp_approach_min_speed','mppi_goal_weight','mppi_goal_angle_weight'],
+    '走不通时怎么处理': ['progress_distance','progress_time']
+  })) ids.forEach(id => {fieldGroups[id] = group;});
+  Object.assign(fieldGroups, {"rpp_allow_reversing": "倒车与方向选择", "mppi_path_forward_preference": "倒车与方向选择", "mppi_prefer_forward_enabled": "倒车与方向选择", "mppi_prefer_forward_weight": "倒车与方向选择", "mppi_prefer_forward_distance": "倒车与方向选择", "mppi_path_angle_enabled": "倒车与方向选择", "mppi_use_path_orientations": "倒车与方向选择", "mppi_goal_angle_enabled": "到点与终点对齐", "mppi_goal_angle_distance": "到点与终点对齐", "hybrid_motion_model_for_search": "倒车与方向选择", "hybrid_minimum_turning_radius": "倒车与方向选择", "hybrid_reverse_penalty": "倒车与方向选择", "hybrid_change_penalty": "倒车与方向选择", "hybrid_non_straight_penalty": "倒车与方向选择", "hybrid_cost_penalty": "倒车与方向选择", "hybrid_angle_quantization_bins": "倒车与方向选择", "hybrid_analytic_expansion_ratio": "倒车与方向选择", "hybrid_analytic_expansion_max_length": "倒车与方向选择", "hybrid_tolerance": "倒车与方向选择", "hybrid_max_planning_time": "倒车与方向选择", "hybrid_allow_unknown": "倒车与方向选择", "hybrid_smooth_path": "倒车与方向选择"});
+  const groupOrder = ['速度与平顺','倒车与方向选择','避障与路线选择','路线跟踪','先转向再走','弯道与障碍减速','到点与终点对齐','走不通时怎么处理'];
+  function renderGroupedFields(fields, container) {
+    for (const group of groupOrder) {
+      const members = fields.filter(s => !advancedIds.has(s[0]) && (fieldGroups[s[0]] || '避障与路线选择') === group);
+      if (!members.length) continue;
+      const card = disclosure('sub:' + container.dataset.algorithm + ':' + group, group, 'parameter-subgroup');
+      members.forEach(s => makeFieldRow(s, card.body)); container.append(card.element);
+    }
+    const advanced = fields.filter(s => advancedIds.has(s[0]));
+    if (advanced.length) {
+      const card = disclosure('advanced:' + container.dataset.algorithm, '高级设置 · 计算与搜索（' + advanced.length + '项）', 'advanced-settings', false);
+      advanced.forEach(s => makeFieldRow(s, card.body)); container.append(card.element);
+    }
+  }
+  function updateDependentRows() {
+    const inputFor = id => (rows.get(id) || algorithmRows.get(id))?.input;
+    const show = (id, visible) => {const input = inputFor(id); if (input) input.closest('.row').hidden = !visible;};
+    const checked = id => Boolean(inputFor(id)?.checked);
+    show('replanning_interval', checked('automatic_replanning'));
+    show('planner_downsampling_factor', checked('planner_downsample_costmap'));
+    const scaled = checked('rpp_velocity_scaled_lookahead');
+    show('rpp_lookahead_dist', !scaled);
+    ["rpp_min_lookahead_dist","最小前视距离 · min_lookahead_dist",'rpp_lookahead_time'].forEach(id => show(id, scaled));
+    ["rpp_rotate_to_heading_min_angle","航向对齐角度阈值 · rotate_to_heading_min_angle",'rpp_max_angular_accel'].forEach(id => show(id, checked('rpp_use_rotate_to_heading')));
+    show('rpp_curve_radius', checked('rpp_use_regulated_linear_velocity_scaling'));
+    ["rpp_cost_scaling_dist","障碍减速距离 · cost_scaling_dist",'rpp_inflation_cost_scaling_factor'].forEach(id => show(id, checked('rpp_use_cost_regulated_linear_velocity_scaling')));
+    show('rpp_curve_min_speed', checked('rpp_use_regulated_linear_velocity_scaling') || checked('rpp_use_cost_regulated_linear_velocity_scaling'));
+  }
+
+  const status = root.querySelector('[data-testid="nav2-save-status"]');
+  const algorithmGroups = root.querySelector('.algorithm-groups');
+  const groups = root.querySelector('.groups');
+  const rows = new Map();
+  const algorithmRows = new Map();
+  const algorithmSelectors = {};
+  const selectedAlgorithms = {global: 'smac_2d', local: 'hot_dwb'};
+  const sharedBindings = {
+    costmap_radius: ['local_radius', 'global_radius'],
+    costmap_scaling: ['local_scaling', 'global_scaling'],
+    costmap_padding: ['local_padding', 'global_padding'],
+  };
+  function savedScalar(saved, id) {
+    const keys = sharedBindings[id] || [id];
+    const values = keys.map(key => saved?.[key] && Object.values(saved[key])[0]);
+    if (values.some(value => value === undefined)) return undefined;
+    return values.every(value => value === values[0]) ? values[0] : undefined;
+  }
+  let savedValues = {}, disposed = false, loaded = false, busy = false, switchingAlgorithm = false, retry;
+  const onWheel = (event) => {
+    if (root.scrollHeight > root.clientHeight) {
+      root.scrollTop = Math.max(0, Math.min(root.scrollHeight - root.clientHeight, root.scrollTop + event.deltaY));
+      event.preventDefault();
+    }
+  };
+  root.addEventListener('wheel', onWheel, {passive: false});
+  const setStatus = (text, kind = '') => { if (!disposed) { status.textContent = text; status.className = 'status ' + kind; } };
+  const isDynamicField = spec => typeof spec[6] === 'string';
+  const fieldType = spec => isDynamicField(spec) ? (spec[7] || 'double') : (spec[8] || 'double');
+  const fieldUnit = spec => isDynamicField(spec) ? spec[2] : spec[3];
+  const fieldMin = spec => isDynamicField(spec) ? spec[3] : spec[4];
+  const fieldMax = spec => isDynamicField(spec) ? spec[4] : spec[5];
+  const fieldStep = spec => isDynamicField(spec) ? spec[5] : spec[6];
+  const fieldPath = spec => isDynamicField(spec) ? spec[6] : spec[7];
+  const fieldRows = () => [...rows.values(), ...algorithmRows.values()];
+  const FOXGLOVE_CONNECTION_GAP_RETRIES = 12;
+  const FOXGLOVE_CONNECTION_GAP_DELAY_MS = 500;
+  function isFoxgloveConnectionGap(error) {
+    return /without a valid Foxglove WebSocket connection/i.test(String(error?.message || error));
+  }
+  function waitForFoxgloveReconnect() {
+    return new Promise(resolve => setTimeout(resolve, FOXGLOVE_CONNECTION_GAP_DELAY_MS));
+  }
+  async function call(service, request, timeoutMs = 12000) {
+    if (!context.callService) throw new Error('连接不支持服务调用');
+    for (let attempt = 0; ; attempt += 1) {
+      let timer;
+      try {
+        return await Promise.race([context.callService(service, request), new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error('请求超时，请重新读取已保存参数确认结果')), timeoutMs);
+        })]);
+      } catch (error) {
+        // The player throws this before sending anything when it is between
+        // WebSocket close/open. Retry only that case; do not hide service,
+        // timeout, or business errors and never repeat a request that reached ROS.
+        if (!isFoxgloveConnectionGap(error) || attempt >= FOXGLOVE_CONNECTION_GAP_RETRIES || disposed) throw error;
+        await waitForFoxgloveReconnect();
+      } finally { clearTimeout(timer); }
+    }
+  }
+  function displaySaved(saved) {
+    savedValues = saved || {};
+    for (const [id] of specs) {
+      const row = rows.get(id), value = savedScalar(saved, id);
+      if (value === undefined || pendingEdits.has(id)) {
+        if (sharedBindings[id] && document.activeElement !== row.input) {
+          row.input.value = '';
+          row.input.placeholder = '当前全局/局部值不一致，请输入统一值';
+        }
+        continue;
+      }
+      row.input.placeholder = '';
+
+      if (row.input.type === 'checkbox') row.input.checked = Boolean(value);
+      else if (document.activeElement !== row.input) row.input.value = String(value);
+    }
+    const algorithms = arguments.length > 1 ? arguments[1] : undefined;
+    if (algorithms) {
+      for (const kind of ['global', 'local']) {
+        const state = algorithms[kind];
+        if (state?.current && algorithmProfiles[kind][state.current]) selectedAlgorithms[kind] = state.current;
+        const select = algorithmSelectors[kind];
+        if (select) select.value = selectedAlgorithms[kind];
+        renderAlgorithm(kind, selectedAlgorithms[kind], saved);
+      }
+    }
+    for (const [id, row] of algorithmRows) {
+      const values = saved[id];
+      if (!values || pendingEdits.has(id)) continue;
+      const value = Object.values(values)[0];
+
+      if (row.input.type === 'checkbox') row.input.checked = Boolean(value);
+      else if (document.activeElement !== row.input) row.input.value = String(value);
+    }
+  }
+  function enable() {
+    updateDependentRows();
+    for (const row of fieldRows()) { row.input.disabled = !loaded || switchingAlgorithm; }
+    for (const kind of ['global', 'local']) {
+      if (algorithmSelectors[kind]) algorithmSelectors[kind].disabled = !loaded || busy || pendingEdits.size > 0;
+    }
+  }
+  async function refresh() {
+    if (busy || disposed) return;
+    clearTimeout(retry); busy = true; enable(); setStatus('正在读取永久配置……');
+    try {
+      const response = await call('/robot_113/omnifleet_t2/nav2/read_saved', {});
+      if (!response.success) throw new Error(response.message);
+      const data = JSON.parse(response.message);
+      if (disposed) return;
+      parameterLinks = data.parameter_links || {};
+      displaySaved(data.saved, data.algorithms); loaded = true; updateParameterLinks();
+      enable();
+      setStatus('已读取永久配置，可以修改并保存。', 'ok');
+    } catch (error) {
+      setStatus(isFoxgloveConnectionGap(error) ? '等待 Foxglove WebSocket 连接，连接恢复后自动重试……' : '永久参数服务暂不可用：' + String(error), isFoxgloveConnectionGap(error) ? '' : 'error');
+      if (!loaded && !disposed) retry = setTimeout(refresh, 2500);
+    } finally { busy = false; if (!disposed) enable(); }
+  }
+  const pendingEdits = new Map();
+  let applyTimer;
+  function heightParameters() {
+    const lowInput = rows.get('map_z_min').input, highInput = rows.get('map_z_max').input;
+    const low = Number(lowInput.value), high = Number(highInput.value);
+    const validNumbers = lowInput.value.trim() !== '' && highInput.value.trim() !== '' && Number.isFinite(low) && Number.isFinite(high);
+    const message = !validNumbers ? '请输入完整的建图高度上下限' : low >= high ? '建图高度下限必须小于上限' : low < -10 || high > 10 ? '建图高度必须在 -10 到 10 之间' : '';
+    lowInput.setCustomValidity(message); highInput.setCustomValidity(message);
+    lowInput.setAttribute('aria-invalid', String(Boolean(message))); highInput.setAttribute('aria-invalid', String(Boolean(message)));
+    if (message) { setStatus(message + '，未应用', 'error'); return undefined; }
+    return [{name:'map_z_min', value:{type:3,double_value:low}}, {name:'map_z_max', value:{type:3,double_value:high}}];
+  }
+  function pwmCompensationParameters() {
+    const m1Input = rows.get('pwm_compensation_m1').input, m2Input = rows.get('pwm_compensation_m2').input;
+    const m1 = Number(m1Input.value), m2 = Number(m2Input.value);
+    const valid = Number.isInteger(m1) && Number.isInteger(m2) && m1 >= 0 && m1 <= 3300 && m2 >= 0 && m2 <= 3300;
+    const message = valid ? '' : 'M1/M2 PWM 补偿必须是 0 到 3300 的整数';
+    m1Input.setCustomValidity(message); m2Input.setCustomValidity(message);
+    m1Input.setAttribute('aria-invalid', String(Boolean(message))); m2Input.setAttribute('aria-invalid', String(Boolean(message)));
+    if (message) { setStatus(message + '，未应用', 'error'); return undefined; }
+    return [
+      {name:'pwm_compensation_m1', value:{type:2,integer_value:m1}},
+      {name:'pwm_compensation_m2', value:{type:2,integer_value:m2}},
+    ];
+  }
+  function bindAutoApply(input, spec) {
+    const queue = (immediate) => {
+      if (!loaded || disposed) return;
+      if (spec[0] === 'map_z_min' || spec[0] === 'map_z_max') heightParameters();
+      pendingEdits.set(spec[0], {spec, raw: input.type === 'checkbox' ? input.checked : input.value, dueAt: Date.now() + (immediate ? 0 : 800)});
+      enable();
+      clearTimeout(applyTimer);
+      applyTimer = setTimeout(applyNext, immediate ? 0 : 800);
+    };
+    input.oninput = () => { if (input.type !== 'checkbox') queue(false); };
+    input.onchange = () => queue(true);
+    input.onblur = () => { if (pendingEdits.has(spec[0])) queue(true); };
+    input.onkeydown = (event) => { if (event.key === 'Enter') { event.preventDefault(); queue(true); } };
+  }
+  async function applyNext() {
+    clearTimeout(applyTimer);
+    if (disposed || !pendingEdits.size) return;
+    if (busy) { applyTimer = setTimeout(applyNext, 100); return; }
+    const [id, edit] = pendingEdits.entries().next().value;
+    if (Date.now() < edit.dueAt) { applyTimer = setTimeout(applyNext, edit.dueAt - Date.now()); return; }
+    pendingEdits.delete(id);
+    const row = rows.get(id) || algorithmRows.get(id);
+    if (row) {
+      if (row.input.type === 'checkbox') row.input.checked = edit.raw; else if (row.input.value !== edit.raw) row.input.value = edit.raw;
+      const saved = savedScalar(savedValues, id);
+      const same = row.input.type === 'checkbox' ? saved === edit.raw : edit.raw.trim() !== '' && (fieldType(edit.spec) === 'string' ? edit.raw.trim() === saved : Number(edit.raw) === saved);
+      if (!same) await save(edit.spec);
+    }
+    for (const [key, draft] of pendingEdits) {
+      const field = rows.get(key) || algorithmRows.get(key);
+      if (field) { if (field.input.type === 'checkbox') field.input.checked = draft.raw; else if (field.input.value !== draft.raw) field.input.value = draft.raw; }
+    }
+    if (!disposed) enable();
+    if (!disposed && pendingEdits.size) applyTimer = setTimeout(applyNext, 0);
+  }
+  async function save(spec) {
+    if (busy) return;
+    const [id, label] = spec, unit = fieldUnit(spec), min = fieldMin(spec), max = fieldMax(spec);
+    const type = fieldType(spec), row = rows.get(id) || algorithmRows.get(id);
+    const raw = row.input.type === 'checkbox' ? '' : row.input.value.trim();
+    const value = type === 'boolean' ? row.input.checked : type === 'string' ? raw : Number(raw);
+    if (type === 'string' ? !raw : type === 'integer' ? (!Number.isInteger(value) || value < min || value > max) : type !== 'boolean' && (!raw || !Number.isFinite(value) || value < min || value > max)) {
+      setStatus(label + ' 必须在 ' + min + ' 到 ' + max + ' ' + unit + ' 之间', 'error'); return;
+    }
+    const heightPair = id === 'map_z_min' || id === 'map_z_max' ? heightParameters() : null;
+    if (heightPair === undefined) return;
+    const pwmPair = id === 'pwm_compensation_m1' || id === 'pwm_compensation_m2' ? pwmCompensationParameters() : null;
+    if (pwmPair === undefined) return;
+    busy = true; enable(); setStatus('正在保存 ' + label + ' = ' + value + '……');
+    try {
+      const parameterValue = type === 'boolean' ? {type: 1, bool_value: value} : type === 'integer' ? {type: 2, integer_value: value} : type === 'string' ? {type: 4, string_value: value} : {type: 3, double_value: value};
+      const names = sharedBindings[id] || [id];
+      const parameters = heightPair || pwmPair || names.map(name => ({name, value: parameterValue}));
+      const response = await call('/robot_113/omnifleet_t2/nav2/save_parameters', {parameters}, heightPair ? 60000 : 12000);
+      const result = response.results?.[0];
+      if (!result?.successful) throw new Error(result?.reason || '服务没有返回保存确认');
+      const receipt = JSON.parse(result.reason);
+      if (disposed) return;
+      displaySaved(receipt.saved, receipt.algorithms);
+      setStatus('已永久保存：' + label + ' = ' + value + ' ' + unit + '\n' + Object.values(receipt.runtime || {}).join('\n'), receipt.runtime_confirmed === false ? 'error' : 'ok');
+    } catch (error) { setStatus('保存未确认：' + String(error), 'error'); }
+    finally { busy = false; if (!disposed) enable(); }
+  }
+  async function saveAlgorithm(kind) {
+    if (busy) return;
+    const id = algorithmSelectors[kind].value;
+    const previous = selectedAlgorithms[kind];
+    if (id === previous) return;
+    const label = kind === 'global' ? '全局路径规划算法' : '局部路径规划算法';
+    switchingAlgorithm = true; busy = true; enable(); setStatus('正在保存 ' + label + ' = ' + algorithmProfiles[kind][id].label + '……');
+    try {
+      const name = kind === 'global' ? 'global_planner_algorithm' : 'local_controller_algorithm';
+      const response = await call('/robot_113/omnifleet_t2/nav2/save_parameters', {parameters: [{name, value: {type: 4, string_value: id}}]});
+      const result = response.results?.[0];
+      if (!result?.successful) throw new Error(result?.reason || '服务没有返回保存确认');
+      const receipt = JSON.parse(result.reason);
+      selectedAlgorithms[kind] = id;
+      displaySaved(receipt.saved, receipt.algorithms);
+      setStatus('算法选择已保存并发送：' + algorithmProfiles[kind][id].label + '\n' + Object.values(receipt.runtime || {}).join('\n'), receipt.runtime_confirmed === false ? 'error' : 'ok');
+    } catch (error) {
+      algorithmSelectors[kind].value = previous;
+      renderAlgorithm(kind, previous, savedValues);
+      setStatus('算法切换未确认：' + String(error), 'error');
+    }
+    finally { switchingAlgorithm = false; busy = false; if (!disposed) enable(); }
+  }
+  function makeFieldRow(spec, container) {
+    const [id, label] = spec, unit = fieldUnit(spec), min = fieldMin(spec), max = fieldMax(spec), step = fieldStep(spec);
+    const row = document.createElement('div'); row.className = 'row';
+    const title = document.createElement('label'); title.textContent = label + (unit ? '（' + (unit === '秒' ? 's' : unit) + '）' : '');
+    appendParameterHelp(title, id);
+    const input = document.createElement('input');
+    const type = fieldType(spec);
+    if (type === 'boolean') input.type = 'checkbox';
+    else if (type === 'string') input.type = 'text';
+    else { input.type = 'number'; input.min = String(min); input.max = String(max); input.step = String(step); }
+    input.disabled = true; input.setAttribute('data-testid', 'nav2-input-' + id);
+    bindAutoApply(input, spec);
+    row.append(title, input); container.append(row); algorithmRows.set(id, {input});
+  }
+  function renderAlgorithm(kind, id, saved = savedValues) {
+    const container = root.querySelector('[data-algorithm-params="' + kind + '"]');
+    if (!container || container.dataset.algorithm === id) return;
+    container.dataset.algorithm = id;
+    for (const input of container.querySelectorAll('input[data-testid^="nav2-input-"]')) algorithmRows.delete(input.getAttribute('data-testid').slice('nav2-input-'.length));
+    container.innerHTML = '';
+    const profile = algorithmProfiles[kind][id];
+    if (!profile) return;
+    const note = document.createElement('div'); note.className = 'algorithm-note'; note.textContent = '当前选择：' + profile.label + '；选择后自动保存并切换。'; container.append(note);
+    const fields = [...algorithmCommonFields[kind], ...profile.fields];
+    renderGroupedFields(fields, container);
+    updateParameterLinks();
+    for (const field of fields) {
+      const values = saved?.[field[0]], row = algorithmRows.get(field[0]);
+      if (!values || !row) continue;
+      const value = Object.values(values)[0];
+      if (row.input.type === 'checkbox') row.input.checked = Boolean(value); else row.input.value = String(value);
+    }
+    enable();
+  }
+  for (const kind of ['global', 'local']) {
+    const card = disclosure('algorithm:' + kind, '');
+    const section = card.body;
+    const title = document.createElement('b'); title.textContent = kind === 'global' ? '全局路径规划算法' : '局部路径规划算法'; card.summary.append(title);
+    const algorithmId=kind==='global'?'global_planner_algorithm':'local_controller_algorithm';
+    const heading=title.textContent;title.textContent='';title.append(configAnchor(algorithmId,heading));
+    const doc=document.createElement('a');doc.textContent='说明';doc.href='#';doc.dataset.docParameter=algorithmId;
+    doc.onclick=e=>{e.preventDefault();openParameterLink(algorithmId,0,true);};card.summary.append(doc);
+    const purpose = document.createElement('small'); purpose.className = 'algorithm-purpose'; purpose.textContent = algorithmDescriptions[kind]; section.append(purpose);
+    const row = document.createElement('div'); row.className = 'algorithm-row';
+    const select = document.createElement('select'); select.setAttribute('data-testid', 'nav2-' + kind + '-algorithm');
+    for (const [id, profile] of Object.entries(algorithmProfiles[kind])) { const option = document.createElement('option'); option.value = id; option.textContent = profile.label; select.append(option); }
+    select.value = selectedAlgorithms[kind];
+    row.append(select); section.append(row);
+    const params = document.createElement('div'); params.setAttribute('data-algorithm-params', kind); section.append(params);
+    algorithmGroups.append(card.element); algorithmSelectors[kind] = select;
+    select.onchange = () => saveAlgorithm(kind);
+    renderAlgorithm(kind, selectedAlgorithms[kind]);
+  }
+  const sections = new Map();
+  for (const spec of specs) {
+    const [id, label, group, unit, min, max, step] = spec;
+    let section = sections.get(group);
+    if (!section) {
+      const title = ({'全局与局部代价地图共用':'远离障碍 · 全局与局部共用','建图与避障共用高度（地图坐标系 Z）':'建图与避障共用高度','STM32 底盘 PWM 补偿':'履带起步补偿','导航行为':'换路线与自动恢复'})[group] || group;
+      const card = disclosure('group:' + group, title); section = card.body;
+      (group === '全局与局部代价地图共用' ? root.querySelector('.quick-groups') : groups).append(card.element);
+      sections.set(group, section);
+    }
+    const row = document.createElement('div'); row.className = 'row';
+    const title = document.createElement('label'); title.textContent = label + (unit ? '（' + (unit === '秒' ? 's' : unit) + '）' : '');
+    appendParameterHelp(title, id);
+    const input = document.createElement('input');
+    if (fieldType(spec) === 'boolean') input.type = 'checkbox';
+    else if (fieldType(spec) === 'string') input.type = 'text';
+    else { input.type = 'number'; input.min = String(min); input.max = String(max); input.step = String(step); }
+    input.disabled = true; input.setAttribute('data-testid', 'nav2-input-' + id);
+    bindAutoApply(input, spec);
+    row.append(title, input); section.append(row); rows.set(id, {input});
+  }
+  const searchInput = root.querySelector('[data-testid="nav2-parameter-search"]');
+  const searchResults = root.querySelector('[data-testid="nav2-parameter-search-results"]');
+  let searchMatches = [], searchHighlightTimer, searchHighlightedRow;
+  function searchCatalog() {
+    const entries = [], seen = new Set();
+    const add = (spec, group, kind = '', algorithm = '', algorithmLabel = '') => {
+      const id = spec[0];
+      if (seen.has(id)) return;
+      seen.add(id);
+      entries.push({
+        id, label: spec[1], group, kind, algorithm, algorithmLabel,
+        text: [id, spec[1], group, fieldPath(spec), parameterHelp[id] || '', algorithmLabel].join(' ').toLowerCase(),
+      });
+    };
+    specs.forEach(spec => add(spec, spec[2]));
+    for (const kind of ['global', 'local']) {
+      const selectorId = kind === 'global' ? 'global_planner_algorithm' : 'local_controller_algorithm';
+      const selectorLabel = kind === 'global' ? '全局路径规划算法' : '局部路径规划算法';
+      entries.push({
+        id: selectorId, label: selectorLabel, group: '算法选择', kind,
+        text: [selectorId, selectorLabel, algorithmDescriptions[kind], ...Object.values(algorithmProfiles[kind]).flatMap(profile => [profile.label, profile.plugin])].join(' ').toLowerCase(),
+      });
+      algorithmCommonFields[kind].forEach(spec => add(spec, fieldGroups[spec[0]] || selectorLabel, kind));
+      for (const [algorithm, profile] of Object.entries(algorithmProfiles[kind])) {
+        profile.fields.forEach(spec => add(spec, fieldGroups[spec[0]] || selectorLabel, kind, algorithm, profile.label));
+      }
+    }
+    return entries;
+  }
+  const parameterSearchCatalog = searchCatalog();
+  function revealAndFocus(input, label) {
+    clearTimeout(searchHighlightTimer);
+    searchHighlightedRow?.classList.remove('search-located-parameter');
+    const row = input.closest('.row, .algorithm-row');
+    if (row) row.hidden = false;
+    for (let parent = input.parentElement; parent && parent !== root; parent = parent.parentElement) {
+      if (parent.tagName === 'DETAILS') parent.open = true;
+    }
+    input.scrollIntoView({block:'center'});
+    input.focus({preventScroll:true});
+    searchHighlightedRow = row;
+    row?.classList.add('search-located-parameter');
+    searchHighlightTimer = setTimeout(() => row?.classList.remove('search-located-parameter'), 5000);
+    setStatus('已定位：' + label + '。可以直接修改。', 'ok');
+  }
+  function locateSearchEntry(entry) {
+    const selector = entry.id === 'global_planner_algorithm'
+      ? algorithmSelectors.global
+      : entry.id === 'local_controller_algorithm'
+        ? algorithmSelectors.local
+        : null;
+    const input = selector || root.querySelector('[data-testid="nav2-input-' + entry.id + '"]');
+    searchResults.hidden = true;
+    if (input) {
+      revealAndFocus(input, entry.label);
+      return;
+    }
+    const algorithmSelector = entry.kind && algorithmSelectors[entry.kind];
+    if (algorithmSelector && entry.algorithm && entry.algorithm !== selectedAlgorithms[entry.kind]) {
+      revealAndFocus(algorithmSelector, entry.kind === 'global' ? '全局路径规划算法' : '局部路径规划算法');
+      setStatus('“' + entry.label.split(' · ')[0] + '”属于 ' + entry.algorithmLabel + '。请先在已定位的下拉框切换算法，再搜索该参数；搜索不会自动切换算法。');
+      return;
+    }
+    setStatus('当前页面没有找到“' + entry.label + '”，请重新读取已保存参数后再试。', 'error');
+  }
+  function renderSearchResults() {
+    const query = searchInput.value.trim().toLowerCase();
+    searchResults.replaceChildren();
+    if (!query) {
+      searchMatches = [];
+      searchResults.hidden = true;
+      return;
+    }
+    const tokens = query.split(/\s+/).filter(Boolean);
+    searchMatches = parameterSearchCatalog
+      .filter(entry => tokens.every(token => entry.text.includes(token)))
+      .sort((a, b) => Number(b.label.toLowerCase().includes(query)) - Number(a.label.toLowerCase().includes(query)))
+      .slice(0, 16);
+    if (!searchMatches.length) {
+      const empty = document.createElement('div');
+      empty.className = 'parameter-search-empty';
+      empty.textContent = '没有匹配参数，请换一个关键词。';
+      searchResults.append(empty);
+    } else {
+      for (const entry of searchMatches) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute('role', 'option');
+        button.dataset.parameterId = entry.id;
+        const title = document.createElement('span'); title.textContent = entry.label;
+        const detail = document.createElement('small');
+        detail.textContent = entry.algorithmLabel ? entry.group + ' · ' + entry.algorithmLabel : entry.group;
+        button.append(title, detail);
+        button.onclick = () => locateSearchEntry(entry);
+        searchResults.append(button);
+      }
+    }
+    searchResults.hidden = false;
+  }
+  searchInput.oninput = renderSearchResults;
+  searchInput.onfocus = renderSearchResults;
+  searchInput.onkeydown = event => {
+    if (event.key === 'Escape') { searchResults.hidden = true; return; }
+    if (event.key === 'Enter' && searchMatches.length) {
+      event.preventDefault();
+      locateSearchEntry(searchMatches[0]);
+    }
+  };
+  searchResults.onmousedown = event => event.preventDefault();
+  root.querySelector('[data-testid="nav2-parameter-search-clear"]').onclick = () => {
+    searchInput.value = '';
+    renderSearchResults();
+    searchInput.focus();
+  };
+  root.querySelector('[data-testid="nav2-refresh-saved"]').onclick = refresh;
+  const stackCard = document.createElement('details');
+  stackCard.className = 'major-card';
+  stackCard.open = true;
+  stackCard.innerHTML = '<summary>导航栈启动与重启</summary><div style="padding:10px"><div><b>托管服务</b> <code>omnifleet-t2-mola.service</code> + <code>omnifleet-local-navigation.service</code></div><textarea id="navigation-launch-command" data-testid="navigation-launch-command" hidden></textarea><div class="hint">MOLA 与导航由 systemd 统一管理；此面板不需要填写或执行命令。点击下方按钮会按当前保存的启动模式重启托管服务，旧航点不会继续执行。</div><button type="button" data-testid="navigation-stack-restart">重启导航栈</button><div data-testid="navigation-stack-status" role="status" aria-live="polite" style="margin-top:8px;white-space:pre-wrap;overflow-wrap:anywhere">正在读取服务状态……</div></div>';
+  root.querySelector('.panel-top').after(stackCard);
+  const stackInput = stackCard.querySelector('textarea');
+  const stackButton = stackCard.querySelector('button');
+  const stackStatus = stackCard.querySelector('[role="status"]');
+  const modePicker = document.createElement('div');
+  modePicker.style.cssText = 'margin-bottom:10px';
+  modePicker.hidden = true;
+  modePicker.innerHTML = '<b>启动模式</b><div role="group" aria-label="导航启动模式" style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0"><button type="button" data-startup-mode="saved_map" aria-pressed="true">加载已有地图导航</button><button type="button" data-startup-mode="mapping" aria-pressed="false">边建图边导航</button></div><div class="hint" data-startup-mode-hint></div>';
+  stackInput.parentElement.insertBefore(modePicker, stackInput.previousElementSibling);
+  let modeSaving = false;
+  function showStartupMode() {
+    const mode = /(?:^|\s)startup_mode:=mapping(?:\s|$)/.test(stackInput.value) ? 'mapping' : 'saved_map';
+    const unified = /\bmola_nav2_unified\.launch\.py\b/.test(stackInput.value);
+    for (const button of modePicker.querySelectorAll('[data-startup-mode]')) {
+      const selected = button.dataset.startupMode === mode;
+      button.setAttribute('aria-pressed', String(selected));
+      button.style.background = selected ? '#1976d2' : '#fff';
+      button.style.color = selected ? '#fff' : '#333';
+      button.disabled = !stackLoaded || !unified || stackWorking || stackInput.disabled || modeSaving;
+    }
+    modePicker.querySelector('[data-startup-mode-hint]').textContent = !unified ? '此切换适用于统一导航启动命令。' :
+      (mode === 'mapping' ? '从空地图开始，使用 MOLA 实时栅格边建图边导航；不会读取旧 .mm。' : '只接受已验证的 Native KeyframePointCloudMap；必须显式填写 map_path。') + ' 选择后自动保存，点击“重启导航栈”生效。';
+  }
+  for (const button of modePicker.querySelectorAll('[data-startup-mode]')) {
+    button.onclick = async () => {
+      if (button.disabled) return;
+      const previous = stackInput.value;
+      let command = previous.replace(/\s+startup_mode:=(?:"[^"]*"|'[^']*'|\S+)/g, '').trim();
+      if (button.dataset.startupMode === 'mapping') {
+        command = command.replace(/\s+map_path:=(?:"[^"]*"|'[^']*'|\S+)/g, '').trim();
+      }
+      command += ' startup_mode:=' + button.dataset.startupMode;
+      modeSaving = true;
+      stackWorking = true;
+      stackDraft = true;
+      stackInput.value = command;
+      stackInput.disabled = true;
+      stackButton.disabled = true;
+      showStartupMode();
+      try {
+        await stackCall('__stack_command', command);
+        stackDraft = false;
+        stackFeedback = '启动模式已保存；点击“重启导航栈”生效，当前运行模式未改变。';
+      } catch (error) {
+        stackInput.value = previous;
+        stackDraft = false;
+        stackFeedback = '保存失败：' + String(error.message || error);
+      } finally {
+        modeSaving = false;
+        stackWorking = false;
+        stackInput.disabled = false;
+        stackButton.disabled = false;
+        stackStatus.textContent = stackFeedback;
+        showStartupMode();
+      }
+    };
+  }
+  const stackDetails = document.createElement('details');
+  stackDetails.innerHTML = '<summary>日志与地图备份</summary><div style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85em"></div>';
+  stackStatus.after(stackDetails);
+  stackDetails.hidden = true;
+  let stackTimer, stackWorking = false, stackDraft = false, stackLoaded = false, stackFeedback = '';
+  async function stackCall(name, value = '') {
+    const response = await call('/robot_113/omnifleet_t2/nav2/save_parameters', {
+      parameters: [{name, value: {type: 4, string_value: value}}]
+    });
+    const result = response.results?.[0];
+    if (!result?.successful) throw new Error(result?.reason || '导航栈服务没有返回结果');
+    return JSON.parse(result.reason);
+  }
+  function showStack(value) {
+    if (disposed) return;
+    if (!stackDraft && document.activeElement !== stackInput) stackInput.value = value.command;
+    stackLoaded = true;
+    const pending = ['queued', 'stopping', 'starting', 'waiting'].includes(value.phase);
+    stackButton.disabled = stackWorking || pending;
+    stackInput.disabled = pending;
+    showStartupMode();
+    stackStatus.textContent = stackFeedback || value.message;
+    stackDetails.hidden = !value.log && !value.map_backup;
+    stackDetails.lastElementChild.textContent = (value.log ? '日志：' + value.log : '') +
+      (value.map_backup ? '\n地图备份：' + value.map_backup : '');
+  }
+  async function pollStack() {
+    if (disposed) return;
+    try {
+      if (!stackWorking) showStack(await stackCall('__stack_status'));
+    } catch (error) {
+      if (!disposed) stackStatus.textContent = isFoxgloveConnectionGap(error) ? '等待 Foxglove WebSocket 连接，连接恢复后自动重试……' : '导航栈服务暂不可用：' + String(error.message || error);
+    } finally {
+      if (!disposed) stackTimer = setTimeout(pollStack, 2500);
+    }
+  }
+  stackInput.oninput = () => { stackDraft = true; stackFeedback = ''; showStartupMode(); };
+  stackInput.onchange = async () => {
+    if (stackWorking || !stackDraft) return;
+    const command = stackInput.value;
+    try {
+      await stackCall('__stack_command', command);
+      if (command === stackInput.value && !stackWorking) {
+        stackDraft = false;
+        stackFeedback = '启动命令已保存；尚未执行。';
+        stackStatus.textContent = stackFeedback;
+      }
+    } catch (error) {
+      if (command === stackInput.value && !stackWorking) {
+        stackFeedback = String(error.message || error);
+        stackStatus.textContent = stackFeedback;
+      }
+    }
+  };
+  stackButton.onclick = async () => {
+    if (stackWorking || !stackLoaded) return;
+    stackWorking = true;
+    stackFeedback = '';
+    stackButton.disabled = true;
+    stackStatus.textContent = '正在提交重启请求……';
+    showStartupMode();
+    try {
+      const value = await stackCall('__stack_restart', stackInput.value);
+      stackDraft = false;
+      showStack(value);
+    } catch (error) {
+      stackFeedback = String(error.message || error);
+      stackStatus.textContent = stackFeedback;
+      stackButton.disabled = false;
+    } finally { stackWorking = false; showStartupMode(); }
+  };
+  stackButton.disabled = true;
+  showStartupMode();
+  pollStack();
+  retry = setTimeout(refresh, 500);
+  return () => { panelHost.style.position = hostPosition; disposed = true; clearTimeout(stackTimer); clearTimeout(retry); clearTimeout(applyTimer); clearTimeout(searchHighlightTimer); searchHighlightedRow?.classList.remove('search-located-parameter'); pendingEdits.clear(); root.removeEventListener('wheel', onWheel); };
+}

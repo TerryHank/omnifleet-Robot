@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+"""Resolve the OmniFleet chassis CH340 by passively validating its frames."""
+
+import argparse
+import glob
+import os
+import select
+import stat
+import subprocess
+import sys
+import termios
+import time
+
+
+CHASSIS_FUNCTION = 0x0A
+USB_VENDOR = "1a86"
+USB_PRODUCT = "7523"
+
+
+def udev_properties(device):
+    result = subprocess.run(
+        ["udevadm", "info", "--query=property", f"--name={device}"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    properties = {}
+    for line in result.stdout.splitlines():
+        if "=" in line:
+            key, value = line.split("=", 1)
+            properties[key] = value
+    return properties
+
+
+def is_open_elsewhere(device):
+    try:
+        wanted = os.stat(device).st_rdev
+    except OSError:
+        return True
+    for fd_path in glob.glob("/proc/[0-9]*/fd/[0-9]*"):
+        try:
+            opened = os.stat(fd_path)
+        except OSError:
+            continue
+        if stat.S_ISCHR(opened.st_mode) and opened.st_rdev == wanted:
+            return True
+    return False
+
+
+def valid_functions(data):
+    functions = []
+    index = 0
+    while index + 5 <= len(data):
+        if data[index : index + 2] not in (b"\xff\xfb", b"\xff\xfc"):
+            index += 1
+            continue
+        encoded_length = data[index + 2]
+        total_length = encoded_length + 2
+        if total_length < 6 or total_length > 257:
+            index += 1
+            continue
+        if index + total_length > len(data):
+            break
+        frame = data[index : index + total_length]
+        if sum(frame[2:-1]) & 0xFF == frame[-1]:
+            functions.append(frame[3])
+            index += total_length
+        else:
+            index += 1
+    return functions
+
+
+def probe(device, seconds):
+    if is_open_elsewhere(device):
+        return None, "busy"
+    fd = None
+    original = None
+    try:
+        fd = os.open(device, os.O_RDONLY | os.O_NOCTTY | os.O_NONBLOCK)
+        original = termios.tcgetattr(fd)
+        raw = termios.tcgetattr(fd)
+        raw[0] = 0
+        raw[1] = 0
+        raw[2] = termios.CS8 | termios.CREAD | termios.CLOCAL
+        raw[3] = 0
+        raw[4] = termios.B115200
+        raw[5] = termios.B115200
+        raw[6][termios.VMIN] = 0
+        raw[6][termios.VTIME] = 0
+        termios.tcsetattr(fd, termios.TCSANOW, raw)
+        termios.tcflush(fd, termios.TCIFLUSH)
+
+        payload = bytearray()
+        deadline = time.monotonic() + seconds
+        while time.monotonic() < deadline:
+            readable, _, _ = select.select([fd], [], [], min(0.2, deadline - time.monotonic()))
+            if not readable:
+                continue
+            chunk = os.read(fd, 4096)
+            if chunk:
+                payload.extend(chunk)
+        functions = valid_functions(payload)
+        matched = len(functions) >= 3 and CHASSIS_FUNCTION in functions
+        return matched, f"bytes={len(payload)} valid_frames={len(functions)} functions={','.join(f'0x{x:02x}' for x in sorted(set(functions)))}"
+    except OSError as exc:
+        return None, f"open/read failed: {exc}"
+    finally:
+        if fd is not None:
+            if original is not None:
+                try:
+                    termios.tcsetattr(fd, termios.TCSANOW, original)
+                except OSError:
+                    pass
+            os.close(fd)
+
+
+def candidates():
+    result = []
+    for device in sorted(glob.glob("/dev/ttyUSB*")):
+        properties = udev_properties(device)
+        if (
+            properties.get("ID_VENDOR_ID", "").lower() == USB_VENDOR
+            and properties.get("ID_MODEL_ID", "").lower() == USB_PRODUCT
+        ):
+            result.append((device, properties.get("ID_PATH", "unknown")))
+    return result
+
+
+def install_alias(alias, target):
+    if os.path.lexists(alias) and not os.path.islink(alias):
+        raise RuntimeError(f"refusing to replace non-symlink {alias}")
+    temporary = f"{alias}.resolver-{os.getpid()}"
+    if os.path.lexists(temporary):
+        os.unlink(temporary)
+    os.symlink(target, temporary)
+    os.replace(temporary, alias)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--alias", default="/dev/myserial")
+    parser.add_argument("--timeout", type=float, default=30.0)
+    parser.add_argument("--probe-seconds", type=float, default=0.8)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
+
+    deadline = time.monotonic() + args.timeout
+    while True:
+        matches = []
+        for device, path in candidates():
+            matched, detail = probe(device, args.probe_seconds)
+            print(f"probe device={device} path={path} result={matched} {detail}", flush=True)
+            if matched:
+                matches.append((device, path))
+
+        if len(matches) == 1:
+            device, path = matches[0]
+            if not args.dry_run:
+                install_alias(args.alias, device)
+            print(f"selected chassis={device} path={path} alias={args.alias} dry_run={args.dry_run}", flush=True)
+            return 0
+        if len(matches) > 1:
+            print("refusing ambiguous chassis match: " + ", ".join(x[0] for x in matches), file=sys.stderr)
+            return 2
+        if time.monotonic() >= deadline:
+            print("no CH340 with valid OmniFleet speed frames found", file=sys.stderr)
+            return 1
+        time.sleep(0.5)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

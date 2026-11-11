@@ -1,0 +1,20 @@
+uint8 LOCAL=0
+uint8 FLEET=1
+string task_id
+string command_epoch
+uint64 revision
+uint8 source
+bool single_point
+bool follow_trail
+NavigationPoint[] waypoints
+float32 pass_radius 0.25
+---
+bool success
+string code
+string message
+---
+string task_id
+string phase
+string message
+uint32 passed_points
+float32 tf_age_ms

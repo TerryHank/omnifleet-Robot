@@ -1,0 +1,53 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/jlblanco/ros2_ws/src/mola/install/mola_launcher/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/install/mola_bridge_ros2/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/install/mola_msgs/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/install/mola_metric_maps/include/**",
+        "/home/jlblanco/ros2_ws/install/pose_cov_ops/include/**",
+        "/home/jlblanco/ros2_ws/install/mvsim/include/**",
+        "/home/jlblanco/ros2_ws/install/mrpt_sensorlib/include/**",
+        "/home/jlblanco/ros2_ws/install/mola_bridge_ros2/include/**",
+        "/home/jlblanco/ros2_ws/install/mrpt_nav_interfaces/include/**",
+        "/home/jlblanco/ros2_ws/install/mrpt_msgs_bridge/include/**",
+        "/home/jlblanco/ros2_ws/install/mola_msgs/include/**",
+        "/home/jlblanco/ros2_ws/install/mrpt_msgs/include/**",
+        "/home/jlblanco/ros2_ws/install/mola_metric_maps/include/**",
+        "/home/jlblanco/ros2_ws/install/mola_lidar_odometry/include/**",
+        "/home/jlblanco/ros2_ws/install/mola_simple_wrapper/include/**",
+        "/home/jlblanco/ros2_ws/install/mola_launcher/include/**",
+        "/home/jlblanco/ros2_ws/install/direct_lidar_inertial_odometry/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_bridge_ros2/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_input_euroc_dataset/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_input_kitti360_dataset/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_input_kitti_dataset/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_input_mulran_dataset/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_input_paris_luco_dataset/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_input_rawlog/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_input_rosbag2/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_input_video/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_kernel/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_launcher/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_metric_maps/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_pose_list/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_relocalization/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_viz/include/**",
+        "/home/jlblanco/ros2_ws/src/mola/mola_yaml/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ros2",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}

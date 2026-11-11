@@ -1,0 +1,24 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 50
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    ackermann_steering_controller:
+      type: ackermann_steering_controller/AckermannSteeringController
+
+ackermann_steering_controller:
+  ros__parameters:
+    wheelbase: 0.362295943
+    traction_track_width: 0.245400019
+    steering_track_width: 0.264956799
+    traction_wheels_radius: 0.058528263
+
+    traction_joints_names: [rear_left_wheel_joint, rear_right_wheel_joint]
+    steering_joints_names: [front_left_steering_joint, front_right_steering_joint]
+
+    # Front wheel rolling joints are passive/state-only in URDF ros2_control.
+    open_loop: false
+    reference_timeout: 1.0
+    use_stamped_vel: true

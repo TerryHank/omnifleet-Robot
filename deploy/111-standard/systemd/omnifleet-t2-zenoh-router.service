@@ -1,0 +1,18 @@
+[Unit]
+Description=OmniFleet local Zenoh router
+After=network.target
+
+[Service]
+Type=simple
+User=iecme
+EnvironmentFile=/home/iecme/omnifleet_a2_ws/deploy/111-standard/config/robot.env
+Environment=ROS_DOMAIN_ID=42
+Environment=RMW_IMPLEMENTATION=rmw_zenoh_cpp
+Environment=ZENOH_ROUTER_CONFIG_URI=/home/iecme/omnifleet_a2_ws/deploy/111-standard/config/zenoh-router.json5
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_a2_ws/src/system/workspace_support/robot_fleet_env.bash && export LD_LIBRARY_PATH=/home/iecme/omnifleet_a2_ws/src/system/omnifleet_fleet/zenoh-patched-v2/lib:${LD_LIBRARY_PATH:-} && exec /home/iecme/omnifleet_a2_ws/install_111/rmw_zenoh_cpp/lib/rmw_zenoh_cpp/rmw_zenohd'
+Restart=always
+RestartSec=2
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

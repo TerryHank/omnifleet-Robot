@@ -1,0 +1,31 @@
+<!-- Keep a valid path; otherwise try a forward curve before reverse-capable fallback. -->
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <PipelineSequence name="NavigateWithReplanning">
+      <RateController hz="1.0">
+        <Fallback name="KeepValidOrReplan">
+          <ReactiveSequence name="CheckIfNewPathNeeded">
+            <Inverter>
+              <GlobalUpdatedGoal/>
+            </Inverter>
+            <IsPathValid path="{path}"/>
+          </ReactiveSequence>
+          <Fallback name="PlanForwardThenReverse">
+            <Sequence name="PlanAndValidateForward">
+              <ComputePathToPose goal="{goal}" path="{path}" planner_id="ForwardGrid"/>
+              <IsPathValid path="{path}"/>
+            </Sequence>
+            <Sequence name="PlanAndValidateReverse">
+              <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+              <IsPathValid path="{path}"/>
+            </Sequence>
+          </Fallback>
+        </Fallback>
+      </RateController>
+      <RecoveryNode number_of_retries="1" name="FollowPathWithLocalCostmapClear">
+        <FollowPath path="{path}" controller_id="FollowPath"/>
+        <ClearEntireCostmap name="ClearLocalCostmapAfterControllerFailure" service_name="local_costmap/clear_entirely_local_costmap"/>
+      </RecoveryNode>
+    </PipelineSequence>
+  </BehaviorTree>
+</root>

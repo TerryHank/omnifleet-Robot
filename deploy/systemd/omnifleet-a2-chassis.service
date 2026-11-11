@@ -1,0 +1,27 @@
+[Unit]
+Description=OmniFleet A2 STM32 chassis
+After=systemd-udevd.service
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+SupplementaryGroups=dialout
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+Environment=HOME=/home/iecme
+Environment=ROS_HOME=/var/lib/omnifleet_a2/ros
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/etc/omnifleet_a2/robot.env
+ExecStartPre=/bin/bash -c 'for i in {1..30}; do test -e /dev/myserial && exit 0; sleep 1; done; exit 1'
+ExecStart=/bin/bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash && source $OMNIFLEET_A2_WS/install/setup.bash && exec ros2 launch omnifleet_a2_bringup chassis_core.launch.py'
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStopSec=15
+Restart=on-failure
+RestartSec=2
+UMask=0007
+
+[Install]
+WantedBy=multi-user.target

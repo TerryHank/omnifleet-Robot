@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="multi_robot_open">
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <physics type="ode"><real_time_update_rate>1000</real_time_update_rate><max_step_size>0.001</max_step_size></physics>
+    <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so">
+      <ros><namespace>/gazebo</namespace></ros>
+      <update_rate>20.0</update_rate>
+    </plugin>
+
+    <!-- Boundary rails remain outside the three open y=0,+/-1.2 corridors. -->
+    <model name="north_boundary"><static>true</static><pose>0 2.35 0.10 0 0 0</pose><link name="link"><collision name="collision"><geometry><box><size>8 0.08 0.20</size></box></geometry></collision><visual name="visual"><geometry><box><size>8 0.08 0.20</size></box></geometry><material><ambient>0.15 0.35 0.8 1</ambient></material></visual></link></model>
+    <model name="south_boundary"><static>true</static><pose>0 -2.35 0.10 0 0 0</pose><link name="link"><collision name="collision"><geometry><box><size>8 0.08 0.20</size></box></geometry></collision><visual name="visual"><geometry><box><size>8 0.08 0.20</size></box></geometry><material><ambient>0.15 0.35 0.8 1</ambient></material></visual></link></model>
+    <model name="west_boundary"><static>true</static><pose>-4 0 0.10 0 0 0</pose><link name="link"><collision name="collision"><geometry><box><size>0.08 4.7 0.20</size></box></geometry></collision><visual name="visual"><geometry><box><size>0.08 4.7 0.20</size></box></geometry><material><ambient>0.15 0.35 0.8 1</ambient></material></visual></link></model>
+    <model name="east_boundary"><static>true</static><pose>4 0 0.10 0 0 0</pose><link name="link"><collision name="collision"><geometry><box><size>0.08 4.7 0.20</size></box></geometry></collision><visual name="visual"><geometry><box><size>0.08 4.7 0.20</size></box></geometry><material><ambient>0.15 0.35 0.8 1</ambient></material></visual></link></model>
+
+    <!-- Visual-only target discs do not obstruct the driving surface. -->
+    <model name="target_robot1"><static>true</static><pose>2.5 0 0.006 0 0 0</pose><link name="link"><visual name="visual"><geometry><cylinder><radius>0.20</radius><length>0.01</length></cylinder></geometry><material><ambient>0.2 1 0.2 1</ambient></material></visual></link></model>
+    <model name="target_robot2"><static>true</static><pose>1.5 1.2 0.006 0 0 0</pose><link name="link"><visual name="visual"><geometry><cylinder><radius>0.20</radius><length>0.01</length></cylinder></geometry><material><ambient>1 0.7 0.1 1</ambient></material></visual></link></model>
+    <model name="target_robot3"><static>true</static><pose>1.5 -1.2 0.006 0 0 0</pose><link name="link"><visual name="visual"><geometry><cylinder><radius>0.20</radius><length>0.01</length></cylinder></geometry><material><ambient>0.8 0.2 1 1</ambient></material></visual></link></model>
+  </world>
+</sdf>

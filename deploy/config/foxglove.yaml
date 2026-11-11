@@ -1,0 +1,30 @@
+omnifleet_a2_foxglove_bridge:
+  ros__parameters:
+    # Advertise every ROS topic. Data is transferred only when a Foxglove
+    # panel subscribes to that topic; heavy topics remain opt-in in the layout.
+    topic_whitelist: [".*"]
+    client_topic_whitelist:
+      - "^/initialpose$"
+      - "^/omnifleet_a2/waypoints/(add_pose|next_name|rename|navigate_to|start|stop|undo|clear)$"
+    service_whitelist:
+      - "^/map_save$"
+      - "^/map_load$"
+    param_whitelist:
+      - "(?!)"
+    capabilities:
+      - "clientPublish"
+      - "services"
+      - "assets"
+    best_effort_qos_topic_whitelist:
+      - "^/tf$"
+      - "^/odom$"
+      - "^/plan$"
+      - "^/local_plan$"
+      - "^/(local_costmap|global_costmap)/published_footprint$"
+      - "^/omnifleet_a2/navigation/.*$"
+    max_qos_depth: 1
+    min_qos_depth: 1
+    message_backlog_size: 20
+    send_buffer_limit: 2000000
+    include_hidden: false
+    sysinfo: false

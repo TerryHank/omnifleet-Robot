@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Keep keyboard and Foxglove on separate twist_mux inputs.  In particular,
+# do not let the keyboard publisher's repeated idle zero overwrite Foxglove.
+# A key must be held to keep moving; key_timeout publishes a prompt stop.
+exec ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args \
+  -r cmd_vel:=/cmd_vel_keyboard \
+  -p speed:=0.20 \
+  -p turn:=0.20 \
+  -p repeat_rate:=0.0 \
+  -p key_timeout:=0.25
