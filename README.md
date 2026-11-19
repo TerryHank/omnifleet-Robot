@@ -1,41 +1,26 @@
-# OmniFleet 单车工作区
+# OmniFleet 126
 
-- 默认分支 `main` 包含车端导航、定位、感知和底盘。
-- [`dispatch` 分支](https://github.com/TerryHank/omnifleet-Robot/tree/dispatch) 提供中央 RMF 调度、编队和 Web。
-- [车端身份广播](src/system/omnifleet_fleet/README.omnifleet.md#车端身份广播) 提供接入中央调度的安装步骤。
-- [126 号车底盘备份](backups/robot-126/chassis/README.md) 包含该车驱动、STM32 固件和部署配置。按备份说明恢复 126 的驱动，常规工作区构建使用 `src/vehicle/` 中的驱动。
-- [104 号车快照](https://github.com/TerryHank/omnifleet-Robot/tree/104) 保留为独立历史分支。
+[工作区与运行入口](README.workspace.md) · [源码索引](src/README.md) · [维护约定](AGENTS.md)
 
-# Robot 113 source snapshot
-
-Tag: `robot113-source-20261021-015022`. Source: `iecme@192.168.3.113:/home/iecme/omnifleet_ws`.
-Snapshot completed (Asia/Shanghai): 2026-10-21T01:50:22.139474+08:00.
-
-The tag contains the complete original snapshot. The source layout is retained under `src/`, alongside workspace `env.bash`.
-Linux symlinks and executable flags are retained in Git. Windows checkouts can represent symlinks as text; use Linux for restoration.
-
-## Included
-
-Current source/configuration selected from the canonical workspace, plus `env.bash`.
-See `BACKUP_MANIFEST.json` for per-file SHA256, modes, symbolic-link targets, exclusions, and redactions.
-
-## Excluded / separate restore requirements
-
-Build/install/log, nested Git histories, dependency caches, virtual environments, node_modules,
-desktop distribution binaries, archives, model weights, maps outside src, recordings, credentials,
-and historical backup copies. External systemd/configuration, model/map assets and runtime state must be backed up separately.
-Some configuration secret values have been replaced with `REDACTED_BACKUP_SECRET`; provision real secrets outside Git.
-
-This is a source backup, not an image of the robot or evidence that rebuilding and real-robot navigation pass.
-
-## Reading
+## 查状态
 
 ```bash
-git fetch origin tag robot113-source-20261021-015022
-git switch --detach robot113-source-20261021-015022
+cd /home/iecme/omnifleet_ws
+source ./env.bash
+systemctl status omnifleet-t2-{chassis,airy,mola,pure-lio-nav2,foxglove}.service omnifleet-local-navigation.service --no-pager
+ros2 run omnifleet_bringup robot_doctor --scope nav
 ```
 
-After checking out this tag, start at `src/planning/omnifleet_planner/behavior_trees/` and `src/control/omnifleet_local_navigation/`.
-MOLA is under `src/localization/omnifleet_mola/`; MSC under `src/system/omnifleet_msc/`.
+按需查看日志。
 
-Archive SHA256: `ce8f311f95d3e83bf9f13f58b882f1dffd4e45a23f79e5671e0cf0170c2a81e9`.
+```bash
+journalctl -u omnifleet-t2-mola.service -u omnifleet-t2-pure-lio-nav2.service -u omnifleet-local-navigation.service -n 80 --no-pager
+```
+
+## 启动
+
+需要恢复车端服务时，按 [维护约定](AGENTS.md) 核对当前任务和运动状态，再启动主链。
+
+```bash
+sudo systemctl start omnifleet-t2-{chassis,airy,mola,pure-lio-nav2}.service omnifleet-local-navigation.service
+```

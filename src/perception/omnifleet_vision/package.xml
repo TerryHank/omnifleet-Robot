@@ -15,6 +15,7 @@
   <depend>geometry_msgs</depend>
   <depend>libopencv-dev</depend>
   <depend>message_filters</depend>
+  <depend>nlohmann_json</depend>
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
@@ -31,6 +32,11 @@
 
   <test_depend>ament_cmake_pytest</test_depend>
 
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>compressed_image_transport</exec_depend>
+  <exec_depend>omnifleet_person_follow</exec_depend>
+  <exec_depend>omnifleet_hikrobot_rgbd</exec_depend>
+  <exec_depend>orbbec_camera_msgs</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

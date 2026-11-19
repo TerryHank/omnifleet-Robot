@@ -1,0 +1,9 @@
+{
+  "source": "/home/iecme/omnifleet_ws/.env/hand-runtime/mediapipe/modules/hand_landmark/hand_landmark_full.tflite",
+  "source_sha256": "11c272b891e1a99ab034208e23937a8008388cf11ed2a9d776ed3d01d0ba00e3",
+  "onnx_sha256": "a7fb61db3190c2e0e9c55e695a4e24ccb3dc98dbb6c386ea3a4472a19a03bb56",
+  "precision": "FP32",
+  "tf32": false,
+  "search_windows": 4,
+  "coordinate_reference": "MediaPipe v0.10.18 ImageToTensor OpenCV converter"
+}

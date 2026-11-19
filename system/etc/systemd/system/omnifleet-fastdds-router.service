@@ -1,0 +1,12 @@
+[Unit]
+Description=OmniFleet 124 Fast DDS scheduling TCP link
+After=network.target docker.service
+Requires=docker.service
+[Service]
+ExecStart=/usr/bin/docker run --rm --user 1000:1000 --name omnifleet-fastdds-124 --network host --ipc host -v /etc/omnifleet_t2/fastdds-router.yaml:/ddsrouter.yaml:ro eprosima/vulcanexus:humble-cloud-2.10.0 ddsrouter -c /ddsrouter.yaml
+ExecStop=/usr/bin/docker stop -t 5 omnifleet-fastdds-124
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=12
+[Install]
+WantedBy=multi-user.target

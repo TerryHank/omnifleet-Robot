@@ -1,0 +1,22 @@
+[
+  {
+    "source": "OpenCV Zoo",
+    "onnx": "/home/iecme/omnifleet_data/ml_models/omnifleet_vision/vendor/person_detection_mediapipe_2023mar.onnx",
+    "onnx_sha256": "47fd5599d6fa17608f03e0eb0ae230baa6e597d7e8a2c8199fe00abea55a701f",
+    "engine": "/home/iecme/omnifleet_data/ml_models/omnifleet_vision/vendor/mediapipe_tensorrt/person_body_fp32.engine",
+    "engine_sha256": "21b8fcf2f03bf808937dbf0c8b48a732d5e8e1ab34561595aca882c71f743b02",
+    "precision": "FP32 no TF32",
+    "backend": "TensorRT CUDA",
+    "built_on": "omnifleet-nx-350f8682"
+  },
+  {
+    "source": "OpenCV Zoo",
+    "onnx": "/home/iecme/omnifleet_data/ml_models/omnifleet_vision/vendor/pose_estimation_mediapipe_2023mar.onnx",
+    "onnx_sha256": "9d89c599319a18fb7d2e28451a883476164543182bafca5f09eb2cf767ed2f3f",
+    "engine": "/home/iecme/omnifleet_data/ml_models/omnifleet_vision/vendor/mediapipe_tensorrt/pose_body_fp32.engine",
+    "engine_sha256": "fbe30ce1ded65a3c297c8dd547ff535a90244bc6487e618e5a572fe66c1a379f",
+    "precision": "FP32 no TF32",
+    "backend": "TensorRT CUDA",
+    "built_on": "omnifleet-nx-350f8682"
+  }
+]

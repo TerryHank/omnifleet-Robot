@@ -64,6 +64,7 @@ def _launch(context):
             "/home/iecme/omnifleet_ws/src/system/omnifleet_bringup/launch/mola_integrated_localization.launch.py"),
             launch_arguments={
                 "map_path": LaunchConfiguration("map_path"),
+                "map_reload_mode": LaunchConfiguration("map_reload_mode"),
                 "initial_pose": LaunchConfiguration("initial_pose"),
                 "map_dir": LaunchConfiguration("map_dir"),
             }.items())]

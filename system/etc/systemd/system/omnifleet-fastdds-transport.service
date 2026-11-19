@@ -1,0 +1,10 @@
+[Unit]
+Description=OmniFleet 124 compact Fast DDS scheduling data
+After=omnifleet-local-navigation.service
+[Service]
+User=iecme
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash; exec python3 /usr/local/lib/omnifleet-discovery/fleet_transport_124.py'
+Restart=on-failure
+RestartSec=2
+[Install]
+WantedBy=multi-user.target

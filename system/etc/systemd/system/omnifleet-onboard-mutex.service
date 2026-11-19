@@ -1,0 +1,13 @@
+[Unit]
+Description=Open-RMF onboard dispatch mutex supervisor
+PartOf=omnifleet-onboard-dispatch.target
+[Service]
+User=iecme
+Environment=ROS_DOMAIN_ID=42
+Environment=ROS_LOCALHOST_ONLY=1
+Environment=RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+Environment=FASTRTPS_DEFAULT_PROFILES_FILE=/home/iecme/omnifleet_ws/src/system/omnifleet_rmf_adapter/config/fastdds-central.xml
+ExecStart=/bin/bash -c 'source /opt/ros/humble/setup.bash && exec /opt/omnifleet-dispatch-web/mutex_group_supervisor'
+Restart=on-failure
+[Install]
+WantedBy=omnifleet-onboard-dispatch.target

@@ -1,0 +1,5 @@
+<library path="omnifleet_footprint_clearance_critic">
+  <class name="mppi::critics::FootprintClearanceCritic" type="mppi::critics::FootprintClearanceCritic" base_class_type="mppi::critics::CriticFunction">
+    <description>Soft rectangular body clearance preference for MPPI trajectories.</description>
+  </class>
+</library>

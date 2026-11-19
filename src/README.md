@@ -1,6 +1,6 @@
 # 功能域与包索引
 
-2026-10-14：11个功能域，103个colcon可识别包/组件。以下是源代码清单，不是已构建/已运行清单。
+按功能域查阅源码和包说明。当前运行入口见 [工作区说明](../README.workspace.md)。
 
 ## common
 
@@ -128,7 +128,7 @@ Nav2 启动与规划/控制器配置、代价地图扩展和车队规划。
 
 ## system
 
-机器人启动集成、协调器、MSC 入口、通信运行脚本和运维支持。
+机器人启动、通信与运维。
 
 - [omnifleet_bringup](system/omnifleet_bringup/README.omnifleet.md)
 - [rmw_zenoh_cpp](system/rmw_zenoh_cpp/README.md)
@@ -137,6 +137,7 @@ Nav2 启动与规划/控制器配置、代价地图扩展和车队规划。
 
 底盘驱动、车辆模型/标定关系、控制器接口与舵机工具。
 
+- [huaner_driver](vehicle/huaner_driver/package.xml)
 - [omnifleet_chassis_driver](vehicle/omnifleet_chassis_driver/README.omnifleet.md)
 - [omnifleet_description](vehicle/omnifleet_description/README.omnifleet.md)
 - [omnifleet_servo_rqt](vehicle/omnifleet_servo_rqt/README.md)
@@ -150,5 +151,3 @@ Nav2 启动与规划/控制器配置、代价地图扩展和车队规划。
 Foxglove、导航/协同面板、航点 UI、显示模型和录制辅助。
 
 - [omnifleet_waypoint_ui](visualization/omnifleet_waypoint_ui/README.md)
-
-2026-10-14：104 已移除旧 MSC 专用包，以上目录条目不再列出已退役包；回退资料仅位于 robot_backups。

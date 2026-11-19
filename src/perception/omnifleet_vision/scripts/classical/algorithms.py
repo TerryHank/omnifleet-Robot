@@ -140,7 +140,7 @@ COLOR_RANGES: Dict[str, Sequence[Tuple[Tuple[int, int, int], Tuple[int, int, int
 
 
 def recognize_colors(
-    image: np.ndarray, minimum_area: float = 200.0
+    image: np.ndarray, minimum_area: float = 200.0, selected_color: str = ""
 ) -> Tuple[np.ndarray, Dict[str, object]]:
     """识别红、黄、绿、蓝色区域并返回面积最大的目标。"""
     bgr = _check_bgr(image)
@@ -156,6 +156,8 @@ def recognize_colors(
 
     kernel = np.ones((3, 3), np.uint8)
     for name, ranges in COLOR_RANGES.items():
+        if selected_color and name != selected_color:
+            continue
         mask = np.zeros(hsv.shape[:2], dtype=np.uint8)
         for lower, upper in ranges:
             mask = cv2.bitwise_or(
@@ -551,12 +553,14 @@ def draw_utf8_label(
         return debug
 
 
-def recognize_apriltags(image: np.ndarray) -> Tuple[np.ndarray, Dict[str, object]]:
-    """使用 36h11 字典识别标签并返回编号和角点。"""
+def recognize_apriltags(image: np.ndarray, tag_size_m=0.21, target_id=0,
+                       camera_matrix=None, distortion=None) -> Tuple[np.ndarray, Dict[str, object]]:
+    """识别 tag36h11，并按黑色外框边长与实际相机内参估算位姿。"""
     bgr = _check_bgr(image)
     debug = bgr.copy()
+    settings = {"family": "tag36h11", "target_id": int(target_id), "tag_size_m": float(tag_size_m)}
     if not hasattr(cv2, "aruco"):
-        return debug, {"available": False, "detected": False, "count": 0, "detections": []}
+        return debug, {**settings, "available": False, "detected": False, "count": 0, "detections": []}
 
     aruco = cv2.aruco
     dictionary = aruco.getPredefinedDictionary(aruco.DICT_APRILTAG_36h11)
@@ -568,25 +572,44 @@ def recognize_apriltags(image: np.ndarray) -> Tuple[np.ndarray, Dict[str, object
         corners, identifiers, _ = aruco.detectMarkers(bgr, dictionary, parameters=parameters)
 
     detections: List[Dict[str, object]] = []
+    visible_tags = []
     if identifiers is not None:
-        aruco.drawDetectedMarkers(debug, corners, identifiers)
         for identifier, polygon in zip(identifiers.flatten(), corners):
+            visible_tags.append({"id": int(identifier), "corners": polygon.reshape(-1, 2).tolist()})
+            if int(identifier) != target_id:
+                continue
+            aruco.drawDetectedMarkers(debug, [polygon], np.array([[identifier]], dtype=np.int32))
             points = np.round(polygon.reshape(-1, 2)).astype(np.int32)
             center = points.mean(axis=0).astype(int)
-            detections.append({
+            detection = {
                 "id": int(identifier),
                 "corners": points.tolist(),
                 "center": center.tolist(),
-            })
+            }
+            label = f"tag36h11 ID={int(identifier)} {tag_size_m * 1000:.0f}mm"
+            if camera_matrix is not None:
+                half = tag_size_m / 2.
+                object_points = np.array([[-half, half, 0], [half, half, 0],
+                                          [half, -half, 0], [-half, -half, 0]], dtype=np.float64)
+                success, rvec, tvec = cv2.solvePnP(object_points, polygon.reshape(4, 2).astype(np.float64),
+                                                  camera_matrix, distortion, flags=cv2.SOLVEPNP_IPPE_SQUARE)
+                if success and tvec[2, 0] > 0:
+                    detection.update(position_m=tvec.ravel().tolist(), rotation_vector=rvec.ravel().tolist(),
+                                     distance_m=float(np.linalg.norm(tvec)), optical_z_m=float(tvec[2, 0]))
+                    cv2.drawFrameAxes(debug, camera_matrix, distortion, rvec, tvec, tag_size_m / 2.)
+                    label += f" Z={tvec[2, 0]:.2f}m"
+            detections.append(detection)
             x = int(np.min(points[:, 0]))
             y = int(np.min(points[:, 1]))
             debug = draw_utf8_label(
-                debug, f"AprilTag ID={int(identifier)}", (x, max(32, y - 8)),
+                debug, label, (x, max(32, y - 8)),
                 (0, 255, 0),
             )
 
     return debug, {
+        **settings,
         "available": True,
+        "visible_tags": visible_tags,
         "detected": bool(detections),
         "count": len(detections),
         "detections": detections,

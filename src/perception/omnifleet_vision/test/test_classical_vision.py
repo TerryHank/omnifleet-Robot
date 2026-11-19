@@ -143,6 +143,26 @@ def test_apriltag_recognition_reports_capability():
     assert result["count"] == 0
 
 
+def test_apriltag_210mm_id0_pose_uses_actual_intrinsics():
+    if not hasattr(cv2, "aruco"):
+        pytest.skip("OpenCV ArUco is unavailable")
+    aruco = cv2.aruco
+    dictionary = aruco.getPredefinedDictionary(aruco.DICT_APRILTAG_36h11)
+    marker = (aruco.generateImageMarker(dictionary, 0, 210) if hasattr(aruco, "generateImageMarker")
+              else aruco.drawMarker(dictionary, 0, 210))
+    image = np.full((480, 640, 3), 255, dtype=np.uint8)
+    image[135:345, 215:425] = cv2.cvtColor(marker, cv2.COLOR_GRAY2BGR)
+    matrix = np.array([[1000., 0., 320.], [0., 1000., 240.], [0., 0., 1.]])
+    _, result = ALGORITHMS.recognize_apriltags(image, .21, 0, matrix, np.zeros(5))
+    assert result["family"] == "tag36h11" and result["tag_size_m"] == .21
+    assert result["count"] == 1 and result["detections"][0]["id"] == 0
+    assert result["detections"][0]["optical_z_m"] == pytest.approx(1., abs=.02)
+    _, smaller = ALGORITHMS.recognize_apriltags(image, .105, 0, matrix, np.zeros(5))
+    assert smaller["detections"][0]["optical_z_m"] == pytest.approx(result["detections"][0]["optical_z_m"] / 2.)
+    _, wrong_id = ALGORITHMS.recognize_apriltags(image, .21, 1, matrix, np.zeros(5))
+    assert wrong_id["count"] == 0
+
+
 def test_qr_source_has_pyzbar_fallback_for_opencv_without_quirc():
     source = ALGORITHMS_FILE.read_text(encoding="utf-8")
     assert "from pyzbar.pyzbar import ZBarSymbol, decode" in source

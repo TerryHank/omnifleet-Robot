@@ -1,0 +1,27 @@
+[Unit]
+Wants=omnifleet-t2-chassis.service
+Description=OmniFleet T2 Nav2 pure-LIO navigation
+Wants=omnifleet-t2-foxglove.service
+Requires=omnifleet-t2-mola.service omnifleet-t2-description.service
+After=omnifleet-t2-mola.service omnifleet-t2-chassis.service omnifleet-t2-description.service omnifleet-t2-foxglove.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_ws
+Environment=HOME=/home/iecme
+Environment=ROS_HOME=/var/lib/omnifleet_t2/ros
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+Environment="CMAKE_PREFIX_PATH=/home/iecme/omnifleet_ws/install/mrpt_libros_bridge:/home/iecme/omnifleet_ws/install/mrpt"
+Environment="LD_LIBRARY_PATH=/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib:/home/iecme/omnifleet_ws/install/mrpt_libros_bridge/lib:/home/iecme/omnifleet_ws/install/mrpt/lib"
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash && exec ros2 launch omnifleet_bringup navigation.launch.py transform_tolerance:=0.8 odom_topic:=/lidar_odometry/pose obstacle_topic:=/lidar_odometry/nav_voxelmap_points obstacle_clearing:=false use_sim_time:=false autostart:=true params_file:=/home/iecme/omnifleet_ws/install/omnifleet_planner/share/omnifleet_planner/config/nav2_t2.yaml'
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStartSec=90
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

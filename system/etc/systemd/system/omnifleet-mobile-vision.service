@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet mobile object recognition
+After=omnifleet-t2-rgbd-camera.service
+[Service]
+User=iecme
+Environment=HOME=/home/iecme
+Environment=ROS_DOMAIN_ID=101
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/env.bash; exec python3 /opt/omnifleet-mobile-vision/mobile_vision.py'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+[Install]
+WantedBy=multi-user.target

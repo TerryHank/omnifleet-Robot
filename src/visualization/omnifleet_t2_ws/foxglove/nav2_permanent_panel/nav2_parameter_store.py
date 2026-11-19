@@ -24,8 +24,6 @@ BACKUPS = Path('/home/iecme/.local/share/omnifleet_t2/nav2-parameter-backups')
 SELECTED_FILE = Path('/home/iecme/.local/share/omnifleet_t2/nav2-selected-algorithms.json')
 HEIGHT_FILE = Path('/home/iecme/.local/share/omnifleet_t2/map-height.json')
 HEIGHT_KEYS = {'map_z_min': 'slice_z_min', 'map_z_max': 'slice_z_max'}
-STM32_PWM_KEYS = ('pwm_compensation_m1', 'pwm_compensation_m2')
-STM32_DRIVER = '/omnifleet_t2_driver'
 
 
 def robot_topic(name):
@@ -77,7 +75,7 @@ SPECS = {
     'global_radius': (GLOBAL, ('inflation_radius',), '/global_costmap/global_costmap', 'inflation_layer.', 0., 3.),
     'global_padding': (('global_costmap', 'global_costmap', 'ros__parameters'), ('footprint_padding',), '/global_costmap/global_costmap', '', 0., .3),
     'global_scaling': (GLOBAL, ('cost_scaling_factor',), '/global_costmap/global_costmap', 'inflation_layer.', .01, 20.),
-    'linear_speed': (CONTROL, ('max_vel_x', 'max_speed_xy'), '/controller_server', 'FollowPath.', .05, 1.5),
+    'linear_speed': (CONTROL, ('max_vel_x', 'max_speed_xy'), '/controller_server', 'FollowPath.', .05, 2.0),
     'angular_speed': (CONTROL, ('max_vel_theta',), '/controller_server', 'FollowPath.', .1, 3.),
     'obstacle_scale': (CONTROL, ('BaseObstacle.scale',), '/controller_server', 'FollowPath.', 0., 5.),
     'path_align_scale': (CONTROL, ('PathAlign.scale',), '/controller_server', 'FollowPath.', 0., 100.),
@@ -104,7 +102,7 @@ SPECS = {
     'dwb_sim_time': (CONTROL, ('sim_time',), '/controller_server', 'FollowPath.', .1, 5.),
     'dwb_vx_samples': (CONTROL, ('vx_samples',), '/controller_server', 'FollowPath.', 1., 100., 'int'),
     'dwb_vtheta_samples': (CONTROL, ('vtheta_samples',), '/controller_server', 'FollowPath.', 1., 200., 'int'),
-    'rpp_desired_linear_vel': (CONTROL_RPP, ('desired_linear_vel',), '/controller_server', 'FollowPathRPP.', .01, 1.5),
+    'rpp_desired_linear_vel': (CONTROL_RPP, ('desired_linear_vel',), '/controller_server', 'FollowPathRPP.', .01, 2.0),
     'rpp_lookahead_dist': (CONTROL_RPP, ('lookahead_dist',), '/controller_server', 'FollowPathRPP.', .05, 5.),
     'rpp_min_lookahead_dist': (CONTROL_RPP, ('min_lookahead_dist',), '/controller_server', 'FollowPathRPP.', .05, 5.),
     'rpp_max_lookahead_dist': (CONTROL_RPP, ('max_lookahead_dist',), '/controller_server', 'FollowPathRPP.', .05, 8.),
@@ -121,7 +119,7 @@ SPECS = {
     'mppi_model_dt': (CONTROL_MPPI, ('model_dt',), '/controller_server', 'FollowPathMPPI.', .005, 1.),
     'mppi_batch_size': (CONTROL_MPPI, ('batch_size',), '/controller_server', 'FollowPathMPPI.', 100., 10000., 'int'),
     'mppi_iteration_count': (CONTROL_MPPI, ('iteration_count',), '/controller_server', 'FollowPathMPPI.', 1., 10., 'int'),
-    'mppi_vx_max': (CONTROL_MPPI, ('vx_max',), '/controller_server', 'FollowPathMPPI.', .01, 1.5),
+    'mppi_vx_max': (CONTROL_MPPI, ('vx_max',), '/controller_server', 'FollowPathMPPI.', .01, 2.0),
     'mppi_vx_min': (CONTROL_MPPI, ('vx_min',), '/controller_server', 'FollowPathMPPI.', -1.5, 1.5),
     'mppi_wz_max': (CONTROL_MPPI, ('wz_max',), '/controller_server', 'FollowPathMPPI.', .05, 5.),
     'mppi_temperature': (CONTROL_MPPI, ('temperature',), '/controller_server', 'FollowPathMPPI.', .001, 10.),
@@ -169,6 +167,8 @@ ALGORITHMS = {
 }
 ALGORITHM_PARAMETER_NAMES = {'global_planner_algorithm': 'global', 'local_controller_algorithm': 'local'}
 ALGORITHM_ROOTS = {'global': ('planner_server', 'ros__parameters'), 'local': ('controller_server', 'ros__parameters')}
+SPECS['goal_stateful'] = (('controller_server', 'ros__parameters', 'general_goal_checker'), ('stateful',), '/controller_server', 'general_goal_checker.', 0, 1, 'bool')
+SPECS['mppi_deadband_weight'] = (CONTROL_MPPI + ('VelocityDeadbandCritic',), ('cost_weight',), '/controller_server', 'FollowPathMPPI.VelocityDeadbandCritic.', 0, 100, 'double')
 DEFAULTS = {
     'dwb_min_speed_xy': 0., 'dwb_min_speed_theta': 0., 'dwb_min_vel_x': 0.,
     'planner_tolerance': .5, 'planner_max_planning_time': 3., 'planner_downsample_costmap': False,
@@ -300,7 +300,7 @@ def validate_value(key, value, spec):
 
 
 def algorithm_state(path=YAML_FILE):
-    data = yaml.safe_load(path.read_text(encoding='utf-8'))
+    data = yaml.load(path.read_text(encoding='utf-8'), Loader=getattr(yaml, 'CSafeLoader', yaml.SafeLoader))
     selected = selected_algorithms()
     state = {}
     for kind, options in ALGORITHMS.items():
@@ -310,7 +310,12 @@ def algorithm_state(path=YAML_FILE):
                 loaded_plugin = descend(data, algorithm_path(kind, key))
             except (KeyError, TypeError):
                 loaded_plugin = None
-            if loaded_plugin == plugin:
+            aliases = {
+                'omnifleet_planner::CostAwareSmac2D':'nav2_smac_planner/SmacPlanner2D',
+                'omnifleet_planner::ExactGoalSmacLattice':'nav2_smac_planner/SmacPlannerLattice',
+                'omnifleet_planner::PoseRotationShim':'nav2_mppi_controller::MPPIController',
+            }
+            if aliases.get(loaded_plugin,loaded_plugin) == plugin:
                 loaded.append(key)
         current = selected[kind] if selected[kind] in loaded else (loaded[0] if loaded else None)
         state[kind] = {'current': current,
@@ -330,6 +335,8 @@ def algorithm_state(path=YAML_FILE):
     return state
 
 
+DEFAULTS.update({'goal_stateful': False, 'mppi_deadband_weight': 1.0})
+
 def read_saved_value(data, key, spec):
     try:
         return typed_value(descend(data, spec[0] + (spec[1][0],)), spec)
@@ -340,7 +347,7 @@ def read_saved_value(data, key, spec):
 
 
 def saved_values(path=YAML_FILE):
-    data = yaml.safe_load(path.read_text(encoding='utf-8'))
+    data = yaml.load(path.read_text(encoding='utf-8'), Loader=getattr(yaml, 'CSafeLoader', yaml.SafeLoader))
     return {**{key: {leaf: read_saved_value(data, key, spec) if index == 0 else typed_value(descend(data, spec[0] + (leaf,)), spec)
                    for index, leaf in enumerate(spec[1])}
             for key, spec in SPECS.items()}, **{key: {leaf: map_heights()[leaf]} for key, leaf in HEIGHT_KEYS.items()}, **mola_sampling.values()}
@@ -547,6 +554,7 @@ def main():
                 f'/{scope}_costmap/clear_entirely_{scope}_costmap', callback_group=self.clients_group) for scope in ('local', 'global')]
             self.invalidate_map_waypoints = self.create_client(Trigger,
                 '/omnifleet_t2/waypoints/invalidate_map', callback_group=self.clients_group)
+            self.create_service(Trigger, '/navigation/ensure_ready', self.ensure_navigation)
             self.create_service(Trigger, 'omnifleet_t2/nav2/reset_map', self.reset_map)
             self.nav_clients = {}
             for node in {spec[2] for spec in SPECS.values()}:
@@ -554,10 +562,6 @@ def main():
                     self.create_client(SetParametersAtomically, node + '/set_parameters_atomically', callback_group=self.clients_group),
                     self.create_client(GetParameters, node + '/get_parameters', callback_group=self.clients_group),
                 )
-            self.nav_clients[STM32_DRIVER] = (
-                self.create_client(SetParametersAtomically, STM32_DRIVER + '/set_parameters_atomically', callback_group=self.clients_group),
-                self.create_client(GetParameters, STM32_DRIVER + '/get_parameters', callback_group=self.clients_group),
-            )
             selector_qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
                                       durability=DurabilityPolicy.TRANSIENT_LOCAL)
             self.planner_selector_pub = self.create_publisher(String, '/planner_selector', selector_qos)
@@ -590,6 +594,21 @@ def main():
             self.create_service(Trigger, 'omnifleet_t2/nav2/read_saved', self.read)
             self.create_service(SetParameters, 'omnifleet_t2/nav2/save_parameters', self.save)
             self.get_logger().info(f'永久参数文件: {YAML_FILE.resolve()}')
+
+        def ensure_navigation(self, request, response):
+            try:
+                subprocess.run([
+                    'sudo', '-n', '/usr/bin/systemctl', 'start', '--no-block',
+                    'omnifleet-t2-pure-lio-nav2.service', 'omnifleet-t2-waypoints.service',
+                ], check=True, timeout=3, capture_output=True)
+            except (OSError, subprocess.SubprocessError) as error:
+                self.get_logger().error(f'无法请求启动导航：{error}')
+                response.message = '无法请求启动导航'
+            else:
+                response.success = True
+                response.message = '已请求启动导航和航点服务'
+                self.get_logger().info('导航 App 已请求启动导航和航点服务')
+            return response
 
         def start_bag_record(self, request, response):
             with self.bag_lock:
@@ -706,7 +725,6 @@ def main():
         def read(self, request, response):
             try:
                 saved = saved_values()
-                saved.update(self.read_stm32_pwm())
                 response.message = json.dumps({'path': str(YAML_FILE.resolve()), 'saved': saved, 'algorithms': algorithm_state(), 'parameter_links': self.link_catalog(), 'navigation_strategy': navigation_strategy(), 'collision_model': collision_model.state(YAML_FILE)}, ensure_ascii=False)
                 response.success = True
             except Exception as error:
@@ -715,39 +733,7 @@ def main():
             return response
 
         def link_catalog(self):
-            parameter_links.write_pwm_view(self.read_stm32_pwm())
             return parameter_links.catalog(SPECS, YAML_FILE, HEIGHT_FILE, SELECTED_FILE)
-
-        def read_stm32_pwm(self):
-            getter = self.nav_clients[STM32_DRIVER][1]
-            result = self.request(getter, GetParameters.Request(names=list(STM32_PWM_KEYS)))
-            if len(result.values) != 2 or any(value.type != 2 for value in result.values):
-                raise ValueError('STM32 PWM 补偿参数回读类型不正确')
-            values = [value.integer_value for value in result.values]
-            return {name: {name: value} for name, value in zip(STM32_PWM_KEYS, values)}
-
-        def save_stm32_pwm(self, changes):
-            if set(changes) != set(STM32_PWM_KEYS):
-                raise ValueError('M1/M2 PWM 补偿必须成对提交')
-            setter, getter = self.nav_clients[STM32_DRIVER]
-            parameters = [Parameter(
-                name=name,
-                value=ParameterValue(type=2, integer_value=int(changes[name])),
-            ) for name in STM32_PWM_KEYS]
-            reply = self.request(setter, SetParametersAtomically.Request(parameters=parameters), timeout=6.)
-            if not reply.result.successful:
-                raise ValueError(reply.result.reason)
-            saved = saved_values()
-            saved.update(self.read_stm32_pwm())
-            return {
-                'path': 'STM32 Flash',
-                'backup': None,
-                'sha256': None,
-                'saved': saved,
-                'algorithms': algorithm_state(),
-                'runtime': {STM32_DRIVER: reply.result.reason or 'STM32 已永久保存并回读确认'},
-                'runtime_confirmed': True,
-            }
 
         def request(self, client, request, timeout=3.):
             if not client.wait_for_service(timeout_sec=1.):
@@ -786,12 +772,28 @@ def main():
                 except Exception as error:
                     response.results = [SetParametersResult(successful=False, reason=str(error))]
                 return response
-            if any(p.name in ('__stack_command', '__stack_restart', '__stack_status') for p in request.parameters):
+            if any(p.name in ('__stack_command', '__stack_restart', '__stack_status', '__saved_maps') for p in request.parameters):
                 try:
                     if len(request.parameters) != 1 or request.parameters[0].value.type != 4:
                         raise ValueError('导航栈请求格式不正确')
                     p = request.parameters[0]
                     result = navigation_restart.handle(p.name, p.value.string_value)
+                    response.results = [SetParametersResult(successful=True, reason=json.dumps(result, ensure_ascii=False))]
+                except Exception as error:
+                    response.results = [SetParametersResult(successful=False, reason=str(error))]
+                return response
+
+            if any(p.name == '__read_config' for p in request.parameters):
+                try:
+                    if len(request.parameters) != 1 or request.parameters[0].value.type != 4:
+                        raise ValueError('配置读取请求格式不正确')
+                    query = json.loads(request.parameters[0].value.string_value)
+                    entry = self.link_catalog()[query['id']]
+                    index = query.get('index', 0)
+                    if not isinstance(index, int) or index < 0:
+                        raise ValueError('配置位置无效')
+                    target = entry['targets'][index]
+                    result = dict(target, content=Path(target['path']).read_text(encoding='utf-8'))
                     response.results = [SetParametersResult(successful=True, reason=json.dumps(result, ensure_ascii=False))]
                 except Exception as error:
                     response.results = [SetParametersResult(successful=False, reason=str(error))]
@@ -902,24 +904,10 @@ def main():
                                                param.value.integer_value if kind == 'int' else
                                                param.value.string_value if kind == 'string' else
                                                param.value.double_value)
-                    elif param.name in STM32_PWM_KEYS:
-                        if param.value.type != 2:
-                            raise ValueError(f'{param.name} 必须是整数')
-                        value = param.value.integer_value
-                        if not 0 <= value <= 3300:
-                            raise ValueError(f'{param.name} 必须在 0 到 3300 之间')
-                        changes[param.name] = value
                     else:
                         raise ValueError('不支持的参数')
                 if not changes:
                     raise ValueError('没有要保存的参数')
-                if any(name in changes for name in STM32_PWM_KEYS):
-                    if any(name not in STM32_PWM_KEYS for name in changes):
-                        raise ValueError('STM32 PWM 补偿不能与 Nav2 参数混合提交')
-                    receipt = self.save_stm32_pwm(changes)
-                    self.get_logger().info(json.dumps({'changes': changes, **receipt}, ensure_ascii=False))
-                    response.results = [SetParametersResult(successful=True, reason=json.dumps(receipt, ensure_ascii=False)) for _ in request.parameters]
-                    return response
                 if changes.get('global_planner_algorithm') == 'smac_hybrid':
                     _, getter = self.nav_clients['/planner_server']
                     loaded = self.request(getter, GetParameters.Request(names=['planner_plugins']))

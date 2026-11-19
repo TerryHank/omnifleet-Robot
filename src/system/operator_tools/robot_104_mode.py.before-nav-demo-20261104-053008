@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+"""Switch 104 between the Windows visual-case and navigation entries."""
+import argparse
+import fcntl
+import json
+from pathlib import Path
+import subprocess
+
+NAVIGATION = ('omnifleet-t2-waypoints.service',
+              'omnifleet-t2-pure-lio-nav2.service', 'omnifleet-t2-mola.service')
+VISION = 'omnifleet-t2-vision-demo.service'
+
+
+def switch(mode):
+    if mode == 'vision':
+        commands = [('stop', *NAVIGATION), ('start', VISION)]
+    elif mode == 'navigation':
+        commands = [('stop', VISION), ('start', 'omnifleet-t2-mola.service',
+                    'omnifleet-t2-pure-lio-nav2.service', 'omnifleet-t2-waypoints.service')]
+    else:
+        raise ValueError('Unknown 104 mode: ' + mode)
+    for command in commands:
+        subprocess.run(['sudo', '-n', 'systemctl', *command], check=True, timeout=40)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('mode', choices=['vision', 'navigation'])
+    args = parser.parse_args()
+    lock_path = Path.home() / '.cache/omnifleet_t2/104-mode.lock'
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open('w') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        switch(args.mode)
+    print(json.dumps({'robot': '104', 'mode': args.mode}))
+
+
+if __name__ == '__main__':
+    main()

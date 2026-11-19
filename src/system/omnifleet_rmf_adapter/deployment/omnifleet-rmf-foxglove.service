@@ -1,0 +1,12 @@
+[Unit]
+Description=OmniFleet WSL central read-only Foxglove bridge
+PartOf=omnifleet-rmf.target
+After=omnifleet-rmf-adapter.service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/system/omnifleet_rmf_adapter/scripts/run.bash foxglove
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10

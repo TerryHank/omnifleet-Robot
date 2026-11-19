@@ -50,5 +50,40 @@ int main(int argc,char **argv){
  set(rclcpp::Parameter("automatic_replanning",true));set(rclcpp::Parameter("replanning_interval",0.2));
  std::this_thread::sleep_for(std::chrono::milliseconds(230));through.tickRoot();check(plans==before+3,"continuous replanning uses the shared interval");
  through.haltTree();
+ auto tf=std::make_shared<tf2_ros::Buffer>(seed->get_clock());bb->set("tf_buffer",tf);
+ geometry_msgs::msg::TransformStamped transform;transform.header.frame_id="map";
+ transform.child_frame_id="base_link";transform.transform.rotation.w=1.;
+ tf->setTransform(transform,"formation-test",true);
+ f.registerNodeType<omnifleet_planner::FormationPoseReached>("FormationPoseReached");
+ auto hold=f.createTreeFromText("<root main_tree_to_execute='T'><BehaviorTree ID='T'><KeepRunningUntilFailure><ReactiveFallback><FormationPoseReached goal='{goal}'/><RecoveryProbe/></ReactiveFallback></KeepRunningUntilFailure></BehaviorTree></root>",bb);
+ goal.header.frame_id="map";goal.pose.position.x=.05;goal.pose.orientation.w=1.;bb->set("goal",goal);
+ prior=recovery_ticks;hold.tickRoot();check(recovery_ticks==prior,"arrived formation holds without motion controller");
+ transform.transform.translation.x=-.05;tf->setTransform(transform,"formation-test",true);
+ prior=recovery_ticks;hold.tickRoot();check(recovery_ticks==prior,"arrived slot stays parked across localization noise");
+ transform.transform.translation.x=0.;tf->setTransform(transform,"formation-test",true);
+ goal.pose.position.x=1.;bb->set("goal",goal);hold.tickRoot();check(recovery_ticks>prior,"moving slot resumes motion controller");
+ goal.pose.position.x=.05;goal.pose.orientation.z=std::sin(.5/2);goal.pose.orientation.w=std::cos(.5/2);bb->set("goal",goal);
+ prior=recovery_ticks;hold.tickRoot();check(recovery_ticks>prior,"heading error still requires correction");
+ goal.pose.orientation.z=0.;goal.pose.orientation.w=1.;bb->set("goal",goal);
+ prior=recovery_halts;hold.tickRoot();check(recovery_halts>prior,"arriving slot halts running controller");hold.haltTree();
+
+ auto moving_hold=f.createTreeFromText("<root main_tree_to_execute='T'><BehaviorTree ID='T'><FormationPoseReached goal='{goal}' respect_target_motion='true'/></BehaviorTree></root>",bb);
+ auto context_pub=seed->create_publisher<std_msgs::msg::String>("navigation/fleet/follow_context",1);
+ auto context_tick=[&](double speed,BT::NodeStatus expected){
+   std_msgs::msg::String m;m.data=nlohmann::json{{"speed",speed}}.dump();
+   for(int i=0;i<100;++i){context_pub->publish(m);std::this_thread::sleep_for(std::chrono::milliseconds(10));
+     if(moving_hold.tickRoot()==expected)return true;}
+   return false;
+ };
+ check(context_tick(.3,BT::NodeStatus::FAILURE),"moving leader keeps motion controller active inside pose tolerance");
+ prior=recovery_ticks;hold.tickRoot();check(recovery_ticks==prior,"formation hold behavior stays unchanged");
+ check(context_tick(0.,BT::NodeStatus::SUCCESS),"stopped leader allows pose hold");
+ moving_hold.haltTree();
+ int blocked_plans=0;
+ f.registerSimpleAction("BlockedPlan",[&](BT::TreeNode&){++blocked_plans;return BT::NodeStatus::FAILURE;});
+ auto waiting=f.createTreeFromText("<root main_tree_to_execute='T'><BehaviorTree ID='T'><KeepRunningUntilFailure><ForceSuccess><Sequence><BlockedPlan/><RecoveryProbe/></Sequence></ForceSuccess></KeepRunningUntilFailure></BehaviorTree></root>",bb);
+ prior=recovery_ticks;check(waiting.tickRoot()==BT::NodeStatus::RUNNING,"blocked dynamic plan holds session alive");
+ check(recovery_ticks==prior,"blocked plan never starts motion controller");waiting.tickRoot();
+ check(blocked_plans==2,"blocked session can evaluate the next target update");waiting.haltTree();
  rclcpp::shutdown();
 }

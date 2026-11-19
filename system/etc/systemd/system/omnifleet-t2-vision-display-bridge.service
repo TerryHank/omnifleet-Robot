@@ -1,0 +1,12 @@
+[Unit]
+Description=Foxglove visual display lossless WebSocket compression
+After=network.target omnifleet-t2-foxglove.service
+
+[Service]
+User=iecme
+ExecStart=/home/iecme/omnifleet_ws/.env/vision-display/bin/python /home/iecme/omnifleet_ws/src/sensing/hik_rgbd/hik_rgbd/foxglove_display_bridge.py
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

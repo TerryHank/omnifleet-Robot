@@ -1,6 +1,6 @@
 schema_version: 1
-calibration_status: migrated_from_113_verified_runtime_tf
-source_file: /home/iecme/omnifleet_ws/src/vehicle/rrc_tank_description/urdf/rrc_tank.urdf
+calibration_status: current_104_gemini_runtime_mount__physical_extrinsics_unmeasured
+source_file: /home/iecme/omnifleet_ws/src/vehicle/omnifleet_description/urdf/omnifleet_t2.urdf
 frame_convention:
   base_link: tracked_body_reference__x_forward_y_left_z_up
   rslidar: ros_rep103__x_forward_y_left_z_up
@@ -13,5 +13,5 @@ base_to_airy:
 base_to_camera:
   parent_frame: base_link
   child_frame: camera_link
-  translation_m: [0.105, 0.0, 0.105]
+  translation_m: [0.009, 0.0, 0.15]
   rotation_rpy_rad: [0.0, 0.0, 0.0]

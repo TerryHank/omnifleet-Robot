@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -u
+
+services=(
+  omnifleet-t2-airy.service
+  omnifleet-t2-description.service
+  omnifleet-t2-chassis.service
+  omnifleet-t2-foxglove.service
+  omnifleet-t2-waypoints.service
+  omnifleet-t2-nav2-parameters.service
+  omnifleet-t2-orbbec-camera.service
+)
+sudo systemctl stop "${services[@]}" 2>/dev/null || true
+
+patterns=(
+  '^/usr/bin/python3 /opt/ros/humble/bin/ros2 launch '
+  '^/usr/bin/python3 /opt/ros/humble/bin/ros2 run '
+  'mola-cli'
+  'nav2_'
+  'controller_server'
+  'planner_server'
+  'behavior_server'
+  'bt_navigator'
+  'lifecycle_manager'
+  'rslidar_sdk_node'
+  'robot_state_publisher'
+  'static_transform_publisher'
+  't2_driver'
+  'waypoint_ui_bridge'
+  'foxglove_bridge'
+  'nav2_parameter_store.py'
+  'omnifleet_t2_experiment_imu_adapter'
+)
+for pattern in "${patterns[@]}"; do
+  while read -r pid; do
+    [[ "$pid" == "$$" || -z "$pid" ]] && continue
+    kill -9 "$pid" 2>/dev/null || true
+  done < <(pgrep -f "$pattern" || true)
+done
+
+ros2 daemon stop 2>/dev/null || true
+echo "OmniFleet ROS 节点已清除。代码、配置和地图未删除。"

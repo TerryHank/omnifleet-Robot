@@ -165,7 +165,7 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "control_rate",
-                default_value="10.0",
+                default_value="30.0",
                 description="Motion candidate publication rate in hertz.",
             ),
             DeclareLaunchArgument(

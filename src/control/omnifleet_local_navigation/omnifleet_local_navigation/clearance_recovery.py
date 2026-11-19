@@ -4,6 +4,88 @@ import json
 import numpy as np
 
 
+def grid_start_blocked(grid,pose):
+    if grid is None or pose is None:return False
+    o=grid.info.origin
+    a=math.atan2(2*(o.orientation.w*o.orientation.z+o.orientation.x*o.orientation.y),
+                 1-2*(o.orientation.y**2+o.orientation.z**2))
+    dx,dy=pose[0]-o.position.x,pose[1]-o.position.y
+    x=math.floor((math.cos(a)*dx+math.sin(a)*dy)/grid.info.resolution)
+    y=math.floor((-math.sin(a)*dx+math.cos(a)*dy)/grid.info.resolution)
+    return 0<=x<grid.info.width and 0<=y<grid.info.height and grid.data[y*grid.info.width+x]>=99
+
+
+
+def grid_body_contacts(grid, pose, config, values=None, *, include_inscribed=False):
+    if grid is None or pose is None:
+        return {}
+    origin = grid.info.origin
+    angle = math.atan2(2*(origin.orientation.w*origin.orientation.z+
+                        origin.orientation.x*origin.orientation.y),
+                       1-2*(origin.orientation.y**2+origin.orientation.z**2))
+    c, sn = math.cos(angle), math.sin(angle)
+    dx, dy = pose[0]-origin.position.x, pose[1]-origin.position.y
+    resolution = grid.info.resolution
+    cx, cy = math.floor((c*dx+sn*dy)/resolution), math.floor((-sn*dx+c*dy)/resolution)
+    extent = math.ceil((math.hypot(config['length'],config['width'])/2+
+                        float((values or {}).get('footprint_padding',config.get('padding',0.))))/resolution)+2
+    x0, x1 = max(0,cx-extent), min(grid.info.width,cx+extent+1)
+    y0, y1 = max(0,cy-extent), min(grid.info.height,cy+extent+1)
+    cells = np.asarray(grid.data).reshape(grid.info.height,grid.info.width)
+    def key(x, y, cost):
+        # Rolling local costmaps move their origin by whole cells.
+        wx, wy = (x+.5)*resolution, (y+.5)*resolution
+        return (round(origin.position.x+c*wx-sn*wy,5),
+                round(origin.position.y+sn*wx+c*wy,5),angle,resolution,cost)
+    contacts = {}
+    if x0 < x1 and y0 < y1:
+        ys, xs = np.nonzero(cells[y0:y1,x0:x1]>=(99 if include_inscribed else 100))
+        xs, ys = xs+x0, ys+y0
+        x, y = (xs+.5)*resolution, (ys+.5)*resolution
+        points = np.column_stack((origin.position.x+c*x-sn*y,origin.position.y+sn*x+c*y))
+        clearances = body_cell_clearances(pose,points,config,resolution,values,angle)
+        for ix,iy,d in zip(xs,ys,clearances):
+            if d <= 1e-12:
+                cost = min(int(cells[iy,ix]),100)
+                contacts[key(ix,iy,cost)] = float(d) if cost == 100 else 0.
+    if 0<=cx<grid.info.width and 0<=cy<grid.info.height:
+        cost = cells[cy,cx]
+        if cost >= 99:
+            contacts.setdefault(key(cx,cy,min(int(cost),100)),0.)
+    return contacts
+
+
+def grid_body_blocked(grid, pose, config, values=None):
+    return bool(grid_body_contacts(grid,pose,config,values))
+
+
+
+def lattice_start_pose(grid, pose, heading_angles):
+    origin = grid.info.origin
+    a = math.atan2(2*(origin.orientation.w*origin.orientation.z+
+                     origin.orientation.x*origin.orientation.y),
+                   1-2*(origin.orientation.y**2+origin.orientation.z**2))
+    c, sn = math.cos(a), math.sin(a)
+    dx, dy = pose[0]-origin.position.x, pose[1]-origin.position.y
+    resolution = grid.info.resolution
+    x = (math.floor((c*dx+sn*dy)/resolution)+.5)*resolution
+    y = (math.floor((-sn*dx+c*dy)/resolution)+.5)*resolution
+    heading = min(heading_angles, key=lambda h: abs(math.atan2(
+        math.sin(h-pose[2]), math.cos(h-pose[2]))))
+    return [origin.position.x+c*x-sn*y, origin.position.y+sn*x+c*y, heading]
+
+
+def global_recovery_checks(read_grid, pose, config, values):
+    # The exception belongs to this starting footprint, not to the whole costmap.
+    def contacts(at):
+        return grid_body_contacts(read_grid(),at,config,values)
+    initial = grid_body_contacts(read_grid(),pose,config,values,include_inscribed=True)
+    def path_blocked(at):
+        return any(key not in initial or depth < initial[key]-.001
+                   for key,depth in contacts(at).items())
+    return lambda at: bool(contacts(at)), path_blocked
+
+
 def recovery_heading(pose,goal,command):
     dx,dy=goal[0]-pose[0],goal[1]-pose[1]
     distance=math.hypot(dx,dy);bearing=math.atan2(dy,dx)
@@ -19,6 +101,42 @@ def recovery_config(config, values):
     if footprint is not None and not json.loads(footprint):
         result['robot_radius'] = float(values['robot_radius'])+float(values.get('footprint_padding',0.))
     return result
+
+
+def local_body_collision(pose, points, config, resolution, values=None, grid_yaw=0.):
+    """Intersect lethal local-map cell squares with the complete selected body."""
+    return bool(np.any(body_cell_clearances(pose,points,config,resolution,values,grid_yaw) <= 1e-12))
+
+
+def body_cell_clearances(pose, points, config, resolution, values=None, grid_yaw=0.):
+    values = values or {}
+    points = np.asarray(points, dtype=float).reshape((-1, 2))
+    if not len(points):return np.empty(0)
+    dx, dy = points[:, 0]-pose[0], points[:, 1]-pose[1]
+    half = resolution/2
+    radius = recovery_config(config, values).get('robot_radius')
+    if radius is not None:
+        c, s = math.cos(grid_yaw), math.sin(grid_yaw)
+        x = np.maximum(np.abs(c*dx+s*dy)-half, 0.)
+        y = np.maximum(np.abs(-s*dx+c*dy)-half, 0.)
+        return np.hypot(x, y)-radius
+    footprint = json.loads(values.get('footprint', '[]'))
+    if footprint:
+        corners = np.asarray(footprint, dtype=float)
+        low, high = corners.min(axis=0), corners.max(axis=0)
+        center = (low+high)/2
+        hx, hy = (high-low)/2+float(values.get('footprint_padding', 0.))
+    else:
+        center = [0., 0.]; hx, hy = config['length']/2, config['width']/2
+    c, s = math.cos(pose[2]), math.sin(pose[2])
+    x, y = c*dx+s*dy-center[0], -s*dx+c*dy-center[1]
+    c, s = math.cos(grid_yaw-pose[2]), math.sin(grid_yaw-pose[2])
+    abs_c, abs_s = abs(c), abs(s)
+    # Separating axes of both rectangles include interior cells and rotated corners.
+    return np.maximum.reduce((np.abs(x)-hx-half*(abs_c+abs_s),
+                              np.abs(y)-hy-half*(abs_c+abs_s),
+                              np.abs(c*x+s*y)-half-hx*abs_c-hy*abs_s,
+                              np.abs(-s*x+c*y)-half-hx*abs_s-hy*abs_c))
 
 
 def signed_clearance(pose, points, length, width, radius=None):
@@ -53,8 +171,15 @@ def unknown_cells(grid, start):
 
 
 class ClearanceEscape:
-    def __init__(self, pose, obstacles, unknown, config, resolution, now, epoch, turn_speed=.35, target_heading=None):
+    def __init__(self, pose, obstacles, unknown, config, resolution, now, epoch, turn_speed=.35, target_heading=None, start_blocked=None, path_blocked=None, *, crawl_near_exit=False):
+        self.speed_scale = float(config.get('recovery_speed_scale', 1.))
+        if not math.isfinite(self.speed_scale) or self.speed_scale <= 0.:
+            raise ValueError('recovery_speed_scale must be finite and positive')
+        self.angular_speed = .30 * self.speed_scale
         self.start = list(pose)
+        self.start_blocked = start_blocked
+        self.path_blocked = path_blocked
+        self.crawl_near_exit = crawl_near_exit or path_blocked is not None
         self.length, self.width = config['length'], config['width']
         self.circle_radius = config.get('robot_radius')
         self.resolution = resolution
@@ -69,10 +194,14 @@ class ClearanceEscape:
         occupied = np.asarray(obstacles, dtype=float).reshape((-1, 2))
         unknown = np.asarray(unknown, dtype=float).reshape((-1, 2))
         initial = self.distances(pose, occupied)
-        if not len(initial) or (self.circle_radius is None and initial.min() < -resolution*.71):
+        if (not len(initial) and start_blocked is None) or (len(initial) and self.circle_radius is None and initial.min() < -resolution*.71):
             raise ValueError('车体内障碍超过栅格离散误差范围，不能自动脱困')
         if len(unknown) and self.distances(pose, unknown).min() < self.physical:
             raise ValueError('当前车体周围存在未知空间，不能自动脱困')
+        # Hand orientation planning back to Nav2 at a free start with no lost body clearance.
+        if start_blocked is not None and len(initial):
+            self.escape_clearance=min(self.escape_clearance,max(self.physical,float(initial.min())))
+        curve_speed=min(.30,max(.08,(initial.min(initial=math.inf)-self.physical)/.5))
         self.contacts = {self.key(p): float(d) for p, d in zip(occupied, initial) if d < self.physical}
         self.contact_surface = occupied[initial < self.exit_clearance].copy()
         blocked = np.concatenate((occupied, unknown))
@@ -81,13 +210,14 @@ class ClearanceEscape:
         self.turn_target=None
         error=0. if target_heading is None else math.atan2(math.sin(target_heading-pose[2]),math.cos(target_heading-pose[2]))
         turn_clearance=self.physical+(.002 if self.circle_radius is not None else .02)
-        turn_safe=target_heading is not None and all(self.distances([*pose[:2],pose[2]+a],blocked).min()>=turn_clearance
-                    for a in np.linspace(0.,error,max(2,math.ceil(abs(error)/.02)+1)))
+        turn_safe=target_heading is not None and not (start_blocked and start_blocked(pose)) and all(
+                    self.distances(p,blocked).min(initial=math.inf)>=turn_clearance and not (path_blocked and path_blocked(p))
+                    for p in ([*pose[:2],pose[2]+a] for a in np.linspace(0.,error,max(2,math.ceil(abs(error)/.02)+1))))
         if turn_safe:
             self.turn_target=target_heading;self.distance=0.;self.direction=1;self.curvature=0.;self.speed=0.
             self.path=np.asarray([pose]);self.epoch=epoch;self.started=now
             error=math.atan2(math.sin(target_heading-pose[2]),math.cos(target_heading-pose[2]))
-            self.timeout=abs(error)/.08+8.;self.state='moving';self.reason=''
+            self.timeout=abs(error)/self.angular_speed+4.;self.state='moving';self.reason=''
             self.diagnostic={};self.replan_allowed=False
             return
         for direction in (1, -1):
@@ -96,12 +226,13 @@ class ClearanceEscape:
                 for step in range(1, 81):
                     p=arc_pose(pose,direction*step*.01,curvature)
                     d = self.distances(p, blocked)
-                    if np.any(d < prior-1e-7):break
+                    if np.any(d < prior-1e-7) or (path_blocked and path_blocked(p)):break
                     prior = np.maximum(prior, np.minimum(d, self.physical));path.append(p)
-                    turn = np.linalg.norm(blocked-np.array(p[:2]), axis=1).min()-self.radius
-                    if d.min() >= self.escape_clearance and turn >= self.escape_clearance+(.01 if target_heading is None and self.circle_radius is None else 0.):
-                        speed=.10 if abs(curvature)<1e-6 else min(.05,.08/max(abs(curvature),1.))
-                        if step*.01/speed+8.>35.:break
+                    turn = math.inf if start_blocked is not None else np.linalg.norm(blocked-np.array(p[:2]), axis=1).min(initial=math.inf)-self.radius
+                    if (d.min(initial=math.inf) >= self.escape_clearance and turn >= self.escape_clearance+(.01 if target_heading is None and self.circle_radius is None else 0.)
+                            and not (start_blocked and start_blocked(p))):
+                        speed=(.10 if abs(curvature)<1e-6 else min(curve_speed,.30/max(abs(curvature),1.))) * self.speed_scale
+                        if step*.01/speed+4.>35.:break
                         score=step*.01+.05*abs(curvature)
                         if self.distance is None or score<best_score:
                             self.direction,self.distance,self.curvature=direction,step*.01,curvature
@@ -110,11 +241,10 @@ class ClearanceEscape:
         if self.distance is None:
             raise ValueError('0.8米范围内未找到不加深现有重叠且不新增碰撞的退出轨迹')
         self.epoch, self.started = epoch, now
-        self.timeout=self.distance/self.speed+8.
+        self.timeout=self.distance/self.speed+4.
         self.state, self.reason = 'moving', ''
         self.progress = (now, 0.)
         self.blocked_since = None
-        self.speed_limited_since = None
         self.diagnostic = {}
         self.replan_allowed = False
 
@@ -142,9 +272,10 @@ class ClearanceEscape:
             return initial
         return self.physical
 
-    def abort(self, reason, replan=False):
+    def abort(self, reason, replan=False, timed_out=False):
         self.state, self.reason = 'failed', reason
-        self.replan_allowed=replan
+        self.replan_allowed=replan or timed_out
+        self.timed_out=timed_out
 
     def certified(self, pose, command, obstacles, unknown, margin=0.):
         occupied = np.asarray(obstacles, dtype=float).reshape((-1, 2))
@@ -152,7 +283,9 @@ class ClearanceEscape:
         blocked = np.concatenate((occupied, unknown))
         floors = np.array([self.contact_floor(p) for p in occupied]
                           + [self.physical]*len(unknown))+margin
-        for t in np.linspace(0., .5, 11):
+        swept_speed = abs(command[0]) + abs(command[1]) * self.radius
+        samples = max(11, math.ceil(.5 * swept_speed / min(.01, self.resolution / 2.)) + 1)
+        for t in np.linspace(0., .5, samples):
             v, w = command
             angle = pose[2]+w*t
             if abs(w) < 1e-6:
@@ -160,6 +293,9 @@ class ClearanceEscape:
             else:
                 p = [pose[0]+v/w*(math.sin(angle)-math.sin(pose[2])),
                      pose[1]-v/w*(math.cos(angle)-math.cos(pose[2])), angle]
+            if self.path_blocked and self.path_blocked(p):
+                self.diagnostic={'global_collision_pose':p,'prediction_seconds':float(t),'command':list(command)}
+                return False
             values=self.distances(p, blocked)
             bad=np.flatnonzero(values < floors-.001)
             if len(bad):
@@ -169,42 +305,56 @@ class ClearanceEscape:
                 return False
         return True
 
+    def timed_out_at(self, now):
+        paused_at = getattr(self, 'paused_at', None)
+        return (now-self.started > self.timeout if paused_at is None
+                else paused_at-self.started > self.timeout or now-paused_at > self.timeout)
+
     def command(self, now, pose, obstacles, unknown, velocity, fresh, epoch):
         if self.state != 'moving':
             return [0., 0.]
-        if epoch != self.epoch or now-self.started > self.timeout:
-            self.abort(f'脱困定位代次变化或超过{self.timeout:.0f}秒限时'); return [0., 0.]
+        if epoch != self.epoch:
+            self.abort('脱困定位代次变化'); return [0., 0.]
+        if self.timed_out_at(now):
+            self.abort('脱困超过轨迹限时',timed_out=True); return [0., 0.]
+        paused_at = getattr(self, 'paused_at', None)
         if not fresh or pose is None:
+            if paused_at is None:
+                self.paused_at = now
+            self.reason = '等待新鲜定位与底盘反馈，脱困暂缓'
             return [0., 0.]
+        if paused_at is not None:
+            paused_for = now-paused_at
+            self.started += paused_for
+            if self.turn_target is None:
+                self.progress = (self.progress[0]+paused_for,self.progress[1])
+                if self.blocked_since is not None:
+                    self.blocked_since += paused_for
+            self.paused_at = None
         if self.turn_target is not None:
             error=math.atan2(math.sin(self.turn_target-pose[2]),math.cos(self.turn_target-pose[2]))
-            if math.dist(pose[:2],self.start[:2])>.1 or abs(velocity[0])>.07 or abs(velocity[1])>.15:
-                self.abort('脱困转向机身偏移、速度或净空超过边界',replan=True);return [0.,0.]
+            if math.dist(pose[:2],self.start[:2])>.1:
+                self.abort('脱困转向机身偏移超过边界',replan=True);return [0.,0.]
             if abs(error)<.04:
                 self.state='stopping';return [0.,0.]
-            command=[0.,max(-.10,min(.10,.8*error))]
+            command=[0.,max(-self.angular_speed,min(self.angular_speed,1.2*error*self.speed_scale))]
             if not self.certified(pose,command,obstacles,unknown,margin=.002+.5*abs(velocity[0])):
                 self.abort('脱困转向预测净空不足',replan=True);return [0.,0.]
             return command
         index=int(np.argmin(np.linalg.norm(self.path[:,:2]-np.asarray(pose[:2]),axis=1)))
         reference=self.path[index];dx,dy=pose[0]-reference[0],pose[1]-reference[1]
-        c,s=math.cos(reference[2]),math.sin(reference[2]);progress=index*.01
+        c,s=math.cos(reference[2]),math.sin(reference[2])
+        progress=index*.01+self.direction*(c*dx+s*dy)
+        remaining=max(0.,self.distance-progress)
         lateral=-s*dx+c*dy
         angle = math.atan2(math.sin(reference[2]-pose[2]), math.cos(reference[2]-pose[2]))
         if abs(lateral) > self.max_lateral or abs(angle) > .25:
             self.diagnostic={'lateral_error':lateral,'heading_error':angle,'body_velocity':list(velocity),'pose':list(pose)}
             self.abort('脱困轨迹偏差超过边界，停止后重新规划',replan=True); return [0., 0.]
-        if abs(velocity[0])>.14 or abs(velocity[1])>.15:
-            if self.speed_limited_since is None:self.speed_limited_since=now
-            self.reason='脱困降速：保持零速等待机身速度回落'
-            if now-self.speed_limited_since>1.:
-                self.diagnostic={'body_velocity':list(velocity),'pose':list(pose)}
-                self.abort('脱困机身速度持续超过边界')
-            return [0.,0.]
-        self.speed_limited_since=None
         blocked = np.concatenate((np.asarray(obstacles).reshape((-1, 2)), np.asarray(unknown).reshape((-1, 2))))
-        turn = np.linalg.norm(blocked-np.array(pose[:2]), axis=1).min()-self.radius
-        if progress >= self.distance-.01 and turn >= self.escape_clearance and self.distances(pose, blocked).min() >= self.escape_clearance:
+        turn = math.inf if self.start_blocked is not None else np.linalg.norm(blocked-np.array(pose[:2]), axis=1).min(initial=math.inf)-self.radius
+        if (remaining <= min(.005,self.distance*.25) and turn >= self.escape_clearance and self.distances(pose, blocked).min(initial=math.inf) >= self.escape_clearance
+                and not (self.start_blocked and self.start_blocked(pose))):
             self.state = 'stopping'; return [0., 0.]
         end=self.path[-1]
         overshoot=self.direction*(math.cos(end[2])*(pose[0]-end[0])+math.sin(end[2])*(pose[1]-end[1]))
@@ -215,8 +365,11 @@ class ClearanceEscape:
                 self.abort('脱困没有足够位姿进展'); return [0., 0.]
             self.progress = (now, progress)
         speed=self.speed*min(1.,self.speed/max(abs(velocity[0]),self.speed))
+        if self.crawl_near_exit:
+            # Keep the existing crawl speed near the end of a short escape.
+            speed=min(speed,max(.10,2.*remaining))
         angular=self.direction*speed*self.curvature+1.5*angle-self.direction*12.*lateral
-        command = [self.direction*speed, max(-.10, min(.10, angular))]
+        command = [self.direction*speed, max(-self.angular_speed, min(self.angular_speed, angular))]
         safe=self.certified(pose,command,obstacles,unknown)
         if not safe and command[1]!=0.:
             straight=[command[0],0.]

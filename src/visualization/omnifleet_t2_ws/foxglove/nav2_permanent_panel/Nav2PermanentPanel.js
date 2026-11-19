@@ -1305,11 +1305,75 @@ export function initNav2HotParamsPanel(context) {
   const stackStatus = stackCard.querySelector('[role="status"]');
   const modePicker = document.createElement('div');
   modePicker.style.cssText = 'margin-bottom:10px';
-  modePicker.innerHTML = '<b>启动模式</b><div role="group" aria-label="导航启动模式" style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0"><button type="button" data-startup-mode="saved_map" aria-pressed="true">加载已有地图导航</button><button type="button" data-startup-mode="mapping" aria-pressed="false">边建图边导航</button></div><div class="hint" data-startup-mode-hint></div>';
+  modePicker.innerHTML = '<b>启动模式</b><div role="group" aria-label="导航启动模式" style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0"><button type="button" data-startup-mode="saved_map" aria-pressed="true">加载已有地图导航</button><button type="button" data-startup-mode="mapping" aria-pressed="false">边建图边导航</button></div><div class="hint" data-startup-mode-hint></div><div data-saved-maps><label for="nav2-saved-map">已保存的地图</label><select id="nav2-saved-map" data-testid="navigation-saved-map" style="box-sizing:border-box;width:100%;margin:6px 0;padding:8px"><option value="">正在读取地图列表……</option></select><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" data-testid="navigation-map-refresh">刷新列表</button><button type="button" data-testid="navigation-map-load">加载所选地图</button></div><div data-testid="navigation-map-status" role="status" aria-live="polite" style="margin-top:8px;white-space:pre-wrap;overflow-wrap:anywhere"></div></div>';
   stackInput.parentElement.insertBefore(modePicker, stackInput.previousElementSibling);
   let modeSaving = false;
+  const savedMapBox = modePicker.querySelector('[data-saved-maps]');
+  const savedMapSelect = modePicker.querySelector('[data-testid="navigation-saved-map"]');
+  const mapRefreshButton = modePicker.querySelector('[data-testid="navigation-map-refresh"]');
+  const mapLoadButton = modePicker.querySelector('[data-testid="navigation-map-load"]');
+  const mapStatus = modePicker.querySelector('[data-testid="navigation-map-status"]');
+  let mapsLoaded = false, mapsReading = false, mapLoading = false, savedMapView = false;
+  async function refreshSavedMaps() {
+    if (mapsReading) return;
+    mapsReading = true;
+    mapRefreshButton.disabled = true;
+    mapStatus.textContent = '正在读取车端已保存地图……';
+    try {
+      const value = await stackCall('__saved_maps');
+      if (disposed) return;
+      const selected = savedMapSelect.value || value.selected;
+      savedMapSelect.replaceChildren();
+      for (const map of value.maps || []) {
+        const option = document.createElement('option');
+        option.value = map.path;option.textContent = map.name;
+        savedMapSelect.append(option);
+      }
+      if ([...savedMapSelect.options].some(option => option.value === selected)) savedMapSelect.value = selected;
+      mapsLoaded = true;
+      mapStatus.textContent = savedMapSelect.options.length
+        ? '选择地图后点击“加载所选地图”，地图和已保存的航点会更新到当前页面。'
+        : '车端还没有已保存地图。';
+    } catch (error) {
+      if (!disposed) mapStatus.textContent = '读取地图列表失败：' + String(error.message || error);
+    } finally {
+      mapsReading = false;mapRefreshButton.disabled = false;
+    }
+  }
+  mapRefreshButton.onclick = refreshSavedMaps;
+  mapLoadButton.onclick = async () => {
+    const path = savedMapSelect.value;
+    if (!path) { mapStatus.textContent = '请先选择一张已保存地图。';return; }
+    if (mapLoading) return;
+    const name = savedMapSelect.selectedOptions[0].textContent;
+    mapLoading = true;stackWorking = true;stackDraft = true;
+    mapLoadButton.disabled = true;mapRefreshButton.disabled = true;savedMapSelect.disabled = true;stackButton.disabled = true;
+    mapStatus.textContent = '正在加载所选地图及航点……';
+    showStartupMode();
+    try {
+      const result = await context.callService('/omnifleet_t2/waypoints/map_load', {map_path: path});
+      if (!result?.success) throw new Error(result?.error_message || '地图加载未成功');
+      if (disposed) return;
+      mapStatus.textContent = '已加载：' + name + '。正在保存下次启动设置……';
+      const command = stackInput.value.replace(/\s+(?:startup_mode|map_path):=(?:"[^"]*"|'[^']*'|\S+)/g, '').trim()
+        + ' startup_mode:=saved_map map_path:=' + JSON.stringify(path);
+      try {
+        await stackCall('__stack_command', command);
+        stackInput.value = command;
+        mapStatus.textContent = '已加载：' + name + '。地图及关联航点已更新，下次启动继续使用此地图。';
+      } catch (error) {
+        mapStatus.textContent = '地图已加载，但下次启动设置保存失败：' + String(error.message || error);
+      }
+    } catch (error) {
+      if (!disposed) mapStatus.textContent = '加载失败：' + String(error.message || error);
+    } finally {
+      mapLoading = false;stackWorking = false;stackDraft = false;
+      mapLoadButton.disabled = false;mapRefreshButton.disabled = false;savedMapSelect.disabled = false;stackButton.disabled = false;
+      showStartupMode();
+    }
+  };
   function showStartupMode() {
-    const mode = /(?:^|\s)startup_mode:=mapping(?:\s|$)/.test(stackInput.value) ? 'mapping' : 'saved_map';
+    const mode = savedMapView ? 'saved_map' : /(?:^|\s)startup_mode:=mapping(?:\s|$)/.test(stackInput.value) ? 'mapping' : 'saved_map';
     const unified = /\bmola_nav2_unified\.launch\.py\b/.test(stackInput.value);
     for (const button of modePicker.querySelectorAll('[data-startup-mode]')) {
       const selected = button.dataset.startupMode === mode;
@@ -1318,12 +1382,19 @@ export function initNav2HotParamsPanel(context) {
       button.style.color = selected ? '#fff' : '#333';
       button.disabled = !stackLoaded || !unified || stackWorking || stackInput.disabled || modeSaving;
     }
+    savedMapBox.hidden = mode !== 'saved_map';
+    if (stackLoaded && mode === 'saved_map' && !mapsLoaded && !mapsReading) void refreshSavedMaps();
     modePicker.querySelector('[data-startup-mode-hint]').textContent = !unified ? '此切换适用于统一导航启动命令。' :
-      (mode === 'mapping' ? '从空地图开始，使用 MOLA 实时栅格边建图边导航；不会读取旧 .mm。' : '只接受已验证的 Native KeyframePointCloudMap；必须显式填写 map_path。') + ' 选择后自动保存，点击“重启导航栈”生效。';
+      mode === 'mapping' ? '从空地图开始边建图边导航。此模式选择保存后，点击“重启导航栈”生效。'
+        : '在下方选择已保存地图并加载，当前页面会直接显示旧地图，无须再次点击重启。';
   }
   for (const button of modePicker.querySelectorAll('[data-startup-mode]')) {
     button.onclick = async () => {
       if (button.disabled) return;
+      if (button.dataset.startupMode === 'saved_map') {
+        savedMapView = true;showStartupMode();return;
+      }
+      savedMapView = false;
       const previous = stackInput.value;
       let command = previous.replace(/\s+startup_mode:=(?:"[^"]*"|'[^']*'|\S+)/g, '').trim();
       if (button.dataset.startupMode === 'mapping') {

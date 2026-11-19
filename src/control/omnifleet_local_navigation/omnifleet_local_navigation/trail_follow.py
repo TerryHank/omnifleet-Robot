@@ -45,7 +45,7 @@ class TrailFollow(FormationFollow):
         self.predecessor_velocity=[0.,0.];self.follow_distance=0.;self.range_rate=0.
 
     def update(self, points, sequence, velocity=None, distance=0., rate=0.):
-        super().update(points[-1],sequence)
+        super().update(points[-1],sequence,velocity)
         self.predecessor_velocity=list(velocity or [0.,0.])
         self.follow_distance=distance;self.range_rate=rate
 

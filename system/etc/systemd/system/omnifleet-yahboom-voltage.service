@@ -1,0 +1,11 @@
+[Unit]
+Description=Yahboom battery voltage telemetry
+
+[Service]
+User=iecme
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/env.bash && exec /usr/bin/python3 /opt/omnifleet-yahboom-voltage/voltage_reader.py'
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

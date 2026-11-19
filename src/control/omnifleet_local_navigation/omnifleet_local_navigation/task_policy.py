@@ -23,6 +23,7 @@ class TaskPolicy:
             if (ticket.source==self.current.source and ticket.command_epoch==self.current.command_epoch and
                 ticket.task_id==self.current.task_id and ticket.revision<=self.current.revision):return 'DUPLICATE'
             if ticket.source=='FLEET':return 'BUSY'
+            if self.current.source=='FLEET':return 'BUSY'
             self.local_override=True
             self.pending=ticket;self.canceling=True
             return 'CANCEL_THEN_TAKEOVER'

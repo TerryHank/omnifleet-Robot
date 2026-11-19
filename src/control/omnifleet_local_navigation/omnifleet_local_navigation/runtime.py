@@ -1,15 +1,22 @@
 """One onboard navigation owner; UI and fleet are clients of this node."""
 import argparse,copy,json,math,os,time
+from array import array
+from pathlib import Path as FilePath
+from ament_index_python.packages import get_package_share_directory
 from dataclasses import dataclass
 from types import SimpleNamespace
 import rclpy
-from rclpy.action import ActionServer,ActionClient,CancelResponse
+from rclpy.action import ActionServer,ActionClient,CancelResponse,GoalResponse
 from rclpy.task import Future
 from rclpy.qos import QoSProfile,DurabilityPolicy,ReliabilityPolicy
 from nav2_msgs.action import NavigateToPose,NavigateThroughPoses
+from nav2_msgs.msg import Costmap
 from nav_msgs.msg import Path
-from geometry_msgs.msg import PoseStamped
-from std_msgs.msg import String
+from geometry_msgs.msg import PointStamped,PoseStamped
+from rclpy.time import Time
+from tf2_ros import TransformException
+from tf2_geometry_msgs import do_transform_point
+from std_msgs.msg import Bool,String
 from std_srvs.srv import Trigger,SetBool
 from omnifleet_navigation_interfaces.action import ExecuteNavigation, ExecuteFormation
 from omnifleet_navigation_interfaces.msg import NavigationPoint
@@ -19,9 +26,10 @@ from .scope import topic,frame
 from .task_policy import TaskPolicy,Ticket
 from .native_modes import NATIVE_BACKENDS,native_tree
 from .fleet_lease import FleetLease
+from .traffic_pause import receive_pause,update_pause
 from .trail_follow import receive_trail
 from .formation_follow import receive_formation
-from .clearance_recovery import ClearanceEscape,unknown_cells,recovery_heading,signed_clearance,recovery_config
+from .clearance_recovery import ClearanceEscape,unknown_cells,recovery_heading,recovery_config,grid_body_blocked,local_body_collision,lattice_start_pose
 from .bounded_turn import BoundedTurn,body_velocity
 from source_time_executor import SourceTimeExecutor
 
@@ -50,30 +58,47 @@ class LocalNavigation(LocalControl):
         self.fleet_permission_epoch=0
         self.stop_generation=0;self.accepted_generations={}
         self.fleet_lease=FleetLease()
+        self.traffic_paused=self.traffic_suspended=False;self.traffic_sequence=-1
         super().__init__(config)
         self.frame_id=frame('map');self.pass_radius=.25
         self.preview_planner_id=config.get('default_planner','GridBased')
         self.preview_revision=0;self.preview_dirty=False;self.preview_goal_handle=None
+        lattice = FilePath(get_package_share_directory('omnifleet_planner')) / 'config/lattice/diff_10cm_r04.json'
+        self.lattice_heading_angles = json.loads(lattice.read_text())['lattice_metadata']['heading_angles']
         q=QoSProfile(depth=1,reliability=ReliabilityPolicy.RELIABLE,durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.path_pub=self.create_publisher(Path,'/omnifleet_t2/waypoints/path',q)
         self.create_subscription(String,'/omnifleet_t2/waypoints/catalog',self.on_preview_catalog,q)
         self.status_pub=self.create_publisher(String,'/navigation/status',q)
+        self.recovery_costmap_pub = self.create_publisher(Costmap, '/navigation/recovery_costmap_raw', q)
+        self.create_subscription(Costmap, '/local_costmap/costmap_raw', self.relay_recovery_costmap, q)
         self.execution=ContinuousRoute(self)
         self.servers=[
-            ActionServer(self,ExecuteNavigation,topic('/navigation/execute'),self.execute_task,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
-            ActionServer(self,ExecuteFormation,topic('/navigation/formation'),self.execute_formation,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
-            ActionServer(self,NavigateToPose,topic('/navigate_to_pose'),self.execute_single,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
-            ActionServer(self,NavigateThroughPoses,topic('/navigate_through_poses'),self.execute_route,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
+            ActionServer(self,ExecuteNavigation,topic('/navigation/execute'),self.execute_task,goal_callback=self.accept_goal,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
+            ActionServer(self,ExecuteFormation,topic('/navigation/formation'),self.execute_formation,goal_callback=self.accept_goal,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
+            ActionServer(self,NavigateToPose,topic('/navigate_to_pose'),self.execute_single,goal_callback=self.accept_goal,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
+            ActionServer(self,NavigateThroughPoses,topic('/navigate_through_poses'),self.execute_route,goal_callback=self.accept_goal,cancel_callback=self.cancel_request,handle_accepted_callback=self.accept_handle),
         ]
         self.create_service(Trigger,topic('/navigation/stop'),self.stop_request)
+        self.create_subscription(Bool,'/navigation/joystick_stop_gear',self.on_stop_gear,
+            QoSProfile(depth=1,durability=DurabilityPolicy.TRANSIENT_LOCAL))
         self.create_service(SetBool,topic('/navigation/allow_fleet'),self.allow_fleet)
         self.create_service(Trigger,topic('/navigation/fleet/acquire'),self.acquire_fleet)
         self.create_subscription(String,'/navigation/fleet/heartbeat',self.renew_fleet,1)
+        self.create_subscription(String,'/navigation/fleet/traffic_pause',lambda m:receive_pause(self,m),1)
         self.create_subscription(String,'/navigation/fleet/follow_trail',lambda m:(receive_trail(self,m),receive_formation(self,m)),1)
         self.create_service(Trigger,topic('/navigation/reset_estop'),self.reset_estop)
         self.topic_client=ActionClient(self,ExecuteNavigation,topic('/navigation/execute'))
+        self.point_client=ActionClient(self,NavigateToPose,topic('/navigate_to_pose'))
         self.create_subscription(PoseStamped,'/goal_pose',self.goal_pose,10)
+        self.create_subscription(PointStamped,topic('/navigation/goal_point'),self.goal_point,10)
         self.create_timer(.05,self.update_jobs)
+        self.get_logger().info('恢复运动忽略致命格；退出脱困时按原代价地图检查车体')
+
+    def relay_recovery_costmap(self, message):
+        # Nav2 raw costs use 254 for lethal and 255 for unknown.
+        data = bytes(message.data)
+        message.data = array('B', data.replace(b'\xfe', b'\x00'))
+        self.recovery_costmap_pub.publish(message)
 
     def clear_preview(self):
         if getattr(self,'preview_empty',False):return
@@ -88,10 +113,43 @@ class LocalNavigation(LocalControl):
                 self.clear_preview()
         except (ValueError,TypeError,AttributeError):pass
 
+    def goal_point(self,message):
+        target=PoseStamped();target.header=copy.deepcopy(message.header)
+        point=message.point
+        if message.header.frame_id!=self.frame_id:
+            try:
+                transform=self.tf.lookup_transform(self.frame_id,message.header.frame_id,Time())
+                point=do_transform_point(message,transform).point
+            except TransformException as error:
+                self.publish_status('点目标坐标转换失败：'+str(error))
+                return
+        target.header.frame_id=self.frame_id
+        target.pose.position=copy.deepcopy(point)
+        heading=0.
+        if self.local_pose is not None:
+            dx=point.x-self.local_pose[0];dy=point.y-self.local_pose[1]
+            heading=math.atan2(dy,dx) if math.hypot(dx,dy)>1e-4 else self.local_pose[2]
+        target.pose.orientation.z=math.sin(heading/2);target.pose.orientation.w=math.cos(heading/2)
+        planner=self.selection.get('planner',self.preview_planner_id)
+        request=NavigateToPose.Goal()
+        request.pose=target
+        try:
+            request.behavior_tree=native_tree(planner,goal_checker='point_goal_checker')
+        except OSError as error:
+            self.publish_status('点目标导航树准备失败：'+str(error))
+            return
+        self.send_topic_goal(self.point_client,request)
+
     def goal_pose(self,message):
         request=ExecuteNavigation.Goal();request.task_id='map-click-'+str(self.get_clock().now().nanoseconds)
         request.source=ExecuteNavigation.Goal.LOCAL;request.single_point=True
         p=NavigationPoint();p.name='地图目标';p.pose=message;p.kind=NavigationPoint.STOP;request.waypoints=[p]
+        self.send_topic_goal(self.topic_client,request)
+
+    def send_topic_goal(self,client,request):
+        if self.stop_gear:
+            self.publish_status('遥控最低档停车，目标未发送')
+            return
         generation=self.stop_generation
         def accepted(f):
             try:
@@ -99,7 +157,7 @@ class LocalNavigation(LocalControl):
                 if h.accepted and generation!=self.stop_generation:h.cancel_goal_async()
                 elif not h.accepted:self.publish_status('本地导航模块拒绝地图目标')
             except Exception as error:self.publish_status('地图目标提交失败：'+str(error))
-        self.topic_client.send_goal_async(request).add_done_callback(accepted)
+        client.send_goal_async(request).add_done_callback(accepted)
 
     def inhibit_output(self):self.inhibited=True;self.armed=False;self.nav_time=0.
 
@@ -107,18 +165,23 @@ class LocalNavigation(LocalControl):
         if not self.armed:self.nav_time=0.
         self.armed=True
 
+    def accept_goal(self,request):
+        return GoalResponse.REJECT if self.stop_gear else GoalResponse.ACCEPT
+
     def accept_handle(self,handle):
         self.accepted_generations[bytes(handle.goal_id.uuid).hex()]=self.stop_generation
         handle.execute()
 
     def output_permitted(self):
-        return self.armed and not self.inhibited and super().output_permitted()
+        return self.armed and not self.inhibited and not self.traffic_suspended and super().output_permitted()
 
     def publish_status(self,text):
         if hasattr(self,'execution') and self.execution.active and self.execution.phase in ('tracking','replanning','preplanning') and not self.policy.canceling:self.inhibited=False
         self.message=text;self.get_logger().info(text);self.publish_catalog()
 
     def readiness_reason(self):
+        if getattr(self,'stop_gear',False):return '遥控最低档停车'
+        if getattr(self,'stop_gear_canceling',False):return '正在确认最低档取消导航'
         if self.estop:return '急停或接触保护尚未解除'
         if self.clearance_escape:return '正在低速脱困，完成并停稳后继续原任务'
         if self.policy.canceling or self.execution.phase in ('canceling','cancel_unconfirmed'):return '正在取消或确认停稳，尚不能启动后续任务'
@@ -143,8 +206,10 @@ class LocalNavigation(LocalControl):
               'navigation_active':self.navigation_active,'local_ready':not bool(reason),
               'readiness_reason':reason,'message':self.message,'local_override':self.policy.local_override,
               'fleet_enabled':self.fleet_enabled,'control_mode':self.mode,
+              'traffic_paused':self.traffic_paused,'traffic_suspended':self.traffic_suspended,
               'fleet_control_available':True,'fleet_lease_fresh':self.fleet_lease.fresh(time.monotonic()),
               'fleet_lease_sequence':self.fleet_lease.sequence,
+              'last_fleet_failure':getattr(self,'last_fleet_failure',None),
               'fleet_lease_task_id':self.fleet_lease.task_id,'fleet_lease_revision':self.fleet_lease.revision,
               'localization_epoch':self.epoch}
         self.status_pub.publish(String(data=json.dumps(data,ensure_ascii=False)))
@@ -227,6 +292,7 @@ class LocalNavigation(LocalControl):
         return await job.done
 
     def start_job(self,job):
+        self.traffic_paused=self.traffic_suspended=False;self.traffic_sequence=-1
         self.current_job=job;self.pending_job=None;self.inhibited=False;self.goal_error=''
         self.planned_path=[];self.tracking_guard.reset();self.tracking_stop_reason=''
         self.armed=False;self.nav_time=0.
@@ -266,12 +332,30 @@ class LocalNavigation(LocalControl):
         return CancelResponse.ACCEPT
 
     def stop_owned(self,reason):
+        self.traffic_paused=self.traffic_suspended=False
         self.recovery_pending=None
         if self.clearance_escape:
             self.clearance_escape=None;self.execution.finish('canceled',reason)
         if self.pending_job:self.finish_job(self.pending_job,False,'CANCELED',reason);self.pending_job=None
         self.policy.cancel();self.inhibited=True;self.cancel_deadline=time.monotonic()+5
         if self.execution.active:self.execution.stop(reason)
+
+    def on_stop_gear(self,msg):
+        if self.stop_gear==bool(msg.data):return
+        self.stop_gear=bool(msg.data)
+        self.stop_generation+=1
+        self.manual=[0.,0.];self.manual_time=0.;self.joystick_time=0.
+        self.nav=[0.,0.];self.inhibit_output()
+        if self.stop_gear:
+            reason='遥控最低档停车，取消导航'
+            self.fleet_hold=True
+            self.stop_owned(reason)
+            self.clear_preview()
+            self.stop_gear_canceling=True
+            self.cancel_backend_goals()
+            self.publish_status(reason)
+        else:
+            self.publish_status('遥控已离开最低档，可重新下发目标')
 
     def stop_request(self,request,response):
         self.stop_generation+=1
@@ -315,38 +399,80 @@ class LocalNavigation(LocalControl):
 
     def renew_fleet(self,message):
         if not self.fleet_enabled:return
-        try:self.fleet_lease.renew(json.loads(message.data),time.monotonic())
+        try:
+            payload=json.loads(message.data);now=time.monotonic()
+            previous=getattr(self,'fleet_rx',{})
+            age=now-self.fleet_lease.received if self.fleet_lease.received is not None else None
+            self.fleet_rx={'sequence':payload.get('sequence'),'at':now,'age_before':age,
+                'callback_gap':now-previous.get('at',now),'epoch_match':payload.get('epoch')==self.fleet_lease.epoch,
+                'task_id':payload.get('task_id'),'revision':payload.get('revision'),
+                'accepted':self.fleet_lease.renew(payload,now)}
+            self.fleet_rx_history=(getattr(self,'fleet_rx_history',[])+[dict(self.fleet_rx)])[-16:]
         except (ValueError,TypeError):return
 
     def expire_fleet(self):
+        # Preserve the first failure before revoke clears the receiver evidence.
+        if self.fleet_enabled or self.fleet_lease.epoch:
+            now=time.monotonic();lease=self.fleet_lease
+            if not self.fleet_enabled:reason='permission_disabled'
+            elif not lease.fresh(now):reason='receiver_timeout'
+            elif self.fleet_localization_epoch!=self.epoch:reason='localization_epoch_changed'
+            else:reason='task_binding_mismatch'
+            self.last_fleet_failure={'reason':reason,'monotonic':now,
+                'lease_age':None if lease.received is None else now-lease.received,
+                'timeout':lease.timeout,'sequence':lease.sequence,
+                'task_id':lease.task_id,'revision':lease.revision,
+                'job_task_id':self.current_job.ticket.task_id if self.current_job else None,
+                'localization_epoch_match':self.fleet_localization_epoch==self.epoch,
+                'receiver_history':copy.deepcopy(getattr(self,'fleet_rx_history',[]))}
+            self.get_logger().error('fleet_lease_failure '+json.dumps(self.last_fleet_failure))
         self.fleet_enabled=False;self.fleet_lease.revoke();self.fleet_hold=True
         self.inhibited=True;self.safety_reason='fleet lease expired or replaced'
         if self.current_job and self.current_job.source=='FLEET':self.stop_owned(self.safety_reason)
 
-    def recover_from_nav2_failure(self):
+    def global_recovery_start_blocked(self, pose):
+        values=self.runtime_parameters.get('global_costmap/global_costmap',{}).get('values',{})
+        if grid_body_blocked(self.grid,pose,self.config,values):
+            return True
+        if self.grid is None or self.selection.get('planner',self.preview_planner_id)!='GridLattice':
+            return False
+        quantized=lattice_start_pose(self.grid,pose,self.lattice_heading_angles)
+        return grid_body_blocked(self.grid,quantized,self.config,values)
+
+    def recover_from_nav2_failure(self, *, at_start=False):
         job=self.current_job
         if (not job or job.source!='LOCAL' or self.mode!='LOCAL' or self.estop or self.policy.canceling or
-                not self.execution.active or self.execution.phase!='tracking' or self.clearance_escape or
+                not self.execution.active or self.clearance_escape or
                 self.local_pose is None or not self.obstacle_complete):return False
+        if self.execution.preflight_only or (not at_start and
+                self.execution.phase not in ('tracking','replanning','preplanning')):return False
         recovery=self.runtime_parameters.get('omnifleet_navigation_policy',{}).get('values',{})
         if recovery.get('automatic_recovery',True) is False:return False
-        config=recovery_config(self.config,self.runtime_parameters.get('local_costmap/local_costmap',{}).get('values',{}))
-        clearance=signed_clearance(self.local_pose,self.obstacles,config['length'],config['width'],config.get('robot_radius'))
-        if not len(clearance) or clearance.min()>=self.obstacle_resolution*.71+.005:return False
-        self.prepare_clearance_recovery()
+        values=self.runtime_parameters.get('local_costmap/local_costmap',{}).get('values',{})
+        body_collision=local_body_collision(self.local_pose,self.obstacles,self.config,
+            self.obstacle_resolution,values,getattr(self,'obstacle_yaw',0.))
+        global_start=self.global_recovery_start_blocked(self.local_pose)
+        if body_collision:
+            if global_start:self.prepare_clearance_recovery(timeout_retry=True)
+            else:self.prepare_clearance_recovery()
+        elif global_start:
+            self.recovery_pending={'ticket':job.ticket,'epoch':self.epoch}
+        else:return False
         if not self.recovery_pending:return False
         self.policy.cancel();self.cancel_deadline=time.monotonic()+5;self.inhibited=True;self.armed=False
-        self.execution.stop('Nav2碰撞失败且车体覆盖致命格，退出当前控制后规划低速脱困；原任务保留')
+        self.execution.stop('局部代价地图确认车体覆盖致命格，停稳后脱困；原路线与目标保留' if body_collision else '全局规划车体起点受阻；沿局部可行退路脱困后继续原目标')
         return True
 
-    def prepare_clearance_recovery(self):
+    def prepare_clearance_recovery(self, timeout_retry=False):
         job=self.current_job
         if (not job or job.source!='LOCAL' or self.mode!='LOCAL' or self.clearance_escape or self.recovery_pending):return
         block=getattr(getattr(self,'execution',None),'block',0)
-        if getattr(job,'clearance_block',block)!=block:job.clearance_attempts=0
+        if getattr(job,'clearance_block',block)!=block:
+            job.clearance_attempts=0
         job.clearance_block=block
-        if getattr(job,'clearance_attempts',0)>=2:return
-        job.clearance_attempts=getattr(job,'clearance_attempts',0)+1
+        if not timeout_retry:
+            if getattr(job,'clearance_attempts',0)>=2:return
+            job.clearance_attempts=getattr(job,'clearance_attempts',0)+1
         heading=getattr(job,'clearance_heading',None)
         if getattr(job,'single',False) and self.goal and (heading is None or any(abs(v)>1e-5 for v in self.nav)):
             heading=recovery_heading(self.local_pose,self.goal,self.nav)
@@ -362,10 +488,10 @@ class LocalNavigation(LocalControl):
     def recovery_command(self,now):
         recovery=self.clearance_escape
         try:
-            fresh=(self.control_gate_ready and self.obstacle_complete and self.pose_age<.3 and
+            fresh=(self.control_gate_ready and self.obstacle_complete and self.pose_age<.5 and
                    now-self.pose_time<.3 and now-self.obstacle_stamp<.4 and now-self.velocity_time<.2)
             velocity,source_fresh=body_velocity(self.recovery_pose_history,self.execution.pose,now)
-            return recovery.command(now,self.local_pose,self.obstacles,self.recovery_unknown(),velocity,fresh and source_fresh,self.epoch)
+            return recovery.command(now,self.local_pose,[],self.recovery_unknown(),velocity,fresh and source_fresh,self.epoch)
         except (ValueError,TypeError) as error:
             recovery.abort(str(error));return [0.,0.]
 
@@ -393,16 +519,23 @@ class LocalNavigation(LocalControl):
             self.clearance_escape=None;self.execution.finish('canceled','人工接管，脱困已停止');return False
         if self.estop or self.epoch!=recovery.epoch:
             self.stop_owned('急停或定位变化，脱困已停止');return False
-        if time.monotonic()-recovery.started>recovery.timeout:recovery.abort('脱困超过轨迹限时')
+        if recovery.state=='moving' and recovery.timed_out_at(time.monotonic()):
+            recovery.abort('脱困超过轨迹限时',timed_out=True)
         if recovery.state=='failed':
             self.get_logger().warning('clearance recovery rejected: '+json.dumps({'reason':recovery.reason,'detail':recovery.diagnostic},ensure_ascii=False))
-            if recovery.replan_allowed and self.current_job and getattr(self.current_job,'clearance_attempts',0)<2:
-                self.clearance_escape=None;self.prepare_clearance_recovery()
+            timed_out=getattr(recovery,'timed_out',False)
+            if recovery.replan_allowed and self.current_job and (timed_out or getattr(self.current_job,'clearance_attempts',0)<2):
+                self.clearance_escape=None
+                if timed_out:self.prepare_clearance_recovery(timeout_retry=True)
+                else:self.prepare_clearance_recovery()
                 self.policy.cancel();self.cancel_deadline=time.monotonic()+5;self.inhibited=True;self.armed=False
-                self.execution.finish('canceled','环境变化，停稳后重新规划脱困；原目标保留')
+                message='脱困超时，停稳后重新修正；原路线与目标保留' if timed_out else '环境变化，停稳后重新规划脱困；原目标保留'
+                self.execution.finish('canceled',message)
                 return False
             self.clearance_escape=None;self.execution.finish('failed',recovery.reason);return False
         if recovery.state=='stopping' and self.stationary():
+            if recovery.start_blocked and recovery.start_blocked(self.local_pose):
+                recovery.abort('脱困停稳后车身仍与受阻栅格重叠',replan=True);return True
             self.clearance_escape=None;self.tracking_stop_reason='';self.goal_error=''
             self.inhibited=False;self.armed=False;self.nav=[0.,0.];self.nav_time=0.;self.tracking_guard.reset()
             self.execution.resume_after_clearance();return True
@@ -414,6 +547,7 @@ class LocalNavigation(LocalControl):
         if hasattr(self,'cancelled_pending'):
             self.finish_job(self.cancelled_pending,False,'CANCELED','已取消待接管任务');del self.cancelled_pending
         job=self.current_job
+        if update_pause(self):return
         if job:
             if self.execution.phase in ('canceling','cancel_unconfirmed') and not self.policy.canceling:
                 self.policy.cancel();self.cancel_deadline=time.monotonic()+5;self.inhibited=True
@@ -426,15 +560,25 @@ class LocalNavigation(LocalControl):
                             self.escape_grid=None
                             self.recovery_pose_history=[]
                             values=self.runtime_parameters.get('controller_server',{}).get('values',{})
-                            controller=self.selection.get('controller','FollowPathRPP')
+                            controller=self.selection.get('controller',self.execution.controller)
                             turn_speed=values.get(controller+'.rotate_to_heading_angular_vel',values.get(controller+'.max_vel_theta',values.get(controller+'.wz_max',1.2)))
                             heading=pending.get('heading')
-                            config=recovery_config(self.config,self.runtime_parameters.get('local_costmap/local_costmap',{}).get('values',{}))
-                            self.clearance_escape=ClearanceEscape(self.local_pose,self.obstacles,self.recovery_unknown(),config,
-                                                                 self.obstacle_resolution,time.monotonic(),self.epoch,turn_speed=turn_speed,target_heading=heading)
+                            local_values=self.runtime_parameters.get('local_costmap/local_costmap',{}).get('values',{})
+                            def start_blocked(pose):
+                                return (self.global_recovery_start_blocked(pose)
+                                        or grid_body_blocked(self.obstacle_grid,pose,self.config,local_values))
+                            if not start_blocked(self.local_pose):
+                                self.tracking_stop_reason='';self.goal_error=''
+                                self.inhibited=False;self.armed=False;self.nav=[0.,0.];self.nav_time=0.;self.tracking_guard.reset()
+                                self.execution.resume_after_clearance()
+                                return
+                            config=recovery_config(self.config,local_values)
+                            self.clearance_escape=ClearanceEscape(self.local_pose,[],self.recovery_unknown(),config,
+                                                                 self.obstacle_resolution,time.monotonic(),self.epoch,turn_speed=turn_speed,target_heading=heading,start_blocked=start_blocked,crawl_near_exit=True)
+                            self.sync_clearance_speed(self.clearance_escape,values,controller)
                             self.navigation_active=True;self.inhibited=True;self.armed=False
                             self.get_logger().info('clearance recovery plan: '+json.dumps({'distance':self.clearance_escape.distance,'direction':self.clearance_escape.direction,'curvature':self.clearance_escape.curvature,'speed':self.clearance_escape.speed,'timeout':self.clearance_escape.timeout}))
-                            self.execution.set_phase('recovering','近障脱困：扫掠范围内以不超过0.10 rad/s转向原目标，停稳后继续' if getattr(self.clearance_escape,'turn_target',None) is not None else f'近障脱困：以{self.clearance_escape.speed:.2f} m/s{"前进" if self.clearance_escape.direction>0 else "后退"}约{self.clearance_escape.distance:.2f} m，停稳后继续原任务')
+                            self.execution.set_phase('recovering',f'近障脱困：以不超过{self.clearance_escape.angular_speed:.2f} rad/s转向原目标，停稳后继续' if getattr(self.clearance_escape,'turn_target',None) is not None else f'近障脱困：以{self.clearance_escape.speed:.2f} m/s{"前进" if self.clearance_escape.direction>0 else "后退"}约{self.clearance_escape.distance:.2f} m，停稳后继续原任务')
                         except ValueError as error:
                             self.execution.finish('failed','没有可验证的脱困轨迹：'+str(error))
                         return
@@ -456,6 +600,28 @@ class LocalNavigation(LocalControl):
                     else:self.goal_error=self.message
                 self.policy.finish(job.ticket);self.current_job=None;self.inhibited=True
         self.publish_catalog()
+
+    @staticmethod
+    def sync_clearance_speed(escape, values, controller):
+        prefix=controller+'.'
+        angular=values.get(prefix+'wz_max') or values.get(prefix+'max_vel_theta') or values.get(prefix+'rotate_to_heading_angular_vel')
+        if angular is not None and math.isfinite(angular) and angular>0.:
+            if escape.turn_target is not None:
+                escape.timeout=4.+(escape.timeout-4.)*escape.angular_speed/angular
+            escape.angular_speed=angular
+        if escape.turn_target is not None:
+            return
+
+        linear=values.get(prefix+'vx_max') or values.get(prefix+'max_vel_x') or values.get(prefix+'desired_linear_vel')
+        reverse=values.get(prefix+'vx_min',values.get(prefix+'min_vel_x'))
+        if escape.direction<0 and reverse is not None and math.isfinite(reverse):
+            linear=-reverse if reverse<0. else None
+        if linear is not None and math.isfinite(linear) and linear>0.:
+            escape.speed=linear
+            if abs(escape.curvature)>1e-6:
+                escape.speed=min(escape.speed,escape.angular_speed/abs(escape.curvature))
+            crawl_speed = min(escape.speed, .10) if escape.crawl_near_exit else escape.speed
+            escape.timeout=escape.distance/crawl_speed+4.
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--config',required=True);args,ros=p.parse_known_args()

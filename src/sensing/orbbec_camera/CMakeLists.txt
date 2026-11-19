@@ -220,7 +220,11 @@ rclcpp_components_register_node(frame_latency
         EXECUTABLE frame_latency_node
 )
 # Install rules
-install(TARGETS ${PROJECT_NAME} frame_latency
+add_library(omnifleet_orbbec_projection SHARED src/official_depth_projection.cpp)
+target_include_directories(omnifleet_orbbec_projection PRIVATE ${ORBBEC_INCLUDE_DIR})
+target_link_libraries(omnifleet_orbbec_projection PRIVATE -L${ORBBEC_LIBS_DIR} -lOrbbecSDK)
+
+install(TARGETS ${PROJECT_NAME} frame_latency omnifleet_orbbec_projection
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin

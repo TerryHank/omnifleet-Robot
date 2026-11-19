@@ -232,7 +232,7 @@
         "/cost_cloud": {
           "visible": false
         },
-        "/msc/peer_map": {
+        "/navigation/peer_map": {
           "visible": false
         },
         "/omnifleet_t2/waypoints/active_path": {

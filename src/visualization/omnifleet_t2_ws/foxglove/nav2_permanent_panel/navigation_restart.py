@@ -20,6 +20,7 @@ WRAPPER = Path(__file__).with_suffix('.sh')
 DEFAULT = 'ros2 launch omnifleet_bringup mola_nav2_unified.launch.py startup_mode:=mapping'
 BUSY = {'queued', 'stopping', 'starting', 'waiting'}
 LOCK = threading.Lock()
+TERMINAL_CONTROL = re.compile(r'\x1b(?:\[[0-?]*[ -/]*[@-~]|\][^\x07\x1b]*(?:\x07|\x1b\\))|[\x00-\x08\x0b-\x1f\x7f]')
 MAP_TOPICS = ('/map', '/global_costmap/costmap', '/local_costmap/costmap')
 
 
@@ -89,6 +90,27 @@ def user_env():
             'DBUS_SESSION_BUS_ADDRESS': f'unix:path=/run/user/{os.getuid()}/bus'}
 
 
+def startup_log(operation_log=None):
+    lines = []
+    if operation_log:
+        try:
+            with Path(operation_log).open('rb') as stream:
+                stream.seek(0, os.SEEK_END)
+                stream.seek(max(0, stream.tell() - 8192))
+                lines = stream.read().decode('utf-8', errors='replace').splitlines()[-40:]
+        except OSError:
+            pass
+    try:
+        journal = subprocess.run(
+            ['journalctl', '-b', '--no-pager', '-o', 'cat', '-n', '100',
+             '-u', 'omnifleet-t2-mola.service', '-u', 'omnifleet-t2-pure-lio-nav2.service'],
+            capture_output=True, text=True, timeout=2)
+        lines.extend((journal.stdout if journal.returncode == 0 else journal.stderr).splitlines())
+    except (OSError, subprocess.TimeoutExpired) as error:
+        lines.append('启动日志读取失败：' + str(error))
+    return TERMINAL_CONTROL.sub('', '\n'.join(lines[-120:]))[-24000:].splitlines()
+
+
 def state():
     result = read_json(STATUS, {'phase': 'idle', 'message': '尚未通过面板重启'})
     if not result.get('message'):
@@ -99,10 +121,31 @@ def state():
                                 env=user_env(), capture_output=True, text=True, timeout=2)
         if active.returncode and time.time() - result.get('updated', 0) > 5:
             result.update(phase='stopped', message='启动进程已退出；请检查日志后重新启动')
+    result['log_lines'] = startup_log(result.get('log'))
     return result
 
 
+def saved_maps(directory=None):
+    directory = Path(directory) if directory is not None else Path.home() / 'omnifleet_data/maps/saved'
+    maps = {}
+    for path in directory.iterdir() if directory.is_dir() else ():
+        if not path.is_file() or path.suffix not in ('.mm', '.simplemap'):
+            continue
+        prefix = str(path.with_suffix(''))
+        entry = maps.setdefault(prefix, {'name': path.stem, 'path': prefix, 'modified': 0.})
+        entry['modified'] = max(entry['modified'], path.stat().st_mtime)
+    command = read_json(SETTINGS, {'command': DEFAULT})['command']
+    selected = next((arg.split(':=', 1)[1] for arg in shlex.split(command)
+                     if arg.startswith('map_path:=')), '')
+    if Path(selected).suffix in ('.mm', '.simplemap'):
+        selected = str(Path(selected).with_suffix(''))
+    return {'directory': str(directory), 'selected': selected,
+            'maps': sorted(maps.values(), key=lambda entry: entry['modified'], reverse=True)}
+
+
 def handle(name, command=''):
+    if name == '__saved_maps':
+        return saved_maps()
     if name == '__stack_status':
         return state()
     with LOCK:

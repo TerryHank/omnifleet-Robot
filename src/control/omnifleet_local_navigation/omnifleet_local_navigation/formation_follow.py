@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 
 from geometry_msgs.msg import Pose, PoseStamped, TransformStamped, Twist
 from nav2_msgs.action import NavigateToPose
+from std_msgs.msg import String
 from tf2_ros import TransformBroadcaster
 
 
@@ -29,12 +30,15 @@ def receive_formation(node, message):
         if not isinstance(value,list) or len(value)!=3 or not all(type(v) in (int,float) and math.isfinite(v) for v in value):return
         pose=Pose();pose.position.x,pose.position.y=map(float,value[:2])
         pose.orientation.z=math.sin(value[2]/2);pose.orientation.w=math.cos(value[2]/2)
-        node.execution.formation.update(SimpleNamespace(pose=pose),sequence)
+        velocity=data.get('predecessor_velocity',[0.,0.])
+        if not isinstance(velocity,list) or len(velocity)!=2 or not all(type(v) in (int,float) and math.isfinite(v) for v in velocity):return
+        node.execution.formation.update(SimpleNamespace(pose=pose),sequence,velocity)
     except (ValueError,TypeError,KeyError):return
 
 
-def formation_tree(planner,controller):
+def formation_tree(planner,controller,base='base_link',follow=False):
     tree=ET.fromstring('''<root main_tree_to_execute="MainTree"><BehaviorTree ID="MainTree">
+      <KeepRunningUntilFailure><ForceSuccess>
       <PipelineSequence name="FormationWithReplanning">
         <PlannerSelector selected_planner="{selected_planner}" topic_name="/planner_selector"/>
         <ControllerSelector selected_controller="{selected_controller}" topic_name="/controller_selector"/>
@@ -44,11 +48,20 @@ def formation_tree(planner,controller):
           </GoalUpdater>
         </RateController>
         <KeepRunningUntilFailure>
-          <FollowPath path="{path}" controller_id="{selected_controller}" goal_checker_id="general_goal_checker"/>
+          <ReactiveFallback>
+            <FormationPoseReached goal="{updated_goal}"/>
+            <FollowPath path="{path}" controller_id="{selected_controller}" goal_checker_id="general_goal_checker"/>
+          </ReactiveFallback>
         </KeepRunningUntilFailure>
-      </PipelineSequence></BehaviorTree></root>''')
+      </PipelineSequence>
+      </ForceSuccess></KeepRunningUntilFailure>
+      </BehaviorTree></root>''')
     tree.find('.//PlannerSelector').set('default_planner',planner)
     tree.find('.//ControllerSelector').set('default_controller',controller)
+    tree.find('.//FormationPoseReached').set('robot_base_frame',base)
+    if follow:
+        tree.find('.//FormationPoseReached').set('respect_target_motion','true')
+        tree.find('.//FollowPath').set('goal_checker_id','fleet_goal_checker')
     text=ET.tostring(tree,encoding='unicode')
     folder=Path.home()/'.local/share/omnifleet_t2/formation';folder.mkdir(parents=True,exist_ok=True)
     path=folder/(hashlib.sha256(text.encode()).hexdigest()[:16]+'.xml')
@@ -62,22 +75,48 @@ class FormationFollow:
 
     def __init__(self, route):
         self.route=route
+        self.context=route.n.create_publisher(String,'navigation/fleet/follow_context',10)
         self.publisher=route.n.create_publisher(PoseStamped,'/goal_update',10)
         self.tf=TransformBroadcaster(route.n)
 
     def start(self, points):
-        self.point=copy.deepcopy(points[-1]);self.sequence=-1
+        self.point=copy.deepcopy(points[-1]);self.sequence=-1;self.predecessor_velocity=[0.,0.]
         self.started=time.monotonic();self.received=None;self.submitted=False;self.blocked=False;self.updates=0
 
-    def update(self, point, sequence):
+    def update(self, point, sequence, velocity=None):
+        self.predecessor_velocity=list(velocity or [0.,0.])
         self.point=point;self.sequence=sequence;self.received=time.monotonic();self.updates+=1
 
     def catalog(self):
+        current=self.route.n.local_pose
+        away=current is not None and math.hypot(current[0]-self.point.pose.position.x,current[1]-self.point.pose.position.y)>.25
         return {'backend':'nav2_goal_updater','updates':self.updates,'sequence':self.sequence,
-                'blocked':self.blocked,'update_age':None if self.received is None else time.monotonic()-self.received}
+                'blocked':self.blocked,'waiting_for_path':bool(away and not self.route.n.nav_status.get('follow_path',False)),
+                'target_velocity':list(self.predecessor_velocity),'update_age':None if self.received is None else time.monotonic()-self.received}
+
+    def stop(self):
+        self.context.publish(String(data=json.dumps({'speed':0.,'active':False,'tracking_speed':0.})))
 
     def tick(self, now):
         route=self.route
+        current=route.n.local_pose
+        active=self.received is not None and now-self.received<=.8 and current is not None
+        reference=0.;angular_reference=0.
+        if active:
+            target=self.point.pose
+            yaw=2*math.atan2(target.orientation.z,target.orientation.w)
+            reference=self.predecessor_velocity[0]*math.cos(yaw-current[2])
+            angular_reference=self.predecessor_velocity[1]
+        # Ordinary following needs the speed reference even while closing a gap.
+        # Formation retains its existing slot tolerance conditions.
+        ordinary_follow=self.route.n.current_job.backend=='trail_follow'
+        active=(active and (ordinary_follow or (
+                math.hypot(self.point.pose.position.x-current[0],self.point.pose.position.y-current[1])<=.08
+                and abs(math.atan2(math.sin(yaw-current[2]),math.cos(yaw-current[2])))<=.25))
+                and math.hypot(*self.predecessor_velocity)>.02)
+        self.context.publish(String(data=json.dumps({'speed':self.predecessor_velocity[0],
+            'active':active,'tracking_speed':reference,'formation':True,'joint_formation':self.route.n.current_job.backend=='formation_follow',
+            'angular_speed':self.predecessor_velocity[1],'tracking_angular':angular_reference})))
         if now-(self.received if self.received is not None else self.started)>.8:
             self.blocked=True;route.zero.publish(Twist())
             route.stop(self.label+'动态目标超过0.8秒未更新；停止，不寻找或追逐旧目标',failed=True);return
@@ -87,7 +126,8 @@ class FormationFollow:
             if not route.single.server_is_ready():
                 self.blocked=True;route.stop('本车Nav2动态导航接口未就绪',failed=True);return
             goal=NavigateToPose.Goal();goal.pose=route.stamped(self.point.pose)
-            goal.behavior_tree=formation_tree(route.planner_id,route.controller_id)
+            prefix=route.n.frame_id.rpartition('/')[0]
+            goal.behavior_tree=formation_tree(route.planner_id,route.controller_id,(prefix+'/' if prefix else '')+'base_link',follow=True)
             self.submitted=True;route.submit(route.single,goal,self.finished,'navigation')
         target=route.stamped(self.point.pose)
         self.publisher.publish(target)

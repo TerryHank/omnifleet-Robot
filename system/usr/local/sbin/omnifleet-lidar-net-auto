@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+for interface in eno1 enP8p1s0; do
+  if [[ -e "/sys/class/net/$interface" ]]; then
+    /sbin/ip -4 addr show dev "$interface" | /bin/grep -q '192.168.1.102/24' || /sbin/ip addr add 192.168.1.102/24 dev "$interface"
+    exit 0
+  fi
+done
+echo 'The onboard lidar Ethernet interface was not found.' >&2
+exit 1

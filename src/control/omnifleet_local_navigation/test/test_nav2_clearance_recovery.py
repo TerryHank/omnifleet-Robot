@@ -3,7 +3,7 @@ from pathlib import Path
 from types import SimpleNamespace as NS
 import unittest
 
-from omnifleet_local_navigation.clearance_recovery import signed_clearance, recovery_config
+from omnifleet_local_navigation.clearance_recovery import signed_clearance, recovery_config, local_body_collision
 
 SOURCE = Path(__file__).resolve().parents[1] / 'omnifleet_local_navigation'
 
@@ -11,7 +11,7 @@ def method(file, name):
     tree = ast.parse((SOURCE / file).read_text())
     fn = next(m for c in tree.body if isinstance(c, ast.ClassDef) for m in c.body
               if isinstance(m, ast.FunctionDef) and m.name == name)
-    scope = {'time': NS(monotonic=lambda: 10.), 'signed_clearance': signed_clearance, 'recovery_config': recovery_config}
+    scope = {'time': NS(monotonic=lambda: 10.), 'signed_clearance': signed_clearance, 'recovery_config': recovery_config, 'local_body_collision': local_body_collision}
     exec(compile(ast.Module(body=[fn], type_ignores=[]), name, 'exec'), scope)
     return scope[name]
 

@@ -12,6 +12,7 @@ from .continuous_tree import continuous_tree
 from geometry_msgs.msg import PoseStamped, Twist
 from nav_msgs.msg import Odometry, OccupancyGrid, Path as NavPath
 from nav2_msgs.action import ComputePathThroughPoses, NavigateThroughPoses, NavigateToPose, FollowWaypoints
+from action_msgs.msg import GoalStatusArray
 from rclpy.action import ActionClient
 from rcl_interfaces.srv import GetParameters
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, qos_profile_sensor_data
@@ -22,6 +23,45 @@ from .localization_health import LocalizationHealth, stamp_is_fresh
 from .navigation_strategy import navigation_strategy
 from .trail_follow import TrailFollow
 from .formation_follow import FormationFollow
+
+
+NAV2_PROCESS_GROUP = Path('/sys/fs/cgroup/system.slice/omnifleet-t2-pure-lio-nav2.service/cgroup.procs')
+
+
+def process_instance(pid):
+    """Linux PID, process state and start ticks, independent of ROS discovery."""
+    fields = (Path('/proc') / str(pid) / 'stat').read_text().rsplit(')', 1)[1].split()
+    return int(pid), fields[0], int(fields[19])
+
+
+def local_backend_instance(executable):
+    try:
+        pids = NAV2_PROCESS_GROUP.read_text().split()
+    except OSError:
+        return None
+    instances = []
+    for pid in pids:
+        proc = Path('/proc') / pid
+        try:
+            if (proc / 'exe').resolve(strict=True).name != executable:
+                continue
+            identity, state, start_ticks = process_instance(pid)
+            if state not in ('Z', 'X'):
+                instances.append((identity, start_ticks))
+        except (OSError, IndexError, ValueError):
+            continue
+    return instances[0] if len(instances) == 1 else None
+
+
+def backend_has_exited(instance):
+    pid, start_ticks = instance
+    try:
+        _, state, current_ticks = process_instance(pid)
+    except (FileNotFoundError, ProcessLookupError):
+        return True
+    except (OSError, IndexError, ValueError):
+        return False
+    return state in ('Z', 'X') or current_ticks != start_ticks
 
 
 def yaw(pose):
@@ -97,6 +137,12 @@ class ContinuousRoute:
         self.sequential = True
         self.native_behavior_tree = ""
         self.planner = ActionClient(node, ComputePathThroughPoses, topic(node, "compute_path_through_poses"))
+        self.local_backends = {
+            self.navigator: 'bt_navigator',
+            self.single: 'bt_navigator',
+            self.waypoints: 'waypoint_follower',
+            self.planner: 'planner_server',
+        }
         self.parameters = node.create_client(GetParameters, topic(node, 'planner_server/get_parameters'))
         self.configuration_pending = False
         self.allow_unknown = False
@@ -127,9 +173,15 @@ class ContinuousRoute:
         self.finished_at = None
         self.preflight_only = False
         latched = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        for client, endpoint in ((self.navigator,'navigation_backend/navigate_through_poses'),
+                                 (self.single,'navigation_backend/navigate_to_pose'),
+                                 (self.waypoints,'navigation_backend/follow_waypoints'),
+                                 (self.planner,'compute_path_through_poses')):
+            node.create_subscription(GoalStatusArray,topic(node,endpoint+'/_action/status'),
+                lambda message,c=client:self.observe_action_status(c,message),latched)
         node.create_subscription(String, topic(node, "controller_selector"), lambda m: setattr(self, 'controller', m.data), latched)
         node.create_subscription(OccupancyGrid, topic(node, "global_costmap/costmap"), lambda m: setattr(self, 'grid', (time.monotonic(),m)), latched)
-        node.create_subscription(Odometry, topic(node, "lidar_odometry/pose"), self.on_pose, qos_profile_sensor_data)
+        node.create_subscription(Odometry, topic(node, node.config.get("localization_pose_topic", "lidar_odometry/pose")), self.on_pose, qos_profile_sensor_data)
         node.create_subscription(Odometry, topic(node, "odom"), lambda m: setattr(self, 'odom', (time.monotonic(), m)), qos_profile_sensor_data)
         node.create_subscription(String, topic(node, "omnifleet_t2/waypoints/execution_state"), self.on_execution_state, 10)
         node.create_subscription(TFMessage, topic(node, "tf"), self.on_tf, qos_profile_sensor_data)
@@ -255,6 +307,7 @@ class ContinuousRoute:
         self.failed = False
         self.configuration_pending = False
         self.preflight_only = preflight_only
+        self.starting_recovery = False
         self.points = copy.deepcopy(points) if self.sequential else oriented_route(points, yaw(self.pose[1].pose.pose))
         self.blocks = [(0,len(points))] if self.strategy=='nav2_waypoints' else [(i, i+1) for i in range(len(points))] if self.sequential else split_blocks(self.points)
         self.states = ['待通过']*len(points)
@@ -277,9 +330,13 @@ class ContinuousRoute:
             self.follow.start(self.points)
             self.set_phase('tracking','实时车距跟随：本车规划避障，按前车定位速度跟随；最高速度读取永久参数')
             return
-        # Temporarily bypass whole-route preflight for native continuous navigation.
-        # if self.sequential and not preflight_only:
-        if (self.sequential or self.strategy == 'through_poses') and not preflight_only:
+        if not preflight_only and self.n.recover_from_nav2_failure(at_start=True):
+            self.starting_recovery = True
+            return
+        self.start_planning()
+
+    def start_planning(self):
+        if (self.sequential or self.strategy == 'through_poses') and not self.preflight_only:
             self.send_block()
             return
         self.set_phase('preplanning', '开始前检查整条路线；规划通过之前不会行驶')
@@ -311,7 +368,9 @@ class ContinuousRoute:
     def submit(self, client, goal, result_fn, role, feedback=None):
         key = uuid.uuid4().hex
         entry = {'epoch': self.epoch, 'role': role, 'handle': None, 'deadline': time.monotonic()+10,
-                 'cancel': False, 'cancel_sent': False, 'result': result_fn}
+                 'cancel': False, 'cancel_sent': False, 'result': result_fn, 'client': client}
+        backend = self.local_backends.get(client)
+        entry['backend_instance'] = local_backend_instance(backend) if backend else None
         self.requests[key] = entry
         try:
             f = client.send_goal_async(goal, feedback_callback=(lambda msg: feedback(msg) if feedback and key in self.requests and not self.requests[key]['cancel'] and self.requests[key]['epoch']==self.epoch else None))
@@ -330,6 +389,11 @@ class ContinuousRoute:
             if not handle.accepted:
                 raise RuntimeError('action请求被拒绝')
             entry['handle'] = handle
+            # Only bind an accepted goal to a process observed before and after
+            # dispatch. A launch that changed during submission is ambiguous.
+            backend = self.local_backends.get(entry['client'])
+            if not backend or entry['backend_instance'] != local_backend_instance(backend):
+                entry['backend_instance'] = None
             if entry['role']=='navigation' and entry['epoch']==self.epoch and not entry['cancel'] and not getattr(self,'backend_initializing',False):
                 self.n.inhibited = False
                 self.n.arm_navigation_output()
@@ -355,18 +419,61 @@ class ContinuousRoute:
             self.request_failed(entry['role'],f"{entry['role']}失败：{error}")
 
     def request_failed(self, role, reason):
-        if role=='navigation' and self.n.recover_from_nav2_failure():return
+        if (role=='navigation' or (role=='plan' and getattr(self,'phase',None)=='preplanning' and not self.preflight_only)) and self.n.recover_from_nav2_failure():return
         self.stop(reason,failed=True)
+
+    def _retire_cancelled(self, entry):
+        for key, value in list(self.requests.items()):
+            if value is entry:
+                self.requests.pop(key, None)
+
+    def retire_exited_backend_requests(self):
+        interrupted = False
+        for entry in list(self.requests.values()):
+            instance = entry.get('backend_instance')
+            if entry['handle'] is None or instance is None or not backend_has_exited(instance):
+                continue
+            interrupted |= not entry['cancel']
+            self._retire_cancelled(entry)
+        if interrupted:
+            self.n.inhibit_output()
+            self.stop('Nav2 后端已退出，原导航任务终止', failed=True)
+
+    def observe_action_status(self, client, message):
+        terminal = {bytes(status.goal_info.goal_id.uuid):status.status
+                    for status in message.status_list if status.status in (4,5,6)}
+        for entry in list(self.requests.values()):
+            handle = entry.get('handle')
+            if entry.get('client') is not client or handle is None:
+                continue
+            status = terminal.get(bytes(handle.goal_id.uuid))
+            if status is not None:
+                entry['terminal_status'] = status
+                if entry['cancel']:
+                    self._retire_cancelled(entry)
 
     def cancel(self, entry):
         entry['cancel'] = True
-        if entry['handle'] and not entry['cancel_sent']:
+        if entry.get('terminal_status') in (4,5,6):
+            self._retire_cancelled(entry)
+            return
+        now = time.monotonic()
+        if entry['handle'] and (not entry['cancel_sent'] or now-entry.get('cancel_sent_at',0.) >= 1.):
+            attempt = object()
+            entry['cancel_attempt'] = attempt
+            pending = entry.get('cancel_future')
+            if pending is not None and not pending.done():pending.cancel()
             entry['cancel_sent'] = True
+            entry['cancel_sent_at'] = now
             f = entry['handle'].cancel_goal_async()
+            entry['cancel_future'] = f
             def replied(future):
+                if entry.get('cancel_attempt') is not attempt:return
                 try:
                     reply = future.result()
-                    if reply.return_code not in (0, 3):
+                    if reply.return_code == 3:
+                        self._retire_cancelled(entry)
+                    elif reply.return_code != 0:
                         entry['cancel_sent'] = False
                 except Exception:
                     entry['cancel_sent'] = False
@@ -492,7 +599,7 @@ class ContinuousRoute:
             if value.get('state') == 'failed':
                 reason = '连续导航失败：'+str(value.get('reason', '执行检查失败'))
                 if self.active:
-                    self.stop(reason, failed=True)
+                    self.request_failed('navigation', reason)
                 elif self.phase == 'failed':
                     self.cancel_reason = reason
                     self.n.publish_status(reason)
@@ -542,9 +649,23 @@ class ContinuousRoute:
         while start<end-1 and self.states[start] in ('已通过','已停靠'):start+=1
         self.blocks[self.block]=(start,end)
         self.epoch+=1;self.failed=False;self.active=self.n.navigation_active=True
+        if getattr(self,'starting_recovery',False):
+            self.starting_recovery = False
+            self.initial_pose = copy.deepcopy(self.pose[1].pose.pose)
+            self.start_planning()
+            return
+        if self.strategy in ('formation_follow','trail_follow'):
+            stream=self.formation if self.strategy=='formation_follow' else self.follow
+            sequence=stream.sequence
+            stream.start(self.points)
+            stream.sequence=sequence
+            self.set_phase('tracking','动态协同导航恢复，等待当前会话的新目标')
+            return
         self.send_block()
 
     def stop(self, reason, failed=False):
+        if getattr(self,'strategy','')=='trail_follow':self.follow.stop()
+        elif getattr(self,'strategy','')=='formation_follow':self.formation.stop()
         if not self.active:
             return
         if self.phase in ('canceling', 'cancel_unconfirmed'):
@@ -595,6 +716,7 @@ class ContinuousRoute:
         now = time.monotonic()
         if self.configuration_pending and now > self.configuration_deadline:
             self.stop('读取规划配置超时，路线未启动', failed=True)
+        self.retire_exited_backend_requests()
         for entry in list(self.requests.values()):
             if now > entry['deadline'] and not entry['cancel']:
                 self.stop('请求超时，已要求取消；未确认取消前不会继续', failed=True)
@@ -626,8 +748,26 @@ class ContinuousRoute:
         # if not fresh or not self.pose or now-self.pose[0] > .5:
         #     self.stop(self.health.reason+'；MOLA位姿/TF不新鲜，停止路线', failed=True)
         #     return
+        if self.sequential and self.phase == 'tracking' and self.pose and self.block < len(self.blocks)-1:
+            index, _ = self.blocks[self.block]
+            point = self.points[index]
+            position = self.pose[1].pose.pose.position
+            target = point.pose.position
+            if point.kind == 'pass' and math.hypot(position.x-target.x, position.y-target.y) <= self.radius:
+                self.n.inhibit_output()
+                for entry in list(self.requests.values()):
+                    self.cancel(entry)
+                self.block_done(None)
+                self.set_phase('stopping', f'航点{index+1}已进入通过半径，等待上一段结束')
+
         if self.phase in ('stopping','waiting'):
             self.zero.publish(Twist())
+            if self.requests:
+                for entry in list(self.requests.values()):
+                    self.cancel(entry)
+                if now > self.stop_deadline:
+                    self.stop('途经点旧导航请求未确认结束', failed=True)
+                return
             stopped = self.odom and now-self.odom[0] < .4 and abs(self.odom[1].twist.twist.linear.x) < .02 and abs(self.odom[1].twist.twist.angular.z) < .05
             if self.phase == 'stopping':
                 self.stop_since = (self.stop_since or now) if stopped else None
@@ -643,7 +783,7 @@ class ContinuousRoute:
                 self.stop('停靠期间底盘反馈不满足停止条件', failed=True)
             elif now >= self.wait_until:
                 _, end = self.blocks[self.block]
-                self.states[end-1] = '已停靠'
+                self.states[end-1] = '已通过' if self.sequential and self.block < len(self.blocks)-1 and self.points[end-1].kind == 'pass' else '已停靠'
                 self.block += 1
                 if self.block == len(self.blocks):
                     self.finish('completed', '逐点导航完成：所有航点均已到达并停稳' if self.sequential else '整条路线完成：途经点已通过，停靠点及最终点已完成')

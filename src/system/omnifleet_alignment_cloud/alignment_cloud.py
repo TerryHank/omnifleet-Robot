@@ -18,8 +18,8 @@ class AlignmentCloud(Node):
     def __init__(self):
         super().__init__('omnifleet_alignment_cloud')
         self.map_snapshot=MapSnapshot(self)
-        self.output=self.create_publisher(PointCloud2,'/msc/alignment_points',qos_profile_sensor_data)
-        self.status=self.create_publisher(String,'/msc/alignment_cloud_status',1)
+        self.output=self.create_publisher(PointCloud2,'/fleet/alignment_points',qos_profile_sensor_data)
+        self.status=self.create_publisher(String,'/fleet/alignment_cloud_status',1)
         self.input=self.create_subscription(PointCloud2,'/rslidar_points',self.receive,qos_profile_sensor_data)
         self.best=None;self.frames=0;self.stamp=None;self.started=time.monotonic();self.last_input=self.started
         self.create_timer(5.,self.watchdog)

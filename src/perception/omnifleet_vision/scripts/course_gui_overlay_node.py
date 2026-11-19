@@ -289,7 +289,7 @@ def main(args=None) -> None:
     from geometry_msgs.msg import PoseStamped
     from rclpy.executors import ExternalShutdownException
     from rclpy.node import Node
-    from rclpy.qos import qos_profile_sensor_data
+    from rclpy.qos import QoSProfile, ReliabilityPolicy
     from sensor_msgs.msg import Image
     from std_msgs.msg import String
 
@@ -313,7 +313,7 @@ def main(args=None) -> None:
             self.pose: tuple[dict[str, Any], float] | None = None
             self.publisher = self.create_publisher(Image, output_topic, 10)
             self.image_subscription = self.create_subscription(
-                Image, image_topic, self.on_image, qos_profile_sensor_data
+                Image, image_topic, self.on_image, QoSProfile(depth=1, reliability=ReliabilityPolicy.BEST_EFFORT)
             )
             self.json_subscriptions = [
                 self.create_subscription(

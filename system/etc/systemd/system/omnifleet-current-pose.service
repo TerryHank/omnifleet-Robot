@@ -1,0 +1,15 @@
+[Unit]
+Description=Source-time aligned current map pose for navigation and display
+After=omnifleet-t2-chassis.service omnifleet-t2-mola.service
+
+[Service]
+Type=simple
+User=iecme
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash && exec python3 /home/iecme/omnifleet_ws/src/localization/omnifleet_localization/scripts/current_pose.py --ros-args -p publish_tf:=true'
+Restart=on-failure
+RestartSec=2
+KillSignal=SIGINT
+TimeoutStopSec=8
+
+[Install]
+WantedBy=multi-user.target

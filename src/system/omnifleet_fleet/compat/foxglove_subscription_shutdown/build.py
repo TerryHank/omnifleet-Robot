@@ -31,6 +31,8 @@ for i, value in enumerate(link):
         link[i] = str(objects[name]) if name in objects else str(base/value)
     elif value.endswith('/libzenohc.so'):
         link[i] = str(ws/'src/system/omnifleet_fleet/zenoh-patched-v2/lib/libzenohc.so')
+    elif '/libfastcdr.so.' in value and not Path(value).exists():
+        link[i] = str(Path(value).parent/'libfastcdr.so')
     elif value.startswith('-Wl,-rpath,'):
         link[i] = '-Wl,-rpath,/opt/ros/humble/lib:'+str(ws/'src/system/omnifleet_fleet/zenoh-patched-v2/lib')
 link[link.index('-o')+1] = str(work/'librmw_zenoh_cpp.so')

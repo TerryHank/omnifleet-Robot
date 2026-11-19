@@ -57,7 +57,7 @@ def capture_body(data, path):
 
 
 def state(path):
-    data = yaml.safe_load(Path(path).read_text())
+    data = yaml.load(Path(path).read_text(), Loader=getattr(yaml, 'CSafeLoader', yaml.SafeLoader))
     profile = profile_path(Path(path))
     is_point = all(parent_at(data, p).get(p[-1]) == POINT_VALUES[p[-1]] for p in model_paths(data)
                    if p[-1] != 'inflation_radius' and (p[0] != 'controller_server' or p[2] == 'FollowPathMPPI'))

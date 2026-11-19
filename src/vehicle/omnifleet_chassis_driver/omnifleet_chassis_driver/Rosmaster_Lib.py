@@ -12,6 +12,7 @@ class Rosmaster:
     FUNC_REQUEST_DATA = 0x50
     FUNC_VERSION = 0x51
     FUNC_REPORT_SPEED = 0x0A
+    FUNC_TRACKED_PWM_COMP = 0x16
     FUNC_REPORT_MPU_RAW = 0x0B
     FUNC_REPORT_IMU_ATT = 0x0C
     FUNC_REPORT_ICM_RAW = 0x0E
@@ -20,7 +21,11 @@ class Rosmaster:
     def __init__(self, car_type=1, com='/dev/omnifleet_t2_stm32', delay=0.002, debug=False):
         self.car_type = car_type
         self.delay = delay
-        self.ser = serial.Serial(com, 115200, timeout=0.01)
+        self.ser = serial.Serial(baudrate=115200, timeout=0.01, write_timeout=0.05, exclusive=True)
+        self.ser.port = com
+        self.ser.dtr = False
+        self.ser.rts = False
+        self.ser.open()
         self.ser.flushInput()
         self.lock = threading.Lock()
         self.running = True
@@ -49,6 +54,9 @@ class Rosmaster:
         self._ftservo_response = None
         self._control_condition = threading.Condition()
         self._control_state = None
+        self._control_state_at = 0.0
+        self._tracked_pwm_condition = threading.Condition()
+        self._tracked_pwm_response = None
         self.last_imu_frame_time = None
 
     def create_receive_threading(self):
@@ -110,12 +118,17 @@ class Rosmaster:
             with self._control_condition:
                 self._control_state = {'version':version,'mode':mode,'result':result,'failsafe':failsafe,
                     'armed':bool(armed),'age_ms':age,'frames':frames,'channels':channels}
+                self._control_state_at = time.monotonic()
                 self._control_condition.notify_all()
         elif f[3] == self.FUNC_FTSERVO and len(f) >= 14:
             values = struct.unpack('<hhh', f[7:13])
             with self._ftservo_condition:
                 self._ftservo_response = (f[4], f[5], f[6], values[0], values[1], values[2])
                 self._ftservo_condition.notify_all()
+        elif f[3] == self.FUNC_TRACKED_PWM_COMP and len(f) >= 10:
+            with self._tracked_pwm_condition:
+                self._tracked_pwm_response = struct.unpack('<HHB', f[4:9])
+                self._tracked_pwm_condition.notify_all()
         elif f[3] == self.FUNC_REPORT_SPEED and len(f) >= 12:
             vx_mm_s, vy_mm_s, wz_mrad_s = struct.unpack(
                 '<hhh', f[4:10]
@@ -154,6 +167,32 @@ class Rosmaster:
 
     def set_car_type(self, t):
         self.car_type = t
+
+    def _tracked_pwm_request(self, command, payload, timeout):
+        with self._tracked_pwm_condition:
+            self._tracked_pwm_response = None
+            self._send(command, payload)
+            if not self._tracked_pwm_condition.wait_for(
+                    lambda: self._tracked_pwm_response is not None, timeout):
+                raise TimeoutError('STM32 PWM compensation readback timed out')
+            m1, m2, status = self._tracked_pwm_response
+            if status:
+                raise RuntimeError('STM32 PWM compensation rejected: status=%d' % status)
+            return m1, m2
+
+    def get_tracked_pwm_compensation(self, timeout=.5):
+        return self._tracked_pwm_request(
+            self.FUNC_REQUEST_DATA, bytes([self.FUNC_TRACKED_PWM_COMP, 0]), timeout)
+
+    def set_tracked_pwm_compensation(self, m1, m2, timeout=1.):
+        if any(type(value) is not int or not 0 <= value <= 3300 for value in (m1, m2)):
+            raise ValueError('PWM compensation must be integers in [0, 3300]')
+        applied = self._tracked_pwm_request(
+            self.FUNC_TRACKED_PWM_COMP, struct.pack('<HHB', m1, m2, 0x5F), timeout)
+        actual = self.get_tracked_pwm_compensation(timeout)
+        if applied != (m1, m2) or actual != (m1, m2):
+            raise RuntimeError('STM32 PWM compensation readback mismatch')
+        return actual
 
     def set_motion(self, vx, vy, vz):
         """Send tracked-body velocity; STM32 owns differential kinematics/PID.
@@ -253,6 +292,13 @@ class Rosmaster:
         return (self.imu_roll, self.imu_pitch, self.imu_yaw)
     def get_motion_data(self):
         return (self.odom_vx, self.odom_vy, self.odom_vz)
+
+    def poll_control_state(self):
+        self._send(self.FUNC_REQUEST_DATA, bytes([0x17, 0]))
+        with self._control_condition:
+            if self._control_state is not None and time.monotonic() - self._control_state_at < 0.15:
+                return dict(self._control_state)
+        return None
 
     def get_control_state(self, timeout=.5):
         """Query 0x17 through the existing receiver; never change control mode."""

@@ -2,7 +2,7 @@
 /**
  * Minimal Gemini API check (no ROS, no AgenticROS config).
  *
- *   export GEMINI_API_KEY="REDACTED_BACKUP_SECRET"
+ *   export GEMINI_API_KEY="your-real-key"
  *   node scripts/smoke-api.mjs
  *
  * Run from packages/agenticros-gemini after: pnpm build

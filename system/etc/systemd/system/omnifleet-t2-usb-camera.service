@@ -1,0 +1,18 @@
+[Unit]
+Description=OmniFleet T2 USB vision camera
+After=network.target
+Before=omnifleet-t2-vr-adapter.service
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+SupplementaryGroups=video
+Environment=HOME=/home/iecme
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash && exec ros2 run omnifleet_bringup usb_camera_publisher --ros-args -p device:=/dev/video0 -p topic:=/camera/color/image_raw/compressed -p frame_id:=camera_link -p fps:=15.0'
+Restart=always
+RestartSec=2
+KillSignal=SIGINT
+TimeoutStopSec=10
+[Install]
+WantedBy=multi-user.target

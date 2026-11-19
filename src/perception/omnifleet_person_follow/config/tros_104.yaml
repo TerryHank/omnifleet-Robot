@@ -1,0 +1,18 @@
+tros_person_following_node:
+  ros__parameters:
+    detect_result_topic_name: /vision/person_follow/tros_targets
+    goal_pose_topic_name: /vision/person_follow/nav_goal
+    followed_target_topic: /vision/person_follow/tros_followed
+    followed_target_pose_topic: /vision/person_follow/tros_target_map
+    global_frame: map
+    robot_frame: base_link
+    camera_frame: rgbd_view_z_up
+    image_width: 1536.0
+    cmd_vel_topic: /cmd_vel
+    costmap_topic: /global_costmap/costmap
+    follow_distance_min: 0.95
+    follow_distance_max: 1.05
+    follow_hysteresis: 0.05
+    follow_goal_pub_rate: 2.5
+    target_filter_confidence_thr: 0.7
+    select_min_confidence: 0.7

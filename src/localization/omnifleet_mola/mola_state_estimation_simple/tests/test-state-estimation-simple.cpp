@@ -706,12 +706,39 @@ void test_wheel_history_angle_wrap_and_reset()
     std::cout << "OK\n";
 }
 
+
+void test_measured_wheel_motion_survives_delayed_icp()
+{
+    std::cout << "[Test 12] Delayed ICP with measured wheel history... ";
+    mola::state_estimation_simple::StateEstimationSimple est;
+    est.params.max_time_to_use_velocity_model = 0.75;
+    const auto t = [](double v) { return mrpt::Clock::fromDouble(100 + v); };
+    mrpt::poses::CPose3DPDFGaussian pose;
+    pose.cov.setDiagonal(0.0001);
+    est.fuse_pose(t(-0.1), pose, "map");
+    est.fuse_pose(t(0), pose, "map");
+    mrpt::obs::CObservationOdometry odom;
+    odom.hasVelocities = true;
+    odom.velocityLocal.vx = 0.2;
+    odom.timestamp = t(0);
+    est.fuse_odometry(odom);
+    odom.timestamp = t(1.2);
+    odom.odometry = mrpt::poses::CPose2D(0.24, 0, 0);
+    est.fuse_odometry(odom);
+    const auto result = est.estimated_navstate(t(1.2), "map");
+    ASSERT_(result.has_value());
+    ASSERT_NEAR_(result->pose.mean.x(), 0.24, 1e-6);
+    ASSERT_(!est.estimated_navstate(t(2.1), "map").has_value());
+    std::cout << "OK\n";
+}
+
 }  // namespace
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 {
     try
     {
+        test_measured_wheel_motion_survives_delayed_icp();
         test_delayed_icp_preserves_wheel_motion();
         test_wheel_history_angle_wrap_and_reset();
         test_pose_and_twist();

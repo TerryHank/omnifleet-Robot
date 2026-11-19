@@ -30,7 +30,7 @@ class TrafficLightDualNode(ClassicalVisionNode):
         self.declare_parameter("minimum_color_confidence", 0.60)
         self.declare_parameter("minimum_mean_value", 100.0)
         self.declare_parameter("maximum_yolo_age", 1.5)
-        self.declare_parameter("maximum_processing_rate", 10.0)
+        self.declare_parameter("maximum_processing_rate", 0.0)
         self.latest_yolo_detections = []
         self.latest_yolo_received_at = 0.0
         self.last_processed = 0.0
@@ -58,8 +58,8 @@ class TrafficLightDualNode(ClassicalVisionNode):
         """读取最新 YOLO 框，只在框内运行 HSV 并绘制串联结果。"""
 
         now = time.monotonic()
-        maximum_rate = max(0.1, float(self.get_parameter("maximum_processing_rate").value))
-        if now - self.last_processed < 1.0 / maximum_rate:
+        maximum_rate = float(self.get_parameter("maximum_processing_rate").value)
+        if maximum_rate > 0 and now - self.last_processed < 1.0 / maximum_rate:
             return
         self.last_processed = now
 

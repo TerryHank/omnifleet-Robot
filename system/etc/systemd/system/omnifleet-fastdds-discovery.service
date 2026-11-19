@@ -1,0 +1,11 @@
+[Unit]
+Description=OmniFleet 124 Fast DDS TCP discovery
+After=network.target
+[Service]
+User=iecme
+Environment=LD_LIBRARY_PATH=/opt/ros/humble/lib
+ExecStart=/bin/bash /opt/ros/humble/bin/fastdds discovery -i 0 -l 127.0.0.1 -p 42101 -t 0.0.0.0 -q 42100
+Restart=on-failure
+RestartSec=2
+[Install]
+WantedBy=multi-user.target

@@ -13,12 +13,13 @@ def _start(context):
     env = json.loads((config / 'tracked-integrated-live-runtime.json').read_text())
     map_path = LaunchConfiguration('map_path').perform(context).strip()
     initial_pose = LaunchConfiguration('initial_pose').perform(context).strip()
+    reload_mapping = LaunchConfiguration('map_reload_mode').perform(context).strip().lower() in ('true','1','yes','on')
     if map_path and not Path(map_path).is_file():
         raise RuntimeError('MOLA map does not exist: ' + map_path)
     output = Path(LaunchConfiguration('map_dir').perform(context)) / 'experiments' / 'integrated'
     output.mkdir(parents=True, exist_ok=True)
     env.update(MOLA_LOAD_MM=map_path, MOLA_SAVE_MM=str(output / 'local_map.mm'),
-               MOLA_MAPPING_ENABLED='false' if map_path else 'true',
+               MOLA_MAPPING_ENABLED='true' if not map_path or reload_mapping else 'false',
                MOLA_START_ACTIVE='true' if not map_path or initial_pose else 'false')
     if initial_pose:
         pose = json.loads(initial_pose)
@@ -44,6 +45,7 @@ def _start(context):
 def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('map_path', default_value=''),
+        DeclareLaunchArgument('map_reload_mode', default_value='false'),
         DeclareLaunchArgument('initial_pose', default_value=''),
         DeclareLaunchArgument('map_dir', default_value='/home/iecme/omnifleet_data/maps'),
         OpaqueFunction(function=_start),

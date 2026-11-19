@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-22",
+  "model": "YOLO26n-seg",
+  "source": "https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n-seg.pt",
+  "ultralytics": "8.4.124",
+  "tensorrt": "10.3.0",
+  "precision": "FP16 enabled, mixed precision allowed",
+  "build": "trtexec --onnx=yolo26n-seg.onnx --fp16 --memPoolSize=workspace:256 --builderOptimizationLevel=1",
+  "input_shape": [
+    1,
+    3,
+    512,
+    512
+  ],
+  "files": {
+    "yolo26n-seg.pt": {
+      "bytes": 6719965,
+      "sha256": "361fbfabab285c3237700b6bb91d7ecfa602cd945fffda8dbe1242829b71e73f"
+    },
+    "yolo26n-seg.onnx": {
+      "bytes": 11104262,
+      "sha256": "2ca6e761fd88fb5cbf7fb35ee12141d08c7f8cd81524d7891c4da857368a156a"
+    },
+    "yolo26n-seg.engine": {
+      "bytes": 9365770,
+      "sha256": "bbac90b829d44a2f68d0b632fdd641854450ed2eb35512e6fa3ababcbf994907"
+    }
+  }
+}

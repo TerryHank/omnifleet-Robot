@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>车载协同调度</title>
+  <link rel="stylesheet" href="/style.css?v=movable-cards">
+  <script src="/dispatch-layout.js"></script>
+  <script defer src="/app.js?v=squad-leader-target"></script>
+  <script defer src="/native-panels.js?v=squad-leader-target"></script>
+  <script defer src="/studio-assets/main.3baca1086ee5c90fe565.js?v=waypoint-menu"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="panel-stock" hidden>
+  <div id="fleet-panel" class="sim-ui panel-scroll">
+    <aside id="fleet-cards">
+      <section data-card="robots">
+        <h2>机器人 <small id="robot-count"></small></h2>
+        <div class="table"><table class="robot-table"><thead><tr><th>顺序 / 名称</th><th>X 速度 / 角速度</th><th>电源电压</th><th>位置（米）</th><th>状态</th></tr></thead><tbody id="robots"></tbody></table></div>
+      </section>
+
+      <section data-card="squads">
+        <h2>编队小队 <span><button id="stop-current-squad" hidden>停止当前小队</button> <button id="add-squad" class="accent">＋ 新建小队</button></span></h2>
+        <div class="table"><table><thead><tr><th>小队</th><th>领队与队序</th><th>类型 / 队形</th><th>操作</th></tr></thead><tbody id="squads"></tbody></table></div>
+        <div class="actions" id="follow-status" hidden></div>
+        <div class="status-note" hidden><button type="button" id="leader-route-start">执行领车航点</button></div>
+      </section>
+      <section data-card="waypoints">
+        <h2>路点命名 <button id="add-point" class="accent">＋ 地图选点</button></h2>
+        <div class="table"><table><thead><tr><th>路点</th><th>坐标（米）</th><th>连接路段</th><th>路线</th></tr></thead><tbody id="waypoints"></tbody></table></div>
+        <div id="point-actions" hidden><button id="navigate" disabled>编队前往</button><button id="leader-go" disabled>领队前往</button><button id="leader-stop" hidden>停止领队导航</button></div>
+        <form id="point-form" hidden>
+          <label>路点名称 <input id="point-name" required maxlength="40"></label>
+          <label>X（米） <input id="point-x" type="number" step="any" required></label>
+          <label>Y（米） <input id="point-y" type="number" step="any" required></label>
+          <label>朝向（°） <input id="point-yaw" type="number" step="any" required value="0"></label>
+          <div class="actions"><button type="button" id="point-pick">地图重选位置</button><button class="accent">保存路点</button><button type="button" id="point-cancel">取消</button></div>
+          <small id="point-hint"></small>
+        </form>
+      </section>
+      <section data-card="maps">
+        <h2>地图管理 <button id="library-save" class="accent">保存地图</button></h2>
+        <p class="status-note" id="map-sync" hidden></p>
+        <div class="table"><table><thead><tr><th>地图</th><th>存储路径</th><th>操作</th></tr></thead><tbody id="saved-maps"></tbody></table></div>
+      </section>
+    </aside>
+
+
+      <small id="cursor" hidden></small>
+  </div>
+  <div id="road-tools" class="sim-ui" hidden>
+        <button id="road-edit">路网工具</button>
+        <p id="road-status" class="status-note"></p>
+        <div id="road-editor" hidden>
+          <div class="actions"><select id="road-tool" aria-label="路网工具"><option value="add">点图添加路点</option><option value="link">点两路点连线 / 取消连线</option><option value="move">移动路点</option><option value="delete">点选删除路点</option></select>
+          <button id="road-undo" disabled>撤销</button><button id="road-clear" disabled>清空所有路点</button></div>
+        </div>
+  </div>
+        <svg id="map" class="map-overlay" aria-label="路点编辑图层">
+          <g id="map-roads"></g><g id="map-zones"></g><g id="draft"></g>
+        </svg>
+    <div id="dispatch-panel" class="sim-ui panel-scroll"><section id="dispatch">
+      <h2>任务调度 <span><button id="queue-start" type="button" disabled>执行队列</button> <button type="button" id="new-task" class="accent">＋ 新建任务</button></span></h2>
+      <div id="queue-list" aria-label="任务队列"></div>
+      <form id="zone-form" hidden>
+        <label>通道 ID <input id="zone-id" required maxlength="40" placeholder="lane_1" pattern="[A-Za-z][A-Za-z0-9_\-]{0,39}"></label>
+        <label>宽度（米） <input type="number" id="zone-width" step="0.05" min="0.2" max="20" value="0.5" required></label>
+        <button class="accent">保存通道</button><button id="cancel-zone" type="button">取消</button><small id="zone-hint"></small>
+      </form>
+      <p class="status-note" id="zone-status" hidden></p>
+      <p class="status-note" id="dispatch-summary"></p>
+      <button id="dispatch-stop" hidden>停止目标调度</button>
+      <details><summary>RMF 任务回执</summary><div id="task-list" aria-label="RMF 任务回执"></div></details>
+    </section>
+  </div></div>
+  <div class="sim-ui">
+  <p id="feedback" role="status" hidden></p>
+  <dialog id="task-compose" aria-labelledby="task-dialog-title">
+    <form id="task-form">
+      <h2 id="task-dialog-title">新建任务</h2>
+      <fieldset class="task-basics">
+        <label>任务名称 <input id="task-name" maxlength="80" placeholder="选填，默认使用路线或通道名称"></label>
+        <label>任务类型 <select id="dispatch-kind"><option value="road">路网导航</option><option value="corridor">通道通行</option></select></label>
+      </fieldset>
+      <fieldset id="task-road">
+        <label>路点 <select id="dispatch-point"></select></label>
+        <button id="route-add" type="button">加入路线</button>
+        <label>分配方式 <select id="dispatch-mode"><option value="nearest">最近空闲车</option><option value="all">全部车辆依次往返</option></select></label>
+      </fieldset>
+      <div id="route-editor">
+        <ol id="route-queue"></ol>
+        <p class="status-note" id="route-hint"></p>
+        <button id="route-clear" type="button">清空路线</button>
+      </div>
+      <fieldset id="task-corridor" hidden>
+        <div id="zone-actions">
+          <label>互斥通道 <select id="zone-select"></select></label>
+          <label>通行车辆 <select id="zone-robot"></select></label>
+          <label>入口方向 <select id="zone-side"><option value="a">A → B</option><option value="b">B → A</option></select></label>
+        </div>
+        <button id="add-zone" type="button">划定通道</button>
+        <button id="zone-remove" type="button" hidden>移除通道</button>
+      </fieldset>
+      <p id="task-message" role="status" class="status-note" hidden></p>
+      <footer><button id="task-cancel" type="button">取消</button><button id="dispatch-send" class="accent" type="submit">保存任务</button></footer>
+    </form>
+  </dialog>
+  <dialog id="map-dialog">
+    <form id="map-form"><h2 id="map-dialog-title">保存地图</h2>
+    <fieldset><label id="map-name-label">名称 <input id="map-name" maxlength="60"></label>
+    <label id="map-choice-label" hidden>已保存地图 <select id="map-choice"></select></label></fieldset>
+    <footer><button type="button" id="map-cancel">取消</button><button id="map-confirm" class="accent">保存</button></footer>
+    </form>
+  </dialog>
+  <dialog id="squad-preview" aria-labelledby="preview-title">
+    <h2 id="preview-title"></h2>
+    <div class="preview-body">
+      <svg id="preview-map" class="formation-diagram" viewBox="0 0 340 230" role="img" aria-label="队形全览，领队朝上"></svg>
+      <ol id="preview-members" aria-label="完整队序"></ol>
+    </div>
+    <footer><button id="preview-close" type="button">关闭</button></footer>
+  </dialog>
+  <dialog id="squad-dialog">
+    <form id="squad-form">
+      <h2 id="squad-title">编辑小队</h2>
+      <fieldset>
+        <label>小队名称 <input id="squad-name" maxlength="40" required></label>
+        <label>小队类型 <select id="squad-mode"><option value="follow">领车跟随 · Leader Following</option><option value="formation">固定队形</option></select></label>
+        <label id="shape-label">队形 <select id="shape"><option value="column">纵队</option><option value="line">横队</option><option value="wedge">楔形</option><option value="rectangle">矩形</option><option value="custom">自绘队形</option><option value="current">保持当前位置</option></select></label>
+        <label><span id="spacing-label">跟车间距（米）</span> <input type="number" id="spacing" step="any" value="1.5" required></label>
+      </fieldset>
+      <div class="actions"><select id="available" aria-label="可添加的机器人"></select><button type="button" id="add-member">加入小队</button><button type="button" id="add-online">加入全部在线车</button></div>
+      <ol id="roster"></ol>
+      <div id="slot-editor" hidden><canvas id="slot-canvas" width="576" height="288" aria-label="队形位置编辑"></canvas><small id="slot-hint"></small></div>
+      <footer><button type="button" id="cancel-squad">取消</button><button class="accent">保存小队</button></footer>
+    </form>
+  </dialog>
+  </div>
+</body>
+</html>

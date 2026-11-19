@@ -4,8 +4,11 @@
 import math
 import json
 import os
+import socket
+import struct
 import threading
 import time
+from pathlib import Path
 
 import rclpy
 from geometry_msgs.msg import TransformStamped, Twist
@@ -13,8 +16,9 @@ from nav_msgs.msg import Odometry
 from rcl_interfaces.msg import SetParametersResult
 from rclpy.node import Node
 from rclpy.parameter import Parameter
+from rclpy.qos import DurabilityPolicy, QoSProfile
 from sensor_msgs.msg import Imu, MagneticField
-from std_msgs.msg import Bool, Float32, Int32, String
+from std_msgs.msg import Bool, Float32, Int32, String, UInt64MultiArray
 from std_srvs.srv import Trigger
 from tf2_ros import TransformBroadcaster
 from omnifleet_interfaces.srv import ServoCommand
@@ -24,6 +28,13 @@ from source_time_executor import SourceTimeExecutor, velocity_command_time, with
 
 
 IMU_RAW_SCALE = 1000.0
+LAN_FRAME = struct.Struct("!Q16H")
+LAN_SOCKET = "/run/omnifleet-g20/channels.sock"
+
+
+def stm32_imu_to_rep103(x, y, z):
+    """Undo the current ICM firmware Rx(pi) body mapping for ROS body axes."""
+    return x, -y, -z
 
 
 def sanitize_body_command(linear_x, linear_y, angular_z, max_angular):
@@ -38,6 +49,15 @@ def sanitize_body_command(linear_x, linear_y, angular_z, max_angular):
     if abs(wz) <= 1.0e-6:
         wz = 0.0
     return vx, wz, abs(float(linear_y)) > 1.0e-6
+
+
+def joystick_axes(channels):
+    def stick(channel):
+        value = channels[channel] - 1002
+        return math.copysign(min(1.0, max(0, abs(value) - 60) / 660.0), value)
+
+    linear_limit, angular_limit = (0.70, 1.00) if channels[4] < 1362 else (1.50, 1.80)
+    return linear_limit * stick(2), -angular_limit * stick(0)
 
 
 class OmnifleetT2Driver(Node):
@@ -59,8 +79,8 @@ class OmnifleetT2Driver(Node):
         self.declare_parameter("angular_velocity_variance", 4.0e-4)
         self.declare_parameter("linear_acceleration_variance", 4.0e-2)
         self.declare_parameter("magnetic_field_variance", 2.5e-11)
-        self.declare_parameter("pwm_compensation_m1", 2736)
-        self.declare_parameter("pwm_compensation_m2", 2772)
+        self.declare_parameter("pwm_compensation_m1", 900)
+        self.declare_parameter("pwm_compensation_m2", 900)
 
         serial_port = str(self.get_parameter("serial_port").value)
         self.imu_link = str(self.get_parameter("imu_link").value)
@@ -82,6 +102,15 @@ class OmnifleetT2Driver(Node):
 
         self._lock = threading.Lock()
         self._target = (0.0, 0.0)
+        self._joystick_target = (0.0, 0.0)
+        self._joystick_until = 0.0
+        self._stop_gear = None
+        self._stop_gear_released_at = 0.0
+        self._estop_input = False
+        self._estop_latched = False
+        self._estop_state = Path.home() / ".local/share/omnifleet_t2/local-navigation-state.json"
+        self._estop_state_revision = None
+        self.estop_active()
         self._last_command_time = time.monotonic()
         self._last_command_ros_ns = 0
         self._last_command_receive_time = self._last_command_time
@@ -130,6 +159,8 @@ class OmnifleetT2Driver(Node):
         self.add_on_set_parameters_callback(self.set_runtime_parameters)
 
         self.create_subscription(Twist, os.environ.get("OMNIFLEET_CMD_VEL_INPUT", "/cmd_vel"), self.cmd_vel_callback, 1)
+        self.create_subscription(Bool, "/navigation/estop", self.on_estop, 10)
+        self.create_subscription(Bool, "/navigation/contact", self.on_contact, 10)
         self.create_subscription(Int32, "/RGBLight", self.rgb_light_callback, 10)
         self.create_subscription(Bool, "/Buzzer", self.buzzer_callback, 10)
         self.voltage_publisher = self.create_publisher(Float32, "/voltage", 20)
@@ -149,10 +180,141 @@ class OmnifleetT2Driver(Node):
 
         self.create_timer(1.0 / command_rate, self.send_motion_command)
         self.create_timer(0.1, self.publish_feedback)
+        self.joystick = self.create_publisher(Twist, "/navigation/joystick_cmd_vel", 1)
+        self.stop_gear_pub = self.create_publisher(
+            Bool, "/navigation/joystick_stop_gear",
+            QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL),
+        )
+        self._lan_channels = None
+        self._lan_stamp_ns = 0
+        self._lan_stop = None
+        self._sbus_stop = None
+        self._lan_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+        self._lan_socket.setblocking(False)
+        Path(LAN_SOCKET).unlink(missing_ok=True)
+        self._lan_socket.bind(LAN_SOCKET)
+        os.chmod(LAN_SOCKET, 0o600)
+        self._lan_diagnostic = None
+        self._lan_diagnostic_pub = self.create_publisher(UInt64MultiArray, "/chassis/g20_lan_channels", 1)
+        self._lan_rx_count = self._lan_rx_ns = 0
+        self._lan_gap_max_ns = self._lan_age_max_ns = 0
+        self._lan_dropped = self._lan_coalesced = 0
+        self._lan_report_at = time.monotonic()
+        self.joystick_active = False
+        self.create_timer(0.04, self.publish_joystick)
         self.get_logger().info(
             "履带底盘驱动已启动：串口=%s，M2=左履带，M1=右履带，履带中心距=%.3f m，PWM补偿=%d/%d"
             % (serial_port, self.track_separation_m, compensation[0], compensation[1])
         )
+
+    def receive_lan_channels(self):
+        newest = None
+        # Bound work per control tick; queued samples are coalesced, never replayed.
+        for _ in range(64):
+            try:
+                packet = self._lan_socket.recv(256)
+            except BlockingIOError:
+                break
+            if len(packet) != LAN_FRAME.size:
+                self._lan_dropped += 1
+                continue
+            data = LAN_FRAME.unpack(packet)
+            if newest is not None:
+                self._lan_coalesced += 1
+            if newest is None or data[0] > newest[0]:
+                newest = data
+        if newest is not None:
+            self.on_lan_channels(UInt64MultiArray(data=list(newest)))
+
+    def on_lan_channels(self, message):
+        data = message.data
+        if len(data) != 17:
+            return
+        stamp = data[0]
+        now_ns = time.monotonic_ns()
+        age_ns = now_ns - stamp
+        if (stamp <= self._lan_stamp_ns or not 0 <= age_ns < 350_000_000
+                or not all(800 <= data[i + 1] <= 2200 for i in (0, 2, 4))):
+            self._lan_dropped += 1
+            return
+        if self._lan_rx_ns:
+            self._lan_gap_max_ns = max(self._lan_gap_max_ns, now_ns - self._lan_rx_ns)
+        self._lan_rx_ns = now_ns
+        self._lan_rx_count += 1
+        self._lan_age_max_ns = max(self._lan_age_max_ns, age_ns)
+        self._lan_diagnostic = message
+        # SDK 1050/1500/1950 correspond to SBUS 282/1002/1722.
+        self._lan_channels = tuple(1002 + (value - 1500) * 1.6 for value in data[1:])
+        self._lan_stamp_ns = stamp
+        self._lan_stop = self._lan_channels[4] < 642
+        self.update_stop_gear()
+
+    def update_stop_gear(self):
+        if self._sbus_stop is None and self._lan_stop is None:
+            return
+        stop_gear = bool(self._sbus_stop or self._lan_stop)
+        if stop_gear == self._stop_gear:
+            return
+        with self._lock:
+            if self._stop_gear and not stop_gear:
+                self._stop_gear_released_at = time.monotonic()
+            self._stop_gear = stop_gear
+            if stop_gear:
+                self._target = self._joystick_target = (0.0, 0.0)
+                self._command_received = False
+                self._joystick_until = 0.0
+        self.stop_gear_pub.publish(Bool(data=stop_gear))
+        if stop_gear:
+            self.send_motion_command()
+
+    def publish_joystick(self):
+        self.receive_lan_channels()
+        try:
+            state = self.car.poll_control_state()
+        except OSError:
+            state = None
+        command = Twist()
+        sbus = None
+        if state and state["failsafe"] == 0 and state["age_ms"] <= 100:
+            sbus = state["channels"]
+            self._sbus_stop = sbus[4] < 642
+            self.update_stop_gear()
+        if not self._stop_gear:
+            if sbus is not None:
+                command.linear.x, command.angular.z = joystick_axes(sbus)
+            if (not command.linear.x and not command.angular.z
+                    and self._lan_channels is not None
+                    and time.monotonic_ns() - self._lan_stamp_ns < 350_000_000):
+                command.linear.x, command.angular.z = joystick_axes(self._lan_channels)
+        active = bool(command.linear.x or command.angular.z)
+        if active or self.joystick_active:
+            with self._lock:
+                self._joystick_target = (command.linear.x, command.angular.z)
+                self._joystick_until = time.monotonic() + self.cmd_vel_timeout
+                if not active:
+                    self._target = (0.0, 0.0)
+                    self._command_received = False
+            if active != self.joystick_active:
+                self.get_logger().info("遥控 " + ("接管底盘" if active else "已回中或失联"))
+            self.joystick.publish(command)
+        self.joystick_active = active
+
+    def on_estop(self, message):
+        self._estop_input = bool(message.data)
+        self._estop_latched |= self._estop_input
+
+    def on_contact(self, message):
+        self._estop_latched |= bool(message.data)
+
+    def estop_active(self):
+        try:
+            revision = self._estop_state.stat().st_mtime_ns
+            if revision != self._estop_state_revision:
+                self._estop_latched = bool(json.loads(self._estop_state.read_text())["safety_latched"])
+                self._estop_state_revision = revision
+        except (OSError, ValueError, KeyError):
+            pass
+        return self._estop_input or self._estop_latched
 
     def set_runtime_parameters(self, parameters):
         names = {"pwm_compensation_m1", "pwm_compensation_m2"}
@@ -210,6 +372,8 @@ class OmnifleetT2Driver(Node):
             self.max_angular,
         )
         with self._lock:
+            if self._stop_gear or issued <= self._stop_gear_released_at:
+                return
             self._target = (vx, wz)
             self._last_command_time = issued
             self._last_command_receive_time = time.monotonic()
@@ -229,18 +393,26 @@ class OmnifleetT2Driver(Node):
                 or time.monotonic() - self._last_command_time > self.cmd_vel_timeout
             )
             vx, wz = (0.0, 0.0) if expired else self._target
+            joystick_priority = time.monotonic() < self._joystick_until
+            if self._stop_gear:
+                vx, wz = 0.0, 0.0
+            elif joystick_priority:
+                vx, wz = self._joystick_target
             received_mono, received_ros = self._last_command_receive_time, self._last_command_ros_ns
             source_ros, expired_count = self._last_command_source_ros_ns, self._expired_command_count
             report_timeout = expired and self._command_received and not self._watchdog_reported
             if expired:
                 self._watchdog_reported = True
+        if self.estop_active():
+            vx, wz = 0.0, 0.0
         send_mono = time.monotonic()
         send_ros = self.get_clock().now().nanoseconds
         write_ok = True
         try:
             # The tracked firmware closes the speed loop using the installed
             # channel map: M2 drives the left track and M1 drives the right track.
-            self.car.set_motion(round(vx * 1000.0), 0, round(wz * 1000.0))
+            # The selected front is opposite the MCU body X axis.
+            self.car.set_motion(round(-vx * 1000.0), 0, round(wz * 1000.0))
             self._serial_error_reported = False
         except Exception as error:
             write_ok = False
@@ -263,6 +435,11 @@ class OmnifleetT2Driver(Node):
             'serial_start_ros_ns':send_ros,'serial_start_monotonic':send_mono,
             'serial_end_ros_ns':self.get_clock().now().nanoseconds,'serial_end_monotonic':now_mono,
             'vx':vx,'wz':wz,'watchdog_expired':expired,'write_ok':write_ok,
+            'joystick_priority':joystick_priority, 'joystick_stop_gear': self._stop_gear,
+            'lan_transport': 'unix-datagram', 'lan_received': self._lan_rx_count,
+            'lan_gap_max_ms': self._lan_gap_max_ns / 1e6,
+            'lan_sample_age_max_ms': self._lan_age_max_ns / 1e6,
+            'lan_dropped': self._lan_dropped, 'lan_coalesced': self._lan_coalesced,
             'speed_feedback_age':now_mono-self.car.last_speed_frame_time if self.car.last_speed_frame_time is not None else None,
             'imu_feedback_age':now_mono-self.car.last_imu_frame_time if self.car.last_imu_frame_time is not None else None})))
         if report_timeout:
@@ -271,6 +448,18 @@ class OmnifleetT2Driver(Node):
             )
 
     def publish_feedback(self):
+        if self._lan_diagnostic is not None:
+            message, self._lan_diagnostic = self._lan_diagnostic, None
+            self._lan_diagnostic_pub.publish(message)
+        if time.monotonic() - self._lan_report_at >= 10:
+            self.get_logger().info("LAN_IPC " + json.dumps({
+                "received": self._lan_rx_count,
+                "max_gap_ms": self._lan_gap_max_ns / 1e6,
+                "max_sample_age_ms": self._lan_age_max_ns / 1e6,
+                "dropped": self._lan_dropped, "coalesced": self._lan_coalesced,
+                "stop_gear": self._stop_gear,
+            }))
+            self._lan_report_at = time.monotonic()
         stamp = self.get_clock().now().to_msg()
         voltage = Float32()
         voltage.data = float(self.car.get_battery_voltage())
@@ -290,7 +479,8 @@ class OmnifleetT2Driver(Node):
             edition.data = 0.0
         self.edition_publisher.publish(edition)
 
-        vx, _vy, wz = self.car.get_motion_data()
+        hardware_vx, _vy, wz = self.car.get_motion_data()
+        vx = -hardware_vx
         velocity = Twist()
         velocity.linear.x = float(vx)
         velocity.linear.y = 0.0
@@ -347,8 +537,8 @@ class OmnifleetT2Driver(Node):
         if bool(self.get_parameter("publish_odom_tf").value):
             self.tf_broadcaster.sendTransform(transform)
 
-        ax, ay, az = self.car.get_accelerometer_data()
-        gx, gy, gz = self.car.get_gyroscope_data()
+        ax, ay, az = stm32_imu_to_rep103(*self.car.get_accelerometer_data())
+        gx, gy, gz = stm32_imu_to_rep103(*self.car.get_gyroscope_data())
         imu = Imu()
         imu.header.stamp = stamp
         imu.header.frame_id = self.imu_link
@@ -365,7 +555,7 @@ class OmnifleetT2Driver(Node):
         self.imu_publisher.publish(imu)
 
         if self.publish_magnetometer:
-            mx, my, mz = self.car.get_magnetometer_data()
+            mx, my, mz = stm32_imu_to_rep103(*self.car.get_magnetometer_data())
             mag = MagneticField()
             mag.header.stamp = stamp
             mag.header.frame_id = self.imu_link
@@ -425,6 +615,8 @@ class OmnifleetT2Driver(Node):
         if self._closed:
             return
         self._closed = True
+        self._lan_socket.close()
+        Path(LAN_SOCKET).unlink(missing_ok=True)
         with self._lock:
             self._target = (0.0, 0.0)
             self._command_received = False

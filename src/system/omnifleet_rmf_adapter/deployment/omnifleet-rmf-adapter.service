@@ -1,0 +1,15 @@
+[Unit]
+Description=OmniFleet RMF fleet adapter and operator control API
+PartOf=omnifleet-rmf.target
+Requires=omnifleet-rmf-schedule.service
+Wants=omnifleet-rmf-blockade.service
+After=omnifleet-rmf-schedule.service omnifleet-rmf-blockade.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/zhangwnag/workspaces/omnifleet_ws
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/system/omnifleet_rmf_adapter/scripts/run.bash central
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10

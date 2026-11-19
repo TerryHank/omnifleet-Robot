@@ -34,7 +34,7 @@ modules:
     publish_twist_from_latest_odometry: ${MOLA_PUBLISH_TWIST_FROM_LATEST_ODOM|false}
     latest_odom_twist_source: ${MOLA_LATEST_ODOM_TWIST_SOURCE|wheel_odom}
     latest_odom_twist_max_age: ${MOLA_LATEST_ODOM_TWIST_MAX_AGE|0.5}
-    publish_tf_from_slam: true
+    publish_tf_from_slam: false
     publish_tf_from_slam_source: lidar_odometry
     publish_tf_from_robot_pose_observations: false
     relocalize_from_topic: ''
@@ -55,7 +55,7 @@ modules:
     - topic: /odom
       msg_type: Odometry
       output_sensor_label: wheel_odom
-    - topic: /imu_lidar/data_raw
+    - topic: /rslidar_imu_data_corrected
       msg_type: Imu
       output_sensor_label: radar_imu
       use_fixed_sensor_pose: true

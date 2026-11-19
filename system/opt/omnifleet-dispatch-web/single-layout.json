@@ -1,0 +1,273 @@
+{
+  "configById": {
+    "local.omnifleet-single-panels.nav2-hot-params-panel!nav2HotParams": {
+      "foxglovePanelTitle": "导航参数与启动",
+      "fontScale": 1.4,
+      "collapsedSections": {
+        "group:全局与局部代价地图共用": false,
+        "advanced:hot_dwb": true,
+        "algorithm:global": true,
+        "algorithm:local": true,
+        "group:导航行为": true,
+        "group:MOLA 点云转地图（地图坐标系 Z，非局部障碍过滤）": false,
+        "sub:rpp:速度与平顺": false,
+        "sub:rpp:避障与路线选择": false,
+        "sub:rpp:路线跟踪": false,
+        "sub:rpp:先转向再走": false,
+        "sub:hot_dwb:走不通时怎么处理": false,
+        "sub:mppi:避障与路线选择": false,
+        "sub:mppi:到点与终点对齐": false,
+        "sub:mppi:走不通时怎么处理": false,
+        "sub:mppi:速度与平顺": false,
+        "group:建图与避障共用高度（地图坐标系 Z）": true
+      }
+    },
+    "3D!navigation": {
+      "cameraState": {
+        "perspective": true,
+        "distance": 11.663507799812695,
+        "phi": 5.73237639305409e-05,
+        "thetaOffset": -147.7761416136201,
+        "targetOffset": [
+          -2.953989884811477,
+          0.41093792884007896,
+          -6.689685961048182e-16
+        ],
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "targetOrientation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "fovy": 45,
+        "near": 0.1,
+        "far": 5000
+      },
+      "followMode": "follow-pose",
+      "scene": {
+        "transforms": {
+          "showLabel": false,
+          "axisScale": 0.5,
+          "lineWidth": 1,
+          "enablePreloading": true
+        },
+        "meshUpAxis": "z_up"
+      },
+      "topics": {
+        "map": {
+          "visible": true,
+          "colorMode": "custom",
+          "minColor": "#c2cbd880",
+          "maxColor": "#596c8580",
+          "unknownColor": "#ffffff00"
+        },
+        "global_costmap/costmap": {
+          "visible": true,
+          "colorMode": "custom",
+          "minColor": "#fff2cc00",
+          "maxColor": "#e9ad5a3d",
+          "unknownColor": "#ffffff00"
+        },
+        "local_costmap/costmap": {
+          "visible": true,
+          "colorMode": "custom",
+          "minColor": "#ffffff00",
+          "maxColor": "#f27b854d",
+          "unknownColor": "#ffffff00"
+        },
+        "global_costmap/published_footprint": {
+          "visible": true,
+          "color": "#ffd600",
+          "lineWidth": 0.012
+        },
+        "local_costmap/published_footprint": {
+          "visible": true,
+          "color": "#ff1744",
+          "lineWidth": 0.02
+        },
+        "lookahead_collision_arc": {
+          "visible": true,
+          "color": "#ff9100",
+          "lineWidth": 0.015
+        },
+        "lookahead_point": {
+          "visible": true,
+          "color": "#00e676"
+        },
+        "plan": {
+          "visible": true,
+          "color": "#23b5e6ff",
+          "lineWidth": 0.045
+        },
+        "local_plan": {
+          "visible": true,
+          "color": "#ff54dfff",
+          "lineWidth": 0.075
+        },
+        "robot_description": {
+          "visible": true
+        },
+        "set_pose": {
+          "visible": true
+        },
+        "initialpose": {
+          "visible": true
+        },
+        "goal_pose": {
+          "visible": true
+        },
+        "omnifleet_t2/waypoints/add_pose": {
+          "visible": true
+        },
+        "omnifleet_t2/waypoints/markers": {
+          "visible": true
+        },
+        "omnifleet_t2/waypoints/path": {
+          "visible": true,
+          "color": "#4499ffaa",
+          "lineWidth": 0.035
+        },
+        "omnifleet_t2/waypoints/active_path": {
+          "visible": true,
+          "color": "#00ff66",
+          "lineWidth": 0.065
+        },
+        "trajectories": {
+          "visible": true,
+          "color": "#ff54dfff",
+          "showOutlines": false,
+          "namespaces": {
+            "Candidate Trajectories": {
+              "visible": false
+            },
+            "Optimal Trajectory": {
+              "visible": true
+            }
+          }
+        },
+        "visualization/web/deskewed_points": {
+          "visible": true,
+          "pointSize": 1,
+          "pointShape": "circle",
+          "colorMode": "colormap",
+          "colorField": "intensity",
+          "colorMap": "turbo",
+          "decayTime": 0
+        },
+        "visualization/web/slam_points_below_1m": {
+          "visible": true,
+          "colorMode": "flat",
+          "flatColor": "#ffffffff",
+          "pointSize": 0.5,
+          "pointShape": "circle",
+          "decayTime": 0,
+          "frameLocked": true,
+          "colorField": "z"
+        },
+        "visualization/web/local_obstacle_points": {
+          "visible": true,
+          "pointSize": 1.5,
+          "colorMode": "colormap",
+          "colorField": "z",
+          "colorMap": "turbo",
+          "minValue": 0,
+          "maxValue": 2,
+          "pointShape": "circle",
+          "decayTime": 0
+        }
+      },
+      "layers": {
+        "requiredSensorsGrid": {
+          "layerId": "foxglove.Grid",
+          "visible": true,
+          "frameLocked": true,
+          "label": "odom 地面网格",
+          "size": 20,
+          "divisions": 20,
+          "lineWidth": 1,
+          "color": "#7187a04d",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        "omnifleetT2RobotModel": {
+          "layerId": "foxglove.Urdf",
+          "visible": true,
+          "frameLocked": true,
+          "label": "OmniFleet T2履带模型 0.50×0.37×0.33 m",
+          "instanceId": "omnifleetT2RobotModel",
+          "sourceType": "topic",
+          "framePrefix": "",
+          "displayMode": "visual",
+          "fallbackColor": "#9e9e9e",
+          "order": 1,
+          "topic": "robot_description"
+        }
+      },
+      "publish": {
+        "type": "pose",
+        "poseTopic": "goal_pose",
+        "pointTopic": "clicked_point",
+        "poseEstimateTopic": "initialpose",
+        "poseEstimateXDeviation": 0.5,
+        "poseEstimateYDeviation": 0.5,
+        "poseEstimateThetaDeviation": 0.26179939
+      },
+      "imageMode": {},
+      "foxglovePanelTitle": "导航 · 地图 / 全局路径 / 局部轨迹"
+    },
+    "local.omnifleet-single-panels.speed-gauge!speed": {
+      "foxglovePanelTitle": "底盘速度 · m/s"
+    },
+    "local.omnifleet-single-panels.drive-joystick!manual": {
+      "foxglovePanelTitle": "履带手动摇杆",
+      "topic": "cmd_vel",
+      "publishRate": 10,
+      "forward": 0.15,
+      "reverse": 0.15,
+      "left": 1,
+      "right": 1
+    },
+    "local.omnifleet-single-panels.battery-voltage!battery": {
+      "foxglovePanelTitle": "电池电压"
+    }
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "playbackConfig": {
+    "speed": 1
+  },
+  "layout": {
+    "first": "local.omnifleet-single-panels.nav2-hot-params-panel!nav2HotParams",
+    "second": {
+      "direction": "row",
+      "splitPercentage": 69.81132075471699,
+      "first": {
+        "direction": "column",
+        "splitPercentage": 64.25531914893618,
+        "first": "3D!navigation",
+        "second": "local.omnifleet-single-panels.speed-gauge!speed"
+      },
+      "second": {
+        "direction": "column",
+        "splitPercentage": 15,
+        "first": "local.omnifleet-single-panels.battery-voltage!battery",
+        "second": "local.omnifleet-single-panels.drive-joystick!manual"
+      }
+    },
+    "direction": "row",
+    "splitPercentage": 24.81081081081081
+  }
+}

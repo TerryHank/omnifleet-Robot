@@ -1,0 +1,20 @@
+[Unit]
+Description=OmniFleet 124 display clouds and read-only dashboard telemetry
+After=network-online.target
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_ws
+Environment=ROS_DOMAIN_ID=101
+Environment=PYTHONUNBUFFERED=1
+LimitMEMLOCK=1073741824
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash && exec /usr/bin/python3 /opt/omnifleet-web-display/web_display.py'
+Restart=on-failure
+RestartSec=2
+KillSignal=SIGINT
+TimeoutStopSec=6
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+[Unit]
+Description=OmniFleet 124 onboard Fast DDS dispatch
+Wants=omnifleet-onboard-dispatch@schedule.service omnifleet-onboard-dispatch@dispatcher.service omnifleet-onboard-dispatch@blockade.service omnifleet-onboard-dispatch@central.service omnifleet-onboard-dispatch@discovery.service omnifleet-onboard-dispatch@foxglove.service
+After=network.target
+
+[Install]
+WantedBy=multi-user.target

@@ -2,6 +2,10 @@
 """二维码识别节点。"""
 
 import rclpy
+import sys
+from ament_index_python.packages import get_package_prefix
+sys.path.insert(0, get_package_prefix('omnifleet_vision')+'/lib/omnifleet_vision')
+from marker_follow import MarkerFollow
 
 try:
     from .algorithms import recognize_qr_codes
@@ -16,12 +20,14 @@ class QrRecognitionNode(ClassicalVisionNode):
 
     def __init__(self) -> None:
         super().__init__("qr_recognition", "/camera/color/image_raw")
+        self.follow = MarkerFollow(self, 'qr')
 
     def image_callback(self, message) -> None:
         """识别二维码并发布结构化结果。"""
         try:
             image = self.bridge.imgmsg_to_cv2(message, desired_encoding="bgr8")
             debug, result = recognize_qr_codes(image)
+            debug, result = self.follow.process(image, message, result, debug)
             self.publish_result(message, debug, result)
         except Exception as error:
             self.get_logger().error(f"二维码识别失败：{error}")

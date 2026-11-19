@@ -30,7 +30,10 @@ install(PROGRAMS
   scripts/cartographer_odom_adapter
   scripts/terrain_mapper
   scripts/wheel_slip_detector
+  scripts/current_pose.py
   DESTINATION lib/${PROJECT_NAME})
+
+install(FILES scripts/pose_compensation.py DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
@@ -44,6 +47,7 @@ if(BUILD_TESTING)
   ament_add_pytest_test(test_cartographer_3d_contract test/test_cartographer_3d_contract.py)
   ament_add_pytest_test(test_mola_backend_contract test/test_mola_backend_contract.py)
   ament_add_pytest_test(test_terrain_analysis test/mapping/test_terrain_analysis.py)
+  ament_add_pytest_test(test_pose_compensation test/test_pose_compensation.py)
 endif()
 
 ament_export_include_directories(include)

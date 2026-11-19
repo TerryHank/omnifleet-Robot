@@ -5,6 +5,25 @@
 #include "dwb_core/illegal_trajectory_tracker.hpp"
 #include "pluginlib/class_list_macros.hpp"
 namespace omnifleet_dwb_hot {
+void HotDWBLocalPlanner::updateGoalRotationWindow(
+  const geometry_msgs::msg::PoseStamped & pose, nav2_core::GoalChecker * goal_checker) {
+  defer_goal_rotation_ = false;
+  if (!goal_checker || global_plan_.poses.empty() ||
+    global_plan_.header.frame_id != pose.header.frame_id) {return;}
+  geometry_msgs::msg::Pose tolerance;
+  geometry_msgs::msg::Twist velocity_tolerance;
+  if (!goal_checker->getTolerances(tolerance, velocity_tolerance) ||
+    !std::isfinite(tolerance.position.x) || tolerance.position.x < 0.0) {return;}
+  const auto & goal = global_plan_.poses.back();
+  defer_goal_rotation_ = std::hypot(goal.x - pose.pose.position.x,
+    goal.y - pose.pose.position.y) > tolerance.position.x;
+}
+geometry_msgs::msg::TwistStamped HotDWBLocalPlanner::computeVelocityCommands(
+  const geometry_msgs::msg::PoseStamped & pose, const geometry_msgs::msg::Twist & velocity,
+  nav2_core::GoalChecker * goal_checker) {
+  updateGoalRotationWindow(pose, goal_checker);
+  return dwb_core::DWBLocalPlanner::computeVelocityCommands(pose, velocity, goal_checker);
+}
 void HotDWBLocalPlanner::syncCriticScales() {
   auto node = node_.lock();
   if (!node) {throw std::runtime_error("DWB parameter node expired");}
@@ -15,7 +34,9 @@ void HotDWBLocalPlanner::syncCriticScales() {
     if (!std::isfinite(value) || value < 0.0) {
       throw std::runtime_error("Invalid DWB critic scale: " + key);
     }
-    critic->setScale(value);
+    // Do not enter rotate-only scoring before the selected goal checker accepts XY.
+    // Keep the saved critic weights and tolerances unchanged.
+    critic->setScale(critic->getName() == "RotateToGoal" && defer_goal_rotation_ ? 0.0 : value);
     if (critic->getName() == "RotateToGoal") {
       std::vector<double> settings;
       for (const auto & leaf : {"xy_goal_tolerance", "trans_stopped_velocity", "RotateToGoal.slowing_factor", "RotateToGoal.lookahead_time"}) {

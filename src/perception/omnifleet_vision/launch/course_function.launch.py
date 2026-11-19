@@ -1,8 +1,8 @@
-"""视觉课程 31 个功能共用的内部 Launch。
+"""视觉课程 32 个功能共用的内部 Launch。
 
 学生只启动 ``omnifleet_tutorials`` 中对应的 ``vision_*.launch.py``。
 本文件负责按课程编号组合现有节点；所有运动候选默认关闭，并且只允许发布到
-``/cmd_vel_vision``，最终底盘速度必须继续经过安全仲裁链。
+``/cmd_vel``，再由 local_navigation 仲裁到最终底盘输出。
 """
 
 import os
@@ -28,12 +28,13 @@ from launch_ros.substitutions import FindPackageShare
 
 COLOR_TOPIC = os.environ.get("OMNIFLEET_CAMERA_COLOR_TOPIC", "/camera/color/image_raw")
 ALIGNED_COLOR_TOPIC = COLOR_TOPIC
-# Orbbec keeps the image topic name unchanged when depth_registration is on;
-# the frame_id switches to the color optical frame.
-DEPTH_TOPIC = os.environ.get("OMNIFLEET_CAMERA_DEPTH_TOPIC", "/camera/depth/image_raw")
+# 104 uses its attached registered RGB-D camera.
+DEPTH_TOPIC = os.environ.get("OMNIFLEET_CAMERA_DEPTH_TOPIC", "/camera/aligned_depth_to_color/image_raw")
 LIDAR_TOPIC = os.environ.get("OMNIFLEET_LIDAR_POINTS_TOPIC", "/rslidar_points")
-VISION_COMMAND_TOPIC = "/cmd_vel_vision"
+VISION_COMMAND_TOPIC = "/cmd_vel"
 VISION_VENV = "/home/iecme/omnifleet_ws/.env/vision"
+VISION_CPU_ENV = {"OPENBLAS_NUM_THREADS": "1", "OMP_NUM_THREADS": "1",
+                  "MKL_NUM_THREADS": "1", "OPENCV_FOR_THREADS_NUM": "1"}
 
 # 经典视觉节点和 KCF 已自行画框/显示；其余 22 个实时链路把下游结果叠加到最终窗口。
 DISPLAY_TOPICS = {
@@ -66,15 +67,15 @@ DISPLAY_TOPICS = {
         "json": ["/vision/camera/status", "/vision/depth/result"],
     },
     "03_02_detection_tracking": {
-        "image": "/vision/detections/debug", "title": "OmniFleet Detection Tracking",
+        "image": "/vision/tracking/debug", "title": "OmniFleet Detection Tracking",
         "json": ["/vision/detections", "/vision/tracks"],
     },
     "03_03_target_depth": {
-        "image": "/vision/detections/debug", "title": "OmniFleet Target Depth",
+        "image": "/vision/tracking/debug", "title": "OmniFleet Target Depth",
         "json": ["/vision/tracks", "/vision/targets_3d"],
     },
     "03_04_vision_lidar": {
-        "image": "/vision/detections/debug", "title": "OmniFleet Vision Lidar",
+        "image": "/vision/tracking/debug", "title": "OmniFleet Vision Lidar",
         "json": ["/vision/targets_3d", "/vision/risk"],
     },
     "03_05_traffic_events": {
@@ -82,7 +83,7 @@ DISPLAY_TOPICS = {
         "json": ["/vision/detections", "/vision/targets_3d", "/vision/events", "/vision/traffic_state"],
     },
     "03_06_chassis_control": {
-        "image": "/vision/detections/debug", "title": "OmniFleet Chassis Control",
+        "image": "/vision/tracking/debug", "title": "OmniFleet Chassis Control",
         "json": ["/vision/targets_3d", "/vision/events", "/vision/safe_behavior/status"],
     },
     "03_07_lane_integration": {
@@ -90,7 +91,7 @@ DISPLAY_TOPICS = {
         "json": ["/vision/lane/result", "/vision/targets_3d", "/vision/risk", "/vision/lane_follow/status"],
     },
     "03_08_vision_nav": {
-        "image": "/vision/detections/debug", "title": "OmniFleet Vision Navigation",
+        "image": "/vision/tracking/debug", "title": "OmniFleet Vision Navigation",
         "json": ["/vision/targets_3d"], "pose": "/vision/nav_goal",
     },
     "03_09_edge_deployment": {
@@ -98,11 +99,11 @@ DISPLAY_TOPICS = {
         "json": ["/vision/detections", "/vision/inference_status"],
     },
     "04_01_color_follow": {
-        "image": "/vision/color/debug", "title": "OmniFleet Color Follow",
+        "image": "/vision/tracking/debug", "title": "OmniFleet Color Follow",
         "json": ["/vision/detections", "/vision/targets_3d", "/vision/target_follow/status"],
     },
     "04_02_human_object_follow": {
-        "image": "/vision/detections/debug", "title": "OmniFleet Human Follow",
+        "image": "/vision/tracking/debug", "title": "OmniFleet Human Follow",
         "json": ["/vision/targets_3d", "/vision/target_follow/status"],
     },
     "04_03_lane_project": {
@@ -110,7 +111,7 @@ DISPLAY_TOPICS = {
         "json": ["/vision/lane/result", "/vision/targets_3d", "/vision/risk", "/vision/lane_follow/status"],
     },
     "04_04_object_navigation": {
-        "image": "/vision/detections/debug", "title": "OmniFleet Object Navigation",
+        "image": "/vision/tracking/debug", "title": "OmniFleet Object Navigation",
         "json": ["/vision/targets_3d"], "pose": "/vision/nav_goal",
     },
     "04_05_multimodal_avoidance": {
@@ -129,10 +130,18 @@ DISPLAY_TOPICS = {
             "/vision/lane_follow/status",
         ],
     },
+    "04_08_gesture_person_follow": {
+        "image": "/vision/gesture_follow/debug", "title": "Gesture Person Following",
+        "json": ["/vision/gesture_follow/status"],
+    },
+    "04_09_body_tracking": {
+        "image": "/vision/body_tracking/debug", "title": "Official Body Tracking",
+        "json": ["/vision/body_tracking/status"],
+    },
 }
 
 
-def _vision_node(executable, name, parameters=None):
+def _vision_node(executable, name, parameters=None, remappings=None):
     """创建课程节点，并统一终端输出格式。"""
 
     return Node(
@@ -141,7 +150,9 @@ def _vision_node(executable, name, parameters=None):
         name=name,
         output="screen",
         parameters=[parameters or {}],
+        remappings=remappings or [],
         additional_env={
+            **VISION_CPU_ENV,
             "VIRTUAL_ENV": VISION_VENV,
             "PATH": f"{VISION_VENV}/bin:{os.environ.get('PATH', '')}",
         },
@@ -164,6 +175,9 @@ def _classical_node(executable, name, result_topic, debug_topic, extra=None):
 def _display_nodes(course_function):
     """创建课程结果叠加节点和最终实时窗口。"""
 
+    if course_function in {"03_02_detection_tracking", "04_01_color_follow"}:
+        return []
+
     config = DISPLAY_TOPICS.get(course_function)
     if config is None:
         return []
@@ -176,6 +190,7 @@ def _display_nodes(course_function):
             "json_topics": config.get("json", []),
             "pose_topic": config.get("pose", ""),
             "output_topic": output_topic,
+            "camera_info_topic": "/camera/aligned_depth_to_color/camera_info",
             "title": config["title"],
         },
     )
@@ -210,13 +225,13 @@ def _detector(
     )
 
 
-def _tracker(input_topic="/vision/detections", output_topic="/vision/tracks"):
+def _tracker(input_topic="/vision/detections", output_topic="/vision/tracks", debug_topic="/vision/tracking/debug"):
     """创建检测到跟踪的轻量级联调节点。"""
 
     return _vision_node(
-        "detection_tracker_node.py",
+        "nanotrack_node.py",
         "course_detection_tracker",
-        {"input_topic": input_topic, "output_topic": output_topic},
+        {"input_topic": input_topic, "output_topic": output_topic, "debug_topic": debug_topic},
     )
 
 
@@ -224,11 +239,10 @@ def _depth_fusion(input_topic="/vision/tracks", output_topic="/vision/targets_3d
     """创建目标与对齐深度融合节点。"""
 
     return _vision_node(
-        "target_depth_fusion_node.py",
+        "target_sparse_depth_node.py",
         "course_target_depth_fusion",
         {
-            "detection_topic": input_topic,
-            "depth_topic": DEPTH_TOPIC,
+            "input_topic": input_topic,
             "output_topic": output_topic,
         },
     )
@@ -248,18 +262,20 @@ def _risk_node():
     )
 
 
-def _target_follow(enable_motion, class_filter=""):
+def _target_follow(enable_motion, class_filter="", use_standoff=False, node_name="course_target_follow"):
     """创建目标跟随控制器；速度只进入视觉候选话题。"""
 
     return _vision_node(
         "target_follow_controller_node.py",
-        "course_target_follow",
+        node_name,
         {
             "target_topic": "/vision/targets_3d",
-            "command_topic": VISION_COMMAND_TOPIC,
+            "use_standoff": use_standoff,
+            "command_topic": "/cmd_vel_vision",
             "enable_motion": ParameterValue(enable_motion, value_type=bool),
             "class_filter": class_filter,
         },
+        remappings=[("/cmd_vel_vision", VISION_COMMAND_TOPIC)],
     )
 
 
@@ -344,17 +360,12 @@ def _traffic_events():
 def _camera_action(params_file):
     """按开关和课程配置启动板载相机。"""
 
-    # The tutorials use the attached USB camera.  MVS is intentionally not
-    # launched here; its daemon and driver are disabled on this robot.
-    return Node(
-        package="omnifleet_bringup",
-        executable="usb_camera_publisher",
-        name="tutorial_usb_camera",
-        output="screen",
-        parameters=[{"device": "/dev/video0",
-                     "topic": "/camera/color/image_raw/compressed",
-                     "frame_id": "camera_link",
-                     "fps": 15.0}],
+    return IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([
+                FindPackageShare("omnifleet_hikrobot_rgbd"), "launch", "rgbd_camera.launch.py"
+            ])
+        ),
         condition=IfCondition(LaunchConfiguration("start_camera")),
     )
 
@@ -370,6 +381,7 @@ def _build_course_actions(context):
 
     course_function = LaunchConfiguration("course_function").perform(context)
     enable_motion = LaunchConfiguration("enable_motion")
+    object_backend = LaunchConfiguration("tracking_backend").perform(context)
     share = FindPackageShare("omnifleet_vision")
     vendor = lambda filename: PathJoinSubstitution([share, "models", "vendor", filename])
     coco_model = vendor("yolo11n_coco.pt")
@@ -433,7 +445,7 @@ def _build_course_actions(context):
         "03_04_vision_lidar", "03_05_traffic_events", "03_06_chassis_control",
         "03_07_lane_integration", "03_08_vision_nav", "04_01_color_follow",
         "04_02_human_object_follow", "04_03_lane_project", "04_04_object_navigation",
-        "04_05_multimodal_avoidance", "04_07_traffic_safety",
+        "04_05_multimodal_avoidance", "04_07_traffic_safety", "04_08_gesture_person_follow", "04_09_body_tracking",
     }
     camera_profile = "mvs_rgbd_course.yaml" if course_function in rgbd_functions else "mvs_rgb_fast.yaml"
     actions = [_camera_action(PathJoinSubstitution([share, "config", camera_profile]))]
@@ -454,19 +466,21 @@ def _build_course_actions(context):
             _classical_node(
                 "color_recognition_node.py", "course_color",
                 "/vision/color/result", "/vision/color/debug",
-            )
+                {"selected_color": "", "enable_click_color": True,"follow_controller":"/course_color_box_follow"},
+            ),
+            _tracker(input_topic="/vision/color/selected"),
+            _vision_node("target_sparse_depth_node.py", "course_color_depth"),
+            _target_follow(enable_motion, class_filter="__click_target__", use_standoff=True,node_name="course_color_box_follow"),
         ],
         "02_05_qr": lambda: [
-            _classical_node(
-                "qr_recognition_node.py", "course_qr",
-                "/vision/qr/result", "/vision/qr/debug",
-            )
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(PathJoinSubstitution([share, "launch", "marker_follow.launch.py"])),
+                launch_arguments={"marker_kind": "qr", "enable_motion": enable_motion}.items())
         ],
         "02_06_apriltag": lambda: [
-            _classical_node(
-                "apriltag_recognition_node.py", "course_apriltag",
-                "/vision/apriltag/result", "/vision/apriltag/debug",
-            )
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(PathJoinSubstitution([share, "launch", "marker_follow.launch.py"])),
+                launch_arguments={"marker_kind": "apriltag", "enable_motion": enable_motion}.items())
         ],
         "02_07_kcf": lambda: [
             IncludeLaunchDescription(
@@ -478,15 +492,23 @@ def _build_course_actions(context):
                     "aligned_color_topic": ALIGNED_COLOR_TOPIC,
                     "depth_topic": DEPTH_TOPIC,
                     "cmd_vel_topic": VISION_COMMAND_TOPIC,
+                    "sparse_depth": "true",
+                    "inline_sparse_depth": "true",
+                    "remote_roi": "true",
+                    "external_tracker": "true",
                     "enable_motion": enable_motion,
-                    "use_gui": LaunchConfiguration("use_gui"),
+                    "use_gui": "false",
                     "tracking_scale": LaunchConfiguration("tracking_scale"),
                     "roi_x": LaunchConfiguration("roi_x"),
                     "roi_y": LaunchConfiguration("roi_y"),
                     "roi_width": LaunchConfiguration("roi_width"),
                     "roi_height": LaunchConfiguration("roi_height"),
                 }.items(),
-            )
+            ),
+            _vision_node("nanotrack_node.py", "course_nanotrack", {
+                "mode": "roi", "tracking_backend": object_backend, "output_topic": "/vision/nanotrack/selected", "debug_topic": "",
+                "image_topic": COLOR_TOPIC, "source_info_topic": "/camera/color/camera_info",
+            }),
         ],
         "02_08_human_perception": lambda: [
             _vision_node(
@@ -561,7 +583,8 @@ def _build_course_actions(context):
             ),
         ],
         "03_02_detection_tracking": lambda: [
-            _detector("course_yolo", coco_model, coco_labels), _tracker()
+            _detector("course_yolo", coco_model, coco_labels),
+            _tracker(debug_topic="/vision/course_gui/course_03_02_detection_tracking/debug")
         ],
         "03_03_target_depth": lambda: [
             _detector("course_yolo", coco_model, coco_labels), _tracker(), _depth_fusion()
@@ -606,8 +629,11 @@ def _build_course_actions(context):
             _classical_node(
                 "color_recognition_node.py", "course_color",
                 "/vision/detections", "/vision/color/debug",
+                {"selected_color": "", "enable_click_color": True},
             ),
-            _tracker(), _depth_fusion(), _target_follow(enable_motion),
+            _tracker(input_topic="/vision/color/selected", debug_topic="/vision/course_gui/course_04_01_color_follow/debug"),
+            _vision_node("target_sparse_depth_node.py", "course_color_depth"),
+            _target_follow(enable_motion, class_filter="__click_target__", use_standoff=True),
         ],
         "04_02_human_object_follow": lambda: [
             _detector("course_pedestrian", coco_model, coco_labels, class_ids="0"),
@@ -655,12 +681,42 @@ def _build_course_actions(context):
                 _lane_controller(enable_motion),
             ]
         ),
+        "04_08_gesture_person_follow": lambda: [
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(PathJoinSubstitution([
+                    FindPackageShare("omnifleet_person_follow"), "launch", "person_follow.launch.py"])),
+                launch_arguments={"enable_motion": enable_motion}.items(),
+            ),
+        ],
+        "04_09_body_tracking": lambda: [
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(PathJoinSubstitution([
+                    FindPackageShare("omnifleet_person_follow"), "launch", "body_tracking_104.launch.py"])),
+                launch_arguments={"enable_motion": enable_motion}.items(),
+            ),
+        ],
     }
     builder = mapping.get(course_function)
     if builder is None:
         return _offline_failure(f"未知视觉课程功能：{course_function}")
     course_actions = builder()
+    # This case publishes its composed JPEG directly; no raw-image relay chain.
+    if course_function in ("02_07_kcf", "04_08_gesture_person_follow", "04_09_body_tracking"):
+        return actions + course_actions
     course_actions.extend(_display_nodes(course_function))
+    raw_topics = {
+        "02_01_camera_monitor": "/vision/camera/debug", "02_03_opencv": "/vision/opencv/debug",
+        "02_04_color": "/vision/color/debug", "02_05_qr": "/vision/qr/debug",
+        "04_01_color_follow": "/vision/color/debug",
+        "02_06_apriltag": "/vision/apriltag/debug", "02_07_kcf": "/omnifleet_vision/kcf/image",
+        "02_10_depth": "/vision/depth/debug",
+    }
+    display_topic = raw_topics.get(course_function, f"/vision/course_gui/course_{course_function}/debug")
+    course_actions.append(Node(
+        package="image_transport", executable="republish", name=f"display_compressor_{course_function}",
+        arguments=["raw", "compressed"], output="screen",
+        remappings=[("in", display_topic), ("out/compressed", display_topic + "/compressed")],
+    ))
     return actions + course_actions
 
 
@@ -687,6 +743,7 @@ def generate_launch_description():
                 "tracking_scale", default_value="0.4",
                 description="KCF 内部跟踪缩放比例；0.4 对应约 614×512。",
             ),
+            DeclareLaunchArgument("tracking_backend", default_value="nanotrack", description="物体追踪后端：nanotrack 或 kcf。"),
             DeclareLaunchArgument("roi_x", default_value="0", description="无界面模式初始框左上角 x。"),
             DeclareLaunchArgument("roi_y", default_value="0", description="无界面模式初始框左上角 y。"),
             DeclareLaunchArgument("roi_width", default_value="0", description="无界面模式初始框宽度。"),

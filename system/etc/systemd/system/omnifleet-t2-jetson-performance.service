@@ -1,0 +1,12 @@
+[Unit]
+Description=OmniFleet T2 Jetson sustained maximum clocks
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/sbin/nvpmodel -m 0
+ExecStart=/usr/bin/jetson_clocks
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,85 @@
+{
+  "central": {
+    "domain_id": 42,
+    "rmw": "rmw_fastrtps_cpp",
+    "reference_robot": "robot_101",
+    "assignments": {
+      "robot_104": {
+        "robot_name": "car2",
+        "namespace": "/car2",
+        "display_name": "car2"
+      },
+      "robot_113": {
+        "robot_name": "car1",
+        "namespace": "/car1",
+        "display_name": "car1"
+      },
+      "robot_111": {
+        "robot_name": "a2_111",
+        "namespace": "/a2_111",
+        "display_name": "a2_111"
+      },
+      "robot_101": {
+        "robot_name": "robot_101",
+        "namespace": "/robot_101",
+        "display_name": "robot_101"
+      }
+    },
+    "identity_revision": 24,
+    "fastdds_config": "fastdds-central.xml"
+  },
+  "stale_after_seconds": 3.0,
+  "robots": {
+    "robot_104": {
+      "enabled": true,
+      "motion_enabled": true,
+      "pose_topic": "/lidar_odometry/pose",
+      "domain_id": 104,
+      "rmw": "rmw_fastrtps_cpp",
+      "local_namespace": "",
+      "observed_namespace": ""
+    },
+    "robot_113": {
+      "enabled": true,
+      "motion_enabled": true,
+      "pose_topic": "/lidar_odometry/pose",
+      "domain_id": 113,
+      "rmw": "rmw_fastrtps_cpp",
+      "local_namespace": "",
+      "observed_namespace": ""
+    },
+    "robot_111": {
+      "enabled": true,
+      "motion_enabled": true,
+      "pose_topic": "/lidar_odometry/pose",
+      "domain_id": 111,
+      "rmw": "rmw_fastrtps_cpp",
+      "local_namespace": "",
+      "observed_namespace": "",
+      "vehicle_type": "ackermann",
+      "manual_topic": "/cmd_vel_teleop",
+      "rmf_traits": {
+        "footprint_radius": 0.46,
+        "vicinity_radius": 0.51,
+        "linear_velocity": 0.4,
+        "linear_acceleration": 0.3,
+        "angular_velocity": 0.295,
+        "angular_acceleration": 0.5,
+        "minimum_turning_radius": 1.05
+      }
+    },
+    "robot_101": {
+      "enabled": true,
+      "motion_enabled": true,
+      "domain_id": 101,
+      "rmw": "rmw_fastrtps_cpp",
+      "pose_topic": "/lidar_odometry/pose",
+      "local_namespace": "",
+      "observed_namespace": "",
+      "control_topic": "/navigation/fleet/local_status",
+      "compressed_maps": false,
+      "fastdds_config": "fastdds-client.xml",
+      "single_robot_host": "192.168.3.124"
+    }
+  }
+}

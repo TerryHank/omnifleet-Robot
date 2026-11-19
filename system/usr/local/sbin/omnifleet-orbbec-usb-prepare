@@ -1,0 +1,22 @@
+#!/usr/bin/python3
+import fcntl
+from pathlib import Path
+
+devices = Path('/sys/bus/usb/devices')
+def matches(path):
+    try:
+        return tuple((path / name).read_text().strip() for name in ('idVendor','idProduct','serial')) == ('2bc5','0813','CPMJ863002J')
+    except OSError:
+        return False
+
+camera, = [path for path in devices.iterdir() if matches(path)]
+permit = camera / 'port/usb3_lpm_permit'
+if permit.is_file():
+    permit.write_text('0\n')
+bus = int((camera / 'busnum').read_text())
+address = int((camera / 'devnum').read_text())
+with open(f'/dev/bus/usb/{bus:03d}/{address:03d}', 'wb', buffering=0) as device:
+    fcntl.ioctl(device, 0x5514, 0)
+if permit.is_file():
+    permit.write_text('0\n')
+(camera / 'power/control').write_text('on\n')

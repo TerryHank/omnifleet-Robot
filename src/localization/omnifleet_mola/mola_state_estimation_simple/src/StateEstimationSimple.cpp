@@ -628,8 +628,7 @@ std::optional<NavState> StateEstimationSimple::estimated_navstate(
 
     const double dt = mrpt::system::timeDifference(*state_.last_pose_obs_tim, timestamp);
 
-    if (!state_.last_twist || !state_.last_pose ||
-        std::abs(dt) > params.max_time_to_use_velocity_model)
+    if (!state_.last_twist || !state_.last_pose)
     {
         return {};  // None
     }
@@ -643,6 +642,12 @@ std::optional<NavState> StateEstimationSimple::estimated_navstate(
     if (wheel_anchor && wheel_query)
     {
         poseExtrapolation = mrpt::poses::CPose3D(*wheel_query - *wheel_anchor);
+    }
+    else if (std::abs(dt) > params.max_time_to_use_velocity_model)
+    {
+        // The velocity-model horizon applies to extrapolation. Measured wheel
+        // poses above already cover the interval from the delayed ICP anchor.
+        return {};
     }
     else if (state_.pose_already_updated_with_odom)
     {

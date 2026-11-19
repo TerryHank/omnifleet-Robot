@@ -36,7 +36,7 @@ class DepthMeasurementNode(ClassicalVisionNode):
         self.declare_parameter("mad_scale", 3.5)
         self.declare_parameter("maximum_depth_age", 4.0)
         self.declare_parameter("maximum_yolo_age", 4.0)
-        self.declare_parameter("maximum_processing_rate", 10.0)
+        self.declare_parameter("maximum_processing_rate", 0.0)
 
         self.latest_color = None
         self.latest_color_message = None
@@ -122,10 +122,8 @@ class DepthMeasurementNode(ClassicalVisionNode):
         if self.latest_color is None or self.latest_color_message is None:
             return
         now = time.monotonic()
-        maximum_rate = max(
-            0.1, float(self.get_parameter("maximum_processing_rate").value)
-        )
-        if now - self.last_published_at < 1.0 / maximum_rate:
+        maximum_rate = float(self.get_parameter("maximum_processing_rate").value)
+        if maximum_rate > 0 and now - self.last_published_at < 1.0 / maximum_rate:
             return
         self.last_published_at = now
 

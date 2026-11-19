@@ -1,0 +1,15 @@
+[Unit]
+Description=OmniFleet onboard Foxglove dispatch web
+After=omnifleet-onboard-dispatch@central.service omnifleet-onboard-dispatch@foxglove.service
+PartOf=omnifleet-onboard-dispatch.target
+
+[Service]
+User=iecme
+WorkingDirectory=/opt/omnifleet-dispatch-web
+ExecStart=/usr/bin/python3 /opt/omnifleet-dispatch-web/server.py
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=12
+
+[Install]
+WantedBy=omnifleet-onboard-dispatch.target

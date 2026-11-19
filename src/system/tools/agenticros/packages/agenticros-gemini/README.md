@@ -49,7 +49,7 @@ After building, with a **real** key from [Google AI Studio](https://aistudio.goo
 
 ```bash
 cd packages/agenticros-gemini
-export GEMINI_API_KEY="REDACTED_BACKUP_SECRET"
+export GEMINI_API_KEY="your-key-here"
 pnpm run smoke-api
 ```
 

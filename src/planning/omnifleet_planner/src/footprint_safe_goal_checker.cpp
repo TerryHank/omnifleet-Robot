@@ -42,7 +42,8 @@ void FootprintSafeGoalChecker::initialize(
       [this](std_msgs::msg::String::ConstSharedPtr message) {
         bool stopped = false;
         try {
-          const double speed = nlohmann::json::parse(message->data).at("speed").get<double>();
+          const auto value = nlohmann::json::parse(message->data);
+          const double speed = std::hypot(value.at("speed").get<double>(),value.value("angular_speed",0.));
           stopped = std::isfinite(speed) && std::abs(speed) <= 0.02;
         } catch (const nlohmann::json::exception &) {}
         std::lock_guard<std::mutex> lock(route_mutex_);

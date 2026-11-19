@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# 显式切换课程相机配置；restore 必定恢复生产 RGB-D 服务。
+case "${1:-status}" in
+  rgb_fast|rgbd_course)
+    sudo systemctl stop omnifleet-vision-camera@rgb_fast.service \
+      omnifleet-vision-camera@rgbd_course.service mvs-rgbd-camera.service
+    sleep 3
+    sudo systemctl start "omnifleet-vision-camera@${1}.service"
+    ;;
+  restore)
+    sudo systemctl stop omnifleet-vision-camera@rgb_fast.service \
+      omnifleet-vision-camera@rgbd_course.service
+    sleep 3
+    sudo systemctl start mvs-rgbd-camera.service
+    ;;
+  status)
+    systemctl is-active mvs-rgbd-camera.service || true
+    systemctl is-active omnifleet-vision-camera@rgb_fast.service || true
+    systemctl is-active omnifleet-vision-camera@rgbd_course.service || true
+    ;;
+  *)
+    echo "用法：omnifleet-camera-profile {rgb_fast|rgbd_course|restore|status}" >&2
+    exit 2
+    ;;
+esac
+

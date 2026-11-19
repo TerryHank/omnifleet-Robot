@@ -1,15 +1,13 @@
 omnifleet_t2_experiment_imu_adapter:
   ros__parameters:
     input_topic: /rslidar_imu_data
-    # REP-145 orientation-free IMU; preserve the existing topic as an alias.
-    output_topic: /imu_lidar/data_raw
-    legacy_output_topic: /rslidar_imu_data_corrected
+    output_topic: /rslidar_imu_data_corrected
     output_frame: rslidar
     linear_acceleration_scale: 9.869805429
     angular_velocity_bias:
-    - -0.003321103
-    - -0.018058449
-    - 0.008707792
+    - -0.00616977452401
+    - -0.0201393211699
+    - -0.000180604914669
     rotation_xyzw:
     - -0.7068467736244202
     - 0.7073657512664795

@@ -19,6 +19,7 @@ import rclpy
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import CompressedImage, JointState
 from std_msgs.msg import Bool
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
@@ -100,7 +101,7 @@ class VrProtocolAdapter(Node):
             ServoCommand, str(self.get_parameter('servo_service').value))
         self.create_subscription(JointTrajectory, self.joint_topic,
                                  self.joint_command_cb, 10)
-        self.create_subscription(Odometry, odom_topic, self.odom_cb, 10)
+        self.create_subscription(Odometry, odom_topic, self.odom_cb, qos_profile_sensor_data)
         self.create_subscription(CompressedImage, str(self.get_parameter('camera_topic').value), self.camera_cb, 5)
         self.create_timer(0.02, self.poll_udp)
         self.create_timer(1.0, self.broadcast_disc)

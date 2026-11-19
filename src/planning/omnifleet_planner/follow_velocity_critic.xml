@@ -1,0 +1,5 @@
+<library path="omnifleet_follow_velocity_critic">
+  <class name="mppi::critics::FollowVelocityCritic" type="mppi::critics::FollowVelocityCritic" base_class_type="mppi::critics::CriticFunction">
+    <description>Live predecessor velocity and distance-error reference for following.</description>
+  </class>
+</library>

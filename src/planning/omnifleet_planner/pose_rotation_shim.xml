@@ -1,0 +1,5 @@
+<library path="omnifleet_pose_rotation_shim">
+  <class type="omnifleet_planner::PoseRotationShim" base_class_type="nav2_core::Controller">
+    <description>MPPI rotation handoff using the controller's acquired pose.</description>
+  </class>
+</library>

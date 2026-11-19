@@ -93,7 +93,7 @@ class EscapeTests(unittest.TestCase):
         p=list(f['pose']);now=0.;w=0.
         while r.state=='moving' and now<r.timeout:
             command=r.command(now,p,f['obstacles'],f['unknown'],[0.,w],True,'epoch')
-            self.assertEqual(command[0],0.);self.assertLessEqual(abs(command[1]),.10)
+            self.assertEqual(command[0],0.);self.assertLessEqual(abs(command[1]),.30)
             self.assertTrue(r.certified(p,command,f['obstacles'],f['unknown']))
             w=command[1];p[2]+=.1*w;now+=.1
         self.assertEqual(r.state,'stopping',r.reason)
@@ -104,7 +104,8 @@ class EscapeTests(unittest.TestCase):
     def test_recorded_tight_curve_is_slow_and_reaches_turn_space(self):
         f=json.loads((ROOT/'test/data/tight-turn-fixture.json').read_text())
         r=module.ClearanceEscape(f['local_pose'],f['obstacles'],[],CONFIG,.05,0.,'epoch')
-        self.assertLessEqual(r.speed,.05)
+        self.assertLessEqual(r.speed,.30)
+        self.assertLessEqual(abs(r.speed*r.curvature),.30)
         self.assertLessEqual(r.distance,.8)
         self.assertLessEqual(r.timeout,35.)
         for i,pose in enumerate(r.path):
@@ -138,8 +139,31 @@ class EscapeTests(unittest.TestCase):
         f=json.loads((ROOT/'test/data/narrow-corridor-fixture.json').read_text())
         r=module.ClearanceEscape(f['pose'],f['obstacles'],f['unknown'],CONFIG,.05,0.,'epoch',target_heading=math.pi)
         cmd=r.command(0.,f['pose'],f['obstacles'],f['unknown'],[0.,0.],True,'epoch')
-        self.assertAlmostEqual(abs(cmd[1]),.10)
+        self.assertAlmostEqual(abs(cmd[1]),.30)
         self.assertTrue(r.certified(f['pose'],cmd,f['obstacles'],f['unknown']))
+
+    def test_open_arc_reaches_requested_speed_and_accepts_measured_motion(self):
+        blocked=lambda pose:abs(pose[1])<.001
+        r=module.ClearanceEscape([0.,0.,0.],[],[],CONFIG,.01,0.,'epoch',start_blocked=blocked)
+        self.assertNotEqual(r.curvature,0.)
+        self.assertAlmostEqual(r.speed,.30)
+        pose=[0.,0.,0.];now=0.;velocity=[0.,0.];peak=0.
+        while r.state=='moving' and now<r.timeout:
+            command=r.command(now,pose,[],[],velocity,True,'epoch')
+            self.assertLessEqual(abs(command[0]),.30)
+            self.assertLessEqual(abs(command[1]),.30)
+            peak=max(peak,abs(command[0]))
+            v,w=command;angle=pose[2]+w*.01
+            if abs(w)<1e-6:pose=[pose[0]+v*.01*math.cos(pose[2]),pose[1]+v*.01*math.sin(pose[2]),angle]
+            else:pose=[pose[0]+v/w*(math.sin(angle)-math.sin(pose[2])),pose[1]-v/w*(math.cos(angle)-math.cos(pose[2])),angle]
+            velocity=command;now+=.01
+        self.assertAlmostEqual(peak,.30)
+        self.assertEqual(r.state,'stopping',r.reason)
+        self.assertFalse(blocked(pose))
+        r=module.ClearanceEscape([0.,0.,0.],[],[],CONFIG,.01,0.,'epoch',start_blocked=blocked)
+        self.assertGreater(r.command(0.,r.start,[],[],[.5,0.],True,'epoch')[0],0.)
+        self.assertGreater(r.command(1.1,r.start,[],[],[.5,0.],True,'epoch')[0],0.)
+        self.assertEqual(r.state,'moving')
 
     def test_selected_circle_geometry_preserves_existing_deviation_allowance(self):
         config=module.recovery_config(CONFIG,{'footprint':'[]','robot_radius':.1,'footprint_padding':.02})
@@ -234,10 +258,10 @@ class EscapeTests(unittest.TestCase):
 
     def test_safe_away_deviation_is_certified_but_stays_bounded(self):
         r=self.make();p=FIXTURE['pose'];pose=[p[0]+.3*math.cos(p[2]),p[1]+.3*math.sin(p[2])-.03,p[2]]
-        self.assertGreater(r.command(10.,pose,FIXTURE['obstacles'],[],[.03,0.],True,'epoch')[0],0.)
+        self.assertGreater(r.command(r.timeout-1.,pose,FIXTURE['obstacles'],[],[.03,0.],True,'epoch')[0],0.)
         self.assertEqual(r.state,'moving')
         pose[1]-=.04
-        self.assertEqual(r.command(10.1,pose,FIXTURE['obstacles'],[],[.03,0.],True,'epoch'),[0.,0.])
+        self.assertEqual(r.command(r.timeout-.9,pose,FIXTURE['obstacles'],[],[.03,0.],True,'epoch'),[0.,0.])
         self.assertEqual(r.state,'failed')
         self.assertTrue(r.replan_allowed)
 
@@ -266,22 +290,39 @@ class EscapeTests(unittest.TestCase):
             self.assertEqual(r.command(now, FIXTURE['pose'], FIXTURE['obstacles'], [], [0., 0.], True, epoch), [0., 0.])
             self.assertEqual(r.state, 'failed')
 
-    def test_stall_and_overspeed_abort(self):
-        for now, velocity in [(4.1, [0., 0.]), (0., [.2, 0.]), (0., [0., .2])]:
-            r = self.make()
-            self.assertEqual(r.command(now, FIXTURE['pose'], FIXTURE['obstacles'], [], velocity, True, 'epoch'), [0., 0.])
-            if now==0.:
-                self.assertEqual(r.command(1.1,FIXTURE['pose'],FIXTURE['obstacles'],[],velocity,True,'epoch'),[0.,0.])
-            self.assertEqual(r.state, 'failed')
+    def test_stall_still_aborts(self):
+        r=self.make()
+        self.assertEqual(r.command(4.1,FIXTURE['pose'],FIXTURE['obstacles'],[],[0.,0.],True,'epoch'),[0.,0.])
+        self.assertEqual(r.state,'failed')
 
-    def test_transient_speed_peak_holds_then_resumes_with_governor(self):
-        r=self.make();p=FIXTURE['pose']
-        self.assertEqual(r.command(0.,p,FIXTURE['obstacles'],[],[.16,0.],True,'epoch'),[0.,0.])
+    def test_measured_speed_alone_does_not_hold_or_abort_escape(self):
+        for velocity in [[.16,0.],[0.,.2],[.5,.6]]:
+            r=self.make();r.certified=lambda *a,**kw:True
+            for now in [0.,1.1]:
+                command=r.command(now,FIXTURE['pose'],FIXTURE['obstacles'],[],velocity,True,'epoch')
+                self.assertGreater(command[0],0.)
+                self.assertEqual(r.state,'moving')
+            self.assertFalse(hasattr(r,'speed_limited_since'))
+
+    def test_measured_speed_alone_does_not_abort_turn_but_displacement_still_does(self):
+        f=json.loads((ROOT/'test/data/narrow-corridor-fixture.json').read_text())
+        r=module.ClearanceEscape(f['pose'],f['obstacles'],f['unknown'],CONFIG,.05,0.,'epoch',target_heading=math.pi)
+        r.certified=lambda *a,**kw:True
+        command=r.command(0.,f['pose'],f['obstacles'],f['unknown'],[.08,.6],True,'epoch')
+        self.assertNotEqual(command[1],0.)
         self.assertEqual(r.state,'moving')
-        self.assertGreater(r.command(.2,p,FIXTURE['obstacles'],[],[.04,0.],True,'epoch')[0],0.)
-        self.assertIsNone(r.speed_limited_since)
-        speed=r.command(.3,p,FIXTURE['obstacles'],[],[.12,0.],True,'epoch')[0]
-        self.assertGreater(speed,0.);self.assertAlmostEqual(speed,r.speed*r.speed/.12)
+        pose=list(f['pose']);pose[0]+=.11
+        self.assertEqual(r.command(.1,pose,f['obstacles'],f['unknown'],[0.,0.],True,'epoch'),[0.,0.])
+        self.assertEqual(r.state,'failed')
+
+    def test_speed_governor_reduces_command_without_holding_zero(self):
+        r=self.make();p=FIXTURE['pose'];r.certified=lambda *a,**kw:True
+        command=r.command(0.,p,FIXTURE['obstacles'],[],[.16,0.],True,'epoch')
+        self.assertGreater(command[0],0.)
+        self.assertAlmostEqual(command[0],r.speed*r.speed/.16)
+        self.assertEqual(r.state,'moving')
+
+
 
 
 def method(file, name, environment):
@@ -364,12 +405,12 @@ class LifecycleTests(unittest.TestCase):
         started = []; stopped = [False]
         def create(*args,**kwargs):
             started.append(True); return NS(distance=.51,direction=1,curvature=0.,timeout=25.,speed=.03)
-        update = method('runtime.py', 'update_jobs', {'time': NS(monotonic=lambda: 1.), 'ClearanceEscape': create, 'json': json, 'recovery_config': module.recovery_config})
+        update = method('runtime.py', 'update_jobs', {'time': NS(monotonic=lambda: 1.), 'ClearanceEscape': create, 'json': json, 'recovery_config': module.recovery_config, 'local_body_collision': module.local_body_collision})
         n = NS(update_clearance_recovery=lambda: False, current_job=NS(ticket=ticket),
                policy=policy, execution=NS(phase='canceling', active=True, requests={'old': 1}, set_phase=lambda *args: None),
                pending_job=None, recovery_pending={'ticket': ticket, 'epoch': 'epoch'}, epoch='epoch',
                stationary=lambda: stopped[0], cancel_deadline=10., publish_catalog=lambda: None,
-               estop=False, mode='LOCAL', local_pose=[0., 0., 0.], obstacles=[], config=CONFIG,
+               estop=False, mode='LOCAL', local_pose=[0., 0., 0.], obstacles=[[0., .19]], config=CONFIG,
                recovery_unknown=lambda: [], obstacle_resolution=.05,runtime_parameters={},selection={},
                get_logger=lambda:NS(info=lambda *args:None))
         update(n); n.execution.active=False; update(n)

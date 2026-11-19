@@ -27,7 +27,7 @@
 
 namespace orbbec_camera {
 
-JetsonNvJPEGDecoder::JetsonNvJPEGDecoder(int width, int height) : JPEGDecoder(width, height) {}
+JetsonNvJPEGDecoder::JetsonNvJPEGDecoder(int width, int height) : JPEGDecoder(width, height) { decoder_ = NvJPEGDecoder::createJPEGDecoder("jpegdec"); }
 
 JetsonNvJPEGDecoder::~JetsonNvJPEGDecoder() { delete decoder_; }
 
@@ -45,8 +45,6 @@ bool JetsonNvJPEGDecoder::decode(const std::shared_ptr<ob::ColorFrame> &frame, u
     data_size--;
   }
   int fd = -1;
-  decoder_ = NvJPEGDecoder::createJPEGDecoder("jpegdec");
-  std::shared_ptr<int> decoder_deleter(nullptr, [&](int *) { delete decoder_; });
   decoder_->decodeToFd(fd, data, data_size, pixfmt, width, height);
   if (pixfmt != V4L2_PIX_FMT_YUV422M) {
     RCLCPP_ERROR_STREAM(rclcpp::get_logger("jetson_nv_decoder"), "Unexpected pixfmt: " << pixfmt);

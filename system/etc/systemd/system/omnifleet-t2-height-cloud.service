@@ -1,0 +1,22 @@
+[Unit]
+Description=Navigation height-band cloud visualization
+After=network-online.target omnifleet-t2-mola.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+Environment=HOME=/home/iecme
+EnvironmentFile=/etc/omnifleet_t2/robot.env
+WorkingDirectory=/home/iecme/omnifleet_ws
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_ws/src/system/workspace_support/robot_fleet_env.bash && exec python3 /home/iecme/omnifleet_ws/src/sensing/omnifleet_sensor_processing/omnifleet_sensor_processing/height_filtered_cloud.py'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10
+CPUAffinity=0 1
+CPUWeight=50
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

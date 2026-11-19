@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet RMF task dispatcher (central domain)
+PartOf=omnifleet-rmf.target
+After=omnifleet-rmf-schedule.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/zhangwnag/workspaces/omnifleet_ws
+ExecStart=/bin/bash /home/zhangwnag/workspaces/omnifleet_ws/src/system/omnifleet_rmf_adapter/scripts/run.bash dispatcher
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10

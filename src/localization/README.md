@@ -2,8 +2,6 @@
 
 MOLA 定位/建图及其他定位后端、实验启动入口和重定位支持。
 
-路径：`/home/iecme/omnifleet_ws/src/localization`。本目录是功能域容器，不按它的名字推断整个域均已构建或正在运行。
-
 ## 包与组件索引
 
 | 包/组件 | 职责 |
@@ -66,5 +64,3 @@ MOLA 定位/建图及其他定位后端、实验启动入口和重定位支持�
 ## 非独立ROS包的运行/支持目录
 
 - [omnifleet_relocalization/](omnifleet_relocalization)：MOLA 重定位、地图恢复和故障证据支持目录，保留旧兼容入口。
-
-业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../../AGENTS.md)。

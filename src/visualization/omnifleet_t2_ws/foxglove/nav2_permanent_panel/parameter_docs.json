@@ -304,16 +304,6 @@
     "note": "项目扩展，没有同名Nav2或ROS官方参数；链接为ROS参数机制说明",
     "anchor_found": false
   },
-  "pwm_compensation_m1": {
-    "url": "https://docs.ros.org/en/humble/Concepts/Basic/About-Parameters.html",
-    "note": "项目扩展，没有同名Nav2或ROS官方参数；链接为ROS参数机制说明",
-    "anchor_found": false
-  },
-  "pwm_compensation_m2": {
-    "url": "https://docs.ros.org/en/humble/Concepts/Basic/About-Parameters.html",
-    "note": "项目扩展，没有同名Nav2或ROS官方参数；链接为ROS参数机制说明",
-    "anchor_found": false
-  },
   "costmap_radius": {
     "url": "https://docs.nav2.org/jazzy/configuration_and_development/configuration_guide/core_servers/costmap_2d/costmap_plugins/inflation/#inflation-layerinflation_radius",
     "note": "Nav2官方文档；页面版本与本机Humble可能不同，运行值以本机为准",
@@ -721,5 +711,15 @@
     "title": "缓存障碍启发式",
     "url": "https://github.com/ros-navigation/navigation2/blob/1.1.20/nav2_smac_planner/src/smac_planner_lattice.cpp",
     "note": "当前 Humble 版本：永久保存后重启 Nav2 生效；非全向路径段少于12点时会跳过内置平滑。"
+  },
+  "goal_stateful": {
+    "url": "https://github.com/ros-navigation/navigation2/blob/humble/nav2_controller/plugins/simple_goal_checker.cpp",
+    "note": "Humble SimpleGoalChecker 的位置到达状态保持逻辑；本车 FootprintSafeGoalChecker 继承该实现",
+    "anchor_found": false
+  },
+  "mppi_deadband_weight": {
+    "url": "https://github.com/ros-navigation/navigation2/blob/humble/nav2_mppi_controller/src/critics/velocity_deadband_critic.cpp",
+    "note": "MPPI 低速死区评分项的惩罚权重",
+    "anchor_found": false
   }
 }

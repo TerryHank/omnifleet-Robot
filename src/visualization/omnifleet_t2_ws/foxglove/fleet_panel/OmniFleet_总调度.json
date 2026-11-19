@@ -72,14 +72,14 @@
       "foxglovePanelTitle": "robot_113 指令 / 实测线速度",
       "paths": [
         {
-          "value": "/msc/nav_cmd_vel.linear.x",
+          "value": "/navigation/nav_cmd_vel.linear.x",
           "enabled": true,
           "timestampMethod": "receiveTime",
           "label": "Nav2 指令",
           "color": "#a78bfa"
         },
         {
-          "value": "/msc/cmd_vel_safe.linear.x",
+          "value": "/navigation/cmd_vel_safe.linear.x",
           "enabled": true,
           "timestampMethod": "receiveTime",
           "label": "安全输出",
@@ -104,14 +104,14 @@
       "foxglovePanelTitle": "robot_104 指令 / 实测线速度",
       "paths": [
         {
-          "value": "/msc/nav_cmd_vel.linear.x",
+          "value": "/navigation/nav_cmd_vel.linear.x",
           "enabled": true,
           "timestampMethod": "receiveTime",
           "label": "Nav2 指令",
           "color": "#a78bfa"
         },
         {
-          "value": "/msc/cmd_vel_safe.linear.x",
+          "value": "/navigation/cmd_vel_safe.linear.x",
           "enabled": true,
           "timestampMethod": "receiveTime",
           "label": "安全输出",

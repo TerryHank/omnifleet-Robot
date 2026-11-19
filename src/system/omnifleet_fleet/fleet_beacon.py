@@ -24,8 +24,8 @@ def settings():
     if pid == '0' or not process.exists():
         raise RuntimeError('Local navigation is not running; do not announce an unverified domain')
     runtime = dict(item.split('=',1) for item in process.read_bytes().decode().split('\0') if '=' in item)
-    if runtime.get('RMW_IMPLEMENTATION') != 'rmw_zenoh_cpp':
-        raise RuntimeError('Local navigation does not use native Zenoh')
+    if runtime.get('RMW_IMPLEMENTATION') != 'rmw_fastrtps_cpp':
+        raise RuntimeError('Local navigation does not use Fast DDS')
     domain = int(runtime['ROS_DOMAIN_ID'])
     if domain != int(values['ROS_DOMAIN_ID']):
         raise RuntimeError('Configured and running ROS domains disagree')
@@ -43,7 +43,7 @@ def settings():
             'robot_id':values['OMNIFLEET_ROBOT_ID'],'domain_id':domain,'rmw':runtime['RMW_IMPLEMENTATION'],
             'instance_id':hashlib.sha256(Path('/etc/machine-id').read_bytes()).hexdigest()[:32],
             'boot_id':Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
-            'zenoh_port':7447,'observed_namespace':'','pose_topic':pose_topic}
+            'discovery_port':int(values.get('OMNIFLEET_DDS_DISCOVERY_PORT','42100')),'observed_namespace':'','pose_topic':pose_topic}
 
 
 def announce():
