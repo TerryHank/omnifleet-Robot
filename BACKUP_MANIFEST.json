@@ -2,11 +2,11 @@
   "robot": "124",
   "workspace": "/home/iecme/omnifleet_ws",
   "created_utc": "2026-11-19T12:26:45.820870+00:00",
-  "archive_sha256": "e3566c9df12d75ff27f13c83acc4dd0459b96cf7b50cac567462030669ce9ee6",
-  "archive_bytes": 273734981,
+  "archive_sha256": "43a8726b36c552f17366a54e2c6a43683a3f2fa97141a8978f4fd0dfee81a1d3",
+  "archive_bytes": 273932201,
   "counts": {
-    "files": 19006,
-    "bytes": 557466543,
+    "files": 19023,
+    "bytes": 558247522,
     "symlinks": 24
   },
   "source_git": {},
@@ -406,6 +406,34 @@
     {
       "source": "/etc/omnifleet_t2/robot.env",
       "snapshot": "system/etc/omnifleet_t2/robot.env"
+    },
+    {
+      "source": "/home/iecme/orbbec345lg-v2.10.6/start.bash",
+      "snapshot": "camera/start.bash"
+    },
+    {
+      "source": "/home/iecme/orbbec345lg-v2.10.6/camera.launch.py",
+      "snapshot": "camera/camera.launch.py"
+    },
+    {
+      "source": "/home/iecme/orbbec345lg-v2.10.6/aligned_depth_alias.py",
+      "snapshot": "camera/aligned_depth_alias.py"
+    },
+    {
+      "source": "/home/iecme/orbbec345lg-v2.10.6/image_loan.py",
+      "snapshot": "camera/image_loan.py"
+    },
+    {
+      "source": "/home/iecme/orbbec345lg-v2.10.6/libimage_dds.so",
+      "snapshot": "camera/libimage_dds.so"
+    },
+    {
+      "source": "/home/iecme/image-dds-build.YozLDILB/image_dds",
+      "snapshot": "camera/image-dds-source"
+    },
+    {
+      "source": "/home/iecme/dispatch-media",
+      "snapshot": "system/home/iecme/dispatch-media"
     }
   ],
   "entries": [
@@ -133594,6 +133622,125 @@
       "size": 733,
       "sha256": "d696cf954b49ce6c7a9436bfc9dfcdff95f861d8a2eabde0f10687250597869d",
       "mode": 420
+    },
+    {
+      "path": "camera/start.bash",
+      "type": "file",
+      "size": 547,
+      "sha256": "cfd2fb9cc9348004d12851f866e90a01526187bb4ba639edafe45a1882bec249",
+      "mode": 436
+    },
+    {
+      "path": "camera/camera.launch.py",
+      "type": "file",
+      "size": 1548,
+      "sha256": "1d20077dc07caa437df19226918cbb155ffe5e12cde4846e1df560ba6702b68f",
+      "mode": 420
+    },
+    {
+      "path": "camera/aligned_depth_alias.py",
+      "type": "file",
+      "size": 746,
+      "sha256": "94d517edb825102aaf02ce210b94f41e59d9de46746cd22306786e43bbb50861",
+      "mode": 436
+    },
+    {
+      "path": "camera/image_loan.py",
+      "type": "file",
+      "size": 1167,
+      "sha256": "122def4cfbcbc416fddde402e3b3ed83c721f0180d0277928fc3462bd1408205",
+      "mode": 420
+    },
+    {
+      "path": "camera/libimage_dds.so",
+      "type": "file",
+      "size": 742328,
+      "sha256": "c6abf530a35d4f384fff44f66752eeed776af6d1f6e6a4bcad7e4d63f8f6b5da",
+      "mode": 420
+    },
+    {
+      "path": "camera/image-dds-source/CMakeLists.txt",
+      "type": "file",
+      "size": 326,
+      "sha256": "5e985cc1a0d65f74b4eff20184897cb79859050a81dc58e942357e2825e2889f",
+      "mode": 436
+    },
+    {
+      "path": "camera/image-dds-source/ImageFrame.cxx",
+      "type": "file",
+      "size": 6988,
+      "sha256": "890e6e6a6ba7f062cce731f503670cb27bec1f231cb9376e5402188642eb9ad2",
+      "mode": 436
+    },
+    {
+      "path": "camera/image-dds-source/ImageFrame.h",
+      "type": "file",
+      "size": 7873,
+      "sha256": "ff17b7c13808dcdcc062477ac8522d95c9daff4d99114adf9c857fa462f448d5",
+      "mode": 436
+    },
+    {
+      "path": "camera/image-dds-source/ImageFrame.idl",
+      "type": "file",
+      "size": 139,
+      "sha256": "d0da01717854ec8d32b79afab5b2e84cf0fade2d8474a19267c4d55d8d9452c6",
+      "mode": 436
+    },
+    {
+      "path": "camera/image-dds-source/ImageFramePubSubTypes.cxx",
+      "type": "file",
+      "size": 5229,
+      "sha256": "ffd8563627fdf1af16c98f6c84caf33d76880ab4c9941c4cbb0f797a6b49f852",
+      "mode": 436
+    },
+    {
+      "path": "camera/image-dds-source/ImageFramePubSubTypes.h",
+      "type": "file",
+      "size": 3111,
+      "sha256": "4abf78039afff8a9d98b2c37579cea93abc31525c5820082a2be868fc380a59b",
+      "mode": 436
+    },
+    {
+      "path": "camera/image-dds-source/image_loan.py",
+      "type": "file",
+      "size": 1167,
+      "sha256": "122def4cfbcbc416fddde402e3b3ed83c721f0180d0277928fc3462bd1408205",
+      "mode": 436
+    },
+    {
+      "path": "camera/image-dds-source/transport.cpp",
+      "type": "file",
+      "size": 5206,
+      "sha256": "b8e4d2adadaa670a843d8ddb7b4a992ea943e8a849fc95935ef7602a98c5ecf4",
+      "mode": 436
+    },
+    {
+      "path": "system/home/iecme/dispatch-media/bridge.yaml",
+      "type": "file",
+      "size": 307,
+      "sha256": "bd53227af5912e2edf4d2572fb4965077579e5a0f6bc8c437c5af3a5c6e87b1a",
+      "mode": 436
+    },
+    {
+      "path": "system/home/iecme/dispatch-media/omnifleet-dispatch-media.service",
+      "type": "file",
+      "size": 284,
+      "sha256": "9046d7a3affcdad91bd0c0c125e4b423df7bc2a6a355dd676168659e347286bc",
+      "mode": 436
+    },
+    {
+      "path": "system/home/iecme/dispatch-media/relay.py",
+      "type": "file",
+      "size": 3587,
+      "sha256": "a2add236603003e6a7df96e6b21b101fc6f23616e4f7b0e86bf7924fbd7be470",
+      "mode": 436
+    },
+    {
+      "path": "system/home/iecme/dispatch-media/start-124.bash",
+      "type": "file",
+      "size": 426,
+      "sha256": "a988c78097b76e1a72c6276686776d903b6ddbaaaca4a14332d915e3f4e629b8",
+      "mode": 436
     }
   ],
   "excluded": [
@@ -134256,5 +134403,6 @@
   ],
   "audit_findings": [],
   "excluded_scope": "Build/install/log/cache/credentials, recorded camera/video/ROS data and runtime maps; no system image or credential backup.",
-  "original_archive_sha256": "f19fb7d94f8c1e75c0c09e7c4a56cb70b8da9e7c980a15f3905806a6cf734602"
+  "original_archive_sha256": "f19fb7d94f8c1e75c0c09e7c4a56cb70b8da9e7c980a15f3905806a6cf734602",
+  "runtime_entrypoints_added_from_captured_image_utc": "2026-11-19T13:24:55.190446+00:00"
 }

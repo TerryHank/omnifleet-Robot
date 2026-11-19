@@ -1,0 +1,10 @@
+/**:
+  ros__parameters:
+    port: 18769
+    address: 127.0.0.1
+    capabilities: [connectionGraph]
+    topic_whitelist: ['^/dispatch_media/(robot124|sim_[0-2])/(color|points)/compressed$']
+    best_effort_qos_topic_whitelist: ['.*']
+    max_qos_depth: 1
+    min_qos_depth: 1
+    send_buffer_limit: 12000000

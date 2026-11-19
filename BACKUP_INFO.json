@@ -4,10 +4,10 @@
   "workspace": "/home/iecme/omnifleet_ws",
   "repository": "TerryHank/omnifleet-Robot",
   "snapshot_created_utc": "2026-11-19T12:26:45.820870+00:00",
-  "parent_commit": "710faf76da3130da5923a8799916b7333e5b1096",
-  "archive_sha256": "e3566c9df12d75ff27f13c83acc4dd0459b96cf7b50cac567462030669ce9ee6",
-  "archive_bytes": 273734981,
-  "files": 19006,
+  "parent_commit": "d6d3c527df956c7fd6f17cfd3f30cd88c85ef29d",
+  "archive_sha256": "43a8726b36c552f17366a54e2c6a43683a3f2fa97141a8978f4fd0dfee81a1d3",
+  "archive_bytes": 273932201,
+  "files": 19023,
   "symlinks": 24,
   "excluded_scope": "Build/install/log/cache/credentials, recorded camera/video/ROS data and runtime maps; no system image or credential backup."
 }
