@@ -155,7 +155,8 @@ class ReceiverDisplay(Node):
             "camera", self.camera_pub, 480, 360, 16 * 1024, (55, 35)
         ))
         self.create_timer(1.0 / 18, lambda: self.publish_camera(
-            "follow_camera", self.follow_camera_pub, 640, 480, 24 * 1024, (65, 55, 45, 35)
+            "follow_camera", self.follow_camera_pub, 640, 480, 24 * 1024, (65, 55, 45, 35),
+            passthrough=True,
         ))
         grid_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         for source, name in (
@@ -223,10 +224,15 @@ class ReceiverDisplay(Node):
         publisher.publish(frame)
         self.sent_grids[name] = frame
 
-    def publish_camera(self, slot, publisher, max_width, max_height, byte_limit, qualities):
+    def publish_camera(self, slot, publisher, max_width, max_height, byte_limit, qualities,
+                       passthrough=False):
         msg = getattr(self, slot)
         setattr(self, slot, None)
         if msg is None or publisher.get_subscription_count() == 0 or self.display_busy():
+            return
+        # The 124 camera already produces a rectified 640x360 JPEG preview.
+        if passthrough and msg.format == "jpeg" and len(msg.data) <= byte_limit:
+            publisher.publish(msg)
             return
         frame = cv2.imdecode(np.frombuffer(msg.data, dtype=np.uint8), cv2.IMREAD_COLOR)
         if frame is None:

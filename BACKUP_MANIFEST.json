@@ -2,11 +2,11 @@
   "robot": "124",
   "workspace": "/home/iecme/omnifleet_ws",
   "created_utc": "2026-11-19T12:26:45.820870+00:00",
-  "archive_sha256": "43a8726b36c552f17366a54e2c6a43683a3f2fa97141a8978f4fd0dfee81a1d3",
-  "archive_bytes": 273932201,
+  "archive_sha256": "d223d0457696600671b7575590a17ad23f95ca9df3776428a6f4a81fc7a8de78",
+  "archive_bytes": 273392068,
   "counts": {
-    "files": 19023,
-    "bytes": 558247522,
+    "files": 19008,
+    "bytes": 552677657,
     "symlinks": 24
   },
   "source_git": {},
@@ -64804,13 +64804,6 @@
       "mode": 493
     },
     {
-      "path": "src/localization/omnifleet_relocalization/relocalization/runtime-robot_113/last.log",
-      "type": "file",
-      "size": 457,
-      "sha256": "b665f39b898b2618adea7e4e02e7ef59c6890e0c6e27248014165266c9f9ed94",
-      "mode": 420
-    },
-    {
       "path": "src/localization/omnifleet_relocalization/relocalization/runtime-robot_113/result.json",
       "type": "file",
       "size": 118,
@@ -106152,27 +106145,6 @@
       "mode": 420
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build.log",
-      "type": "file",
-      "size": 2287959,
-      "sha256": "7ff14da43175d22e754b87d8747a72c6c44cb4dcf94da60bf31c0ee5f1bba64d",
-      "mode": 420
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_resume.log",
-      "type": "file",
-      "size": 988978,
-      "sha256": "53866932d09e4ca846cf003376778429f64fdda991ecf9c9b82fd3bf03cc55f2",
-      "mode": 420
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_sm_loop_local_mirror.log",
-      "type": "file",
-      "size": 282011,
-      "sha256": "d98415175c1b77e7cd098b7035b57fd8ab5c2f532e2da2fae2387b35046bcd09",
-      "mode": 420
-    },
-    {
       "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_packages.txt",
       "type": "file",
       "size": 507,
@@ -106184,20 +106156,6 @@
       "type": "file",
       "size": 683,
       "sha256": "f0c61e823ff7889976be1d55b91753c5279a5054a246df04448a2709371dbef3",
-      "mode": 420
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test.log",
-      "type": "file",
-      "size": 1882169,
-      "sha256": "4b2a998c1333339e0582a74f2479fa0160cdd700fd47d874c9da5e6964fef440",
-      "mode": 420
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test_result_verbose.log",
-      "type": "file",
-      "size": 7818,
-      "sha256": "cc092bc3879da4e35704ad27338839c7ded2d0041aee79082a1e7e7bcaca497c",
       "mode": 420
     },
     {
@@ -106215,20 +106173,6 @@
       "mode": 420
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/gicp_benchmark_build.log",
-      "type": "file",
-      "size": 4026,
-      "sha256": "4461247ed12ca5340e0b2df0060dcb87337d55c32121e5bc2c94b7c8191288d9",
-      "mode": 420
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/mp2p_reconfigure_after_metric_maps.log",
-      "type": "file",
-      "size": 433,
-      "sha256": "9e88ed8ba8e06ea34d9a9e78e5b17a810e103771b13ce4fcc817c3b1c4e79144",
-      "mode": 420
-    },
-    {
       "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/nanoflann_apt_before.txt",
       "type": "file",
       "size": 228,
@@ -106236,31 +106180,10 @@
       "mode": 420
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/nanoflann_install.log",
-      "type": "file",
-      "size": 2491,
-      "sha256": "73d29e565d4bcdb930ce1da563ded425ef18be4f4064045e2684e6672c0d2430",
-      "mode": 420
-    },
-    {
       "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/nanoflann_installed.txt",
       "type": "file",
       "size": 29,
       "sha256": "bee1802d1b29d8c8a729e5df7b91b4d882cd4dea786aac74b345c1205bc9a0be",
-      "mode": 420
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_before.log",
-      "type": "file",
-      "size": 676,
-      "sha256": "3135ae622a46c38afe22dc160b35aff9668acfda15602fc9acbb5a31fe240f9f",
-      "mode": 420
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_final.log",
-      "type": "file",
-      "size": 535,
-      "sha256": "bc522abfcc83ebc08eb4878a24683e235a194a751323558d1794af3efba92322",
       "mode": 420
     },
     {
@@ -107237,13 +107160,6 @@
       "mode": 420
     },
     {
-      "path": "src/visualization/foxglove_studio_source/build-cn.log",
-      "type": "file",
-      "size": 92290,
-      "sha256": "0c2d70c6f92f0ddb76719089c2ba157a8a888ecba1e4dacfcb8fe630a5798da1",
-      "mode": 420
-    },
-    {
       "path": "src/visualization/foxglove_studio_source/build-desktop-cn.sh",
       "type": "file",
       "size": 710,
@@ -107269,13 +107185,6 @@
       "type": "file",
       "size": 2,
       "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
-      "mode": 420
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/package-cn.log",
-      "type": "file",
-      "size": 2582,
-      "sha256": "1e2ab6229abf4daadc957c8540eaba6dc11c6b28b7be8b20ca44e6c1cb3d1836",
       "mode": 420
     },
     {
@@ -131646,13 +131555,6 @@
       "mode": 420
     },
     {
-      "path": "models/vision/vendor/mediapipe_tensorrt/hand-build.log",
-      "type": "file",
-      "size": 8873,
-      "sha256": "3b97ac908423271a8b09329234c205b25b6eb437cc79b8cd3cf374e0366e2ba2",
-      "mode": 436
-    },
-    {
       "path": "models/vision/vendor/mediapipe_tensorrt/hand.engine",
       "type": "file",
       "size": 2531372,
@@ -131678,13 +131580,6 @@
       "type": "file",
       "size": 432,
       "sha256": "3c4f40516729562a0dac77fac1b149b19e2e36ad772d4c006fba654521c39df2",
-      "mode": 436
-    },
-    {
-      "path": "models/vision/vendor/mediapipe_tensorrt/palm-build.log",
-      "type": "file",
-      "size": 8851,
-      "sha256": "e13ec6a162e9f31996155bfcebcdf68644910616d0d60b78fa9b8f37145d51ea",
       "mode": 436
     },
     {
@@ -132695,8 +132590,8 @@
     {
       "path": "system/opt/omnifleet-receiver-display/receiver_display.py",
       "type": "file",
-      "size": 9887,
-      "sha256": "1d11646eb10f7ff932f8d1ea44dc2503a57966c565a6a1c54eed13e363e635e0",
+      "size": 10171,
+      "sha256": "1a2b1b6d16ab3691e28eaa7b183dd79af81a6c740068b2db036ea8c1ebbd2711",
       "mode": 420
     },
     {
@@ -134399,6 +134294,66 @@
     {
       "path": "src/sensing/rslidar_sdk/src/rs_driver/.git",
       "reason": "nested Git administrative pointer, excluded from publication"
+    },
+    {
+      "path": "src/localization/omnifleet_relocalization/relocalization/runtime-robot_113/last.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_resume.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_sm_loop_local_mirror.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test_result_verbose.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/gicp_benchmark_build.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/mp2p_reconfigure_after_metric_maps.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/nanoflann_install.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_before.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_final.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/visualization/foxglove_studio_source/build-cn.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "src/visualization/foxglove_studio_source/package-cn.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "models/vision/vendor/mediapipe_tensorrt/hand-build.log",
+      "reason": "log file excluded from release source and runtime image"
+    },
+    {
+      "path": "models/vision/vendor/mediapipe_tensorrt/palm-build.log",
+      "reason": "log file excluded from release source and runtime image"
     }
   ],
   "audit_findings": [],
