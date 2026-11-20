@@ -1,4 +1,18 @@
-# 121 号阿克曼底盘公开快照
+# OmniFleet A2 · 阿克曼
+
+## Windows OTG 镜像下载
+
+[百度网盘 · OmniFleet-Windows-OTG](https://pan.baidu.com/s/14TIGdgtB91Ytbr5oRPV0Mg?pwd=2baf)，提取码 `2baf`。
+
+该分享文件夹包含 T2、A2 和 R4 三种车型的 Windows OTG 镜像。按底盘型号选择对应镜像。
+
+| 分支 | 底盘 |
+| --- | --- |
+| [T2](https://github.com/TerryHank/omnifleet-Robot/tree/T2) | 履带 |
+| [A2](https://github.com/TerryHank/omnifleet-Robot/tree/A2) | 阿克曼 |
+| [R4](https://github.com/TerryHank/omnifleet-Robot/tree/R4) | Ranger Mini 3.0 四驱四转 |
+
+## 121 号车源码快照
 
 采集日期为 2026-11-15（中国标准时间）。`stm32/` 包含当前 STM32F407 源码、GCC 构建脚本、固件及此前调试版本。`nx/` 包含车端当前的 ROS 底盘驱动、Xbox 服务、网页控件、生效配置和 SBUS 转发服务。更大的工作区和数据见 GitHub Releases。
 
@@ -21,12 +35,12 @@
 
 现场用 SBUS 在空旷直道操作。CH9 的 1000～2000 µs 对应 SBUS 原始值 192～1792，实测到 1792。NX 发出 3.00 m/s 指令。ROS 编码器速度反馈峰值为 0.296 m/s，接近满速的直行记录中两路 PWM 同时达到输出上限。按 100 mm 轮径折算，3 m/s 需要车轮带载达到约 573 rpm。
 
-速度按编码器和配置的轮径计算。原始车端采样保存在 `nx/runtime_121/diagnostics/ground-speed-3mps.json`。文件包含相对采样时间、SBUS 原始通道、ROS 指令和速度、编码器计数与 STM32 的轮速、目标和 PWM。固件及测量附件见 [最新测试 Release](https://github.com/TerryHank/omnifleet-121-ackermann/releases/tag/121-wheel-speed-test-2026-11-15)。
+速度按编码器和配置的轮径计算。原始车端采样保存在 `nx/runtime_121/diagnostics/ground-speed-3mps.json`。文件包含相对采样时间、SBUS 原始通道、ROS 指令和速度、编码器计数与 STM32 的轮速、目标和 PWM。固件及测量附件见 [最新测试 Release](https://github.com/TerryHank/omnifleet-Robot/releases/tag/121-wheel-speed-test-2026-11-15)。
 
 ## 下载工作区
 
 ```sh
-gh release download snapshot-2026-11-15 --repo TerryHank/omnifleet-121-ackermann
+gh release download snapshot-2026-11-15 --repo TerryHank/omnifleet-Robot
 sha256sum -c SHA256SUMS
 ```
 
