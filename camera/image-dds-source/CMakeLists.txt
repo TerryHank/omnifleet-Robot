@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 3.16)
-project(omnifleet_image_dds)
-find_package(fastrtps REQUIRED)
-find_package(fastcdr REQUIRED)
-add_library(image_dds SHARED transport.cpp ImageFrame.cxx ImageFramePubSubTypes.cxx)
-target_compile_features(image_dds PRIVATE cxx_std_17)
-target_link_libraries(image_dds PRIVATE fastrtps fastcdr)

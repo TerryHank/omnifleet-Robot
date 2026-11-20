@@ -1,4 +1,3 @@
-#include <limits>
 #include "nav2_rotation_shim_controller/nav2_rotation_shim_controller.hpp"
 #include "omnifleet_planner/footprint_safe_goal_checker.hpp"
 #include "omnifleet_planner/goal_footprint_cost.hpp"
@@ -23,11 +22,9 @@ public:
     node->get_parameter(name+".PathAlignCritic.use_path_orientations",feasible_path_);
   }
   void setPlan(const nav_msgs::msg::Path & path) override {
-    const bool point_changed=current_path_.poses.empty() || path.poses.empty() ||
+    const bool goal_changed=current_path_.poses.empty() || path.poses.empty() ||
        std::hypot(path.poses.back().pose.position.x-current_path_.poses.back().pose.position.x,
-                  path.poses.back().pose.position.y-current_path_.poses.back().pose.position.y)>1e-6;
-    if(point_changed)point_approach_direction_=0;
-    const bool goal_changed=point_changed ||
+                  path.poses.back().pose.position.y-current_path_.poses.back().pose.position.y)>1e-6 ||
        std::abs(angles::shortest_angular_distance(tf2::getYaw(current_path_.poses.back().pose.orientation),
                   tf2::getYaw(path.poses.back().pose.orientation)))>1e-6;
     if(goal_changed)goal_alignment_=false;
@@ -41,7 +38,6 @@ public:
     nav2_core::GoalChecker * checker) override
   {
     auto owned=dynamic_cast<FootprintSafeGoalChecker *>(checker);
-    const bool point_goal=owned && owned->isPointGoalChecker();
     if(owned && (owned->isFleetGoalChecker() || owned->requiresOrderedWaypoints())) {
       in_rotation_=false;
       if(approach_plan_){primary_controller_->setPlan(current_path_);approach_plan_=false;}
@@ -53,48 +49,56 @@ public:
         p=tf_->transform(p,pose.header.frame_id,tf2::durationFromSec(.3));
       return p;
     };
+    const bool keep_heading = owned && owned->keepsRangerHeading();
     bool detour=false;
-    double point_linear_limit=std::numeric_limits<double>::infinity();
-    auto slow_point_approach=[&point_linear_limit](geometry_msgs::msg::TwistStamped & command) {
-      const double speed=std::abs(command.twist.linear.x);
-      if(speed>point_linear_limit) {
-        const double scale=point_linear_limit/speed;
-        command.twist.linear.x*=scale;
-        command.twist.angular.z*=scale;
-      }
-    };
     try {
       std::lock_guard<std::mutex> lock(mutex_);
-      if((point_goal || rotate_to_goal_heading_) && !current_path_.poses.empty()) {
+      if(rotate_to_goal_heading_ && !current_path_.poses.empty()) {
         const auto goal=in_frame(current_path_.poses.back());
         geometry_msgs::msg::Pose tolerance;geometry_msgs::msg::Twist speed;
         checker->getTolerances(tolerance,speed);
         const auto target=center(goal.pose),current=center(pose.pose);
         const double distance=std::hypot(target.x-current.x,target.y-current.y);
-        const double position_error=std::hypot(goal.pose.position.x-pose.pose.position.x,
-          goal.pose.position.y-pose.pose.position.y);
-        const bool position_reached=position_error<=tolerance.position.x;
-        if(point_goal) {
-          // Leave room for feedback delay and the tracks' travel after a stop.
-          point_linear_limit=.10 + .50 * std::max(0., position_error-tolerance.position.x);
-        }
+        const double position_error = std::hypot(goal.pose.position.x - pose.pose.position.x,
+          goal.pose.position.y - pose.pose.position.y);
+        const bool position_reached = position_error <= tolerance.position.x;
         const double angle=angles::shortest_angular_distance(tf2::getYaw(pose.pose.orientation),tf2::getYaw(goal.pose.orientation));
+        if (owned && owned->usesRangerTerminalControl() &&
+          (keep_heading || position_reached || position_error <= 0.35))
+        {
+          in_rotation_ = false;
+          if (std::abs(angle) > std::abs(tf2::getYaw(tolerance.orientation)) &&
+            (position_reached || goal_alignment_))
+          {
+            goal_alignment_ = true;
+            phase("align_goal");
+            auto command = rotate(angle, pose, velocity);
+            last_angular_vel_ = command.twist.angular.z;
+            return command;
+          }
+          goal_alignment_ = false;
+          last_angular_vel_ = 0.;
+          if (position_reached) {
+            phase("hold_goal");
+            geometry_msgs::msg::TwistStamped hold;
+            hold.header = pose.header;
+            return hold;
+          }
+          const bool follow_path = keep_heading && position_error > 0.35;
+          auto command = translate(follow_path ? pointLookahead(pose, in_frame) : goal.pose, pose);
+          phase(follow_path ? "translate_point_path" : "translate_goal");
+          return command;
+        }
+        if (owned && owned->usesRangerTerminalControl()) {
+          goal_alignment_ = false;
+        }
         // Once the requested pose is in tolerance, hold zero while the native
         // goal checker completes its existing checks. Replanning must not push it away.
-        if((position_reached || (!point_goal && goal_alignment_)) &&
-           (point_goal || std::abs(angle)<=std::abs(tf2::getYaw(tolerance.orientation)))) {
+        if((position_reached || goal_alignment_) && std::abs(angle)<=std::abs(tf2::getYaw(tolerance.orientation))) {
           in_rotation_=false;goal_alignment_=true;phase("hold_goal");
           geometry_msgs::msg::TwistStamped hold;hold.header=pose.header;return hold;
         }
-        if(point_goal) {
-          if(position_error<=.45) {
-            auto command=approach_point(pose,goal,velocity,point_linear_limit);
-            last_angular_vel_=command.twist.angular.z;
-            return command;
-          }
-          point_approach_direction_=0;
-        }
-        if(!point_goal && (position_reached || goal_alignment_)) {
+        if(position_reached || goal_alignment_) {
           // Inside the existing XY tolerance, finish yaw with the same bounded
           // in-place turn used for path alignment instead of translating away.
           in_rotation_=false;goal_alignment_=true;phase("align_goal");
@@ -104,8 +108,8 @@ public:
         // Use the same configured tolerance to hand the final pose to MPPI.
         // Keep that final reference through replans rather than switching back
         // to an approach tangent when the tracked pivot slips.
-        if(!point_goal && distance<=tolerance.position.x)goal_alignment_=true;
-        if(!point_goal && goal_alignment_) {
+        if(distance<=tolerance.position.x)goal_alignment_=true;
+        if(goal_alignment_) {
           in_rotation_=false;phase("align_goal");
           if(approach_plan_){primary_controller_->setPlan(current_path_);approach_plan_=false;}
           auto command=primary_controller_->computeVelocityCommands(pose,velocity,checker);
@@ -133,7 +137,7 @@ public:
         const double threshold=in_rotation_?angular_disengage_threshold_:angular_dist_threshold_;
         if(std::abs(angle)>threshold) {
           phase("align_path");in_rotation_=true;
-          auto command=rotate(angle,pose,velocity,point_goal);
+          auto command=rotate(angle,pose,velocity);
           last_angular_vel_=command.twist.angular.z;return command;
         }
         path_updated_=false;
@@ -144,10 +148,10 @@ public:
         if(approach_plan_){primary_controller_->setPlan(current_path_);approach_plan_=false;}
         in_rotation_=false;phase("track_feasible_path");
         auto command=primary_controller_->computeVelocityCommands(pose,velocity,checker);
-        slow_point_approach(command);
         last_angular_vel_=command.twist.angular.z;return command;
       }
     }catch(const std::runtime_error & error) {
+      if (keep_heading) {throw;}
       // Keep native obstacle avoidance available when an in-place rotation
       // is obstructed. No collision result is converted into a motion command.
       detour=true;
@@ -180,76 +184,102 @@ public:
       primary_controller_->setPlan(approach);approach_plan_=true;
     }
     auto command=primary_controller_->computeVelocityCommands(pose,velocity,checker);
-    slow_point_approach(command);
     last_angular_vel_=command.twist.angular.z;return command;
   }
 private:
+  template<typename Transform>
+  geometry_msgs::msg::Pose pointLookahead(const geometry_msgs::msg::PoseStamped & pose,
+    const Transform & in_frame) const
+  {
+    const auto distance = [&](const geometry_msgs::msg::Pose & p) {
+      return std::hypot(p.position.x - pose.pose.position.x, p.position.y - pose.pose.position.y);
+    };
+    const auto & path = current_path_.poses;
+    std::size_t nearest = 0;
+    double closest = distance(in_frame(path.front()).pose);
+    for (std::size_t i = 1; i < path.size(); ++i) {
+      const double error = distance(in_frame(path[i]).pose);
+      if (error < closest) {nearest = i; closest = error;}
+    }
+    auto target = in_frame(path.back()).pose;
+    for (std::size_t i = nearest; i < path.size(); ++i) {
+      const auto candidate = in_frame(path[i]).pose;
+      const double span = distance(candidate);
+      if (span < 0.30) {continue;}
+      const double fraction = std::min(1., 0.35 / span);
+      target.position.x = pose.pose.position.x + fraction * (candidate.position.x - pose.pose.position.x);
+      target.position.y = pose.pose.position.y + fraction * (candidate.position.y - pose.pose.position.y);
+      break;
+    }
+    return target;
+  }
+  geometry_msgs::msg::TwistStamped translate(const geometry_msgs::msg::Pose & goal,
+    const geometry_msgs::msg::PoseStamped & pose) const
+  {
+    const double yaw = tf2::getYaw(pose.pose.orientation);
+    const double c = std::cos(yaw), s = std::sin(yaw);
+    const double dx = goal.position.x - pose.pose.position.x;
+    const double dy = goal.position.y - pose.pose.position.y;
+    double forward = c * dx + s * dy;
+    const double lateral = -s * dx + c * dy;
+    // Keep the same wheel orientation on either side of a nearly pure side move.
+    if (std::abs(forward) <= 0.025 && lateral != 0.) {
+      forward = 0.;
+    }
+    const double distance = std::hypot(forward, lateral);
+    auto * grid = costmap_ros_->getCostmap();
+    std::unique_lock<nav2_costmap_2d::Costmap2D::mutex_t> lock(*grid->getMutex());
+    const auto footprint = costmap_ros_->getRobotFootprint();
+    const int steps = std::max(1, static_cast<int>(std::ceil(2. * distance / grid->getResolution())));
+    for (int i = 0; i <= steps; ++i) {
+      const double fraction = static_cast<double>(i) / steps;
+      const double cost = goalFootprintCost(grid, footprint,
+        pose.pose.position.x + fraction * (c * forward - s * lateral),
+        pose.pose.position.y + fraction * (s * forward + c * lateral), yaw);
+      if (cost < 0. || cost >= nav2_costmap_2d::LETHAL_OBSTACLE) {
+        throw nav2_core::PlannerException("Terminal translation sweep intersects obstacle");
+      }
+    }
+    geometry_msgs::msg::TwistStamped command;
+    command.header = pose.header;
+    const double gain = std::min(0.8, 0.12 / distance);
+    command.twist.linear.x = gain * forward;
+    command.twist.linear.y = gain * lateral;
+    if (forward == 0. && lateral != 0.) {
+      command.twist.angular.y = 1.570;  // Ranger's existing fixed-side steering command.
+    }
+    return command;
+  }
   geometry_msgs::msg::Point center(const geometry_msgs::msg::Pose & pose) const {
     auto p=pose.position;const double yaw=tf2::getYaw(pose.orientation);
     p.x-=std::cos(yaw)*offset_x_-std::sin(yaw)*offset_y_;
     p.y-=std::sin(yaw)*offset_x_+std::cos(yaw)*offset_y_;return p;
   }
-  geometry_msgs::msg::TwistStamped approach_point(
-    const geometry_msgs::msg::PoseStamped & pose, const geometry_msgs::msg::PoseStamped & goal,
-    const geometry_msgs::msg::Twist & velocity,double linear_limit) {
-    const double yaw=tf2::getYaw(pose.pose.orientation);
-    const double bearing=std::atan2(goal.pose.position.y-pose.pose.position.y,
-                                    goal.pose.position.x-pose.pose.position.x);
-    const double forward_error=angles::shortest_angular_distance(yaw,bearing);
-    if(point_approach_direction_==0)
-      point_approach_direction_=std::abs(forward_error)<=M_PI/2 ? 1 : -1;
-    const double heading=point_approach_direction_>0 ? bearing : bearing+M_PI;
-    const double error=angles::shortest_angular_distance(yaw,heading);
-    const double threshold=in_rotation_ ? angular_disengage_threshold_ : angular_dist_threshold_;
-    if(std::abs(error)>threshold) {
-      in_rotation_=true;phase("align_point_approach");
-      return rotate(error,pose,velocity,true);
-    }
-    geometry_msgs::msg::TwistStamped command;
-    command.header=pose.header;
-    command.twist.linear.x=point_approach_direction_*linear_limit*std::cos(error);
-    command.twist.angular.z=std::clamp(1.4*error-.2*velocity.angular.z,-.6,.6);
-    check_sweep(pose,command.twist);
-    in_rotation_=false;phase("approach_point");
-    return command;
-  }
-
   geometry_msgs::msg::TwistStamped rotate(double angle,const geometry_msgs::msg::PoseStamped & pose,
-    const geometry_msgs::msg::Twist & velocity,bool point_start=false) {
+    const geometry_msgs::msg::Twist & velocity) {
     geometry_msgs::msg::TwistStamped command;
     command.header = pose.header;
     // Predict the remaining turn at the current time, then damp measured spin.
     auto node = node_.lock();
     const double age = std::max(0., (node->now() - rclcpp::Time(pose.header.stamp)).seconds());
     const double remaining = angle - velocity.angular.z * age;
-    // Offset the loaded tracks' low-speed breakaway resistance during path alignment.
-    const double breakaway = point_start ?
-      std::copysign(std::min(.45, 2.5 * std::abs(remaining)), remaining) : 0.;
-    const double requested = std::clamp(.8 * remaining + breakaway - .35 * velocity.angular.z,
+    const double requested = std::clamp(.8 * remaining - .35 * velocity.angular.z,
       -rotate_to_heading_angular_vel_, rotate_to_heading_angular_vel_);
     const double previous = std::isfinite(last_angular_vel_) &&
       std::abs(last_angular_vel_) <= rotate_to_heading_angular_vel_ ? last_angular_vel_ : 0.;
-    const double accel = point_start ? 2.0 * max_angular_accel_ : max_angular_accel_;
-    const double step = accel * control_duration_;
+    const double step = max_angular_accel_ * control_duration_;
     command.twist.angular.z = std::clamp(requested, previous - step, previous + step);
-    check_sweep(pose,command.twist);
-    return command;
-  }
-
-  void check_sweep(const geometry_msgs::msg::PoseStamped & pose,const geometry_msgs::msg::Twist & twist) {
     auto grid=costmap_ros_->getCostmap();std::unique_lock<nav2_costmap_2d::Costmap2D::mutex_t> lock(*grid->getMutex());
     const auto pivot=center(pose.pose);const double yaw=tf2::getYaw(pose.pose.orientation);
-    const double c=std::cos(yaw),s=std::sin(yaw),v=twist.linear.x,w=twist.angular.z;
     for(double t=0.;t<=simulate_ahead_time_;t+=control_duration_) {
-      const double delta=w*t,next=yaw+delta;
-      const double x=std::abs(w)<1e-6 ? v*t : v/w*std::sin(delta);
-      const double y=std::abs(w)<1e-6 ? 0. : v/w*(1.-std::cos(delta));
+      const double next=yaw+command.twist.angular.z*t;
       const double cost=goalFootprintCost(grid,costmap_ros_->getRobotFootprint(),
-        pivot.x+c*x-s*y+std::cos(next)*offset_x_-std::sin(next)*offset_y_,
-        pivot.y+s*x+c*y+std::sin(next)*offset_x_+std::cos(next)*offset_y_,next);
+        pivot.x+std::cos(next)*offset_x_-std::sin(next)*offset_y_,
+        pivot.y+std::sin(next)*offset_x_+std::cos(next)*offset_y_,next);
       if(cost<0. || cost>=nav2_costmap_2d::LETHAL_OBSTACLE)
-        throw nav2_core::PlannerException("Goal alignment or approach sweep intersects obstacle");
+        throw nav2_core::PlannerException("Rotation reference-point sweep intersects obstacle");
     }
+    return command;
   }
   void phase(const std::string & value) {
     if(value==phase_)return;
@@ -257,7 +287,6 @@ private:
   }
   std::string phase_;
   bool goal_alignment_{false},approach_plan_{false},feasible_path_{false};
-  int point_approach_direction_{0};
   double offset_x_{0.},offset_y_{0.};
 };
 }

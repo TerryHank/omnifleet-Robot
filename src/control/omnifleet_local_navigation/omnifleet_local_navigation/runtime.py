@@ -125,27 +125,14 @@ class LocalNavigation(LocalControl):
                 return
         target.header.frame_id=self.frame_id
         target.pose.position=copy.deepcopy(point)
-        heading=0.
-        if self.local_pose is not None:
-            dx=point.x-self.local_pose[0];dy=point.y-self.local_pose[1]
-            heading=math.atan2(dy,dx) if math.hypot(dx,dy)>1e-4 else self.local_pose[2]
+        heading=self.local_pose[2] if self.local_pose is not None else 0.
         target.pose.orientation.z=math.sin(heading/2);target.pose.orientation.w=math.cos(heading/2)
-        planner=self.selection.get('planner',self.preview_planner_id)
-        request=NavigateToPose.Goal()
-        request.pose=target
-        try:
-            request.behavior_tree=native_tree(planner,goal_checker='point_goal_checker')
-        except OSError as error:
-            self.publish_status('点目标导航树准备失败：'+str(error))
-            return
-        self.send_topic_goal(self.point_client,request)
-
-    def goal_pose(self,message):
-        request=ExecuteNavigation.Goal();request.task_id='map-click-'+str(self.get_clock().now().nanoseconds)
+        self.goal_pose(target, point_goal=True)
+    def goal_pose(self,message,*,point_goal=False):
+        request=ExecuteNavigation.Goal();request.task_id=('map-point-' if point_goal else 'map-click-')+str(self.get_clock().now().nanoseconds)
         request.source=ExecuteNavigation.Goal.LOCAL;request.single_point=True
         p=NavigationPoint();p.name='地图目标';p.pose=message;p.kind=NavigationPoint.STOP;request.waypoints=[p]
         self.send_topic_goal(self.topic_client,request)
-
     def send_topic_goal(self,client,request):
         if self.stop_gear:
             self.publish_status('遥控最低档停车，目标未发送')
@@ -303,6 +290,8 @@ class LocalNavigation(LocalControl):
         self.goal=[p.position.x,p.position.y,math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))]
         self.preview_planner_id=self.selection.get('planner',self.preview_planner_id)
         self.execution.native_behavior_tree=native_tree(self.preview_planner_id,job.backend=='nav2_dynamic') if job.backend in NATIVE_BACKENDS else job.tree
+        if job.source=='LOCAL' and job.single and job.ticket.task_id.startswith('map-point-') and not self.execution.native_behavior_tree:
+            self.execution.native_behavior_tree=native_tree(keep_heading=True)
         self.execution.start(job.points,single_point=job.single,execution_backend=job.backend)
         if not self.execution.active:
             self.policy.finish(job.ticket);self.current_job=None;self.inhibited=True
@@ -344,7 +333,7 @@ class LocalNavigation(LocalControl):
         if self.stop_gear==bool(msg.data):return
         self.stop_gear=bool(msg.data)
         self.stop_generation+=1
-        self.manual=[0.,0.];self.manual_time=0.;self.joystick_time=0.
+        self.manual=[0.,0.,0.];self.manual_steering=None;self.manual_time=0.;self.joystick_time=0.
         self.nav=[0.,0.];self.inhibit_output()
         if self.stop_gear:
             reason='遥控最低档停车，取消导航'
@@ -359,7 +348,7 @@ class LocalNavigation(LocalControl):
 
     def stop_request(self,request,response):
         self.stop_generation+=1
-        self.manual=[0.,0.];self.manual_time=0.
+        self.manual=[0.,0.,0.];self.manual_steering=None;self.manual_time=0.
         if self.mode=='MANUAL':self.mode='LOCAL'
         self.stop_owned('用户停止本车导航')
         self.clear_preview()

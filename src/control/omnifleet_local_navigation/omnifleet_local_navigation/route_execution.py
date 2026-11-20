@@ -69,6 +69,15 @@ def yaw(pose):
     return math.atan2(2*(q.w*q.z+q.x*q.y), 1-2*(q.y*q.y+q.z*q.z))
 
 
+def short_target_in_odom(start, target, odom):
+    dx, dy = target.position.x-start.position.x, target.position.y-start.position.y
+    if not .30-1e-9 <= math.hypot(dx,dy) <= .50+1e-9:
+        return None
+    angle = yaw(odom)-yaw(start)
+    c, s = math.cos(angle), math.sin(angle)
+    return odom.position.x+c*dx-s*dy, odom.position.y+s*dx+c*dy, yaw(target)+angle
+
+
 def oriented_route(points, start_yaw=None):
     result = copy.deepcopy(points)
     reference = start_yaw if start_yaw is not None else (yaw(result[0].pose) if result else 0.)
@@ -126,6 +135,26 @@ class OutputGate:
     def __init__(self,node):self.node=node
     def publish(self,_message):self.node.inhibit_output()
 
+    def short_command(self, now):
+        if now >= self.short_deadline:
+            self.stop('短程直达超时',failed=True)
+            return 0.,0.,0.
+        pose=self.odom[1].pose.pose
+        x,y,heading=self.short_target
+        dx,dy=x-pose.position.x,y-pose.position.y
+        distance=math.hypot(dx,dy)
+        angle=yaw(pose)
+        if distance > .04:
+            speed=min(.15,max(.04,.8*distance))/distance
+            c,s=math.cos(angle),math.sin(angle)
+            return speed*(c*dx+s*dy),speed*(-s*dx+c*dy),0.
+        error=math.atan2(math.sin(heading-angle),math.cos(heading-angle))
+        if abs(error) > .08:
+            return 0.,0.,math.copysign(min(.45,max(.15,1.2*abs(error))),error)
+        self.n.inhibit_output()
+        self.block_done(None)
+        return 0.,0.,0.
+
 class ContinuousRoute:
     def __init__(self, node):
         self.n = node
@@ -153,7 +182,7 @@ class ContinuousRoute:
         self.points = []
         self.states = []
         self.block = 0
-        self.controller = "FollowPath"
+        self.controller = "FollowPathMPPI"
         self.health = LocalizationHealth()
         # Read-only safety telemetry: counters are updated in the existing 20 Hz
         # check without I/O; publication is throttled by the node timer.
@@ -293,6 +322,10 @@ class ContinuousRoute:
         except (OSError, ValueError, KeyError) as error:
             self.n.publish_status(f'不能开始：读取导航策略失败：{error}')
             return
+        if (self.strategy=='single' and not preflight_only and len(points)==1 and self.pose and self.odom
+                and getattr(getattr(self.n,'current_job',None),'source',None)=='LOCAL' and not self.native_behavior_tree):
+            self.short_target=short_target_in_odom(self.pose[1].pose.pose,points[0].pose,self.odom[1].pose.pose)
+            if self.short_target is not None:self.strategy='short_local'
         self.sequential = self.strategy == 'sequential'
         if not points or not (self.waypoints if self.strategy=='nav2_waypoints' else self.single if single_point or self.sequential or self.strategy in ('trail_follow','formation_follow') else self.navigator).server_is_ready() or not self.planner.server_is_ready():
             self.n.publish_status("不能开始：请添加航点并等待多点导航和规划服务就绪")
@@ -321,6 +354,12 @@ class ContinuousRoute:
         self.preview = NavPath()
         self.preview.header.frame_id = self.n.frame_id
         self.initial_pose = copy.deepcopy(self.pose[1].pose.pose)
+        if self.strategy=='short_local':
+            self.short_deadline=time.monotonic()+15.
+            self.states[0]='正在导航'
+            self.set_phase('tracking','Ranger 短程直达')
+            self.n.arm_navigation_output()
+            return
         if self.strategy=='formation_follow':
             if not hasattr(self,'formation'):self.formation=FormationFollow(self)
             self.formation.start(self.points)
@@ -334,7 +373,6 @@ class ContinuousRoute:
             self.starting_recovery = True
             return
         self.start_planning()
-
     def start_planning(self):
         if (self.sequential or self.strategy == 'through_poses') and not self.preflight_only:
             self.send_block()
@@ -556,6 +594,8 @@ class ContinuousRoute:
             goal = NavigateToPose.Goal()
             goal.pose = self.stamped(self.points[start].pose)
             goal.behavior_tree = self.native_behavior_tree
+            if self.strategy=='single' and self.n.current_job.source=='LOCAL' and not goal.behavior_tree:
+                goal.behavior_tree=native_tree(ranger_terminal=True)
             self.states[start] = '正在导航'
             self.set_phase('tracking', f'逐点导航：航点{start+1}/{len(self.points)} · {self.points[start].name}' if self.sequential else '本地单点导航执行中')
             self.submit(self.single, goal, self.block_done, 'navigation', self.n.navigation_feedback)
@@ -730,6 +770,9 @@ class ContinuousRoute:
             elif now > self.cancel_deadline and self.phase != 'cancel_unconfirmed':
                 self.set_phase('cancel_unconfirmed', '取消未确认，已停止发后续段；请检查服务或重启导航栈')
             return
+        if self.strategy=='short_local' and self.phase=='tracking' and self.n.mode!='LOCAL':
+            self.stop('人工接管，短程直达已取消')
+            return
         if self.strategy=='formation_follow':
             self.formation.tick(now)
             return
@@ -768,7 +811,7 @@ class ContinuousRoute:
                 if now > self.stop_deadline:
                     self.stop('途经点旧导航请求未确认结束', failed=True)
                 return
-            stopped = self.odom and now-self.odom[0] < .4 and abs(self.odom[1].twist.twist.linear.x) < .02 and abs(self.odom[1].twist.twist.angular.z) < .05
+            stopped = self.odom and now-self.odom[0] < .4 and math.hypot(self.odom[1].twist.twist.linear.x,self.odom[1].twist.twist.linear.y) < .02 and abs(self.odom[1].twist.twist.angular.z) < .05
             if self.phase == 'stopping':
                 self.stop_since = (self.stop_since or now) if stopped else None
                 if self.stop_since and now-self.stop_since >= .3:

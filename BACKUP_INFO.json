@@ -1,13 +1,15 @@
 {
-  "robot": "124",
-  "source": "iecme@192.168.3.124",
+  "robot": "R4",
   "workspace": "/home/iecme/omnifleet_ws",
-  "repository": "TerryHank/omnifleet-Robot",
-  "snapshot_created_utc": "2026-11-19T12:26:45.820870+00:00",
-  "parent_commit": "fc84ac77db27960d99a051cb07dae0b1f77062ad",
-  "archive_sha256": "d223d0457696600671b7575590a17ad23f95ca9df3776428a6f4a81fc7a8de78",
-  "archive_bytes": 273392068,
-  "files": 19008,
-  "symlinks": 24,
-  "excluded_scope": "Build/install/log/cache/credentials, recorded camera/video/ROS data and runtime maps; no system image or credential backup."
+  "created_utc": "2026-11-20T07:17:53.893662+00:00",
+  "archive_sha256": "5ed6bf56d2df0ada698ed9d0f8296490377c420f20987034c2c31581f04a781b",
+  "counts": {
+    "files": 19081,
+    "bytes": 663913344,
+    "symlinks": 24
+  },
+  "excluded_scope": "Build/install/log/cache/credentials, recorded camera/video/ROS data and runtime maps; no system image or credential backup.",
+  "branch": "R4",
+  "parent_commit": "e0ee21a3f83f0c4e725f857c0456ffd10fae6fbc",
+  "source": "2026-11-20 Ranger Mini 3.0 OTG image"
 }

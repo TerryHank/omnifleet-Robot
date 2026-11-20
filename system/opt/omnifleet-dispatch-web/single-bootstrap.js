@@ -75,6 +75,19 @@
     }
     window.FOXGLOVE_STUDIO_DEFAULT_LAYOUT = layout;
 
+    // Restore the saved 104 Ranger layout once for this vehicle/data source.
+    const rangerLayout = Object.keys(layout.configById).some(key => key.includes('.ranger-drive!'));
+    const scopedKey = 'omnifleet.single.layout:' + source + ':' + (namespace ?? 'unavailable');
+    const rangerVersionKey = scopedKey + ':ranger3-layout-version';
+    if (rangerLayout && localStorage.getItem(rangerVersionKey) !== '104-20261111-v1') {
+      const previous = localStorage.getItem(scopedKey);
+      if (previous && !localStorage.getItem(scopedKey + ':before-ranger3-20261120')) {
+        localStorage.setItem(scopedKey + ':before-ranger3-20261120', previous);
+      }
+      localStorage.setItem(scopedKey, JSON.stringify(layout));
+      localStorage.setItem(rangerVersionKey, '104-20261111-v1');
+    }
+
     // Keep legacy saved layouts out of the neutral page and scope future edits by data source.
     for (const method of ['getItem', 'setItem', 'removeItem']) {
       const original = Storage.prototype[method];

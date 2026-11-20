@@ -42,8 +42,14 @@ def main():
             occupied = set()
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as receiver:
                 receiver.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                receiver.bind(('', 7446))
                 deadline = time.monotonic() + 2.2
+                try:
+                    receiver.bind(('', 7446))
+                except OSError as error:
+                    if error.errno != 98:
+                        raise
+                    # An occupied discovery port must not block identity or SSH keys.
+                    deadline = 0
                 while time.monotonic() < deadline:
                     receiver.settimeout(max(0.01, deadline - time.monotonic()))
                     try:

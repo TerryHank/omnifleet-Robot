@@ -1,6 +1,0 @@
-struct ImageFrame {
-    unsigned long long capture_ns;
-    unsigned long length;
-    unsigned long reserved;
-    octet pixels[1048576];
-};

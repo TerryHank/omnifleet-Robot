@@ -1,7 +1,7 @@
 {
   "configById": {
     "local.omnifleet-single-panels.nav2-hot-params-panel!nav2HotParams": {
-      "foxglovePanelTitle": "导航参数与启动",
+      "foxglovePanelTitle": "104 导航参数与启动",
       "fontScale": 1.4,
       "collapsedSections": {
         "group:全局与局部代价地图共用": false,
@@ -22,7 +22,7 @@
         "group:建图与避障共用高度（地图坐标系 Z）": true
       }
     },
-    "3D!navigation": {
+    "3D!navigation104": {
       "cameraState": {
         "perspective": true,
         "distance": 11.663507799812695,
@@ -49,6 +49,7 @@
         "far": 5000
       },
       "followMode": "follow-pose",
+      "followTf": "map",
       "scene": {
         "transforms": {
           "showLabel": false,
@@ -58,86 +59,151 @@
         },
         "meshUpAxis": "z_up"
       },
+      "transforms": {
+        "frame:map": {
+          "visible": true
+        }
+      },
       "topics": {
-        "map": {
+        "/map": {
           "visible": true,
           "colorMode": "custom",
           "minColor": "#c2cbd880",
           "maxColor": "#596c8580",
           "unknownColor": "#ffffff00"
         },
-        "global_costmap/costmap": {
+        "/global_costmap/costmap": {
           "visible": true,
           "colorMode": "custom",
           "minColor": "#fff2cc00",
           "maxColor": "#e9ad5a3d",
           "unknownColor": "#ffffff00"
         },
-        "local_costmap/costmap": {
+        "/local_costmap/costmap": {
           "visible": true,
           "colorMode": "custom",
           "minColor": "#ffffff00",
           "maxColor": "#f27b854d",
           "unknownColor": "#ffffff00"
         },
-        "global_costmap/published_footprint": {
+        "/global_costmap/published_footprint": {
           "visible": true,
           "color": "#ffd600",
           "lineWidth": 0.012
         },
-        "local_costmap/published_footprint": {
+        "/local_costmap/published_footprint": {
           "visible": true,
           "color": "#ff1744",
           "lineWidth": 0.02
         },
-        "lookahead_collision_arc": {
+        "/lookahead_collision_arc": {
           "visible": true,
           "color": "#ff9100",
           "lineWidth": 0.015
         },
-        "lookahead_point": {
+        "/lookahead_point": {
           "visible": true,
           "color": "#00e676"
         },
-        "plan": {
+        "/plan": {
           "visible": true,
           "color": "#23b5e6ff",
           "lineWidth": 0.045
         },
-        "local_plan": {
+        "/local_plan": {
           "visible": true,
           "color": "#ff54dfff",
           "lineWidth": 0.075
         },
-        "robot_description": {
+        "/robot_description": {
           "visible": true
         },
-        "set_pose": {
+        "/set_pose": {
           "visible": true
         },
-        "initialpose": {
+        "/initialpose": {
           "visible": true
         },
-        "goal_pose": {
+        "/goal_pose": {
           "visible": true
         },
-        "omnifleet_t2/waypoints/add_pose": {
+        "/lidar_odometry/localmap_points": {
+          "visible": false,
+          "colorField": "z",
+          "colorMode": "colormap",
+          "colorMap": "turbo"
+        },
+        "/lidar_odometry/nav_voxelmap_points": {
+          "visible": false,
+          "colorField": "z",
+          "colorMode": "colormap",
+          "colorMap": "turbo"
+        },
+        "/rslidar_points": {
+          "visible": false,
+          "pointSize": 1.5,
+          "colorMode": "colormap",
+          "colorField": "intensity",
+          "colorMap": "turbo",
+          "pointShape": "circle",
+          "decayTime": 0,
+          "minValue": 0,
+          "maxValue": 255
+        },
+        "/received_global_plan": {
+          "visible": false,
+          "color": "#ffe600",
+          "lineWidth": 0.04
+        },
+        "/unsmoothed_plan": {
+          "visible": false,
+          "color": "#ff9100",
+          "lineWidth": 0.025
+        },
+        "/omnifleet_t2/waypoints/add_pose": {
           "visible": true
         },
-        "omnifleet_t2/waypoints/markers": {
+        "/omnifleet_t2/waypoints/markers": {
           "visible": true
         },
-        "omnifleet_t2/waypoints/path": {
+        "/omnifleet_t2/waypoints/path": {
           "visible": true,
           "color": "#4499ffaa",
           "lineWidth": 0.035
         },
-        "omnifleet_t2/waypoints/active_path": {
+        "/cost_cloud": {
+          "visible": false
+        },
+        "/omnifleet_t2/waypoints/active_path": {
           "visible": true,
           "color": "#00ff66",
           "lineWidth": 0.065
         },
-        "trajectories": {
+        "/navigation/peer_map": {
+          "visible": false
+        },
+        "/fleet/alignment_points": {
+          "visible": false,
+          "colorField": "z",
+          "colorMode": "colormap",
+          "colorMap": "turbo",
+          "pointSize": 5.2
+        },
+        "/transformed_global_plan": {
+          "visible": false,
+          "color": "#ff55cc",
+          "lineWidth": 0.045
+        },
+        "/navigation/deskewed_points": {
+          "visible": false,
+          "pointSize": 1,
+          "pointShape": "circle",
+          "colorMode": "colormap",
+          "colorField": "intensity",
+          "colorMap": "turbo",
+          "decayTime": 0
+        },
+        "/trajectories": {
           "visible": true,
           "color": "#ff54dfff",
           "showOutlines": false,
@@ -150,7 +216,7 @@
             }
           }
         },
-        "visualization/web/deskewed_points": {
+        "/visualization/deskewed_points": {
           "visible": true,
           "pointSize": 1,
           "pointShape": "circle",
@@ -159,7 +225,16 @@
           "colorMap": "turbo",
           "decayTime": 0
         },
-        "visualization/web/slam_points_below_1m": {
+        "/navigation/height_filtered_points": {
+          "visible": false,
+          "pointSize": 1.5,
+          "pointShape": "circle",
+          "colorMode": "colormap",
+          "colorField": "z",
+          "colorMap": "turbo",
+          "decayTime": 0
+        },
+        "/visualization/slam_points_below_1m": {
           "visible": true,
           "colorMode": "flat",
           "flatColor": "#ffffffff",
@@ -169,7 +244,7 @@
           "frameLocked": true,
           "colorField": "z"
         },
-        "visualization/web/local_obstacle_points": {
+        "/visualization/local_obstacle_points": {
           "visible": true,
           "pointSize": 1.5,
           "colorMode": "colormap",
@@ -187,6 +262,7 @@
           "visible": true,
           "frameLocked": true,
           "label": "odom 地面网格",
+          "frameId": "map",
           "size": 20,
           "divisions": 20,
           "lineWidth": 1,
@@ -213,35 +289,43 @@
           "displayMode": "visual",
           "fallbackColor": "#9e9e9e",
           "order": 1,
-          "topic": "robot_description"
+          "topic": "/robot_description"
         }
       },
       "publish": {
-        "type": "pose",
-        "poseTopic": "goal_pose",
-        "pointTopic": "clicked_point",
-        "poseEstimateTopic": "initialpose",
+        "type": "point",
+        "poseTopic": "/goal_pose",
+        "pointTopic": "/navigation/goal_point",
+        "poseEstimateTopic": "/initialpose",
         "poseEstimateXDeviation": 0.5,
         "poseEstimateYDeviation": 0.5,
         "poseEstimateThetaDeviation": 0.26179939
       },
       "imageMode": {},
-      "foxglovePanelTitle": "导航 · 地图 / 全局路径 / 局部轨迹"
+      "foxglovePanelTitle": "104 导航 · 地图 / 全局路径 / 局部轨迹"
     },
-    "local.omnifleet-single-panels.speed-gauge!speed": {
-      "foxglovePanelTitle": "底盘速度 · m/s"
+    "Gauge!angular104": {
+      "path": "/rslidar_imu_data_corrected.angular_velocity.z",
+      "minValue": -1,
+      "maxValue": 1,
+      "colorMode": "gradient",
+      "colorMap": "red-yellow-green",
+      "gradient": [
+        "#2196f3",
+        "#ff9800"
+      ],
+      "reverse": false,
+      "foxglovePanelTitle": "104 IMU 角速度 Z · rad/s"
     },
-    "local.omnifleet-single-panels.drive-joystick!manual": {
-      "foxglovePanelTitle": "履带手动摇杆",
-      "topic": "cmd_vel",
-      "publishRate": 10,
+    "local.omnifleet-single-panels.battery-voltage!battery104": {
+      "foxglovePanelTitle": "104 电池电压"
+    },
+    "local.omnifleet-single-panels.ranger-drive!manual104": {
+      "foxglovePanelTitle": "104 运动控制",
       "forward": 0.15,
-      "reverse": 0.15,
-      "left": 1,
-      "right": 1
-    },
-    "local.omnifleet-single-panels.battery-voltage!battery": {
-      "foxglovePanelTitle": "电池电压"
+      "reverse": -0.15,
+      "spinLeft": 1,
+      "spinRight": -1
     }
   },
   "globalVariables": {},
@@ -257,14 +341,14 @@
       "first": {
         "direction": "column",
         "splitPercentage": 64.25531914893618,
-        "first": "3D!navigation",
-        "second": "local.omnifleet-single-panels.speed-gauge!speed"
+        "first": "3D!navigation104",
+        "second": "Gauge!angular104"
       },
       "second": {
         "direction": "column",
         "splitPercentage": 15,
-        "first": "local.omnifleet-single-panels.battery-voltage!battery",
-        "second": "local.omnifleet-single-panels.drive-joystick!manual"
+        "first": "local.omnifleet-single-panels.battery-voltage!battery104",
+        "second": "local.omnifleet-single-panels.ranger-drive!manual104"
       }
     },
     "direction": "row",

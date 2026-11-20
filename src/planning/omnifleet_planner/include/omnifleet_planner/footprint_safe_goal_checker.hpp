@@ -19,6 +19,8 @@ class FootprintSafeGoalChecker : public nav2_controller::SimpleGoalChecker
 public:
   bool isPointGoalChecker() const {return plugin_name_ == "point_goal_checker";}
   bool isFleetGoalChecker() const {return plugin_name_ == "fleet_goal_checker";}
+  bool usesRangerTerminalControl() const {return ranger_terminal_ || ranger_point_;}
+  bool keepsRangerHeading() const {return ranger_point_;}
   bool requiresOrderedWaypoints() const {return require_ordered_waypoints_;}
   void initialize(
     const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent,
@@ -40,6 +42,8 @@ private:
   double safe_hold_time_{0.35};
   bool safe_timer_started_{false};
   bool require_ordered_waypoints_{false};
+  bool ranger_terminal_{false};
+  bool ranger_point_{false};
   std::mutex route_mutex_;
   int64_t route_reset_ns_{0}, route_stamp_ns_{0};
   bool route_complete_{false};

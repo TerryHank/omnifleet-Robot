@@ -13,16 +13,23 @@ from .scope import topic
 NATIVE_BACKENDS = ('nav2_single', 'nav2_dynamic', 'nav2_waypoints')
 
 
-def native_tree(planner, dynamic=False, *, goal_checker=None):
+def native_tree(planner=None, dynamic=False, *, goal_checker=None, ranger_terminal=False, keep_heading=False):
     # Use the same selectors, goal checker and recovery tree as local Fox.
     from ament_index_python.packages import get_package_share_directory
     import xml.etree.ElementTree as ET
     template=(Path(get_package_share_directory('omnifleet_planner')) /
               'behavior_trees/navigate_to_pose_with_selectors.xml').read_text()
     tree=ET.fromstring(template)
-    tree.find('.//PlannerSelector').set('default_planner',planner)
+    if planner is not None:
+        tree.find('.//PlannerSelector').set('default_planner',planner)
     if goal_checker is not None:
         tree.find('.//FollowPath').set('goal_checker_id',goal_checker)
+    if keep_heading:
+        tree.find('.//FollowPath').set('goal_checker_id','ranger_point_goal_checker')
+        for parent in tree.iter():
+            for spin in parent.findall('Spin'):parent.remove(spin)
+    elif ranger_terminal:
+        tree.find('.//FollowPath').set('goal_checker_id','ranger_single_goal_checker')
     if dynamic:
         compute=tree.find('.//ComputePathToPose');compute.set('goal','{updated_goal}')
         parent=next(node for node in tree.iter() if compute in list(node))

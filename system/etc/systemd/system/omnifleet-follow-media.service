@@ -1,0 +1,13 @@
+[Unit]
+Description=G20 follow H.264 preview via GR01 Fast DDS unicast
+After=omnifleet-t2-rgbd-camera.service omnifleet-wifi.service
+
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/omnifleet_follow_media
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_ws/env.bash >/dev/null && exec /usr/bin/python3 -u serve_follow_media.py'
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

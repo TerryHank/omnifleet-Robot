@@ -1,0 +1,1 @@
+cmd_/home/iecme/omnifleet_ws/src/vehicle/ranger_can/kernel/gs_usb.ko := ld -r -EL  -maarch64elf -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/iecme/omnifleet_ws/src/vehicle/ranger_can/kernel/gs_usb.ko /home/iecme/omnifleet_ws/src/vehicle/ranger_can/kernel/gs_usb.o /home/iecme/omnifleet_ws/src/vehicle/ranger_can/kernel/gs_usb.mod.o;  true

@@ -12,7 +12,7 @@ def velocity_command_time(message, info, timeout=.35):
     """Return the command's monotonic origin, or None when it is too old."""
     now = time.monotonic()
     # A zero command must always be able to stop, even without valid metadata.
-    if message.linear.x == 0. and message.angular.z == 0.:
+    if message.linear.x == message.linear.y == message.angular.z == message.angular.y == message.angular.x == 0.:
         return now
     source = info.get('source_timestamp', 0) if isinstance(info, dict) else getattr(info, 'source_timestamp', 0)
     age = (time.time_ns() - source) / 1e9

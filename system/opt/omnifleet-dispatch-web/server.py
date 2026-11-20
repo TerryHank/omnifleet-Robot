@@ -151,8 +151,8 @@ def load_single_index(original):
     #vehicle-name {{ max-width: 100%; }}
   }}
 </style>
-<script src="single-layout.js"></script>
-<script src="single-bootstrap.js" data-bundle="{bundle}?v=waypoint-menu"></script>
+<script src="single-layout.js?v=ranger3-layout-20261120"></script>
+<script src="single-bootstrap.js?v=ranger3-layout-20261120" data-bundle="{bundle}?v=waypoint-menu"></script>
 <script defer src="single-toolbar.js?v=inline-name-1"></script>
 </head>''', 1)
     toolbar = '''<nav class="vehicle-toolbar" aria-label="单车控制" hidden>
@@ -181,7 +181,7 @@ def single_panel_script(source):
     # Adapt only the single-vehicle registrations. The original panels are shared assets.
     marker = r"(?m)^(\s*const name='local\.omnifleet-single-panels';)"
     adapters = '\n'.join(f' {name} = window.OmniFleetSingle.bindPanel({name});' for name in (
-        'initBatteryVoltage', 'initSpeedGauge', 'initDriveJoystick', 'initNav2Builtin',
+        'initBatteryVoltage', 'initSpeedGauge', 'initDriveJoystick', 'initNav2Builtin', 'initRangerDrive',
     ))
     source, matched = re.subn(marker, lambda match: adapters + '\n' + match[0], source)
     if matched != 1:

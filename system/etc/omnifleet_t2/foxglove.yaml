@@ -10,6 +10,7 @@
       - ^/clicked_point$
       - ^/omnifleet_t2/diagnostics/question$
       - ^/cmd_vel$
+      - ^/navigation/ranger_wheel_angle$
       - ^/omnifleet_t2/diagnostics/question$
       - ^/goal_pose$
       - ^/initialpose$

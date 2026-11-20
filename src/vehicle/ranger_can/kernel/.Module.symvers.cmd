@@ -1,0 +1,1 @@
+cmd_/home/iecme/omnifleet_ws/src/vehicle/ranger_can/kernel/Module.symvers := sed 's/\.ko$$/\.o/' /home/iecme/omnifleet_ws/src/vehicle/ranger_can/kernel/modules.order | scripts/mod/modpost -m   -o /home/iecme/omnifleet_ws/src/vehicle/ranger_can/kernel/Module.symvers -e -i Module.symvers   -T -

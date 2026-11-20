@@ -62,7 +62,7 @@ class LocalControl(Node):
 
         self.fleet_hold=True;self.estop=False;self.manual_time=0.;self.nav_time=0.
 
-        self.manual=[0.,0.];self.nav=[0.,0.];self.velocity=[0.,0.];self.velocity_time=0.
+        self.manual=[0.,0.,0.];self.manual_steering=None;self.nav_lateral=0.;self.nav_steering=0.;self.lateral_velocity=0.;self.nav=[0.,0.];self.velocity=[0.,0.];self.velocity_time=0.
 
         self.joystick_time=0.
 
@@ -116,6 +116,7 @@ class LocalControl(Node):
         self.fleet_status_pub=self.create_publisher(String,'/navigation/fleet/local_status',1)
 
         self.create_subscription(Twist,'/cmd_vel',self.on_manual,1)
+        self.create_subscription(Twist,'/navigation/ranger_wheel_angle',self.on_wheel_angle,1)
 
         self.create_subscription(Twist,'/navigation/joystick_cmd_vel',self.on_joystick,1)
 
@@ -209,10 +210,10 @@ class LocalControl(Node):
 
         if issued is None:
 
-            self.nav=[0.,0.];self.nav_time=0.;self.expired_velocity_commands['nav']+=1;return
+            self.nav_lateral=self.nav_steering=0.;self.nav=[0.,0.];self.nav_time=0.;self.expired_velocity_commands['nav']+=1;return
 
         self.nav=[msg.linear.x,msg.angular.z];self.nav_time=issued
-
+        self.nav_lateral=msg.linear.y;self.nav_steering=msg.angular.y
     def on_contact(self,msg):
 
         self.contact=bool(msg.data);self.contact_time=time.monotonic()
@@ -277,12 +278,13 @@ class LocalControl(Node):
 
         self.velocity=[msg.twist.twist.linear.x,msg.twist.twist.angular.z];self.velocity_time=time.monotonic()
 
-        if abs(self.velocity[0])<.02 and abs(self.velocity[1])<.05:
+        self.lateral_velocity=msg.twist.twist.linear.y
+
+        if math.hypot(self.velocity[0],self.lateral_velocity)<.02 and abs(self.velocity[1])<.05:
 
             if self.zero_since is None:self.zero_since=self.velocity_time
 
         else:self.zero_since=None
-
     def on_grid(self,msg):
 
         self.grid=msg;self.grid_time=time.monotonic()
@@ -363,7 +365,7 @@ class LocalControl(Node):
 
         self.joystick_time=issued
 
-        self.manual=[msg.linear.x,msg.angular.z];self.manual_time=issued
+        self.manual=[msg.linear.x,msg.angular.z,msg.linear.y];self.manual_steering=None;self.manual_time=issued
 
         self.nav_time=0.
 
@@ -376,37 +378,11 @@ class LocalControl(Node):
             self.mode='MANUAL';self.fleet_hold=True;self.cancel_all()
 
 
-
     @with_source_time
 
     def on_manual(self,msg,info):
 
-        if getattr(self,'stop_gear',False):return
-
-        if time.monotonic()-self.joystick_time<.35:return
-
-        issued=velocity_command_time(msg,info)
-
-        if issued is None:
-
-            self.manual=[0.,0.];self.manual_time=0.;self.expired_velocity_commands['manual']+=1;return
-
-        if getattr(self,'fleet_enabled',False):return
-
-        self.policy.local_override=True;self.fleet_enabled=False
-
-        self.fleet_lease.revoke()
-
-        if not self.control_gate_ready:return
-
-        self.manual=[msg.linear.x,msg.angular.z];self.manual_time=issued
-
-        if self.mode!='MANUAL':
-
-            self.manual_blocked_goals=set().union(*self.active_goal_ids.values()) if self.active_goal_ids else set()
-
-            self.mode='MANUAL';self.fleet_hold=True;self.cancel_all()
-
+        self.update_manual(msg,info)
 
 
     def on_nav_status(self,action,msg):
@@ -455,7 +431,7 @@ class LocalControl(Node):
 
             self.manual_blocked_goals=set().union(*self.active_goal_ids.values()) if self.active_goal_ids else set()
 
-            self.mode='MANUAL';self.manual=[0.,0.];self.manual_time=time.monotonic()
+            self.mode='MANUAL';self.manual=[0.,0.,0.];self.manual_time=time.monotonic()
 
             self.fleet_hold=True;self.cancel_all()
 
@@ -625,19 +601,31 @@ class LocalControl(Node):
 
         now=time.monotonic()
 
-        command=[0.,0.];self.safety_reason='';self.near_turn_active=False
+        joystick_active = self.joystick_fresh(now)
+
+        mode = 'MANUAL' if joystick_active else self.mode
+
+        command=[0.,0.];lateral=0.;steering=None;self.safety_reason='';self.near_turn_active=False
 
         escape=getattr(self,'clearance_escape',None)
 
+        execution=getattr(self,'execution',None)
+
+        short_local=(mode=='LOCAL' and getattr(execution,'strategy',None)=='short_local'
+
+                     and execution.phase=='tracking')
+
         if self.control_gate_ready:
 
-            if now-self.joystick_time<.35:command=self.manual
+            if joystick_active:
 
-            elif self.mode=='STARTUP':
+                command = self.manual[:2];lateral=self.manual[2]
+
+            elif mode=='STARTUP':
 
                 if not self.startup_canceled:self.cancel_all();self.startup_canceled=True
 
-                stopped=not any(self.nav_status.values()) and not self.cancel_pending and not self.pending_goal_requests and now-self.velocity_time<.5 and max(abs(v) for v in self.velocity)<.02
+                stopped=not any(self.nav_status.values()) and not self.cancel_pending and not self.pending_goal_requests and now-self.velocity_time<.5 and max(abs(v) for v in (*self.velocity,self.lateral_velocity))<.02
 
                 if stopped:
 
@@ -647,17 +635,27 @@ class LocalControl(Node):
 
                 else:self.startup_stopped=None
 
-            elif self.mode=='MANUAL':
+            elif mode=='MANUAL':
 
-                if now-self.manual_time<.35:command=self.manual
+                steering=self.manual_steering
 
-            elif self.mode=='LOCAL':
+                if now-self.manual_time<.35:
+
+                    command=self.manual[:2];lateral=self.manual[2]
+
+            elif mode=='LOCAL':
 
                 if escape:command=self.recovery_command(now)
 
-                elif self.output_permitted() and now-self.nav_time<.35:command=self.nav
+                elif short_local and self.output_permitted():
 
-            elif self.mode=='FLEET':
+                    x,lateral,w=self.execution.short_command(now);command=[x,w]
+
+                elif self.output_permitted() and now-self.nav_time<.35:
+                    command=self.nav;lateral=self.nav_lateral
+                    steering=self.nav_steering if lateral and self.nav_steering else None
+
+            elif mode=='FLEET':
 
                 job=self.current_job
 
@@ -667,25 +665,28 @@ class LocalControl(Node):
 
                 elif job and self.output_permitted() and now-self.nav_time<.35:
 
-                    command=self.nav
+                    command=self.nav;lateral=self.nav_lateral
+                    steering=self.nav_steering if lateral and self.nav_steering else None
 
-        if not all(math.isfinite(v) for v in command):command=[0.,0.];self.safety_reason='nonfinite command'
+        if not all(math.isfinite(v) for v in (*command,lateral,steering or 0.)):
+
+            command=[0.,0.];lateral=0.;steering=None;self.safety_reason='nonfinite command'
 
         turn=None
 
-        if not escape and self.mode=='LOCAL' and hasattr(self,'bounded_turn_command'):
+        if not escape and not short_local and mode=='LOCAL' and hasattr(self,'bounded_turn_command'):
 
             turn=self.bounded_turn_command(now,command)
 
         if turn is not None:
 
-            command=turn;self.near_turn_active=True;self.tracking_guard.reset()
+            command=turn;lateral=0.;steering=None;self.near_turn_active=True;self.tracking_guard.reset()
 
-        elif escape and self.mode=='LOCAL':
+        elif short_local or (escape and mode=='LOCAL'):
 
             self.tracking_guard.reset()
 
-        elif self.mode in ('MANUAL','LOCAL','FLEET') and any(abs(v)>1e-6 for v in command):
+        elif mode in ('MANUAL','LOCAL','FLEET') and any(abs(v)>1e-6 for v in (*command,lateral)):
 
             reason,latch=self.tracking_guard.evaluate(now,self.local_pose,self.pose_stamp_ns/1e9,command,
 
@@ -693,19 +694,19 @@ class LocalControl(Node):
 
                 now-self.obstacle_stamp if self.obstacle_stamp else 99.,self.obstacle_complete,
 
-                require_path=self.mode!='MANUAL',check_body_clearance=self.mode=='FLEET')
+                require_path=mode!='MANUAL',check_body_clearance=mode=='FLEET')
 
-            if reason=='predicted_body_clearance' and self.mode=='LOCAL' and hasattr(self,'bounded_turn_command'):
+            if reason=='predicted_body_clearance' and mode=='LOCAL' and hasattr(self,'bounded_turn_command'):
 
                 turn=self.bounded_turn_command(now,command,start=True)
 
                 if turn is not None:
 
-                    command=turn;reason='';latch=False;self.near_turn_active=True;self.tracking_guard.reset()
+                    command=turn;lateral=0.;steering=None;reason='';latch=False;self.near_turn_active=True;self.tracking_guard.reset()
 
             if reason:
 
-                command=[0.,0.];self.safety_reason=reason
+                command=[0.,0.];lateral=0.;steering=None;self.safety_reason=reason
 
                 if latch:
 
@@ -715,7 +716,7 @@ class LocalControl(Node):
 
                         self.prepare_clearance_recovery()
 
-                    self.fleet_enabled=False;self.fleet_lease.revoke();self.manual=[0.,0.]
+                    self.fleet_enabled=False;self.fleet_lease.revoke();self.manual=[0.,0.,0.]
 
                     # Tracking alerts cancel motion; physical inputs own the estop latch.
 
@@ -723,12 +724,21 @@ class LocalControl(Node):
 
         else:self.tracking_guard.reset()
 
-        if getattr(self,'stop_gear',False):command=[0.,0.];self.safety_reason='joystick_stop_gear'
+        if getattr(self,'stop_gear',False):
+            command=[0.,0.];lateral=0.;steering=None;self.safety_reason='joystick_stop_gear'
+        if self.estop:
 
-        if self.estop:command=[0.,0.];self.safety_reason='estop'
+            command=[0.,0.];lateral=0.;steering=self.manual_steering=None;self.safety_reason='estop'
 
-        m=Twist();m.linear.x=command[0];m.angular.z=command[1];self.output.publish(m)
+        m=Twist();m.linear.x=command[0];m.linear.y=lateral;m.angular.z=command[1]
 
+        if steering is not None:
+
+            # Distinguish an explicit straighten request from an idle zero Twist.
+
+            m.angular.x=1.;m.angular.y=steering
+
+        self.output.publish(m)
 
 
     def snapshot(self):
@@ -777,7 +787,7 @@ class LocalControl(Node):
 
         ready=all(self.states.get(name,(0,0))[0]==3 and now-self.states[name][1]<3 for name in self.state_clients) and self.execution.single.server_is_ready() and self.execution.inputs_ready()
 
-        state={'fleet_rx':getattr(self,'fleet_rx',{}),'supports_route':True,'bounded_turn_active':getattr(self,'near_turn_active',False),'local_pose_3d':self.local_pose_3d,'local_pose':self.local_pose,'pose_age':self.pose_age,'velocity':self.velocity,'velocity_age':now-self.velocity_time,
+        state={'chassis_model':'ranger_mini_v3','lateral_velocity':self.lateral_velocity,'ranger_drive_mode':'slide' if self.mode=='MANUAL' and self.manual_steering else 'normal','fleet_rx':getattr(self,'fleet_rx',{}),'supports_route':True,'bounded_turn_active':getattr(self,'near_turn_active',False),'local_pose_3d':self.local_pose_3d,'local_pose':self.local_pose,'pose_age':self.pose_age,'velocity':self.velocity,'velocity_age':now-self.velocity_time,
 
             'pose_stamp_ns':self.pose_stamp_ns,
 
@@ -937,4 +947,48 @@ class LocalControl(Node):
                 self.execution.phase in ('tracking','replanning','preplanning') and
 
                 not self.policy.canceling)
+
+    def joystick_fresh(self, now):
+
+        return now - self.joystick_time < .35
+
+    @with_source_time
+    def on_wheel_angle(self,msg,info):
+
+        self.update_manual(msg,info,wheel_angle=msg.angular.y)
+
+    def update_manual(self,msg,info,wheel_angle=None):
+
+        if getattr(self,'stop_gear',False):return
+        if self.joystick_fresh(time.monotonic()):
+
+            return
+
+        issued=velocity_command_time(msg,info)
+
+        if issued is None:
+
+            self.manual=[0.,0.,0.];self.manual_steering=None;self.manual_time=0.;self.expired_velocity_commands['manual']+=1;return
+
+        if getattr(self,'fleet_enabled',False):return
+
+        self.policy.local_override=True;self.fleet_enabled=False
+
+        self.fleet_lease.revoke()
+
+        if not self.control_gate_ready:return
+
+        self.manual=[msg.linear.x,msg.angular.z,msg.linear.y]
+
+        if wheel_angle is not None or self.mode!='MANUAL' or any(self.manual):
+
+            self.manual_steering=wheel_angle
+
+        self.manual_time=issued
+
+        if self.mode!='MANUAL':
+
+            self.manual_blocked_goals=set().union(*self.active_goal_ids.values()) if self.active_goal_ids else set()
+
+            self.mode='MANUAL';self.fleet_hold=True;self.cancel_all()
 

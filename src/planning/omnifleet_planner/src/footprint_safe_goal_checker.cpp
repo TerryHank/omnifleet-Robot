@@ -19,7 +19,10 @@ void FootprintSafeGoalChecker::initialize(
   const std::string & plugin_name,
   const std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros)
 {
-  nav2_controller::SimpleGoalChecker::initialize(parent, plugin_name, costmap_ros);
+  ranger_terminal_ = plugin_name == "ranger_single_goal_checker";
+  ranger_point_ = plugin_name == "ranger_point_goal_checker";
+  const std::string parameter_group = usesRangerTerminalControl() ? "general_goal_checker" : plugin_name;
+  nav2_controller::SimpleGoalChecker::initialize(parent, parameter_group, costmap_ros);
   auto node = parent.lock();
   if (!node) {
     throw std::runtime_error("FootprintSafeGoalChecker parent node expired");
@@ -28,15 +31,15 @@ void FootprintSafeGoalChecker::initialize(
   clock_ = node->get_clock();
   logger_ = node->get_logger();
   nav2_util::declare_parameter_if_not_declared(
-    node, plugin_name + ".safe_hold_time", rclcpp::ParameterValue(0.35));
-  node->get_parameter(plugin_name + ".safe_hold_time", safe_hold_time_);
+    node, parameter_group + ".safe_hold_time", rclcpp::ParameterValue(0.35));
+  node->get_parameter(parameter_group + ".safe_hold_time", safe_hold_time_);
   if (safe_hold_time_ < 0.0) {
     throw std::invalid_argument(plugin_name + ".safe_hold_time must be non-negative");
   }
   nav2_util::declare_parameter_if_not_declared(
-    node, plugin_name + ".require_ordered_waypoints", rclcpp::ParameterValue(false));
-  node->get_parameter(plugin_name + ".require_ordered_waypoints", require_ordered_waypoints_);
-  if (plugin_name_ == "fleet_goal_checker") {
+    node, parameter_group + ".require_ordered_waypoints", rclcpp::ParameterValue(false));
+  node->get_parameter(parameter_group + ".require_ordered_waypoints", require_ordered_waypoints_);
+  if (isFleetGoalChecker()) {
     route_sub_ = node->create_subscription<std_msgs::msg::String>(
       "navigation/fleet/follow_context", rclcpp::QoS(10),
       [this](std_msgs::msg::String::ConstSharedPtr message) {

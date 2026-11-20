@@ -1,12 +1,12 @@
 {
-  "robot": "124",
+  "robot": "R4",
   "workspace": "/home/iecme/omnifleet_ws",
-  "created_utc": "2026-11-19T12:26:45.820870+00:00",
-  "archive_sha256": "d223d0457696600671b7575590a17ad23f95ca9df3776428a6f4a81fc7a8de78",
-  "archive_bytes": 273392068,
+  "created_utc": "2026-11-20T07:17:53.893662+00:00",
+  "archive_sha256": "5ed6bf56d2df0ada698ed9d0f8296490377c420f20987034c2c31581f04a781b",
+  "archive_bytes": 389747275,
   "counts": {
-    "files": 19008,
-    "bytes": 552677657,
+    "files": 19081,
+    "bytes": 663913344,
     "symlinks": 24
   },
   "source_git": {},
@@ -44,10 +44,6 @@
       "snapshot": "models/vision/vendor/yolo26_person_follow"
     },
     {
-      "source": "/opt/foxglove-studio-cn-104/site/vision-follow.html",
-      "snapshot": "web/vision-follow.html"
-    },
-    {
       "source": "/home/iecme/orbbec345lg-v2.10.6/rgb1080.py",
       "snapshot": "camera/rgb1080.py"
     },
@@ -66,6 +62,10 @@
     {
       "source": "/etc/systemd/system/omnifleet-clone-identity.service",
       "snapshot": "system/etc/systemd/system/omnifleet-clone-identity.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-clone-identity.service.d",
+      "snapshot": "system/etc/systemd/system/omnifleet-clone-identity.service.d"
     },
     {
       "source": "/etc/systemd/system/omnifleet-current-pose.service",
@@ -118,6 +118,10 @@
     {
       "source": "/etc/systemd/system/omnifleet-fleet-network.service.disabled",
       "snapshot": "system/etc/systemd/system/omnifleet-fleet-network.service.disabled"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-follow-media.service",
+      "snapshot": "system/etc/systemd/system/omnifleet-follow-media.service"
     },
     {
       "source": "/etc/systemd/system/omnifleet-local-navigation.service",
@@ -328,12 +332,32 @@
       "snapshot": "system/etc/systemd/system/omnifleet-yahboom-voltage.service"
     },
     {
-      "source": "/etc/udev/rules.d/99-omnifleet-t2-chassis.rules",
-      "snapshot": "system/etc/udev/rules.d/99-omnifleet-t2-chassis.rules"
+      "source": "/etc/systemd/system.control/omnifleet-current-pose.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-current-pose.service.d"
+    },
+    {
+      "source": "/etc/systemd/system.control/omnifleet-local-navigation.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-local-navigation.service.d"
+    },
+    {
+      "source": "/etc/systemd/system.control/omnifleet-t2-chassis.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-t2-chassis.service.d"
+    },
+    {
+      "source": "/etc/systemd/system.control/omnifleet-t2-mola.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-t2-mola.service.d"
+    },
+    {
+      "source": "/etc/systemd/system.control/omnifleet-t2-pure-lio-nav2.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-t2-pure-lio-nav2.service.d"
     },
     {
       "source": "/etc/udev/rules.d/81-omnifleet-gemini345lg-color.rules",
       "snapshot": "system/etc/udev/rules.d/81-omnifleet-gemini345lg-color.rules"
+    },
+    {
+      "source": "/etc/udev/rules.d/99-omnifleet-t2-chassis.rules",
+      "snapshot": "system/etc/udev/rules.d/99-omnifleet-t2-chassis.rules"
     },
     {
       "source": "/opt/omnifleet-mobile-vision",
@@ -358,10 +382,6 @@
     {
       "source": "/opt/omnifleet-dispatch-web",
       "snapshot": "system/opt/omnifleet-dispatch-web"
-    },
-    {
-      "source": "/opt/foxglove-studio-cn-104/site",
-      "snapshot": "web/site"
     },
     {
       "source": "/usr/local/lib/omnifleet-image",
@@ -408,32 +428,20 @@
       "snapshot": "system/etc/omnifleet_t2/robot.env"
     },
     {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/start.bash",
-      "snapshot": "camera/start.bash"
+      "source": "/home/iecme/omnifleet_follow_media",
+      "snapshot": "follow-media"
     },
     {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/camera.launch.py",
-      "snapshot": "camera/camera.launch.py"
+      "source": "/usr/local/share/omnifleet-image/ranger3-profile.json",
+      "snapshot": "system/usr/local/share/omnifleet-image/ranger3-profile.json"
     },
     {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/aligned_depth_alias.py",
-      "snapshot": "camera/aligned_depth_alias.py"
+      "source": "/usr/local/share/omnifleet-image/ranger3-source.json",
+      "snapshot": "system/usr/local/share/omnifleet-image/ranger3-source.json"
     },
     {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/image_loan.py",
-      "snapshot": "camera/image_loan.py"
-    },
-    {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/libimage_dds.so",
-      "snapshot": "camera/libimage_dds.so"
-    },
-    {
-      "source": "/home/iecme/image-dds-build.YozLDILB/image_dds",
-      "snapshot": "camera/image-dds-source"
-    },
-    {
-      "source": "/home/iecme/dispatch-media",
-      "snapshot": "system/home/iecme/dispatch-media"
+      "source": "/usr/local/share/omnifleet-image/ranger3-merged-files.json",
+      "snapshot": "system/usr/local/share/omnifleet-image/ranger3-merged-files.json"
     }
   ],
   "entries": [
@@ -46806,8 +46814,8 @@
     {
       "path": "src/control/omnifleet_local_navigation/config/local-navigation.json",
       "type": "file",
-      "size": 330,
-      "sha256": "4c37d0769efdc31acad58297d4a869e5390b56097ede5b5e3def3691f023e876",
+      "size": 344,
+      "sha256": "e53725a61222eb3b383d1e281676f901b29dff5f9de81686ea15a242efaa7688",
       "mode": 420
     },
     {
@@ -46876,9 +46884,9 @@
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/control.py",
       "type": "file",
-      "size": 31968,
-      "sha256": "331ca4cbfaeebadd923dc519ad1df499fda8c23b73a27e52cefe351e4e0603fb",
-      "mode": 436
+      "size": 34358,
+      "sha256": "c85df51e52bbf5d08d1cf22ae87137338db9dc5a963f614db43ebfc41d4e9e3f",
+      "mode": 420
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/fleet_lease.py",
@@ -46925,8 +46933,8 @@
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/native_modes.py",
       "type": "file",
-      "size": 1850,
-      "sha256": "2ed4a796a16a40dffdd9654c30ebf42e7d6e2fad2676556b8612de042d36472a",
+      "size": 2252,
+      "sha256": "3a2a956472fabe2f6a94b36420a44df4e24e1c850557773ae0f14f91a6cde2cd",
       "mode": 420
     },
     {
@@ -46939,9 +46947,9 @@
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/route_execution.py",
       "type": "file",
-      "size": 41119,
-      "sha256": "b480e8a5688051e7df425123003d65477b667b40cf119bf70465ada668eef0b1",
-      "mode": 436
+      "size": 43352,
+      "sha256": "025d21bdbecd512d80c0d5e639b949056cccc67efc3d4f3de1fa820571a3012e",
+      "mode": 420
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/route_execution.py.before-current-pose-20261118",
@@ -46960,9 +46968,9 @@
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/runtime.py",
       "type": "file",
-      "size": 41111,
-      "sha256": "8b7fe33586d20fde628b4e9c56ffd53777d97bb523cffd120d5a2132d9a59473",
-      "mode": 436
+      "size": 40915,
+      "sha256": "b5acc3d479742e2f60c415c95adf23760abf094119a98fedc6d4a3dbe667db01",
+      "mode": 420
     },
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/runtime.py.before-global-footprint-20261104-064436",
@@ -47089,6 +47097,13 @@
       "size": 3631,
       "sha256": "6bac7f4c577b53e72fc543b03cd746f543b85ba599ee783f3c89f3bc4babd042",
       "mode": 436
+    },
+    {
+      "path": "src/control/omnifleet_local_navigation/test/test_point_goal.py",
+      "type": "file",
+      "size": 3848,
+      "sha256": "5e808b8ff077bce29ab8c8d521086531bf259aac50720162ec4da08fecbaf531",
+      "mode": 420
     },
     {
       "path": "src/control/omnifleet_local_navigation/test/test_task_policy_fleet_updates.py",
@@ -90291,12 +90306,6 @@
       "mode": 420
     },
     {
-      "path": "src/perception/omnifleet_vision/models",
-      "type": "symlink",
-      "target": "/home/iecme/omnifleet_data/ml_models/omnifleet_vision",
-      "mode": 511
-    },
-    {
       "path": "src/perception/omnifleet_vision/CMakeLists.txt",
       "type": "file",
       "size": 5829,
@@ -90330,6 +90339,12 @@
       "size": 960,
       "sha256": "ec128bfe85ace85e1c32d4f11ea0b6b41b6a824e56e6e6d0d7209c9a2b481c1d",
       "mode": 420
+    },
+    {
+      "path": "src/perception/omnifleet_vision/models",
+      "type": "symlink",
+      "target": "/home/iecme/omnifleet_data/ml_models/omnifleet_vision",
+      "mode": 511
     },
     {
       "path": "src/perception/omnifleet_vision/package.xml",
@@ -92931,15 +92946,15 @@
     {
       "path": "src/planning/omnifleet_planner/behavior_trees/navigate_through_poses_with_selectors.xml",
       "type": "file",
-      "size": 2331,
-      "sha256": "0e3b5df8a0bf87574f8f8937bbe60b48c0698af640e0f40d3e6f198f44d21f4b",
+      "size": 2335,
+      "sha256": "294c20e51c74cfcf41261808f00f13a2e6dcd1234ea1d9773cb9edc97a09448f",
       "mode": 420
     },
     {
       "path": "src/planning/omnifleet_planner/behavior_trees/navigate_to_pose_with_selectors.xml",
       "type": "file",
-      "size": 2092,
-      "sha256": "b213c2dbe5c856ff2a6b0509fa14e99775a6daddf82993957793e2deac643fd9",
+      "size": 2096,
+      "sha256": "306141ca0411947f2699bd21aa6a2303c84b8449e91bacf20d148b4cfa6a6aaa",
       "mode": 420
     },
     {
@@ -92952,9 +92967,9 @@
     {
       "path": "src/planning/omnifleet_planner/config/nav2_t2.yaml",
       "type": "file",
-      "size": 18751,
-      "sha256": "c7668e538f08c9621b052e2f40fcd7db39fbef7eee5f178180a3ea460f4049e0",
-      "mode": 436
+      "size": 19010,
+      "sha256": "4473579531643a29297ab940f37c55ae79c6e8a1311f7a8e6bfad894e4f332c8",
+      "mode": 420
     },
     {
       "path": "src/planning/omnifleet_planner/config/nav2_t2.yaml.before-arrival-20261104-055112",
@@ -93050,8 +93065,8 @@
     {
       "path": "src/planning/omnifleet_planner/include/omnifleet_planner/footprint_safe_goal_checker.hpp",
       "type": "file",
-      "size": 1778,
-      "sha256": "c04f50892f4de6c00a109e0dffaf04807dda5c161065ac4306a9281e5628f71c",
+      "size": 1982,
+      "sha256": "0db276b847938649223b7382fe9223680fd202e41c3d7ca7cb6705ae720545ea",
       "mode": 420
     },
     {
@@ -93197,8 +93212,8 @@
     {
       "path": "src/planning/omnifleet_planner/src/footprint_safe_goal_checker.cpp",
       "type": "file",
-      "size": 5623,
-      "sha256": "a282b77e21d808c275e2075847d0d505f104f358fb7827ae06269a4855e954b1",
+      "size": 5861,
+      "sha256": "637c9c68e02cf2e6b204423752dcc900a0066e28284287a0b3fd035cff68207e",
       "mode": 420
     },
     {
@@ -93267,9 +93282,9 @@
     {
       "path": "src/planning/omnifleet_planner/src/pose_rotation_shim.cpp",
       "type": "file",
-      "size": 15077,
-      "sha256": "6cdd8eed195a58fa524f6df65efbb33d71a53121fe54ea649304e8a74fceeea9",
-      "mode": 436
+      "size": 16061,
+      "sha256": "af337ef29cf64a100992fed82e19e9d0347945d48c27135e0384002f409cea69",
+      "mode": 420
     },
     {
       "path": "src/planning/omnifleet_planner/src/pose_rotation_shim.cpp.before-turn-fix-20261104-062652",
@@ -99427,9 +99442,9 @@
     {
       "path": "src/system/omnifleet_fleet/source_time_executor.py",
       "type": "file",
-      "size": 1395,
-      "sha256": "af05c443aa511ae44a110dc69cc22b50ea947930994fe9f47e0ae7ebda40494f",
-      "mode": 436
+      "size": 1450,
+      "sha256": "0dae20f08cb3f4c03ee6a41fd0b013427bc92be523ca403d14cf74240ec386c8",
+      "mode": 420
     },
     {
       "path": "src/system/omnifleet_fleet/start.sh",
@@ -106698,6 +106713,391 @@
       "mode": 420
     },
     {
+      "path": "src/vehicle/ranger_can/can_receiver.py",
+      "type": "file",
+      "size": 3805,
+      "sha256": "10568708416a6fd6c2a91e396bd8da982653da87904e78817d854a75d77478ab",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/ranger_protocol.py",
+      "type": "file",
+      "size": 3803,
+      "sha256": "d2522b7d859efcd1f7fc162c7d94ccebd1bfc8596a0f38c37d7c8997c41fcfd4",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/setup_listen.sh",
+      "type": "file",
+      "size": 615,
+      "sha256": "fc73ba9cec0b3a6c04b6b505b0b1bd391a37588d07e6ca5b92bfe7827af724cd",
+      "mode": 493
+    },
+    {
+      "path": "src/vehicle/ranger_can/zzz-ranger-can.conf",
+      "type": "file",
+      "size": 418,
+      "sha256": "8271fde1d960d13923b51a8840aa274ba8dc0b8b25138968632878f8cffaf2cc",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/zzzz-ranger-sdk.conf",
+      "type": "file",
+      "size": 529,
+      "sha256": "249d434b47233f6bfad7b141acd90b207fff95f8c0848cdbc7d9154cf245fb42",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/config/ranger104.launch.py",
+      "type": "file",
+      "size": 1325,
+      "sha256": "f9bad2e0cf412cc9564e66cf3c57ac41135b3b8b9c75fc857d71024906cbe1a5",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/config/ranger3.launch.py",
+      "type": "file",
+      "size": 1322,
+      "sha256": "9031007153d34848df69266946dec887a410619a072fc93953d338775d5d45af",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/.Module.symvers.cmd",
+      "type": "file",
+      "size": 294,
+      "sha256": "d1e4820008256f0e3be231effc0184c1709db2699509371dc30658794805cb35",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/.gs_usb.ko.cmd",
+      "type": "file",
+      "size": 357,
+      "sha256": "50784ca68c6adfb6e383e102993f54c603705f7997ce06aa551b9c243a7b039b",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/.gs_usb.mod.cmd",
+      "type": "file",
+      "size": 256,
+      "sha256": "2d9dfdad11b8fb086ec0ab5aa6dea918460a1c2f6780bc85cfa5c568392bc13e",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/.gs_usb.mod.o.cmd",
+      "type": "file",
+      "size": 38896,
+      "sha256": "a73614e443ba9b9a80d5ce582863d27f18b088bda9d5a34af18ffb07420823de",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/.gs_usb.o.cmd",
+      "type": "file",
+      "size": 62578,
+      "sha256": "bb878b21b11c8db7a79ddbe883bcda53a5ffc1e898dbff644f8785773df31219",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/.modules.order.cmd",
+      "type": "file",
+      "size": 247,
+      "sha256": "6d47f9fa7099bdd48daa08fa2166bba4116c1d5bab8f9cb4ec93c81a3eb53a53",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/Makefile",
+      "type": "file",
+      "size": 15,
+      "sha256": "c267721c53e2d0b545afb78755489a4ccbe2427019a96a588bfdc25bd24e209d",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/Module.symvers",
+      "type": "file",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/gs_usb.c",
+      "type": "file",
+      "size": 25474,
+      "sha256": "d1ee028fd35e29f1c120577f62d1c3d670731b3b5104f4107278d061a7e5ac06",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/gs_usb.ko",
+      "type": "file",
+      "size": 101288,
+      "sha256": "fad667eee4901be986dd9fb239740a416fb822bd7dc9ecd8e88f92429ccb8aeb",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/gs_usb.mod",
+      "type": "file",
+      "size": 64,
+      "sha256": "267fca568ddaad23e22098241e8626a3bead709abbd904a805f4e67756fa0760",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/gs_usb.mod.c",
+      "type": "file",
+      "size": 2425,
+      "sha256": "cd73ecc0527f60e9a86f9befac6d5b965cd7ac6fcc0e5aa28a2dd816f56c6325",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/gs_usb.mod.o",
+      "type": "file",
+      "size": 19744,
+      "sha256": "eb18a2fa6f2c07b1d6f4672da56e674215798e574513156d6f5c719f2f4575bb",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/gs_usb.o",
+      "type": "file",
+      "size": 83128,
+      "sha256": "9601bc09dd1cfe41741484a65a4894c3b8b7cee8ca09bbc15d85c32d90452255",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_can/kernel/modules.order",
+      "type": "file",
+      "size": 65,
+      "sha256": "f009c308e79f6f72701370efd26672ec1636d2d5cc1c5451e64698dab125c386",
+      "mode": 420
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/LICENSE",
+      "type": "file",
+      "size": 1518,
+      "sha256": "46b7b2bdc6e3e769477c9515594c547e640f7e9d652f88e6295e9d2671f32ece",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/README.md",
+      "type": "file",
+      "size": 2662,
+      "sha256": "24a24f4a7a9c81506d823af77edec6896a50980aeef8f9cc9506e0063d4ce857",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/docs/ranger.png",
+      "type": "file",
+      "size": 322697,
+      "sha256": "62cf71d5820fb2e0bbb3b8088df6d02fb55b2fc37101304cb53969eecfffcb74",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/docs/ranger_mini_v1.png",
+      "type": "file",
+      "size": 4635768,
+      "sha256": "2dfe0407e4b5daf70ef21e01792b9b58d8a8b6acf1aedfb2b27161cc71742eea",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/docs/ranger_mini_v2.png",
+      "type": "file",
+      "size": 1670523,
+      "sha256": "fbb07b9e44522c6f21b31803bc88c6305174912a45021f65d56ff35ba92400e8",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/CMakeLists.txt",
+      "type": "file",
+      "size": 2118,
+      "sha256": "9a1ac3b97d7216980ef0ed5285a1e89b7b118d0454f3e4e7ec41baa426893380",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/package.xml",
+      "type": "file",
+      "size": 1032,
+      "sha256": "8fe1b11ac493ccc51ab435577e021e81476e5bc9666d7699926eb902de4e1984",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/include/ranger_base/kinematics_model.hpp",
+      "type": "file",
+      "size": 2067,
+      "sha256": "025654e2f601f7b64f987c4a04c6e50aebb1608d11c2e3e3bb44b52ac1660d68",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/include/ranger_base/ranger_messenger.hpp",
+      "type": "file",
+      "size": 3837,
+      "sha256": "fbb08b5734d27f0db7b2ad5dbd0d1abeaddfef3f545f58e9fabb3ea562689a6c",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/include/ranger_base/ranger_params.hpp",
+      "type": "file",
+      "size": 3422,
+      "sha256": "e252d23dc4244ae5fa5ac29ff1e04e4825ad581f13559b05d6c6ab08b08a1afa",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/launch/ranger.launch.py",
+      "type": "file",
+      "size": 3139,
+      "sha256": "378554a17e1ef70c0a76cd89adf35b2ab87644e35a3720185ee57815dd366418",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/launch/ranger_mini_v1.launch.py",
+      "type": "file",
+      "size": 3155,
+      "sha256": "37d6dd3e44b1554511e1523778d7034bf63a3d292ca3e79e8953efe554695169",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/launch/ranger_mini_v2.launch.py",
+      "type": "file",
+      "size": 3155,
+      "sha256": "a4c286fa59fdf284536ad98b2ea92a8eb93f4380c3d38de8a3a2433803f1c62f",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/launch/ranger_mini_v3.launch.py",
+      "type": "file",
+      "size": 3147,
+      "sha256": "da0af8b522074506e73a39a501e7d262ee8f85f19b8c1d286c1ba671265e8198",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/launch/include/ranger_robot_base.launch.xml",
+      "type": "file",
+      "size": 939,
+      "sha256": "ca2c4c5eec5d770c2275090c8a9ec4c2a92a9172e2bf33b10250137282b7dd3d",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/src/ranger_base_node.cpp",
+      "type": "file",
+      "size": 520,
+      "sha256": "b7ba1d5f77bab985ee6ed423f6ad6495a385ba6d1f9fd007d5fdbec21c0dcd90",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_base/src/ranger_messenger.cpp",
+      "type": "file",
+      "size": 25779,
+      "sha256": "1ab00702290a953e0860127baf70ccc375876c8963741cb9ab28e57b9e7c534d",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_bringup/CMakeLists.txt",
+      "type": "file",
+      "size": 922,
+      "sha256": "8be9838efdbcabde8e78e2513f6110083354c93c22fdc6cf11cc3fc2b9729328",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_bringup/package.xml",
+      "type": "file",
+      "size": 602,
+      "sha256": "1b2fd8000c0e427544fb01625271e3275d692458351a7c8d90bf86dcd3d48d93",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_bringup/launch/ranger.launch.py",
+      "type": "file",
+      "size": 3043,
+      "sha256": "1fc1274a1d5679f095b976eee48ac17b77ec6c30a2d35e3f3bc9fad7790c6aaf",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_bringup/launch/ranger_mini_v1.launch.py",
+      "type": "file",
+      "size": 3059,
+      "sha256": "cba2a9ef63f88c208d99a5fb7012d2837205cbee327ab3e5213f4644dc220e93",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_bringup/launch/ranger_mini_v2.launch.py",
+      "type": "file",
+      "size": 3051,
+      "sha256": "94c645502399c4afca41eeb84f5badeba498b1e03967461454f628ad8a852789",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_bringup/launch/ranger_mini_v3.launch.py",
+      "type": "file",
+      "size": 3140,
+      "sha256": "0f05f90b84df8d6f6fdb1cd55558cbc9d0e93a98a8fed12fc16b717058aff30c",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_bringup/scripts/bringup_can2usb.bash",
+      "type": "file",
+      "size": 86,
+      "sha256": "536e99de91fc4a06e05bf0383fe68e9e695a58fad00e5fb716f4d8868c6ad684",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_bringup/scripts/setup_can2usb.bash",
+      "type": "file",
+      "size": 190,
+      "sha256": "518f163bc2c6375ebe60610e62a31f34e05ce1f16e98d4a51faa225985b32964",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_msgs/CMakeLists.txt",
+      "type": "file",
+      "size": 872,
+      "sha256": "725cec7432da275a1049d8b6adc06681c19a4d42f052881435e39f462338fe32",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_msgs/package.xml",
+      "type": "file",
+      "size": 872,
+      "sha256": "2ccfb42ede9a36bb5d38158ffb6a8960c86a92a2422c4da5d77639c0be8aa5fd",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_msgs/msg/ActuatorState.msg",
+      "type": "file",
+      "size": 46,
+      "sha256": "99747389b8185809b2cf1b9d7e4626c41bea5479535c6f35808ab6500497f000",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_msgs/msg/ActuatorStateArray.msg",
+      "type": "file",
+      "size": 46,
+      "sha256": "33c2d5ed2b84f952de75c09a7b08d5a04b6c10ffc365b41e8ce2ff605f5e0bdc",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_msgs/msg/DriverState.msg",
+      "type": "file",
+      "size": 96,
+      "sha256": "84e456c44a790976b95a95981fa52cb1adf1e320dd944633a2d4a161912268fa",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_msgs/msg/MotionState.msg",
+      "type": "file",
+      "size": 232,
+      "sha256": "18540ed4719dc47593ecf43ae5b0be50ff21e20f1d3b3886052e437241086fb2",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_msgs/msg/MotorState.msg",
+      "type": "file",
+      "size": 85,
+      "sha256": "09bb45c556434f3e9ff8078d005a0207848773b69788bcb3a9918a319fda69cf",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ranger_ros2/ranger_msgs/msg/SystemState.msg",
+      "type": "file",
+      "size": 477,
+      "sha256": "62604697fc217b0c5369f11a17cb208ccf234ceddd7d590a70b4c17141578df1",
+      "mode": 511
+    },
+    {
       "path": "src/vehicle/ros_robot_controller/README.md",
       "type": "file",
       "size": 1294,
@@ -107025,6 +107425,608 @@
       "size": 2559,
       "sha256": "143aff6b76588ba512625295f7f9e223d9c5659451b064720af15b1957141f02",
       "mode": 420
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/.clang-format",
+      "type": "file",
+      "size": 90,
+      "sha256": "e43ddb8468ff52111d723c9917c99e66d746ca5c9b3522a2f2eecaefc38bc887",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/.gitignore",
+      "type": "file",
+      "size": 1132,
+      "sha256": "e6d5c9886875d6547c3aacbbdc67d50a797e5a78c2186485bfc6e86c62727b2d",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/.gitlab-ci.yml",
+      "type": "file",
+      "size": 3561,
+      "sha256": "af2d564e1e302ee1fb7745d2c0972bb4395d5de0cb395de80d77857b3ce8b9ea",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/.gitmodules",
+      "type": "file",
+      "size": 102,
+      "sha256": "a01e6a4d6bc6c3a49a8c5b57f7a0ff7641d11be99af7d75c3ff4202e01042d11",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/CHANGELOG.md",
+      "type": "file",
+      "size": 919,
+      "sha256": "15fb03760f0860a42c906eed2051956451045a493bd1fe10e472eb327adaa01a",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/CMakeLists.txt",
+      "type": "file",
+      "size": 7375,
+      "sha256": "10bbc2762204bbf40b90a0f1eab514a17aabdcb9b8b64151d8c738b9cec97627",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/LICENSE",
+      "type": "file",
+      "size": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/README.md",
+      "type": "file",
+      "size": 8182,
+      "sha256": "fc4ff7a56538cf56e38c85ad13ef80570c09e03e9c61d920f15d34492713100a",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/doxyfile",
+      "type": "file",
+      "size": 108525,
+      "sha256": "14ad7614fd0810d504485de689663004375c6fd205216a022a77ece84bd768de",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/package.xml",
+      "type": "file",
+      "size": 626,
+      "sha256": "7b7dd913ce79c10063f015bb77b493b5bcee74aafdbb12dc480a827e301d3ba9",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/.github/workflows/ros-ci.yml",
+      "type": "file",
+      "size": 3531,
+      "sha256": "5cf83467483b04ba891342e0f49681b85143a8c8b06789874e450da81693d29b",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/.github/workflows/standalone-ci.yml",
+      "type": "file",
+      "size": 452,
+      "sha256": "5a832a83c99b2012ff66e8c7ae0c53a46cd846881f749eb43c35a1ae8cdd948a",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/cmake/ugv_sdkConfig.cmake.in",
+      "type": "file",
+      "size": 282,
+      "sha256": "86adebe0618ac35aef05dde31e13ed06e6c6dedb02dbe44a5aa2c6773b913f4b",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/docs/interface_hierachy.drawio",
+      "type": "file",
+      "size": 1574,
+      "sha256": "37adabfa2c18eedd31ff063bca782c5f00423fc09b614ad40ba41a9e1372910e",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/docs/interface_hierarchy.png",
+      "type": "file",
+      "size": 17997,
+      "sha256": "57edeb9ecff516962d693ea4ead7593c666da9f6bafba103d40b4fa98e089a1f",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v2/Hunter-2.0+CAN通讯协议v2.1.s.xlsx",
+      "type": "file",
+      "size": 21211,
+      "sha256": "06bbec65ca2bbd6a350c3878b603234a4096030e8f16f7b86dfea43662ce27b0",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v2/SCOUT_UserManual_v1.3.0_S.docx",
+      "type": "file",
+      "size": 1994961,
+      "sha256": "bc933b0b9d1f0744942772dda41293f07994b83e40cf1512609a15c7694d33e8",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/parser_base.hpp",
+      "type": "file",
+      "size": 1434,
+      "sha256": "c06143016c6d6e9750ff0cd63c0def7c2fe3792338e9b6e4a0dacaa6ec8eefdf",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/async_port/async_can.hpp",
+      "type": "file",
+      "size": 1773,
+      "sha256": "866c11057ddc887dbd37ee9d6bd363e1c297dfa366931822f052c25409850623",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/async_port/async_serial.hpp",
+      "type": "file",
+      "size": 1896,
+      "sha256": "3757edd3012fb5bc71cd4a2df67305fda4e110550e8aa4b3b4fa9a63e2c53ea6",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/async_port/ring_buffer.hpp",
+      "type": "file",
+      "size": 3740,
+      "sha256": "797612c80f0660a3b730800ba1def5119c224f3d3d6a53ad00f718e2a05bc0cb",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/interface/agilex_message.h",
+      "type": "file",
+      "size": 9399,
+      "sha256": "fdf4f535e99077b36b14c4165a6845843d99d165e37df9dba81da044170626bf",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/interface/agilex_types.h",
+      "type": "file",
+      "size": 963,
+      "sha256": "31c667e25aea9f0f58067385efd6613869f022dfd2cbdbd7218f31e4df7ff907",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/interface/bunker_interface.hpp",
+      "type": "file",
+      "size": 1282,
+      "sha256": "c7518a9abe85b493289b3387b9c792b94b3deb04a602873568c7f37f5523f366",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/interface/hunter_interface.hpp",
+      "type": "file",
+      "size": 1355,
+      "sha256": "d4ad9b1c2d9a47d423f0efa5a26d1a1d84f85c1b5b0eff86ebd1f3fa7b4ff02b",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/interface/ranger_interface.hpp",
+      "type": "file",
+      "size": 1890,
+      "sha256": "86f5decfc6d6a3bf4bfbe6c0377639aed05b8aeedda52c0be9dcd943c0261edb",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/interface/robot_common_interface.hpp",
+      "type": "file",
+      "size": 1007,
+      "sha256": "c2de70189a84f37e452b3f454300891c55c938607dc3ed98c0376f861e69aa9c",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/interface/scout_interface.hpp",
+      "type": "file",
+      "size": 1753,
+      "sha256": "fcedca69122832fd2b079d02d4b03799e71e7183b1df19f65e51a63f1e78056e",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/interface/titan_interface.hpp",
+      "type": "file",
+      "size": 1402,
+      "sha256": "ae86fc6bd4a1a8d8c90c98a4bba16d1fdb2c4fabbd9916f51e9fb428fd777eca",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/interface/tracer_interface.hpp",
+      "type": "file",
+      "size": 1366,
+      "sha256": "1e57056bd058b7c7818234fb0270491e619f37fc81b2514a634e9bfd3a1cdf7f",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/protocol_v1/agilex_msg_parser_v1.h",
+      "type": "file",
+      "size": 786,
+      "sha256": "ba0a932e2252e631b8ceca5936a9bfd29850fbbd52d8fa54f2b507acd92fcaf2",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/protocol_v1/protocol_v1_parser.hpp",
+      "type": "file",
+      "size": 2848,
+      "sha256": "6c59d1e9ffc8fd6339e32024e2e06b6ca5b8ea2b7fcca9f1fdda767201de5a81",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/protocol_v1/robot_limits.hpp",
+      "type": "file",
+      "size": 1606,
+      "sha256": "f7b596b38a66e5363ae1ddcc3d62db94e51b9eea98ee6be5a5f823e5f3b79aaf",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/protocol_v2/protocol_v2_parser.hpp",
+      "type": "file",
+      "size": 698,
+      "sha256": "3760e8bbf58709cb884e20d51396f676423ee2f8e18e86f500ae62d710918743",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/robot_base/agilex_base.hpp",
+      "type": "file",
+      "size": 14239,
+      "sha256": "2b96ed004d9a35ec634f7db50bed0645137075df17740d9f8bc9e7c05c74f007",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/robot_base/bunker_base.hpp",
+      "type": "file",
+      "size": 2524,
+      "sha256": "fde0f304f2a34eeb2832dd0daee99442fe7253cb270157a305fb087d826400a6",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/robot_base/hunter_base.hpp",
+      "type": "file",
+      "size": 3729,
+      "sha256": "4feefa59f1d3d7d830a323d9de3a504eeb2b9e6450a68f9d2eaf0d7f10374f56",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/robot_base/ranger_base.hpp",
+      "type": "file",
+      "size": 9693,
+      "sha256": "b351f0f48056ba59b3cb78c6abbf73b0e1c9f362a2473cd87467c72fba11d10a",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/robot_base/scout_base.hpp",
+      "type": "file",
+      "size": 3646,
+      "sha256": "ed8827af26c06bc73903599790fe3dd5f76ec78b1b1c2d101e1cc39b4680e594",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/robot_base/titan_base.hpp",
+      "type": "file",
+      "size": 3147,
+      "sha256": "87ac03b21275c85781daa99fc91784a056999b5500e9c0954caaa420c014db94",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/details/robot_base/tracer_base.hpp",
+      "type": "file",
+      "size": 2952,
+      "sha256": "aca6a286d49d4404a7012c70478a6b227f25af01593aae90a5bfff0c9060d46b",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/mobile_robot/bunker_robot.hpp",
+      "type": "file",
+      "size": 1105,
+      "sha256": "0e058d341668f37fe83eff216f862617c47c4446759f8dafdd7b7abb4868cc4a",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/mobile_robot/hunter_robot.hpp",
+      "type": "file",
+      "size": 1173,
+      "sha256": "376da97fff05a00303214dda9a3e25d3ba9330266bf5a6b132b803f2c70a1264",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/mobile_robot/ranger_robot.hpp",
+      "type": "file",
+      "size": 1467,
+      "sha256": "9a08cbb00a4dc28be1c692cf542cbc40f9efdcd891ed0b9e4703ca2bbba8906a",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/mobile_robot/scout_robot.hpp",
+      "type": "file",
+      "size": 1729,
+      "sha256": "2e5717b230d93675eaa4a51840bc56aa2f55088fd8cacaebe5550dc30c4b9081",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/mobile_robot/titan_robot.hpp",
+      "type": "file",
+      "size": 1109,
+      "sha256": "ee89fcfe1bddc5b4ac5d244030fed8e91ec497b3d2bceecdb1724b0e03a951b4",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/mobile_robot/tracer_robot.hpp",
+      "type": "file",
+      "size": 1218,
+      "sha256": "245af813dd2143fdefb2d32a60bb4f24d751d75e8d8a3fe4734ca102584f057f",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/include/ugv_sdk/utilities/protocol_detector.hpp",
+      "type": "file",
+      "size": 702,
+      "sha256": "451bc0b674e733c1f1ecf5527025c5302fd63d4e52147e79cdf8ab5ae030f80c",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/CMakeLists.txt",
+      "type": "file",
+      "size": 186,
+      "sha256": "f6832f97a35d88eb5afdf981b5ee9460cd381f69fe8422744ed42c718f4f1eb6",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/bunker_demo/CMakeLists.txt",
+      "type": "file",
+      "size": 104,
+      "sha256": "0f9d87b931947645bb4fdf21dddd3b3404b53b4c7a168267c4515d2ab9e6b496",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/bunker_demo/bunker_robot_demo.cpp",
+      "type": "file",
+      "size": 2525,
+      "sha256": "ccde7fd3efd213b81cc60998d426aa7357e702e44662773a34de36b11cf3620f",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/hunter_demo/CMakeLists.txt",
+      "type": "file",
+      "size": 104,
+      "sha256": "b17f255f08021a555eea4f94ad3fb9491e0667a4186408be7dcf449e31e5f1c7",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/hunter_demo/hunter_robot_demo.cpp",
+      "type": "file",
+      "size": 3070,
+      "sha256": "347a23fcc8268578f65a3f0df36278bc3246091ef8f68b4a29bc147518b86827",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/ranger_demo/CMakeLists.txt",
+      "type": "file",
+      "size": 104,
+      "sha256": "4d6ac047a1a93e7898bcdd3aa239135e7266df117474431a4156209b209a5c2a",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/ranger_demo/ranger_robot_demo.cpp",
+      "type": "file",
+      "size": 4095,
+      "sha256": "1d6286e8c0595630d48a496841965815d3b0ad78b34dbfc6bf308866415c9d4d",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/scout_demo/CMakeLists.txt",
+      "type": "file",
+      "size": 228,
+      "sha256": "1c45eccb3ad874623f2192f9554897823b4ebd748fdc304da25908ba6289e03b",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/scout_demo/scout_mini_omni_demo.cpp",
+      "type": "file",
+      "size": 4877,
+      "sha256": "75d33941fef7f12a1eecb065fc544c997aa4137e43232c649d0c4494cb50e198",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/scout_demo/scout_robot_demo.cpp",
+      "type": "file",
+      "size": 5446,
+      "sha256": "8ae74c060cd32978d3b32efa938c37bf684bdd9053993f847c722426b7c14b80",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/tracer_demo/CMakeLists.txt",
+      "type": "file",
+      "size": 104,
+      "sha256": "11c0b426d603f205bba526d52d540069bb1bc2e0386c234f88facfda65cce192",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/tracer_demo/tracer_robot_demo.cpp",
+      "type": "file",
+      "size": 2441,
+      "sha256": "2e2693452960325f016b5c858493a53c566b556f4f50a88c28e744a2f7306fba",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/utils_demo/CMakeLists.txt",
+      "type": "file",
+      "size": 228,
+      "sha256": "8ff7c5a86e2fc1235cbad0f55b6b0568567b09741447172b942990e5a1cad244",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/utils_demo/demo_protocol_detector.cpp",
+      "type": "file",
+      "size": 803,
+      "sha256": "1cf45225263012d8bd5003466ca59cfa066e1c0b1dffca3b2ef7ac4adcdbf0e9",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/sample/utils_demo/demo_robot_version.cpp",
+      "type": "file",
+      "size": 1777,
+      "sha256": "8e3d2e292cfa36587c71f5aa601e5aba6c0cdd67b99c5f56b2cf83cb16c46cd3",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/scripts/bringup_can2usb_1m.bash",
+      "type": "file",
+      "size": 87,
+      "sha256": "80903d59162eeb8f6f31167e9b1f19c147447356aeb0a8cc3f79e7cd653d237e",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/scripts/bringup_can2usb_500k.bash",
+      "type": "file",
+      "size": 86,
+      "sha256": "536e99de91fc4a06e05bf0383fe68e9e695a58fad00e5fb716f4d8868c6ad684",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/scripts/setup_can2usb.bash",
+      "type": "file",
+      "size": 190,
+      "sha256": "518f163bc2c6375ebe60610e62a31f34e05ce1f16e98d4a51faa225985b32964",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/async_port/async_can.cpp",
+      "type": "file",
+      "size": 4224,
+      "sha256": "71bbae6b024161c0205814c87f1491e0710fc792be144033395b8a1af054cffd",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/async_port/async_serial.cpp",
+      "type": "file",
+      "size": 4525,
+      "sha256": "825744128c5a9872a125977d06ff696e3437a53fb656d937faadcd9ae150ac8a",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/mobile_robot/bunker_robot.cpp",
+      "type": "file",
+      "size": 1653,
+      "sha256": "25ef9f92985cfd0fda5a774d4a64a09e90716ea69bded9eff658806cdf5a5bc9",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/mobile_robot/hunter_robot.cpp",
+      "type": "file",
+      "size": 1893,
+      "sha256": "4559cbef2bac0db9d3c67fbb9740668d0bd79bef825d820623f50552c19b3669",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/mobile_robot/ranger_robot.cpp",
+      "type": "file",
+      "size": 2379,
+      "sha256": "94ab7dfa39be6b22ee5260de1c5e58b5d24ddd49aeb8ac2f181850bde6db9741",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/mobile_robot/scout_robot.cpp",
+      "type": "file",
+      "size": 2917,
+      "sha256": "35411cdf84f4f0c37199a3a768a80d9dccb15f52968c84e7b68ee6dd695c2921",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/mobile_robot/titan_robot.cpp",
+      "type": "file",
+      "size": 1793,
+      "sha256": "3ad9017731087edecac7da13e857ee6d7a2426195d5baf1cbf6d4de553208228",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/mobile_robot/tracer_robot.cpp",
+      "type": "file",
+      "size": 1962,
+      "sha256": "88b207de61ed9a152f16a54b99f3d0c684927ad6eb915593fe3ee794051e1166",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/protocol_v1/agilex_msg_parser_v1.c",
+      "type": "file",
+      "size": 6436,
+      "sha256": "327f4ac9ff0c3895702e7a7a643c7cd0dcbcc26e122380ecbd14133f5daca559",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/protocol_v1/agilex_protocol_v1.h",
+      "type": "file",
+      "size": 5142,
+      "sha256": "72199e956aef27685340343d88706b59704039411acc9ed25b3c8c5d73b285b5",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/protocol_v2/agilex_msg_parser_v2.c",
+      "type": "file",
+      "size": 26417,
+      "sha256": "8da1e060088f0dcb91593c5c47361660ae9560c6faa2ef63a008e8a2690d6d0d",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/protocol_v2/agilex_msg_parser_v2.h",
+      "type": "file",
+      "size": 836,
+      "sha256": "04553fbf4cc3cf4222dc59eb26a258faf428fb0ab1cd263d9c7ea354920fb896",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/protocol_v2/agilex_protocol_v2.h",
+      "type": "file",
+      "size": 10441,
+      "sha256": "346803e920dcb56d78009136dcc5b091c9ee436ffcecb364dc9e85227efa1f36",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/protocol_v2/protocol_v2_parser.cpp",
+      "type": "file",
+      "size": 820,
+      "sha256": "837b216886e90c74f24c0db6fff719a08543985e8018f4cd9367abd8cf920120",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/utilities/protocol_detector.cpp",
+      "type": "file",
+      "size": 1487,
+      "sha256": "743c642b9b1ffde193864221a5dc023dd83ee40505ceb9e59f9ac9a9ee4ec62a",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/src/utilities/stopwatch.hpp",
+      "type": "file",
+      "size": 4901,
+      "sha256": "8946b7513516d8e188ccc0a8ba694568453862aaa579dc37e985bc045d2dc600",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/test/CMakeLists.txt",
+      "type": "file",
+      "size": 935,
+      "sha256": "d17ec7dfa19241fe8490ac733b6218b5c1bb7abab5976e19a87a1fcae2f32029",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/test/scout_memory_check.cpp",
+      "type": "file",
+      "size": 1119,
+      "sha256": "2ad90427f0b1db8f28bc7e0a0b8b18e625c3f7336176970c0b81c09cb3ab5a21",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/test/unit_tests/utest_hunter_v1_command.cpp",
+      "type": "file",
+      "size": 2910,
+      "sha256": "988822bf6bc5c28c2d2d2f7cb6dd2e3e53820416ff02c41742fb5253d2630a7f",
+      "mode": 511
+    },
+    {
+      "path": "src/vehicle/ugv_sdk/test/unit_tests/utest_scout_v1_command.cpp",
+      "type": "file",
+      "size": 2219,
+      "sha256": "5a310e4af414c147f7b7e9883c785de670003c2df191bf3e19086623ac26c6de",
+      "mode": 511
     },
     {
       "path": "src/visualization/README.md",
@@ -130463,6 +131465,13 @@
       "mode": 420
     },
     {
+      "path": "src/visualization/omnifleet_t2_ws/foxglove/app_patch/index.html",
+      "type": "file",
+      "size": 1096,
+      "sha256": "15c0c2f70572479cc34ae6b5e6c5a42051357cd6ebcbe4f1c0a1ddc165bb82fd",
+      "mode": 420
+    },
+    {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/app_patch/load_path_dialog.js",
       "type": "file",
       "size": 1686,
@@ -130474,6 +131483,13 @@
       "type": "file",
       "size": 2868,
       "sha256": "b3b651d67d78e19d82d41ec63df409e588e2e83a27af0925e10d30676d524526",
+      "mode": 420
+    },
+    {
+      "path": "src/visualization/omnifleet_t2_ws/foxglove/app_patch/omnifleet113-panels.js",
+      "type": "file",
+      "size": 186844,
+      "sha256": "6c74066e6934129f073039fd596bb74a86875e5b2ec9b0260b21d9562c9cd314",
       "mode": 420
     },
     {
@@ -130502,6 +131518,13 @@
       "type": "file",
       "size": 2006,
       "sha256": "d98fb8e7f33fef1e34b63c7606f546c2bd6697315fc985de52593602fa6de9f3",
+      "mode": 420
+    },
+    {
+      "path": "src/visualization/omnifleet_t2_ws/foxglove/app_patch/robot104-web.js",
+      "type": "file",
+      "size": 15408,
+      "sha256": "ecfb4f5ca0d2f26cff335bca54b2ed43ba931ba57386a9defca43fd6007249db",
       "mode": 420
     },
     {
@@ -131527,17 +132550,10 @@
       "mode": 420
     },
     {
-      "path": "README.md",
-      "type": "file",
-      "size": 799,
-      "sha256": "575a9f146e872750b62cfd12eabb04340b3f77bd338a74829a219a591e5139e3",
-      "mode": 436
-    },
-    {
       "path": "README.workspace.md",
       "type": "file",
-      "size": 2306,
-      "sha256": "077034212cf2ff81355a101ed0297188c8fcfc8b4f10c77f1e40bbbdae44e6d3",
+      "size": 1163,
+      "sha256": "955e410d25905720ed4b37454d1ae3ec5abcfa603cc4dbe2a0d67a2eea8fa56a",
       "mode": 436
     },
     {
@@ -131709,13 +132725,6 @@
       "mode": 436
     },
     {
-      "path": "web/vision-follow.html",
-      "type": "file",
-      "size": 8563,
-      "sha256": "8ba31ca9215cc996a505b92ff62923f04205fe606e618bba0205fe0c1128c1a9",
-      "mode": 420
-    },
-    {
       "path": "camera/rgb1080.py",
       "type": "file",
       "size": 9453,
@@ -131748,6 +132757,13 @@
       "type": "file",
       "size": 1291,
       "sha256": "7da2eecc7ef8c67906a1913b0bc1d528d2ae66bc5a1f0f22dc9a7ea3565c7b08",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system/omnifleet-clone-identity.service.d/124-image.conf",
+      "type": "file",
+      "size": 1497,
+      "sha256": "679731dcd36c0384d2bf2f6eb9ed09359d5c4b042c1daaafab6b850d1a206d76",
       "mode": 420
     },
     {
@@ -131837,6 +132853,13 @@
       "type": "file",
       "size": 486,
       "sha256": "258f0a0e21770defa1fb040380ee049a2a1b585175260519b1949ca02ffc24da",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system/omnifleet-follow-media.service",
+      "type": "file",
+      "size": 404,
+      "sha256": "25e2a19f7da343aa68741cf31a153ba6dcff89645b44f6dc15bacee2d1e33951",
       "mode": 420
     },
     {
@@ -132040,6 +133063,13 @@
       "type": "file",
       "size": 329,
       "sha256": "b7b0c376cb1f398c51ad2fe7bbd35a9dd964c5cabf08989ed3ecd2eab06ab818",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system/omnifleet-t2-chassis.service.d/zzzzzz-ranger3.conf",
+      "type": "file",
+      "size": 582,
+      "sha256": "7ec7b234f9fdf7028fce32fa0ed26f9654d9c6c4f9e0fe79c2c312b547cabad3",
       "mode": 420
     },
     {
@@ -132560,10 +133590,38 @@
       "mode": 420
     },
     {
-      "path": "system/etc/udev/rules.d/99-omnifleet-t2-chassis.rules",
+      "path": "system/etc/systemd/system.control/omnifleet-current-pose.service.d/50-CPUWeight.conf",
       "type": "file",
-      "size": 176,
-      "sha256": "6e002b8c80bc2a4d94394a7c96d0124383e0f72ce0ac4bd93fc0b6d8cfa58b12",
+      "size": 145,
+      "sha256": "b201f74bf75358ae9d75d1b41ac04a38b0f16675f2851e69fa5d03a949a30a47",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system.control/omnifleet-local-navigation.service.d/50-CPUWeight.conf",
+      "type": "file",
+      "size": 145,
+      "sha256": "e838b756036ac8cfe40ebd89b5ca81308cdb939d3dbe8594cde8269c72dbfd95",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system.control/omnifleet-t2-chassis.service.d/50-CPUWeight.conf",
+      "type": "file",
+      "size": 145,
+      "sha256": "636a5a77a95dae364624178bf4834e2bbb2876107a83d7598cac594b7db7f7bc",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system.control/omnifleet-t2-mola.service.d/50-CPUWeight.conf",
+      "type": "file",
+      "size": 145,
+      "sha256": "429b2e08399ef94fe4b3825eb4ca0be7185afbf9c43138854ae814ddb90e6b11",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system.control/omnifleet-t2-pure-lio-nav2.service.d/50-CPUWeight.conf",
+      "type": "file",
+      "size": 145,
+      "sha256": "429b2e08399ef94fe4b3825eb4ca0be7185afbf9c43138854ae814ddb90e6b11",
       "mode": 420
     },
     {
@@ -132571,6 +133629,13 @@
       "type": "file",
       "size": 204,
       "sha256": "ee873bb76d4db405cce8de54161f789eb0004186609dba84462ba419beff3d82",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/udev/rules.d/99-omnifleet-t2-chassis.rules",
+      "type": "file",
+      "size": 176,
+      "sha256": "6e002b8c80bc2a4d94394a7c96d0124383e0f72ce0ac4bd93fc0b6d8cfa58b12",
       "mode": 420
     },
     {
@@ -132702,8 +133767,8 @@
     {
       "path": "system/opt/omnifleet-dispatch-web/server.py",
       "type": "file",
-      "size": 15479,
-      "sha256": "f2637c1b6bd0716711e7b15da518689a34d53e74ed659e4159606e7634354b5f",
+      "size": 15252,
+      "sha256": "7a415a73127524866f38a39bdafcf0fb3475959d21afe235964d52bcbc831f08",
       "mode": 420
     },
     {
@@ -132730,15 +133795,15 @@
     {
       "path": "system/opt/omnifleet-dispatch-web/single-bootstrap.js",
       "type": "file",
-      "size": 5621,
-      "sha256": "4ae73314cff8c7ee72fd3d4dab9fa9f8ea343c8983e766259b94359f4129059c",
+      "size": 6418,
+      "sha256": "f87cfacbd706047091f0e5ccd04e3e19f94ad4738f663668e5ae43d40e02578c",
       "mode": 420
     },
     {
       "path": "system/opt/omnifleet-dispatch-web/single-layout.json",
       "type": "file",
-      "size": 7731,
-      "sha256": "b2c03a7e41b43998f0a0624026fe459873d325fd6f3a367b7d78c77c4d2daeb2",
+      "size": 10028,
+      "sha256": "7c1808c9fe5a0353cffcf8587ac79cfa1e7c3343454b87f060def078517161cb",
       "mode": 420
     },
     {
@@ -132819,605 +133884,17 @@
       "mode": 420
     },
     {
-      "path": "web/site/0513b23d545c2bbec05a.png",
-      "type": "file",
-      "size": 12726,
-      "sha256": "9e9ffa47bbb8f51bc6ce6d3977f78f93c227f82f35c7296ca7db02c8005b81b2",
-      "mode": 420
-    },
-    {
-      "path": "web/site/0c915ff6b53c94fc1dc1.wasm",
-      "type": "file",
-      "size": 1048165,
-      "sha256": "a8a96ffc1118ed9c2adc93a8ddd4e8069c617320cd6dc141bd1029b9104265d7",
-      "mode": 420
-    },
-    {
-      "path": "web/site/1015.62948c929c3183e53d05.js",
-      "type": "file",
-      "size": 8743,
-      "sha256": "82c8747c366a59991a1239d5130bebe49749855ecc47182cd1c1511be176fbb1",
-      "mode": 420
-    },
-    {
-      "path": "web/site/1077.e2ebbf246779c9cf2d7b.js",
-      "type": "file",
-      "size": 19866,
-      "sha256": "78e076581825a705fe3350bbfd546c8f3f1f7bec6a5c1a901cb26c329f1202aa",
-      "mode": 420
-    },
-    {
-      "path": "web/site/1194.af9d6507eff6aaef7082.js",
-      "type": "file",
-      "size": 13262,
-      "sha256": "23b38c44831affd93d0db19a8cfbb027f4aa47c0ee9294366257afb5de8c7df1",
-      "mode": 420
-    },
-    {
-      "path": "web/site/1340.ccbb8a4dcaee83537d34.js",
-      "type": "file",
-      "size": 60021,
-      "sha256": "7fcb8811021a1259db7d61e8eb7a92660bb6ef3c4cb312378180888dc856f599",
-      "mode": 420
-    },
-    {
-      "path": "web/site/1362.5850e72d9de05d80fe9b.js",
-      "type": "file",
-      "size": 460095,
-      "sha256": "8988b69270b21c943d13d3539eaa0a99c31fb05c012834137c390e3969b65628",
-      "mode": 420
-    },
-    {
-      "path": "web/site/1478.db10a8c1f22187826254.js",
-      "type": "file",
-      "size": 708,
-      "sha256": "afb6af2f6abf6508c864ae7796c1b57bfdafa281d684e2a062a6fa5cfec805b9",
-      "mode": 420
-    },
-    {
-      "path": "web/site/1739.e1b4960efdfb0d22e2e0.js",
-      "type": "file",
-      "size": 2482,
-      "sha256": "fefe972f9807a838c7fd74a873a5b359a9b44ae7fe39283dd5dd2c1e997b6599",
-      "mode": 420
-    },
-    {
-      "path": "web/site/1815.79eb167732cd2947c640.js",
-      "type": "file",
-      "size": 5779,
-      "sha256": "2d277b68d3190a4ffe0a56ac78dc620508299b0b538b435e97a23746e493908a",
-      "mode": 420
-    },
-    {
-      "path": "web/site/2042.46e1796ce164988ad804.js",
-      "type": "file",
-      "size": 8703,
-      "sha256": "4a2014c788dbb19b304a367385f5b7dcaede53f5384e668131d7384c668883b3",
-      "mode": 420
-    },
-    {
-      "path": "web/site/2249.3c025df0a5450dc37d8b.js",
-      "type": "file",
-      "size": 108438,
-      "sha256": "9ae5d61d4ad012fb767466391b2e089833f19a92a32032d9bb6c826c042f09ba",
-      "mode": 420
-    },
-    {
-      "path": "web/site/2455.acb8f0418f7152157e30.js",
-      "type": "file",
-      "size": 26037,
-      "sha256": "11a90ead7200069b68bc830d85fe9f66b55135f738ae526bf83218c4cd72c806",
-      "mode": 420
-    },
-    {
-      "path": "web/site/2657.62e8f9c5575ea877ea9f.js",
-      "type": "file",
-      "size": 210,
-      "sha256": "b867e1f42c39f32de565ffc4db55f30d257d7e178161c9777372f29209bcf27b",
-      "mode": 420
-    },
-    {
-      "path": "web/site/26c813b3e19fb7c31c1d.png",
-      "type": "file",
-      "size": 106043,
-      "sha256": "fd344a291aad0fd574c7edcedb2cd7400ac14efbbeaebc25b2dc7f06c97a27e3",
-      "mode": 420
-    },
-    {
-      "path": "web/site/2784.a46df8cabe848f178da9.js",
-      "type": "file",
-      "size": 180732,
-      "sha256": "4b02e06cd64aed054396833493cfc1a796dfa57a0ca4838a433893d93c793a5c",
-      "mode": 420
-    },
-    {
-      "path": "web/site/280.0e6fc5b4bb48b4add05c.js",
-      "type": "file",
-      "size": 1183,
-      "sha256": "565cbaab56a0749980ccb8536e22ef8751f7f170931b7f711135e1e81cd59623",
-      "mode": 420
-    },
-    {
-      "path": "web/site/2956.fc549b9c6053f70a9848.js",
-      "type": "file",
-      "size": 4874,
-      "sha256": "943766693471d287b6b20408d66d34124d401c68d35d64019ea5c3cc008bdfd8",
-      "mode": 420
-    },
-    {
-      "path": "web/site/3050.8b22ba0c40568f9bdd54.js",
-      "type": "file",
-      "size": 13885,
-      "sha256": "c9ece31ab518d8dc6b9c79435065e6a2d62c23f75ccbb5245c9b3d8e5d841b09",
-      "mode": 420
-    },
-    {
-      "path": "web/site/3123.80910b973d47c259c9e9.js",
-      "type": "file",
-      "size": 21266,
-      "sha256": "841bddb53fd1f552dd0f9f520deeeffbabb06bc23cc0e1b1103c168d5e9962fe",
-      "mode": 420
-    },
-    {
-      "path": "web/site/3476.116b3c1085523f3a219b.js",
-      "type": "file",
-      "size": 7919,
-      "sha256": "3db4728ff0f3a288c77049aedebd5b0ab89913b213e639873695048efe747af7",
-      "mode": 420
-    },
-    {
-      "path": "web/site/3635.e97ebe9dbb9a3e8fdcb0.js",
-      "type": "file",
-      "size": 7490,
-      "sha256": "e0d430c72bbecadbf00ec4f0f1a992c8393823755ac3844f5852bd423b4dfe57",
-      "mode": 420
-    },
-    {
-      "path": "web/site/3771.ec2d9a01d892f92a4612.js",
-      "type": "file",
-      "size": 560931,
-      "sha256": "168ced7912c175e891930d16ff18c054b7a6f79f6442303c66b66c839f3e15d5",
-      "mode": 420
-    },
-    {
-      "path": "web/site/4216.cd361e61814cfa18d50e.js",
-      "type": "file",
-      "size": 15132,
-      "sha256": "65db8da756b97ae07127f41f5bb3e58f405fcb18d21c67936253e09e248283f6",
-      "mode": 420
-    },
-    {
-      "path": "web/site/4268.30f44e77f04d41c23567.js",
-      "type": "file",
-      "size": 2963,
-      "sha256": "1949a6115e0a23725c4eaa72f4fec1bf715dfc169722e8b19f489f8bfc461d60",
-      "mode": 420
-    },
-    {
-      "path": "web/site/4334.8e3924192ade98244848.js",
-      "type": "file",
-      "size": 6450,
-      "sha256": "9abeaa0772a55c977aa76b866aa54ce8d21eb8e50c8587064f878f3bd586e1ce",
-      "mode": 420
-    },
-    {
-      "path": "web/site/4585.d6af4ab69b5d34581d50.js",
-      "type": "file",
-      "size": 2015,
-      "sha256": "b38a87399f2256615d6bdebdc959f0402d2bf4d601b183d0480b56f412627148",
-      "mode": 420
-    },
-    {
-      "path": "web/site/4647.feb26c4ae2718d928d28.js",
-      "type": "file",
-      "size": 2963,
-      "sha256": "cf509201f25e1127af6c69fb7425f69eacf7cf71ff2019b2fc8cb2c531e441cf",
-      "mode": 420
-    },
-    {
-      "path": "web/site/4656.965768ca7ed4ef6c8186.js",
-      "type": "file",
-      "size": 4116293,
-      "sha256": "770cace3ae44d0a833265199f1a197d4e2355b69a301eeab73ee2ddc602646d3",
-      "mode": 420
-    },
-    {
-      "path": "web/site/4838.4144fe77b2db1994c140.js",
-      "type": "file",
-      "size": 353772,
-      "sha256": "5c5eaaa0b5df96496917565ca53c04dde49f72f21277b463e82140858bb1378a",
-      "mode": 420
-    },
-    {
-      "path": "web/site/4933.0383acc26a6ef3e5a88e.js",
-      "type": "file",
-      "size": 12063,
-      "sha256": "2d38da749544b134cf8e9dac88c0562854ac694b4f2838f47c751e063aae17d9",
-      "mode": 420
-    },
-    {
-      "path": "web/site/4962.ee9869d4c7f4ad95f886.js",
-      "type": "file",
-      "size": 15395,
-      "sha256": "41f5d43543d4b49812d9216898905bc7e4ddc0bdfc50fc8ff3c8240ce6ada129",
-      "mode": 420
-    },
-    {
-      "path": "web/site/5142.9b09432bd3ac976ee4ac.js",
-      "type": "file",
-      "size": 14432,
-      "sha256": "f860cd50713b95c76a1efaf93342e466fa82865895d6ec0a46ed6818c2452686",
-      "mode": 420
-    },
-    {
-      "path": "web/site/5311.3ef9c182bddaf6ec447e.js",
-      "type": "file",
-      "size": 440444,
-      "sha256": "3ea229e9235f0c41edec6093097b92e0e2228373ad132cf3d3a3f50b1dd04c7c",
-      "mode": 420
-    },
-    {
-      "path": "web/site/5339.c4eb0d6a9a6ef3a3a07d.js",
-      "type": "file",
-      "size": 5359,
-      "sha256": "8969347861b6abfa39e44cebaa51e879ba0bbab159db2a22c6efe6df1588b52b",
-      "mode": 420
-    },
-    {
-      "path": "web/site/5358.40062e1665c9b7ce0280.js",
-      "type": "file",
-      "size": 2963,
-      "sha256": "097301e2be417b67ba5a2e6d14035569aa7f0e629ec40898eae626caf87d9d3a",
-      "mode": 420
-    },
-    {
-      "path": "web/site/5491.b569ed8e3ec63f8843ee.js",
-      "type": "file",
-      "size": 7916,
-      "sha256": "a094a6c034daa4db113c5028124bbebca4a060421c722a72c44ed5296b0e1368",
-      "mode": 420
-    },
-    {
-      "path": "web/site/5744.7173c252b9072ef06c99.js",
-      "type": "file",
-      "size": 36701,
-      "sha256": "28e78527a8de0ae32d7c9689d006192d152de03652dc2f461d253cdf3c278474",
-      "mode": 420
-    },
-    {
-      "path": "web/site/5778.a42f7891d77a56ffcce6.js",
-      "type": "file",
-      "size": 616267,
-      "sha256": "611a28b97c344448d1a7dfa86845662b4043530f03625c57ddf79773bc78e9d7",
-      "mode": 420
-    },
-    {
-      "path": "web/site/5798.78c863c82cb30d1a2f75.js",
-      "type": "file",
-      "size": 46491,
-      "sha256": "5c3f46ce7fc2f906a34aaf99baa94b0a190aabe40173212f8a8dfc2c93bbe4b9",
-      "mode": 420
-    },
-    {
-      "path": "web/site/5807.7ef1f8b9cd50c6800f30.js",
-      "type": "file",
-      "size": 9422,
-      "sha256": "e6a419adf6fbb2d050264cda4f5664fd6fd1e937f8aade9dc13f82234565eeb6",
-      "mode": 420
-    },
-    {
-      "path": "web/site/6060.7edb1211ef1afa8bfcc3.js",
-      "type": "file",
-      "size": 5558,
-      "sha256": "1efa89e6196334f0a520bfd29ba542d8f061e5d7089f83e31c984800af69e0ac",
-      "mode": 420
-    },
-    {
-      "path": "web/site/6085.98002405eaf914b7d5d6.js",
-      "type": "file",
-      "size": 32610,
-      "sha256": "62868c1eedcccdfdbb6abb105bf9275cb734743237db3ce0e4730cb9751cac1f",
-      "mode": 420
-    },
-    {
-      "path": "web/site/610.b684ae969077e0a4b937.js",
-      "type": "file",
-      "size": 11765,
-      "sha256": "14bb3404f6a943a6100b259750be7beb8bd2b5c7ef1cac63d63003d8e38620e8",
-      "mode": 420
-    },
-    {
-      "path": "web/site/6418.37ff5ae5262f883ae97c.js",
-      "type": "file",
-      "size": 14259,
-      "sha256": "bc818c87a8b993e3e6cac359329f511a97e835bbe2e5e96f2e164e7ecb8003e8",
-      "mode": 420
-    },
-    {
-      "path": "web/site/6503.ab1a2eb59f2b0e95b583.js",
-      "type": "file",
-      "size": 15560,
-      "sha256": "aaeda07f2a5c866a10ad58d8cf4b9c67a8020b26655392bf9f602aed45dfa520",
-      "mode": 420
-    },
-    {
-      "path": "web/site/6548.d11df31130c67a0eea1c.js",
-      "type": "file",
-      "size": 6450,
-      "sha256": "48ed3f866c3b85b04e282940849285955f71c053d5c44b4be7b0c081f9d9b351",
-      "mode": 420
-    },
-    {
-      "path": "web/site/670.8db2896a062795c9017b.js",
-      "type": "file",
-      "size": 25771,
-      "sha256": "b13a2eb687665135e8eced7e7a523eac9f4c4851fdf5dbfc2170e528a44d50fb",
-      "mode": 420
-    },
-    {
-      "path": "web/site/6748.db42dbcb546c441aae76.js",
-      "type": "file",
-      "size": 6453,
-      "sha256": "314d6b2ded0aec6e5e200449332bab4dc04300f454584ee6f45c37f823c58b4c",
-      "mode": 420
-    },
-    {
-      "path": "web/site/6750.58595bbb2d033324cf6f.js",
-      "type": "file",
-      "size": 6710,
-      "sha256": "b02e9dafdd7857d6e4f219bcbd335737dddcba02b32e0000b682ad68b867bbfc",
-      "mode": 420
-    },
-    {
-      "path": "web/site/6772.98bd47caf851742af9df.js",
-      "type": "file",
-      "size": 93069,
-      "sha256": "2653b49b77dcf86cd6c9ddca58bb95157df7cb9fbddc8582f71e561179114a0a",
-      "mode": 420
-    },
-    {
-      "path": "web/site/6f82e8e5ce718e4d9c61.wasm",
-      "type": "file",
-      "size": 18220,
-      "sha256": "5c271c2037e043412df7d4620595bcee14caaac114ac8224535b3f79a8581568",
-      "mode": 420
-    },
-    {
-      "path": "web/site/7057.b4f2dc2d9e7d9907e613.js",
-      "type": "file",
-      "size": 240681,
-      "sha256": "c4347fd7eac540eb40a2e4f501bebb1f1f2a7d5df17645bc6971d56517378d20",
-      "mode": 420
-    },
-    {
-      "path": "web/site/7472.9a062f825d9576e88768.js",
-      "type": "file",
-      "size": 41392,
-      "sha256": "1a82e11edb3c9bc6599e64e7fcf5d56da5801db989b080edb8d1d6dfedda3340",
-      "mode": 420
-    },
-    {
-      "path": "web/site/7984.65080f9e09a6d18fb136.js",
-      "type": "file",
-      "size": 6184,
-      "sha256": "4c2ace93076fdeb42d79cb5f9e2ab249b30a06787a0c27d4c15d1eb6778546ef",
-      "mode": 420
-    },
-    {
-      "path": "web/site/8023.9b43469ac8d328d3b4c7.js",
-      "type": "file",
-      "size": 26464,
-      "sha256": "77934c4bd2f2c2087080f0c361eb08ace3898cde9aa536b0d27838472a73125d",
-      "mode": 420
-    },
-    {
-      "path": "web/site/8395.c34bc06f7bbb81499163.js",
-      "type": "file",
-      "size": 204281,
-      "sha256": "e173433a441be5e6f6530cf6a6d8067505b627f107b439e6db9ad4339914d890",
-      "mode": 420
-    },
-    {
-      "path": "web/site/8834.c0a0398ded089d0eb200.js",
-      "type": "file",
-      "size": 23718,
-      "sha256": "c68e832feebfed25e2f815b023e0571fa01e1e0ed64be3281727972126ffdb06",
-      "mode": 420
-    },
-    {
-      "path": "web/site/9183.e168e43dc60c95372e33.js",
-      "type": "file",
-      "size": 82996,
-      "sha256": "d5a26b087a21a575bed0ed6210f4df879345da25b58d488f6451310c34bcd601",
-      "mode": 420
-    },
-    {
-      "path": "web/site/92.76580c5f2562fcd2eb22.js",
-      "type": "file",
-      "size": 9431,
-      "sha256": "c637226c158ea6be412c3ded26c178e802fc9ec38c0d2bc43a446b970f35a766",
-      "mode": 420
-    },
-    {
-      "path": "web/site/9235.112e9957b7eaa941ae33.js",
-      "type": "file",
-      "size": 14288,
-      "sha256": "99370a195a26ed03eb8d5356cb0bb63a08936f4a2939063b7996a8fa4ac1a85f",
-      "mode": 420
-    },
-    {
-      "path": "web/site/9701.ee49b1acfb06fad002a5.js",
-      "type": "file",
-      "size": 5876,
-      "sha256": "5a30252af2b7791aeba2e578636b9f83f44ef38c75514f466213d5dd63c5c251",
-      "mode": 420
-    },
-    {
-      "path": "web/site/9723.29e64ea5547d6f441f66.js",
-      "type": "file",
-      "size": 6808,
-      "sha256": "d83b1df5e3429ac246b2b8ad02274781c9fc540e307ac121e1c9981771eeb1cd",
-      "mode": 420
-    },
-    {
-      "path": "web/site/981.5e61c734d30b7f69f97f.js",
-      "type": "file",
-      "size": 8171,
-      "sha256": "707f43846f5a1b0a0c1964898d4feb58efa6a0cedde12aae27350a17cb606684",
-      "mode": 420
-    },
-    {
-      "path": "web/site/LICENSE",
-      "type": "file",
-      "size": 16725,
-      "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
-      "mode": 420
-    },
-    {
-      "path": "web/site/a1553835436ceb1527f4.wasm",
-      "type": "file",
-      "size": 285747,
-      "sha256": "c55a594e8ffd18426d36b27fea9618af3df5e173640a3e56d46f09d76f0574f2",
-      "mode": 420
-    },
-    {
-      "path": "web/site/a2884a6e6f89bb6ad800.wasm",
-      "type": "file",
-      "size": 412634,
-      "sha256": "13704a218030bf6b1626c2bf24545290a9bce153784691d743c8c8c6ebf18f0d",
-      "mode": 420
-    },
-    {
-      "path": "web/site/apple-touch-icon.png",
-      "type": "file",
-      "size": 8828,
-      "sha256": "fbbb03abb34cfa621d50d978748fbf3b11c014b5b251fafd80ee2acf4cbe86f9",
-      "mode": 420
-    },
-    {
-      "path": "web/site/e46cedbe043b399854ef.wasm",
-      "type": "file",
-      "size": 1108322,
-      "sha256": "5864fdfb8647b6cfa42b4aa190993530e5c34178b45095895bd4a25c3e4921fc",
-      "mode": 420
-    },
-    {
-      "path": "web/site/e7bf3d07c33884215d85.png",
-      "type": "file",
-      "size": 9163,
-      "sha256": "ac8e6ac602612d9bf3237bed9b587223adc94b8f674c4f8e754621e0759cb4fb",
-      "mode": 420
-    },
-    {
-      "path": "web/site/fa1041107bbf6dc79fdc.png",
-      "type": "file",
-      "size": 98117,
-      "sha256": "088f5cfbab8a287b872fa7def7b950d7d1176672cbcbe4b8147ebd1aa8ab5ec4",
-      "mode": 420
-    },
-    {
-      "path": "web/site/favicon-16x16.png",
-      "type": "file",
-      "size": 886,
-      "sha256": "2a78a241a8edc4c39e13cb18eb5d8eef0c80ae4fd858413dfde27d26bfc061a5",
-      "mode": 420
-    },
-    {
-      "path": "web/site/favicon-32x32.png",
-      "type": "file",
-      "size": 1403,
-      "sha256": "983742d489027ceac5a8889cfa6c6dd8f305505943ec27601a144601b16ff2ef",
-      "mode": 420
-    },
-    {
-      "path": "web/site/favicon.ico",
-      "type": "file",
-      "size": 15086,
-      "sha256": "ae55fb5a7685abcd4d9acf18bd7c29df74299854dfba078215a3c64126c8e891",
-      "mode": 420
-    },
-    {
-      "path": "web/site/fb62755380433e4f4f1c.png",
-      "type": "file",
-      "size": 113836,
-      "sha256": "6ac2af4b6ccebce170dfd48de77b3fd13c58a6310937f1cb8df7c7b6afc1d89b",
-      "mode": 420
-    },
-    {
-      "path": "web/site/foxglove-tour.js",
-      "type": "file",
-      "size": 18531,
-      "sha256": "37e4bf0bc939dee0a661e1eb6e043488857bd356adb918811ee35a3cab8767af",
-      "mode": 420
-    },
-    {
-      "path": "web/site/index.html",
-      "type": "file",
-      "size": 1087,
-      "sha256": "9300bf438de0814ecaa5e06b6f9f9cc79d2409c30336c773b026273889b4a71a",
-      "mode": 420
-    },
-    {
-      "path": "web/site/main.3baca1086ee5c90fe565.js",
-      "type": "file",
-      "size": 1378754,
-      "sha256": "03dfeb83fb32e1534be705e30462eab2fbfad2f34b7dff5e6940e0ad4f5be4f4",
-      "mode": 420
-    },
-    {
-      "path": "web/site/omnifleet113-panels.js",
-      "type": "file",
-      "size": 171559,
-      "sha256": "baa3faf51b867eae388e3fa3d2062c71d01282ce084e27cf2ef7076b078dd930",
-      "mode": 420
-    },
-    {
-      "path": "web/site/robot104-web.js",
-      "type": "file",
-      "size": 13211,
-      "sha256": "bd05f3d2e6a87c24c687f19bb5d9af32d57dcab6e3032804e17a16e4a24cc9db",
-      "mode": 420
-    },
-    {
-      "path": "web/site/vision-follow.html",
-      "type": "file",
-      "size": 8563,
-      "sha256": "8ba31ca9215cc996a505b92ff62923f04205fe606e618bba0205fe0c1128c1a9",
-      "mode": 420
-    },
-    {
-      "path": "web/site/vision-follow.web.js",
-      "type": "file",
-      "size": 273694,
-      "sha256": "ba695bdcaed0f530a08375fdbc6c4af6c73043b1161adfef0cdf81d5e9142753",
-      "mode": 420
-    },
-    {
-      "path": "web/site/vision-reference.js",
-      "type": "file",
-      "size": 30612,
-      "sha256": "8b75580bbbbbc1939066a1e62ae5989f3b027226dc5e0998b49080683bd3b0ae",
-      "mode": 420
-    },
-    {
-      "path": "web/site/vision-reference.web.js",
-      "type": "file",
-      "size": 30546,
-      "sha256": "38d28a9d8ae960c9395a0f9d83741099acd339f8866c8fd187d75120d2efd95f",
-      "mode": 420
-    },
-    {
-      "path": "web/site/waypoint-drag.js",
-      "type": "file",
-      "size": 12269,
-      "sha256": "3bd988f366d3a0ccad6eb9d59c746f757f27a19d5ae3448b895d697a4d84aaaa",
-      "mode": 420
-    },
-    {
       "path": "system/usr/local/lib/omnifleet-image/clone_identity.py",
       "type": "file",
-      "size": 4823,
-      "sha256": "f7fb66ab5619526ee5e08074b80481060dde4a963b6e3247f0c1f55e53f585c5",
+      "size": 5080,
+      "sha256": "fbd7f53da102756df65c562b084c68c938587bc22c75b9d4b3fece4083fc1ac8",
+      "mode": 493
+    },
+    {
+      "path": "system/usr/local/lib/omnifleet-image/clone_identity_124.py",
+      "type": "file",
+      "size": 5228,
+      "sha256": "64284f1032c044dbd18952645970dd284aae4ab3b54e26006dc1fbadbaa5eaab",
       "mode": 493
     },
     {
@@ -133507,135 +133984,65 @@
     {
       "path": "system/etc/omnifleet_t2/foxglove.yaml",
       "type": "file",
-      "size": 4265,
-      "sha256": "38875ccd2bcaa9a44b52fa2946979d6ec5ab92569cbf7a7da8f0a92c6bc4b711",
+      "size": 4306,
+      "sha256": "caee186b15cbafb92f69580acd325d579a8709e73877974107e0303337229617",
       "mode": 420
     },
     {
       "path": "system/etc/omnifleet_t2/robot.env",
       "type": "file",
-      "size": 733,
-      "sha256": "d696cf954b49ce6c7a9436bfc9dfcdff95f861d8a2eabde0f10687250597869d",
+      "size": 772,
+      "sha256": "a6b9ebca70b9ebfb99f03f2291a8bfc4099793d7f1c2422a2fcfcdfc6d7d8448",
       "mode": 420
     },
     {
-      "path": "camera/start.bash",
+      "path": "follow-media/CMakeLists.txt",
       "type": "file",
-      "size": 547,
-      "sha256": "cfd2fb9cc9348004d12851f866e90a01526187bb4ba639edafe45a1882bec249",
+      "size": 315,
+      "sha256": "15e499282f9e8ec6b14be4fd16b85783500f24aa54ec30a28ca33a3bc5c19799",
       "mode": 436
     },
     {
-      "path": "camera/camera.launch.py",
+      "path": "follow-media/media_dds.cpp",
       "type": "file",
-      "size": 1548,
-      "sha256": "1d20077dc07caa437df19226918cbb155ffe5e12cde4846e1df560ba6702b68f",
+      "size": 9578,
+      "sha256": "0a47e4b123f2852ddc15271092020ad81c018f4b57c80a83ccfbe203aefe6295",
+      "mode": 436
+    },
+    {
+      "path": "follow-media/omnifleet-follow-media.service",
+      "type": "file",
+      "size": 404,
+      "sha256": "25e2a19f7da343aa68741cf31a153ba6dcff89645b44f6dc15bacee2d1e33951",
+      "mode": 436
+    },
+    {
+      "path": "follow-media/serve_follow_media.py",
+      "type": "file",
+      "size": 11621,
+      "sha256": "5145bb35a4b1c9b3bea35a505a5b524085d67f084476ee9aca94d1bf35658c90",
+      "mode": 436
+    },
+    {
+      "path": "system/usr/local/share/omnifleet-image/ranger3-profile.json",
+      "type": "file",
+      "size": 561,
+      "sha256": "0bb3adaa2d2762312af24dcf46ac4d60e26c1fddd58cd172276b8c5ef5d33d80",
       "mode": 420
     },
     {
-      "path": "camera/aligned_depth_alias.py",
+      "path": "system/usr/local/share/omnifleet-image/ranger3-source.json",
       "type": "file",
-      "size": 746,
-      "sha256": "94d517edb825102aaf02ce210b94f41e59d9de46746cd22306786e43bbb50861",
-      "mode": 436
-    },
-    {
-      "path": "camera/image_loan.py",
-      "type": "file",
-      "size": 1167,
-      "sha256": "122def4cfbcbc416fddde402e3b3ed83c721f0180d0277928fc3462bd1408205",
+      "size": 19394,
+      "sha256": "377ed3946f59b99e3e21b11a3c1aa04ca31001be09cb235020ac42984f0da447",
       "mode": 420
     },
     {
-      "path": "camera/libimage_dds.so",
+      "path": "system/usr/local/share/omnifleet-image/ranger3-merged-files.json",
       "type": "file",
-      "size": 742328,
-      "sha256": "c6abf530a35d4f384fff44f66752eeed776af6d1f6e6a4bcad7e4d63f8f6b5da",
+      "size": 2469,
+      "sha256": "6d8d6d2fcf367bd9b7967c6e3243c5338885daec327c6fcf88e17f22eb1b48c6",
       "mode": 420
-    },
-    {
-      "path": "camera/image-dds-source/CMakeLists.txt",
-      "type": "file",
-      "size": 326,
-      "sha256": "5e985cc1a0d65f74b4eff20184897cb79859050a81dc58e942357e2825e2889f",
-      "mode": 436
-    },
-    {
-      "path": "camera/image-dds-source/ImageFrame.cxx",
-      "type": "file",
-      "size": 6988,
-      "sha256": "890e6e6a6ba7f062cce731f503670cb27bec1f231cb9376e5402188642eb9ad2",
-      "mode": 436
-    },
-    {
-      "path": "camera/image-dds-source/ImageFrame.h",
-      "type": "file",
-      "size": 7873,
-      "sha256": "ff17b7c13808dcdcc062477ac8522d95c9daff4d99114adf9c857fa462f448d5",
-      "mode": 436
-    },
-    {
-      "path": "camera/image-dds-source/ImageFrame.idl",
-      "type": "file",
-      "size": 139,
-      "sha256": "d0da01717854ec8d32b79afab5b2e84cf0fade2d8474a19267c4d55d8d9452c6",
-      "mode": 436
-    },
-    {
-      "path": "camera/image-dds-source/ImageFramePubSubTypes.cxx",
-      "type": "file",
-      "size": 5229,
-      "sha256": "ffd8563627fdf1af16c98f6c84caf33d76880ab4c9941c4cbb0f797a6b49f852",
-      "mode": 436
-    },
-    {
-      "path": "camera/image-dds-source/ImageFramePubSubTypes.h",
-      "type": "file",
-      "size": 3111,
-      "sha256": "4abf78039afff8a9d98b2c37579cea93abc31525c5820082a2be868fc380a59b",
-      "mode": 436
-    },
-    {
-      "path": "camera/image-dds-source/image_loan.py",
-      "type": "file",
-      "size": 1167,
-      "sha256": "122def4cfbcbc416fddde402e3b3ed83c721f0180d0277928fc3462bd1408205",
-      "mode": 436
-    },
-    {
-      "path": "camera/image-dds-source/transport.cpp",
-      "type": "file",
-      "size": 5206,
-      "sha256": "b8e4d2adadaa670a843d8ddb7b4a992ea943e8a849fc95935ef7602a98c5ecf4",
-      "mode": 436
-    },
-    {
-      "path": "system/home/iecme/dispatch-media/bridge.yaml",
-      "type": "file",
-      "size": 307,
-      "sha256": "bd53227af5912e2edf4d2572fb4965077579e5a0f6bc8c437c5af3a5c6e87b1a",
-      "mode": 436
-    },
-    {
-      "path": "system/home/iecme/dispatch-media/omnifleet-dispatch-media.service",
-      "type": "file",
-      "size": 284,
-      "sha256": "9046d7a3affcdad91bd0c0c125e4b423df7bc2a6a355dd676168659e347286bc",
-      "mode": 436
-    },
-    {
-      "path": "system/home/iecme/dispatch-media/relay.py",
-      "type": "file",
-      "size": 3587,
-      "sha256": "a2add236603003e6a7df96e6b21b101fc6f23616e4f7b0e86bf7924fbd7be470",
-      "mode": 436
-    },
-    {
-      "path": "system/home/iecme/dispatch-media/start-124.bash",
-      "type": "file",
-      "size": 426,
-      "sha256": "a988c78097b76e1a72c6276686776d903b6ddbaaaca4a14332d915e3f4e629b8",
-      "mode": 436
     }
   ],
   "excluded": [
@@ -133800,19 +134207,7 @@
       "reason": "credential/generated/runtime file"
     },
     {
-      "path": "src/control/omnifleet_local_navigation/.pytest_cache/",
-      "reason": "generated/runtime directory"
-    },
-    {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/control/omnifleet_local_navigation/test/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/control/omnifleet_teleop/omnifleet_teleop/__pycache__/",
       "reason": "generated/runtime directory"
     },
     {
@@ -133821,18 +134216,6 @@
     },
     {
       "path": "src/localization/fast_livo2_ros2/Log/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/localization/omnifleet_backend_adapters/test/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/localization/omnifleet_localization/scripts/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/localization/omnifleet_localization/test/__pycache__/",
       "reason": "generated/runtime directory"
     },
     {
@@ -133900,10 +134283,6 @@
       "reason": "credential/generated/runtime file"
     },
     {
-      "path": "src/localization/omnifleet_mola/mola_test_datasets/datasets/rslidar_warehouse/rslidar_fragment.mcap",
-      "reason": "credential/generated/runtime file"
-    },
-    {
       "path": "src/localization/omnifleet_mola/mola_test_datasets/datasets/simplemaps/mvsim-warehouse01.simplemap",
       "reason": "credential/generated/runtime file"
     },
@@ -133920,99 +134299,7 @@
       "reason": "credential/generated/runtime file"
     },
     {
-      "path": "src/map/omnifleet_map_tf_generator/omnifleet_map_tf_generator/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/map/omnifleet_map_tf_generator/test/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_person_follow/.pytest_cache/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_person_follow/omnifleet_person_follow/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_person_follow/test/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_tutorials/.pytest_cache/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_tutorials/scripts/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_tutorials/test/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_vision/launch/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_vision/scripts/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_vision/scripts/classical/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_vision/scripts/integration/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_vision/scripts/ml/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/perception/omnifleet_vision/test/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
       "path": "src/perception/tros_person_following/.git/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/planning/omnifleet_planner/.pytest_cache/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/planning/omnifleet_planner/launch/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/planning/omnifleet_planner/test/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/sensing/hik_rgbd/hik_rgbd/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/sensing/omnifleet_hikrobot_rgbd/.pytest_cache/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/sensing/omnifleet_hikrobot_rgbd/test/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/sensing/omnifleet_sensor_processing/omnifleet_sensor_processing/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/sensing/orbbec_camera/launch/__pycache__/",
       "reason": "generated/runtime directory"
     },
     {
@@ -134024,24 +134311,8 @@
       "reason": "generated/runtime directory"
     },
     {
-      "path": "src/sensing/rslidar_sdk/scripts/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/system/omnifleet_alignment_cloud/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/system/omnifleet_bringup/.pytest_cache/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/system/omnifleet_bringup/launch/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/system/omnifleet_bringup/test/__pycache__/",
-      "reason": "generated/runtime directory"
+      "path": "src/sensing/rslidar_sdk/src/rs_driver/.git",
+      "reason": "credential/generated/runtime file"
     },
     {
       "path": "src/system/omnifleet_fleet/__pycache__/",
@@ -134140,23 +134411,11 @@
       "reason": "generated/runtime directory"
     },
     {
-      "path": "src/vehicle/huaner_driver/huaner_driver/__pycache__/",
+      "path": "src/vehicle/ranger_can/__pycache__/",
       "reason": "generated/runtime directory"
     },
     {
-      "path": "src/vehicle/omnifleet_chassis_driver/omnifleet_chassis_driver/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/vehicle/ros_robot_controller/ros_robot_controller/__pycache__/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/node_modules/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/.yarn/cache/",
+      "path": "src/vehicle/ranger_can/config/__pycache__/",
       "reason": "generated/runtime directory"
     },
     {
@@ -134165,14 +134424,6 @@
     },
     {
       "path": "src/visualization/foxglove_studio_source/desktop-cn/build/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/desktop-cn/dist/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/desktop-cn/node_modules/",
       "reason": "generated/runtime directory"
     },
     {
@@ -134236,31 +134487,7 @@
       "reason": "generated/runtime directory"
     },
     {
-      "path": "src/visualization/foxglove_studio_source/packages/studio-base/src/test/fixtures/demo-shuffled.bag",
-      "reason": "credential/generated/runtime file"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/packages/studio-base/src/test/fixtures/example-bz2.bag",
-      "reason": "credential/generated/runtime file"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/packages/studio-base/src/test/fixtures/example.bag",
-      "reason": "credential/generated/runtime file"
-    },
-    {
       "path": "src/visualization/foxglove_studio_source/packages/typescript-transformers/dist/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/web/.webpack/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/visualization/omnifleet_t2_ws/foxglove/dsh_diagnostic_panel/.pytest_cache/",
-      "reason": "generated/runtime directory"
-    },
-    {
-      "path": "src/visualization/omnifleet_t2_ws/foxglove/dsh_diagnostic_panel/__pycache__/",
       "reason": "generated/runtime directory"
     },
     {
@@ -134272,92 +134499,70 @@
       "reason": "generated/runtime directory"
     },
     {
-      "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/.pytest_cache/",
+      "path": "follow-media/build/",
       "reason": "generated/runtime directory"
     },
     {
-      "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/__pycache__/",
-      "reason": "generated/runtime directory"
+      "path": "src/vehicle/ugv_sdk/docs/HUNTER_UserManual_EN.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/visualization/omnifleet_waypoint_ui/.pytest_cache/",
-      "reason": "generated/runtime directory"
+      "path": "src/vehicle/ugv_sdk/docs/HUNTER_UserManual_v1.2.6_S.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/visualization/omnifleet_waypoint_ui/omnifleet_waypoint_ui/__pycache__/",
-      "reason": "generated/runtime directory"
+      "path": "src/vehicle/ugv_sdk/docs/RANGER+MINI用户手册.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/visualization/omnifleet_waypoint_ui/test/__pycache__/",
-      "reason": "generated/runtime directory"
+      "path": "src/vehicle/ugv_sdk/docs/SCOUT_UserManual_EN.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/sensing/rslidar_sdk/src/rs_driver/.git",
-      "reason": "nested Git administrative pointer, excluded from publication"
+      "path": "src/vehicle/ugv_sdk/docs/SCOUT_UserManual_v1.2.16_S.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/localization/omnifleet_relocalization/relocalization/runtime-robot_113/last.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/TRACER_UserManual_v1.1.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v1/BUNKER用户手册.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_resume.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v1/HUNTER用户手册.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_sm_loop_local_mirror.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v1/SCOUT MINI用户手册1.0协议.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v1/SCOUT MINI麦轮用户手册1.0协议.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test_result_verbose.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v1/SCOUT用户手册1.0协议.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/gicp_benchmark_build.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v2/HUNTER2.0用户手册_210528.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/mp2p_reconfigure_after_metric_maps.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v2/SCOUT 2.0用户手册_210630.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/nanoflann_install.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v2/SCOUT MINI用户手册2.0协议.pdf",
+      "reason": "Vendor PDF manual available upstream"
     },
     {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_before.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_final.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/build-cn.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/package-cn.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "models/vision/vendor/mediapipe_tensorrt/hand-build.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "models/vision/vendor/mediapipe_tensorrt/palm-build.log",
-      "reason": "log file excluded from release source and runtime image"
+      "path": "src/vehicle/ugv_sdk/docs/protocol_v2/TRACER_UserManual_v1.2.pdf",
+      "reason": "Vendor PDF manual available upstream"
     }
   ],
   "audit_findings": [],
-  "excluded_scope": "Build/install/log/cache/credentials, recorded camera/video/ROS data and runtime maps; no system image or credential backup.",
-  "original_archive_sha256": "f19fb7d94f8c1e75c0c09e7c4a56cb70b8da9e7c980a15f3905806a6cf734602",
-  "runtime_entrypoints_added_from_captured_image_utc": "2026-11-19T13:24:55.190446+00:00"
+  "excluded_scope": "Build/install/log/cache/credentials, recorded camera/video/ROS data and runtime maps; no system image or credential backup."
 }

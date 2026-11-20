@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.16)
+project(omnifleet_follow_media LANGUAGES CXX)
+find_package(fastrtps 2.6 REQUIRED)
+find_package(fastcdr REQUIRED)
+add_library(follow_media SHARED media_dds.cpp)
+target_compile_features(follow_media PRIVATE cxx_std_17)
+target_link_libraries(follow_media PRIVATE fastrtps fastcdr)

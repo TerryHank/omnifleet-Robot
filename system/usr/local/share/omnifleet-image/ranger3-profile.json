@@ -1,0 +1,15 @@
+{
+  "chassis_model": "ranger_mini_v3",
+  "drive": "4WD",
+  "steering": "4WS",
+  "can_driver": "gs_usb",
+  "can_bitrate": 500000,
+  "can_interface": "automatically detected gs_usb adapter",
+  "chassis_length_m": 0.72,
+  "chassis_width_m": 0.5,
+  "specification_source": "https://global.agilex.ai/products/ranger-high-payload-omnidirectional-mobile-robot",
+  "base_image": "OmniFleet124-Windows-OTG-full-20261120.zip",
+  "source_104_live_accessed": false,
+  "independent_identity": "dispatcher, otherwise DHCP address suffix",
+  "physical_motion_tested": false
+}
