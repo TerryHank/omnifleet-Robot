@@ -628,10 +628,28 @@ def main():
     with open(args.config) as f:config=json.load(f)
     os.environ['OMNIFLEET_ROBOT_ID']=config['robot_id']
     rclpy.init(args=ros);node=LocalNavigation(config)
-    try:rclpy.spin(node,executor=SourceTimeExecutor())
+    executor = SourceTimeExecutor()
+    executor.add_node(node)
+    period = .020
+    deadline = time.monotonic()
+    try:
+        while rclpy.ok():
+            now = time.monotonic()
+            if now >= deadline:
+                node.control_tick()
+                node.update_obstacle_grid()
+                node.flush_status()
+                deadline += period
+                if deadline <= now:
+                    deadline = now + period
+            executor.spin_once(timeout_sec=max(0., deadline - time.monotonic()))
     except (KeyboardInterrupt,rclpy.executors.ExternalShutdownException):pass
     finally:
         node.inhibited=True
         if rclpy.ok():node.cancel_all()
+        executor.remove_node(node)
+        executor.shutdown()
+        node._obstacle_workers.shutdown(cancel_futures=True)
+        node._status_workers.shutdown(cancel_futures=True)
         node.destroy_node()
         if rclpy.ok():rclpy.try_shutdown()

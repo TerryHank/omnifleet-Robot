@@ -1,26 +1,22 @@
-# OmniFleet 126
+# OmniFleet T2 · 履带
 
-[工作区与运行入口](README.workspace.md) · [源码索引](src/README.md) · [维护约定](AGENTS.md)
+## Windows OTG 镜像下载
 
-## 查状态
+[百度网盘 · OmniFleet-Windows-OTG](https://pan.baidu.com/s/14TIGdgtB91Ytbr5oRPV0Mg?pwd=2baf)，提取码 `2baf`。
 
-```bash
-cd /home/iecme/omnifleet_ws
-source ./env.bash
-systemctl status omnifleet-t2-{chassis,airy,mola,pure-lio-nav2,foxglove}.service omnifleet-local-navigation.service --no-pager
-ros2 run omnifleet_bringup robot_doctor --scope nav
-```
+该分享文件夹包含 T2、A2 和 R4 三种车型的 Windows OTG 镜像。按底盘型号选择对应镜像。
 
-按需查看日志。
+| 分支 | 底盘 |
+| --- | --- |
+| [T2](https://github.com/TerryHank/omnifleet-Robot/tree/T2) | 履带 |
+| [A2](https://github.com/TerryHank/omnifleet-Robot/tree/A2) | 阿克曼 |
+| [R4](https://github.com/TerryHank/omnifleet-Robot/tree/R4) | Ranger Mini 3.0 四驱四转 |
 
-```bash
-journalctl -u omnifleet-t2-mola.service -u omnifleet-t2-pure-lio-nav2.service -u omnifleet-local-navigation.service -n 80 --no-pager
-```
+## 源码
 
-## 启动
+ROS 2 工作区和车端配置采自 124 号车。
 
-需要恢复车端服务时，按 [维护约定](AGENTS.md) 核对当前任务和运动状态，再启动主链。
-
-```bash
-sudo systemctl start omnifleet-t2-{chassis,airy,mola,pure-lio-nav2}.service omnifleet-local-navigation.service
-```
+- [`src/`](src) 为车端工作区源码。
+- [`firmware/robot-124-cascade/`](firmware/robot-124-cascade) 为 124 号车当天的 STM32 级联控制固件源码。
+- [`follow-media/`](follow-media)、[`web/`](web) 分别包含跟随视频服务和车端网页。
+- [`system/`](system) 包含车端服务和配置。采集范围见 [快照说明](BACKUP_INFO.json)。

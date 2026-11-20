@@ -9,6 +9,7 @@ import struct
 import threading
 import time
 from pathlib import Path
+from motion_ipc import MotionInput
 
 import rclpy
 from geometry_msgs.msg import TransformStamped, Twist
@@ -30,6 +31,12 @@ from source_time_executor import SourceTimeExecutor, velocity_command_time, with
 IMU_RAW_SCALE = 1000.0
 LAN_FRAME = struct.Struct("!Q16H")
 LAN_SOCKET = "/run/omnifleet-g20/channels.sock"
+HEADING_PID_NAMES = ("heading_pid_kp", "heading_pid_ki", "heading_pid_kd")
+YAW_RATE_PI_NAMES = ("yaw_rate_kp", "yaw_rate_ki")
+HEADING_TRIM_NAMES = ("heading_trim_rad_per_m",)
+REVERSE_TRIM_NAMES = ("heading_trim_reverse_rad_per_m",)
+STARTUP_PWM_NAMES = ("startup_pwm_forward_m1", "startup_pwm_forward_m2",
+                     "startup_pwm_reverse_m1", "startup_pwm_reverse_m2")
 
 
 def stm32_imu_to_rep103(x, y, z):
@@ -72,6 +79,7 @@ class OmnifleetT2Driver(Node):
         self.declare_parameter("publish_odom_tf", True)
         self.declare_parameter("track_separation_m", 0.33)
         self.declare_parameter("motion_command_rate", 20.0)
+        self.declare_parameter("straight_heading_hold", True)
         self.declare_parameter("cmd_vel_timeout", 0.35)
         self.declare_parameter("max_angular_speed_rps", 2.0)
         self.declare_parameter("publish_magnetometer", True)
@@ -156,9 +164,55 @@ class OmnifleetT2Driver(Node):
             Parameter("pwm_compensation_m1", value=int(compensation[0])),
             Parameter("pwm_compensation_m2", value=int(compensation[1])),
         ])
+        try:
+            heading_pid = self.car.get_yaw_pid()
+        except (OSError, RuntimeError) as error:
+            heading_pid = (0.4, 0.0, 0.1)
+            self.get_logger().warning(f"STM32 航向 PID 读回失败，显示默认值：{error}")
+        configured_pid = tuple(self.declare_parameter(name, value).value
+                               for name, value in zip(HEADING_PID_NAMES, heading_pid))
+        if configured_pid != heading_pid:
+            self.car.set_yaw_pid(*configured_pid)
+        try:
+            yaw_rate_pi = self.car.get_yaw_rate_pi()
+        except (OSError, RuntimeError) as error:
+            yaw_rate_pi = (0.0, 0.0)
+            self.get_logger().warning(f"STM32 偏航角速度 PI 读回失败，显示默认值：{error}")
+        configured_rate_pi = tuple(self.declare_parameter(name, value).value
+                                   for name, value in zip(YAW_RATE_PI_NAMES, yaw_rate_pi))
+        if configured_rate_pi != yaw_rate_pi:
+            self.car.set_yaw_rate_pi(*configured_rate_pi)
+        try:
+            trim = self.car.get_heading_trim()
+        except (OSError, RuntimeError) as error:
+            trim = 0.0
+            self.get_logger().warning(f"STM32 航向前馈读回失败，显示默认值：{error}")
+        configured_trim = self.declare_parameter(HEADING_TRIM_NAMES[0], trim).value
+        if configured_trim != trim:
+            self.car.set_heading_trim(configured_trim)
+        try:
+            reverse_trim = self.car.get_heading_trim(reverse=True)
+        except (OSError, RuntimeError) as error:
+            reverse_trim = -1.0
+            self.get_logger().warning(f"STM32 倒车航向前馈读回失败，沿用共用值：{error}")
+        configured_reverse_trim = self.declare_parameter(REVERSE_TRIM_NAMES[0], reverse_trim).value
+        if configured_reverse_trim != reverse_trim:
+            self.car.set_heading_trim(configured_reverse_trim, reverse=True)
+        try:
+            startup_pwm = self.car.get_startup_pwm()
+        except (OSError, RuntimeError) as error:
+            startup_pwm = (0, 0, 0, 0)
+            self.get_logger().warning(f"STM32 起步 PWM 读回失败，显示默认值：{error}")
+        configured_pwm = tuple(self.declare_parameter(name, value).value
+                               for name, value in zip(STARTUP_PWM_NAMES, startup_pwm))
+        if configured_pwm != startup_pwm:
+            self.car.set_startup_pwm(*configured_pwm)
         self.add_on_set_parameters_callback(self.set_runtime_parameters)
 
-        self.create_subscription(Twist, os.environ.get("OMNIFLEET_CMD_VEL_INPUT", "/cmd_vel"), self.cmd_vel_callback, 1)
+        self._single_velocity_topic = os.environ.get('OMNIFLEET_SINGLE_CMD_VEL') == '1'
+        self._motion_input = MotionInput() if self._single_velocity_topic else None
+        if self._motion_input is None:
+            self.create_subscription(Twist, os.environ.get("OMNIFLEET_CMD_VEL_INPUT", "/cmd_vel"), self.cmd_vel_callback, 1)
         self.create_subscription(Bool, "/navigation/estop", self.on_estop, 10)
         self.create_subscription(Bool, "/navigation/contact", self.on_contact, 10)
         self.create_subscription(Int32, "/RGBLight", self.rgb_light_callback, 10)
@@ -178,9 +232,12 @@ class OmnifleetT2Driver(Node):
         self.command_timing_publisher = self.create_publisher(String, "/chassis/command_timing", 20)
         self.control_state_service = self.create_service(Trigger, "/chassis/control_state", self.control_state_callback)
 
-        self.create_timer(1.0 / command_rate, self.send_motion_command)
+        self._command_period = 1.0 / command_rate
+        if not self._single_velocity_topic:
+            self.create_timer(self._command_period, self.send_motion_command)
         self.create_timer(0.1, self.publish_feedback)
-        self.joystick = self.create_publisher(Twist, "/navigation/joystick_cmd_vel", 1)
+        joystick_topic = "/cmd_vel" if self._single_velocity_topic else "/navigation/joystick_cmd_vel"
+        self.joystick = self.create_publisher(Twist, joystick_topic, 1)
         self.stop_gear_pub = self.create_publisher(
             Bool, "/navigation/joystick_stop_gear",
             QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL),
@@ -201,7 +258,8 @@ class OmnifleetT2Driver(Node):
         self._lan_dropped = self._lan_coalesced = 0
         self._lan_report_at = time.monotonic()
         self.joystick_active = False
-        self.create_timer(0.04, self.publish_joystick)
+        if not self._single_velocity_topic:
+            self.create_timer(0.04, self.publish_joystick)
         self.get_logger().info(
             "履带底盘驱动已启动：串口=%s，M2=左履带，M1=右履带，履带中心距=%.3f m，PWM补偿=%d/%d"
             % (serial_port, self.track_separation_m, compensation[0], compensation[1])
@@ -268,7 +326,8 @@ class OmnifleetT2Driver(Node):
             self.send_motion_command()
 
     def publish_joystick(self):
-        self.receive_lan_channels()
+        if not self._single_velocity_topic:
+            self.receive_lan_channels()
         try:
             state = self.car.poll_control_state()
         except OSError:
@@ -282,7 +341,7 @@ class OmnifleetT2Driver(Node):
         if not self._stop_gear:
             if sbus is not None:
                 command.linear.x, command.angular.z = joystick_axes(sbus)
-            if (not command.linear.x and not command.angular.z
+            if (not self._single_velocity_topic and not command.linear.x and not command.angular.z
                     and self._lan_channels is not None
                     and time.monotonic_ns() - self._lan_stamp_ns < 350_000_000):
                 command.linear.x, command.angular.z = joystick_axes(self._lan_channels)
@@ -317,6 +376,46 @@ class OmnifleetT2Driver(Node):
         return self._estop_input or self._estop_latched
 
     def set_runtime_parameters(self, parameters):
+        updates = {parameter.name: parameter.value for parameter in parameters}
+        if updates.keys().isdisjoint(HEADING_PID_NAMES + YAW_RATE_PI_NAMES
+                                     + HEADING_TRIM_NAMES + REVERSE_TRIM_NAMES + STARTUP_PWM_NAMES):
+            return self.set_pwm_parameters(parameters)
+
+        attempted = []
+        try:
+            transactions = []
+            for names, setter, validate in (
+                (HEADING_PID_NAMES, self.car.set_yaw_pid, self.car.encode_yaw_gains),
+                (YAW_RATE_PI_NAMES, self.car.set_yaw_rate_pi, self.car.encode_yaw_gains),
+                (HEADING_TRIM_NAMES, self.car.set_heading_trim, self.car.encode_yaw_gains),
+                (REVERSE_TRIM_NAMES, lambda value: self.car.set_heading_trim(value, reverse=True),
+                 self.car.encode_reverse_heading_trim),
+                (STARTUP_PWM_NAMES, self.car.set_startup_pwm, self.car.validate_startup_pwm),
+            ):
+                if updates.keys().isdisjoint(names):
+                    continue
+                previous = tuple(self.get_parameter(name).value for name in names)
+                desired = tuple(updates.get(name, value) for name, value in zip(names, previous))
+                validate(desired)
+                transactions.append((names, setter, previous, desired))
+            for names, setter, previous, desired in transactions:
+                attempted.append((setter, previous))
+                setter(*desired)
+            pwm_result = self.set_pwm_parameters(parameters)
+            if not pwm_result.successful:
+                raise RuntimeError(pwm_result.reason)
+        except (OSError, RuntimeError, ValueError) as error:
+            for setter, previous in reversed(attempted):
+                try:
+                    setter(*previous)
+                except (OSError, RuntimeError) as rollback_error:
+                    self.get_logger().error(f"偏航增益恢复失败：{rollback_error}")
+            return SetParametersResult(successful=False, reason=str(error))
+        for names, setter, previous, desired in transactions:
+            self.get_logger().info(f"STM32 增益已回读确认：{dict(zip(names, desired))}")
+        return SetParametersResult(successful=True)
+
+    def set_pwm_parameters(self, parameters):
         names = {"pwm_compensation_m1", "pwm_compensation_m2"}
         updates = {parameter.name: parameter.value for parameter in parameters if parameter.name in names}
         if not updates:
@@ -386,7 +485,28 @@ class OmnifleetT2Driver(Node):
             self._last_lateral_warning_time = now
             self.get_logger().warning("履带底盘忽略 cmd_vel.linear.y，仅执行前进速度和转向角速度")
 
+    def accept_local_command(self, vx, wz, issued_ns):
+        received_ns = time.monotonic_ns()
+        issued = issued_ns / 1e9
+        if received_ns - issued_ns > self.cmd_vel_timeout * 1e9:
+            return
+        vx, wz, _ = sanitize_body_command(vx, 0., wz, self.max_angular)
+        with self._lock:
+            if self._stop_gear or issued <= self._stop_gear_released_at:
+                return
+            self._target = (vx, wz)
+            self._last_command_time = issued
+            self._last_command_receive_time = received_ns / 1e9
+            self._last_command_ros_ns = time.time_ns()
+            self._last_command_source_ros_ns = self._last_command_ros_ns - (received_ns - issued_ns)
+            self._command_received = True
+            self._watchdog_reported = False
+
     def send_motion_command(self):
+        if self._motion_input is not None:
+            packet = self._motion_input.latest()
+            if packet is not None:
+                self.accept_local_command(*packet)
         with self._lock:
             expired = (
                 not self._command_received
@@ -412,7 +532,11 @@ class OmnifleetT2Driver(Node):
             # The tracked firmware closes the speed loop using the installed
             # channel map: M2 drives the left track and M1 drives the right track.
             # The selected front is opposite the MCU body X axis.
-            self.car.set_motion(round(-vx * 1000.0), 0, round(wz * 1000.0))
+            vx_mm_s = round(-vx * 1000.0)
+            wz_mrad_s = round(wz * 1000.0)
+            adjust = (vx_mm_s != 0 and wz_mrad_s == 0
+                      and self.get_parameter("straight_heading_hold").value)
+            self.car.set_motion(vx_mm_s, 0, wz_mrad_s, adjust=adjust)
             self._serial_error_reported = False
         except Exception as error:
             write_ok = False
@@ -633,17 +757,44 @@ class OmnifleetT2Driver(Node):
             self.get_logger().error("关闭底盘串口失败：%s" % error)
 
 
+
+def spin_chassis_control(node):
+    """Run STM32 polling and writes before servicing ordinary ROS callbacks."""
+    executor = SourceTimeExecutor()
+    executor.add_node(node)
+    sbus_period = .04
+    sbus_due = motion_due = time.monotonic()
+    try:
+        while rclpy.ok():
+            now = time.monotonic()
+            if now >= sbus_due:
+                node.publish_joystick()
+                sbus_due = max(sbus_due + sbus_period, now + sbus_period / 2)
+            now = time.monotonic()
+            if now >= motion_due:
+                node.send_motion_command()
+                motion_due = max(motion_due + node._command_period, now + node._command_period / 2)
+            executor.spin_once(timeout_sec=max(0., min(sbus_due, motion_due) - time.monotonic()))
+    finally:
+        executor.remove_node(node)
+        executor.shutdown()
+
 def main(args=None):
     rclpy.init(args=args)
     node = None
     try:
         node = OmnifleetT2Driver()
-        rclpy.spin(node, executor=SourceTimeExecutor())
+        if node._single_velocity_topic:
+            spin_chassis_control(node)
+        else:
+            rclpy.spin(node, executor=SourceTimeExecutor())
     except KeyboardInterrupt:
         pass
     finally:
         if node is not None:
             node.stop_and_close()
+            if node._motion_input is not None:
+                node._motion_input.close()
             node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()

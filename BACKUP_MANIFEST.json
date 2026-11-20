@@ -1,12 +1,12 @@
 {
   "robot": "124",
   "workspace": "/home/iecme/omnifleet_ws",
-  "created_utc": "2026-11-19T12:26:45.820870+00:00",
-  "archive_sha256": "d223d0457696600671b7575590a17ad23f95ca9df3776428a6f4a81fc7a8de78",
-  "archive_bytes": 273392068,
+  "created_utc": "2026-11-20T07:16:46.550305+00:00",
+  "archive_sha256": "274c76cd7e9b039307886850e4ad871b09d22d748a749d173ace098594fdcab2",
+  "archive_bytes": 274052320,
   "counts": {
-    "files": 19008,
-    "bytes": 552677657,
+    "files": 19234,
+    "bytes": 556050720,
     "symlinks": 24
   },
   "source_git": {},
@@ -118,6 +118,10 @@
     {
       "source": "/etc/systemd/system/omnifleet-fleet-network.service.disabled",
       "snapshot": "system/etc/systemd/system/omnifleet-fleet-network.service.disabled"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-follow-media.service",
+      "snapshot": "system/etc/systemd/system/omnifleet-follow-media.service"
     },
     {
       "source": "/etc/systemd/system/omnifleet-local-navigation.service",
@@ -328,6 +332,26 @@
       "snapshot": "system/etc/systemd/system/omnifleet-yahboom-voltage.service"
     },
     {
+      "source": "/etc/systemd/system.control/omnifleet-current-pose.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-current-pose.service.d"
+    },
+    {
+      "source": "/etc/systemd/system.control/omnifleet-local-navigation.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-local-navigation.service.d"
+    },
+    {
+      "source": "/etc/systemd/system.control/omnifleet-t2-chassis.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-t2-chassis.service.d"
+    },
+    {
+      "source": "/etc/systemd/system.control/omnifleet-t2-mola.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-t2-mola.service.d"
+    },
+    {
+      "source": "/etc/systemd/system.control/omnifleet-t2-pure-lio-nav2.service.d",
+      "snapshot": "system/etc/systemd/system.control/omnifleet-t2-pure-lio-nav2.service.d"
+    },
+    {
       "source": "/etc/udev/rules.d/99-omnifleet-t2-chassis.rules",
       "snapshot": "system/etc/udev/rules.d/99-omnifleet-t2-chassis.rules"
     },
@@ -408,32 +432,20 @@
       "snapshot": "system/etc/omnifleet_t2/robot.env"
     },
     {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/start.bash",
-      "snapshot": "camera/start.bash"
+      "source": "/etc/omnifleet_t2/yaw-rate-pi-124.yaml",
+      "snapshot": "system/etc/omnifleet_t2/yaw-rate-pi-124.yaml"
     },
     {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/camera.launch.py",
-      "snapshot": "camera/camera.launch.py"
+      "source": "/home/iecme/omnifleet_follow_media",
+      "snapshot": "follow-media"
     },
     {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/aligned_depth_alias.py",
-      "snapshot": "camera/aligned_depth_alias.py"
+      "source": "/home/iecme/robot_backups/124-cascade-20261120/firmware",
+      "snapshot": "firmware/robot-124-cascade"
     },
     {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/image_loan.py",
-      "snapshot": "camera/image_loan.py"
-    },
-    {
-      "source": "/home/iecme/orbbec345lg-v2.10.6/libimage_dds.so",
-      "snapshot": "camera/libimage_dds.so"
-    },
-    {
-      "source": "/home/iecme/image-dds-build.YozLDILB/image_dds",
-      "snapshot": "camera/image-dds-source"
-    },
-    {
-      "source": "/home/iecme/dispatch-media",
-      "snapshot": "system/home/iecme/dispatch-media"
+      "source": "/etc/omnifleet_t2/yaw-rate-pi-124.yaml",
+      "snapshot": "system/etc/omnifleet_t2/yaw-rate-pi-124.yaml"
     }
   ],
   "entries": [
@@ -46876,8 +46888,8 @@
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/control.py",
       "type": "file",
-      "size": 31968,
-      "sha256": "331ca4cbfaeebadd923dc519ad1df499fda8c23b73a27e52cefe351e4e0603fb",
+      "size": 35393,
+      "sha256": "4dbe86929e484de6431147874ba2ab830de5ef6863ed75aea37804a6754dcda5",
       "mode": 436
     },
     {
@@ -46960,8 +46972,8 @@
     {
       "path": "src/control/omnifleet_local_navigation/omnifleet_local_navigation/runtime.py",
       "type": "file",
-      "size": 41111,
-      "sha256": "8b7fe33586d20fde628b4e9c56ffd53777d97bb523cffd120d5a2132d9a59473",
+      "size": 41767,
+      "sha256": "d280290800a295d92215273681e8876d765bf3b7515ab9d29fbe967bb2c8b1c3",
       "mode": 436
     },
     {
@@ -93134,8 +93146,8 @@
     {
       "path": "src/planning/omnifleet_planner/launch/navigation.launch.py",
       "type": "file",
-      "size": 4466,
-      "sha256": "39616f5ca25c650d2dab93c8769c4b86da9ec75f99cbf332f8ec2558779bdf1b",
+      "size": 4579,
+      "sha256": "8f6b1c78867383b08d5c72769a267afa9a5cc9776c915fd8d8bfdfc5f386ec47",
       "mode": 420
     },
     {
@@ -99334,8 +99346,8 @@
     {
       "path": "src/system/omnifleet_fleet/fleet_scope.py",
       "type": "file",
-      "size": 2500,
-      "sha256": "db3d7f6fcb8ddb112c63a7f2012b83e3726f3c1ad590876c859500f3ed289653",
+      "size": 2566,
+      "sha256": "1171bb67eaef0521f21a0d3216b50a212eff681069c5702908c66e8a90daa305",
       "mode": 420
     },
     {
@@ -99389,6 +99401,13 @@
       "type": "symlink",
       "target": "../../localization/omnifleet_relocalization/mola_crash_capture.py",
       "mode": 511
+    },
+    {
+      "path": "src/system/omnifleet_fleet/motion_ipc.py",
+      "type": "file",
+      "size": 1879,
+      "sha256": "9f37258b846921b948671cdb792eddfeeb0af548878c28fcb287b4d33d778265",
+      "mode": 420
     },
     {
       "path": "src/system/omnifleet_fleet/navigation.sh",
@@ -106084,8 +106103,8 @@
     {
       "path": "src/system/workspace_support/robot_fleet_env.bash",
       "type": "file",
-      "size": 755,
-      "sha256": "0802a14b7fd2a4f63a32009f192de1e14455515870fd7f10f12dde2899473453",
+      "size": 897,
+      "sha256": "39e130f2c94ee2357fd4597f91b9507e0bbd196ed65756019a1f6b4dbc92e08f",
       "mode": 436
     },
     {
@@ -106532,8 +106551,8 @@
     {
       "path": "src/vehicle/omnifleet_chassis_driver/omnifleet_chassis_driver/Rosmaster_Lib.py",
       "type": "file",
-      "size": 15114,
-      "sha256": "652cb14841af8ae2d93c3e4728aa2f6075f04cf1d9b3828179c684c82204a774",
+      "size": 21405,
+      "sha256": "a23b6fae72714e892d6326aba32ed9e48ed6468ef6528135b55884f73f1be01f",
       "mode": 420
     },
     {
@@ -106553,8 +106572,8 @@
     {
       "path": "src/vehicle/omnifleet_chassis_driver/omnifleet_chassis_driver/omnifleet_t2_driver.py",
       "type": "file",
-      "size": 29202,
-      "sha256": "2186a8359fbdfc34c51d6acc03551f21b9ad94984757cdad402918cab03e94c7",
+      "size": 37186,
+      "sha256": "b89aa06efaa29ca2eb487ffb55dbe8a8508cd18f6c91b6aaca7d3a3cc3bf16ba",
       "mode": 420
     },
     {
@@ -131116,8 +131135,8 @@
     {
       "path": "src/visualization/omnifleet_t2_ws/foxglove/nav2_permanent_panel/nav2_parameter_store.py",
       "type": "file",
-      "size": 74862,
-      "sha256": "c06fc52e9d33d82c7b57687cea7ce430c4fb5b379c8bcbb8ac1a6dc568ed7139",
+      "size": 75076,
+      "sha256": "f1df78b5b582bdb6ebef94aec184707a4b88169ac3d8ce335ddaec1bb5c3b570",
       "mode": 420
     },
     {
@@ -131527,13 +131546,6 @@
       "mode": 420
     },
     {
-      "path": "README.md",
-      "type": "file",
-      "size": 799,
-      "sha256": "575a9f146e872750b62cfd12eabb04340b3f77bd338a74829a219a591e5139e3",
-      "mode": 436
-    },
-    {
       "path": "README.workspace.md",
       "type": "file",
       "size": 2306,
@@ -131840,6 +131852,13 @@
       "mode": 420
     },
     {
+      "path": "system/etc/systemd/system/omnifleet-follow-media.service",
+      "type": "file",
+      "size": 404,
+      "sha256": "25e2a19f7da343aa68741cf31a153ba6dcff89645b44f6dc15bacee2d1e33951",
+      "mode": 420
+    },
+    {
       "path": "system/etc/systemd/system/omnifleet-local-navigation.service",
       "type": "file",
       "size": 611,
@@ -131858,6 +131877,13 @@
       "type": "file",
       "size": 34,
       "sha256": "bea0e46b31f8424d40bf45c5577a5529b36a2f6d134b3897753c84956a25fe1b",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system/omnifleet-local-navigation.service.d/96-single-cmdvel-124.conf",
+      "type": "file",
+      "size": 174,
+      "sha256": "d4dd8eaebaf798a531bba3d0da7809a975a8a4305351f8bff44b6ba0ea9a1a49",
       "mode": 420
     },
     {
@@ -132015,6 +132041,13 @@
       "mode": 420
     },
     {
+      "path": "system/etc/systemd/system/omnifleet-t2-chassis.service.d/96-single-cmdvel-124.conf",
+      "type": "file",
+      "size": 109,
+      "sha256": "bc57444e85b8c4433ba8be5094e6c2015acf0721a0c17b37d48e6f77854cc75e",
+      "mode": 420
+    },
+    {
       "path": "system/etc/systemd/system/omnifleet-t2-chassis.service.d/99-robot104-domain.conf",
       "type": "file",
       "size": 40,
@@ -132038,8 +132071,8 @@
     {
       "path": "system/etc/systemd/system/omnifleet-t2-chassis.service.d/zz-yahboom-driver.conf",
       "type": "file",
-      "size": 329,
-      "sha256": "b7b0c376cb1f398c51ad2fe7bbd35a9dd964c5cabf08989ed3ecd2eab06ab818",
+      "size": 382,
+      "sha256": "690b72960a8d9efd8b0438bb0221a1292cd1a7d620771a6ad5532ca373b9dbd0",
       "mode": 420
     },
     {
@@ -132273,6 +132306,13 @@
       "mode": 420
     },
     {
+      "path": "system/etc/systemd/system/omnifleet-t2-nav2-parameters.service.d/96-single-cmdvel-124.conf",
+      "type": "file",
+      "size": 49,
+      "sha256": "4d7bc81a68e90c8ff3d0ab87ea67f976f9a4b331943bbba101f7724ab53d0db2",
+      "mode": 420
+    },
+    {
       "path": "system/etc/systemd/system/omnifleet-t2-nav2-parameters.service.d/99-robot104-domain.conf",
       "type": "file",
       "size": 40,
@@ -132354,6 +132394,13 @@
       "type": "file",
       "size": 34,
       "sha256": "bea0e46b31f8424d40bf45c5577a5529b36a2f6d134b3897753c84956a25fe1b",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system/omnifleet-t2-pure-lio-nav2.service.d/96-single-cmdvel-124.conf",
+      "type": "file",
+      "size": 49,
+      "sha256": "4d7bc81a68e90c8ff3d0ab87ea67f976f9a4b331943bbba101f7724ab53d0db2",
       "mode": 420
     },
     {
@@ -132557,6 +132604,41 @@
       "type": "file",
       "size": 285,
       "sha256": "f600935ff3ea3742e2c5956f0714c84759a81599698ec7036af4ad3140450428",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system.control/omnifleet-current-pose.service.d/50-CPUWeight.conf",
+      "type": "file",
+      "size": 145,
+      "sha256": "b201f74bf75358ae9d75d1b41ac04a38b0f16675f2851e69fa5d03a949a30a47",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system.control/omnifleet-local-navigation.service.d/50-CPUWeight.conf",
+      "type": "file",
+      "size": 145,
+      "sha256": "e838b756036ac8cfe40ebd89b5ca81308cdb939d3dbe8594cde8269c72dbfd95",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system.control/omnifleet-t2-chassis.service.d/50-CPUWeight.conf",
+      "type": "file",
+      "size": 145,
+      "sha256": "636a5a77a95dae364624178bf4834e2bbb2876107a83d7598cac594b7db7f7bc",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system.control/omnifleet-t2-mola.service.d/50-CPUWeight.conf",
+      "type": "file",
+      "size": 145,
+      "sha256": "429b2e08399ef94fe4b3825eb4ca0be7185afbf9c43138854ae814ddb90e6b11",
+      "mode": 420
+    },
+    {
+      "path": "system/etc/systemd/system.control/omnifleet-t2-pure-lio-nav2.service.d/50-CPUWeight.conf",
+      "type": "file",
+      "size": 145,
+      "sha256": "429b2e08399ef94fe4b3825eb4ca0be7185afbf9c43138854ae814ddb90e6b11",
       "mode": 420
     },
     {
@@ -133500,8 +133582,8 @@
     {
       "path": "system/etc/omnifleet_t2/fastdds-router.yaml",
       "type": "file",
-      "size": 9892,
-      "sha256": "effabaa5b81e70be5a616181151a858699083093093a86240b2de0832f41f96c",
+      "size": 9789,
+      "sha256": "d36381dfc2cf074354be1556cc7c60cd7bf9e0df5c4e08e5543eb4c85f706ef3",
       "mode": 420
     },
     {
@@ -133519,122 +133601,1627 @@
       "mode": 420
     },
     {
-      "path": "camera/start.bash",
+      "path": "system/etc/omnifleet_t2/yaw-rate-pi-124.yaml",
       "type": "file",
-      "size": 547,
-      "sha256": "cfd2fb9cc9348004d12851f866e90a01526187bb4ba639edafe45a1882bec249",
-      "mode": 436
-    },
-    {
-      "path": "camera/camera.launch.py",
-      "type": "file",
-      "size": 1548,
-      "sha256": "1d20077dc07caa437df19226918cbb155ffe5e12cde4846e1df560ba6702b68f",
+      "size": 292,
+      "sha256": "1628f48119c6b2fc2acd351a60a09594159b52b683e588240c7195501c282978",
       "mode": 420
     },
     {
-      "path": "camera/aligned_depth_alias.py",
+      "path": "follow-media/CMakeLists.txt",
       "type": "file",
-      "size": 746,
-      "sha256": "94d517edb825102aaf02ce210b94f41e59d9de46746cd22306786e43bbb50861",
+      "size": 315,
+      "sha256": "15e499282f9e8ec6b14be4fd16b85783500f24aa54ec30a28ca33a3bc5c19799",
       "mode": 436
     },
     {
-      "path": "camera/image_loan.py",
+      "path": "follow-media/media_dds.cpp",
       "type": "file",
-      "size": 1167,
-      "sha256": "122def4cfbcbc416fddde402e3b3ed83c721f0180d0277928fc3462bd1408205",
-      "mode": 420
-    },
-    {
-      "path": "camera/libimage_dds.so",
-      "type": "file",
-      "size": 742328,
-      "sha256": "c6abf530a35d4f384fff44f66752eeed776af6d1f6e6a4bcad7e4d63f8f6b5da",
-      "mode": 420
-    },
-    {
-      "path": "camera/image-dds-source/CMakeLists.txt",
-      "type": "file",
-      "size": 326,
-      "sha256": "5e985cc1a0d65f74b4eff20184897cb79859050a81dc58e942357e2825e2889f",
+      "size": 9578,
+      "sha256": "0a47e4b123f2852ddc15271092020ad81c018f4b57c80a83ccfbe203aefe6295",
       "mode": 436
     },
     {
-      "path": "camera/image-dds-source/ImageFrame.cxx",
+      "path": "follow-media/omnifleet-follow-media.service",
       "type": "file",
-      "size": 6988,
-      "sha256": "890e6e6a6ba7f062cce731f503670cb27bec1f231cb9376e5402188642eb9ad2",
+      "size": 404,
+      "sha256": "25e2a19f7da343aa68741cf31a153ba6dcff89645b44f6dc15bacee2d1e33951",
       "mode": 436
     },
     {
-      "path": "camera/image-dds-source/ImageFrame.h",
+      "path": "follow-media/serve_follow_media.py",
       "type": "file",
-      "size": 7873,
-      "sha256": "ff17b7c13808dcdcc062477ac8522d95c9daff4d99114adf9c857fa462f448d5",
+      "size": 11791,
+      "sha256": "aa58c4c82b9cb98689c792208fc278e32f49d4fa83cec78b235e600dd4b7d57a",
       "mode": 436
     },
     {
-      "path": "camera/image-dds-source/ImageFrame.idl",
+      "path": "firmware/robot-124-cascade/Makefile",
       "type": "file",
-      "size": 139,
-      "sha256": "d0da01717854ec8d32b79afab5b2e84cf0fade2d8474a19267c4d55d8d9452c6",
+      "size": 6404,
+      "sha256": "87331c52988efd8c5988baf62670da9f1f7b686cb39a771ccb0b2ce94e412bf3",
       "mode": 436
     },
     {
-      "path": "camera/image-dds-source/ImageFramePubSubTypes.cxx",
+      "path": "firmware/robot-124-cascade/STM32F103RC.ld",
       "type": "file",
-      "size": 5229,
-      "sha256": "ffd8563627fdf1af16c98f6c84caf33d76880ab4c9941c4cbb0f797a6b49f852",
+      "size": 994,
+      "sha256": "f067447c4ecf7bfc1f765d132be6584878bf84f024eb1e47a167c131774191fd",
       "mode": 436
     },
     {
-      "path": "camera/image-dds-source/ImageFramePubSubTypes.h",
+      "path": "firmware/robot-124-cascade/CMSIS/core_cm3.c",
       "type": "file",
-      "size": 3111,
-      "sha256": "4abf78039afff8a9d98b2c37579cea93abc31525c5820082a2be868fc380a59b",
+      "size": 17299,
+      "sha256": "cf566b96e7f2448793aa59633400109bf0abf9e5f7dcaa55d5a7644a348b5891",
       "mode": 436
     },
     {
-      "path": "camera/image-dds-source/image_loan.py",
+      "path": "firmware/robot-124-cascade/CMSIS/core_cm3.h",
       "type": "file",
-      "size": 1167,
-      "sha256": "122def4cfbcbc416fddde402e3b3ed83c721f0180d0277928fc3462bd1408205",
+      "size": 85712,
+      "sha256": "a29a60f7a9bf6b838fa417fd944f546f9641be3b63fe55ea88d61fcc989be0b1",
       "mode": 436
     },
     {
-      "path": "camera/image-dds-source/transport.cpp",
+      "path": "firmware/robot-124-cascade/CMSIS/startup_stm32f10x_hd.s",
       "type": "file",
-      "size": 5206,
-      "sha256": "b8e4d2adadaa670a843d8ddb7b4a992ea943e8a849fc95935ef7602a98c5ecf4",
+      "size": 5657,
+      "sha256": "17522e96877ab688a149c2fe0a81bc593f7da130f898e05220887a3ab50bd010",
       "mode": 436
     },
     {
-      "path": "system/home/iecme/dispatch-media/bridge.yaml",
+      "path": "firmware/robot-124-cascade/CMSIS/stm32f10x.h",
       "type": "file",
-      "size": 307,
-      "sha256": "bd53227af5912e2edf4d2572fb4965077579e5a0f6bc8c437c5af3a5c6e87b1a",
+      "size": 633934,
+      "sha256": "5ebacf624557c2e94eb145fd1ffd90811cf36876df48cacb5dac66ab14b8971d",
       "mode": 436
     },
     {
-      "path": "system/home/iecme/dispatch-media/omnifleet-dispatch-media.service",
+      "path": "firmware/robot-124-cascade/CMSIS/system_stm32f10x.c",
       "type": "file",
-      "size": 284,
-      "sha256": "9046d7a3affcdad91bd0c0c125e4b423df7bc2a6a355dd676168659e347286bc",
+      "size": 36557,
+      "sha256": "45f52950f5fc6509920fb26d1362e8457907c2d62fa455cbe3c6ce6daa974a76",
       "mode": 436
     },
     {
-      "path": "system/home/iecme/dispatch-media/relay.py",
+      "path": "firmware/robot-124-cascade/CMSIS/system_stm32f10x.h",
       "type": "file",
-      "size": 3587,
-      "sha256": "a2add236603003e6a7df96e6b21b101fc6f23616e4f7b0e86bf7924fbd7be470",
+      "size": 2085,
+      "sha256": "919dc1f5c6bbba74cb712e8ec7cf73f1988eafa9438c706526fb401a2ab4672d",
       "mode": 436
     },
     {
-      "path": "system/home/iecme/dispatch-media/start-124.bash",
+      "path": "firmware/robot-124-cascade/CMSIS/startup/startup_stm32f10x_cl.s",
       "type": "file",
-      "size": 426,
-      "sha256": "a988c78097b76e1a72c6276686776d903b6ddbaaaca4a14332d915e3f4e629b8",
+      "size": 15766,
+      "sha256": "fe249e5ec3856feb2596bda8a09eed91a5b7d634abc96fc2981c24c1260e204d",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/CMSIS/startup/startup_stm32f10x_hd.s",
+      "type": "file",
+      "size": 15503,
+      "sha256": "1ad6e0a965254d4cd1a6cc289011214c8d3f1468d77e9ad1f235d80792cda2fc",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/CMSIS/startup/startup_stm32f10x_hd_vl.s",
+      "type": "file",
+      "size": 15692,
+      "sha256": "1c20befd815cc2707370a3ff530c0e050db4a90d5d76a270290e3c3495f76f3c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/CMSIS/startup/startup_stm32f10x_ld.s",
+      "type": "file",
+      "size": 12376,
+      "sha256": "d36ebab687be79789ac7250e1e70310ae7ea4f7de7a6fddc1deda4a134263977",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/CMSIS/startup/startup_stm32f10x_ld_vl.s",
+      "type": "file",
+      "size": 13656,
+      "sha256": "ad7afad5352f4ebef018c689d40fda1834805c8a9c3f67a3826f6e8d15d2f41f",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/CMSIS/startup/startup_stm32f10x_md.s",
+      "type": "file",
+      "size": 12765,
+      "sha256": "8bff69adff662663c0fcbee4cfbeb3ed9ff2b7501527f24815789f2736420d23",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/CMSIS/startup/startup_stm32f10x_md_vl.s",
+      "type": "file",
+      "size": 14073,
+      "sha256": "4d453f0a56a416ef6f1f6ff3f3ecdd3e65c1f055b46c0be1fde0bcf47535498b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/CMSIS/startup/startup_stm32f10x_xl.s",
+      "type": "file",
+      "size": 15955,
+      "sha256": "0946ba9c61c7cf85f5669b0ce38cf393177e5e1a735666331587dcf124019a18",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/misc.h",
+      "type": "file",
+      "size": 8982,
+      "sha256": "40c918f726035dfa67a7bfadefac8e922196d7918f915a7f2db1e652625c7e41",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_adc.h",
+      "type": "file",
+      "size": 21690,
+      "sha256": "005a122259e9657bd6b3171dd0e478c143c2a70f8e364b505b84f3fd0a8b1b9f",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_bkp.h",
+      "type": "file",
+      "size": 7555,
+      "sha256": "bd3ae6fe6a6e617216d60a11a7437be97dca2ea02f3ad78afe889850473fdb16",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_can.h",
+      "type": "file",
+      "size": 27559,
+      "sha256": "df4e1602f2b208b335fa22890908ff518de18c6e27ffb94b92cd498e8212b248",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_cec.h",
+      "type": "file",
+      "size": 6573,
+      "sha256": "620485eb06b33c96a5a8de3fb1116db876162a44da15441883f0cc675e890059",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_crc.h",
+      "type": "file",
+      "size": 2162,
+      "sha256": "98e5537eb5e8837de2170472b774d9f9559f14b60dfcb09d9f839611bc18cb66",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_dac.h",
+      "type": "file",
+      "size": 15233,
+      "sha256": "446107ab9e933ccc284be0cd8f0c32edc3e96ba6f990dea8bd1f1cf080d35ef6",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_dbgmcu.h",
+      "type": "file",
+      "size": 3818,
+      "sha256": "998751256df8a0423dc73be45e489fc04cb2b124a6f04a6ad65e4d53e59f45ba",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_dma.h",
+      "type": "file",
+      "size": 20754,
+      "sha256": "2ba038050d07735a42645f2508e62078c217dc750878097f7f113660e0d58ffb",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_exti.h",
+      "type": "file",
+      "size": 6824,
+      "sha256": "661b039483459137a58bfdea7522528b9b6e923d61966d4c7c8a5035bd375f5f",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_flash.h",
+      "type": "file",
+      "size": 25445,
+      "sha256": "952ca72ee4d01e49d392d55af2b146bd9f15763230660334e78ac2cad8cb8982",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_fsmc.h",
+      "type": "file",
+      "size": 27016,
+      "sha256": "b2e640d05f6dd11e1fe70bfa0db8aa53cb0a918eef412d6a35630b1357dc5ff6",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_gpio.h",
+      "type": "file",
+      "size": 20483,
+      "sha256": "7a39429498d66b72ded74a2df4d0cc29a8799358e0071df14c3c169c61d89dc6",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_i2c.h",
+      "type": "file",
+      "size": 30029,
+      "sha256": "08b14d416090815765a02e6fecf78cbdd3de4ad330d3bc04b2133f8f4f3f2daa",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_iwdg.h",
+      "type": "file",
+      "size": 3828,
+      "sha256": "4a0e65ceebeb69dee10923ab5478938ec7af1357849fbf862d45d19dbb01091a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_pwr.h",
+      "type": "file",
+      "size": 4383,
+      "sha256": "b7b31d2bfb3d56e763d70e9db4eecfc996664619916ac4bee9d9928430ffac79",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_rcc.h",
+      "type": "file",
+      "size": 30452,
+      "sha256": "894e140a70b0cdc94e4e96c5011def9dca5a103752783c3bb7cab538fc426f9e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_rtc.h",
+      "type": "file",
+      "size": 3857,
+      "sha256": "4a0ef73054c3f7f7ad325c6ef0268edb3c5e8987978bdac8a695dc548e13b94c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_sdio.h",
+      "type": "file",
+      "size": 21863,
+      "sha256": "35f5d75421ab3c76d1d76e2c26d0910864161966cc16b74f8327c173ae123deb",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_spi.h",
+      "type": "file",
+      "size": 17725,
+      "sha256": "e5dce165ef95fd872a8802cc4f9205b389e4ecdd28a0d74f8aa6c9c3d1ea4225",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_tim.h",
+      "type": "file",
+      "size": 52427,
+      "sha256": "dddf89f9b7134a2f15ed9cc2521589ee9a2e18c0553a6017c71b5d5b394524e5",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_usart.h",
+      "type": "file",
+      "size": 16548,
+      "sha256": "9d4c2067e54defd64b000076e6561726d758c872d354bed6eea66a6767c08bce",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/inc/stm32f10x_wwdg.h",
+      "type": "file",
+      "size": 2966,
+      "sha256": "eb1a01bbaa33babc416d8ecdb40b5a97a21522eb5c7952ba1bec09924580790e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/misc.c",
+      "type": "file",
+      "size": 7046,
+      "sha256": "152c632e56151b2564121c56ff359d0f041621f0da6ed101d7fd376a139a5c75",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_adc.c",
+      "type": "file",
+      "size": 47201,
+      "sha256": "d269b826f617c7b1426155cdfc8a220d05aee74580b80b92f86bf33ea9d8be98",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_bkp.c",
+      "type": "file",
+      "size": 8463,
+      "sha256": "f78d5077029cfec54da52ea4f9d8796dabdf1da5dc6cc29e3395e0f6923645a0",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_can.c",
+      "type": "file",
+      "size": 45103,
+      "sha256": "bf9d3bec0785b8f28d9eb046bc67181071586e10014d4f595ba0e582257f31ad",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_cec.c",
+      "type": "file",
+      "size": 11656,
+      "sha256": "5cf689d7a2ecc3244b18099ae254dc6b0bff023406c898a82dbbd42a29b86e7c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_crc.c",
+      "type": "file",
+      "size": 3347,
+      "sha256": "962aa1381467118ee7e9bea68ad01b3ca3f9fbbd749242211e2d340bf896d0d4",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_dac.c",
+      "type": "file",
+      "size": 19087,
+      "sha256": "789a92c1dbb0dc74688fff8e415a93da816956a7a44882488d25af7ac055cbc7",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_dbgmcu.c",
+      "type": "file",
+      "size": 5149,
+      "sha256": "9bfb6f964cd3b06a04c67772e52f31814e5a3d39a951a27bf9f2ef352237e23d",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_dma.c",
+      "type": "file",
+      "size": 29607,
+      "sha256": "b0ac759af150deaa84d8a337a8873a2fbc03e36b1db6623175ab2443efa45d6f",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_exti.c",
+      "type": "file",
+      "size": 6959,
+      "sha256": "5783d10d46275d8baee9f2861cf434b5c12a4bc8f42ed4af9e503c1818941ebe",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_flash.c",
+      "type": "file",
+      "size": 62553,
+      "sha256": "902b84d67d66f1172c3bb8641fd0de85f7844ac2fb36a1606bb63b972ad9c343",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_fsmc.c",
+      "type": "file",
+      "size": 35484,
+      "sha256": "1b623840bba04095a150fcf051fd2a3df4838799b96ae2e36f28675e92c23e44",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_gpio.c",
+      "type": "file",
+      "size": 23221,
+      "sha256": "8255650b583b2bab2c320e0974309a6ccf26f661e7ad1b54282c0f0e2b9a1acf",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_i2c.c",
+      "type": "file",
+      "size": 45782,
+      "sha256": "a6f37a8a16b404b0416eda63fc0f4e60376ae1f79054a36d02733c8c5d0f2fb6",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_iwdg.c",
+      "type": "file",
+      "size": 4916,
+      "sha256": "bdae6086ce189dac8d464d10bb2ab58a957bbd8f89834e1cc7716faf3e34c9ce",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_pwr.c",
+      "type": "file",
+      "size": 8759,
+      "sha256": "3f8c77033caad162a69fe9780d7be2ab973f02be0e736e37c2e633f4a4e2bd28",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_rcc.c",
+      "type": "file",
+      "size": 51271,
+      "sha256": "f23bbc9b83e44e69f5dc34f072867f0087a3eb0452034ab09c363088d2354cd9",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_rtc.c",
+      "type": "file",
+      "size": 8598,
+      "sha256": "59bc07137d60efbbf69703b88e72bb2153c2e97beee16a1d262a7050686fb00b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_sdio.c",
+      "type": "file",
+      "size": 28933,
+      "sha256": "d042b43fbfd5431719a7310ebe2d38c861a663d07e0c0735e466785e07fc1d97",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_spi.c",
+      "type": "file",
+      "size": 30224,
+      "sha256": "0214f213058353f2fd9d3a4036ccabbea0b73b60aae0652acf36df539adbb9c6",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_tim.c",
+      "type": "file",
+      "size": 109159,
+      "sha256": "bd12bf18b03b8585ac2ba6bd0e80ec39d8fd0c89307eb54f5a7be38a46894d03",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_usart.c",
+      "type": "file",
+      "size": 38312,
+      "sha256": "f9567e3efad9da0a88de417cf0716cbd8dd3d6d96cfda0d6d025d8c2cce56aba",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FWlib/src/stm32f10x_wwdg.c",
+      "type": "file",
+      "size": 5735,
+      "sha256": "1d51fbbe3da7731b2303408f00693b51dbf62226590b1264cbbf35be01aa90ea",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/FreeRTOS.h",
+      "type": "file",
+      "size": 47720,
+      "sha256": "fecfbbd0b76eb41c7327866e37f0f5997a78673196ba3a7bb77277bd58e96eaa",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/FreeRTOSConfig.h",
+      "type": "file",
+      "size": 3534,
+      "sha256": "9917aa8b73344c4eca0e93a16245596946c42132b82b090bd6b110f11a96175c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/StackMacros.h",
+      "type": "file",
+      "size": 1582,
+      "sha256": "fd1919e3939320c6a6c7f9483fe545e1cf5145ba31115e5023f4a03f7374a487",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/atomic.h",
+      "type": "file",
+      "size": 13236,
+      "sha256": "1e004c39e33142f6d16c55359428b75bec22cefb50e864d49b53d34d37177ec5",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/croutine.h",
+      "type": "file",
+      "size": 28794,
+      "sha256": "8378ac067089d92644c14feb35048b4a5e46b83abb836fc475421e4bb79cda3d",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/deprecated_definitions.h",
+      "type": "file",
+      "size": 7775,
+      "sha256": "ee07d4e940593d42e5b37e2322a4778e2607f7f51b3b05074e44b15454eb867e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/event_groups.h",
+      "type": "file",
+      "size": 32680,
+      "sha256": "1b788071995906e9a2eca0e6635f59b61c9a476a04420feebf081d02052f7555",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/list.h",
+      "type": "file",
+      "size": 19729,
+      "sha256": "c710f7f3ef80bb7a753a1078d2e446bb1639431af978bf483638d4178bc44c68",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/message_buffer.h",
+      "type": "file",
+      "size": 38731,
+      "sha256": "71f77f8ac8e790ca9cab214bedf49e079f6d3456a4289c7a45d2ec2580569fbb",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/mpu_prototypes.h",
+      "type": "file",
+      "size": 17727,
+      "sha256": "1591b2ad13b2108cb2dd1ad747c75a5e7a74fc4f39f2f69ed8e4bea5a16da4e4",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/mpu_wrappers.h",
+      "type": "file",
+      "size": 11292,
+      "sha256": "4775e9786ff95c71befb930a5b4e8e8dab2a350a4b6021c50348e50d87629384",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/portable.h",
+      "type": "file",
+      "size": 9203,
+      "sha256": "62af62e3cf88f7e1131178afb9755a880b42b995407e7f81fdecda0d53832ffd",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/portmacro.h",
+      "type": "file",
+      "size": 9477,
+      "sha256": "6344cb346f62a9ecbd1e9a796bd6dc2626c3e6f84145799ea9d75888a312db42",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/projdefs.h",
+      "type": "file",
+      "size": 6372,
+      "sha256": "8e40e68041395856cac332cfea8b2fcb0ca576bf074853347ef6a729ae3239b4",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/queue.h",
+      "type": "file",
+      "size": 67086,
+      "sha256": "cc072e0d5d3ba1f00219f24b116169abdee10f4ddac6c76e3be57c06fb6bbc3c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/semphr.h",
+      "type": "file",
+      "size": 49600,
+      "sha256": "a7b148f94c0702432b4e0515833b0b09f2a0691641993496bdd930095bb6625e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/stack_macros.h",
+      "type": "file",
+      "size": 8443,
+      "sha256": "e305099300ce666a1f98d3ac3d0b3f1b9b4157665925d54fa91642832ecc803e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/stream_buffer.h",
+      "type": "file",
+      "size": 39652,
+      "sha256": "2bf699a8925d1735c5983648350734a83f754658678bae291603df8cec8407a8",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/task.h",
+      "type": "file",
+      "size": 138835,
+      "sha256": "fc917c6c61d9d56e366eb5834e7ab9970b6d4d8baeb7dcbc443047e995877b77",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/inc/timers.h",
+      "type": "file",
+      "size": 64124,
+      "sha256": "68195ad6d8fe88c1068a3e924b8490313af13cbc110e1cd3809336d8fb154360",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/src/croutine.c",
+      "type": "file",
+      "size": 16093,
+      "sha256": "04863c9ff35b0fdc4e174c1a27a8379d516fefe04943deaede7d6b81eaad203f",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/src/heap_2.c",
+      "type": "file",
+      "size": 12826,
+      "sha256": "10c4e202e9e025080a90efa7bf40b922c34645ea8fad640efe6e61ce4aca8ca9",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/src/list.c",
+      "type": "file",
+      "size": 9706,
+      "sha256": "6fdbabbc6e19077fd3b95c51de55d5fc652378e53b98710be69cf8d01e11637e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/src/port.c",
+      "type": "file",
+      "size": 29698,
+      "sha256": "6d161cea4879a40cd2d30ca75332f44a333bb5b9d2c4ec6fc62cfcd43001cd0b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/src/queue.c",
+      "type": "file",
+      "size": 124093,
+      "sha256": "0a75336af77e92f4a72550dda7fe2138ed2667df205a8f3726b89234a0b7dc39",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/src/tasks.c",
+      "type": "file",
+      "size": 226096,
+      "sha256": "c02c0faaf535e8375c8e8aa4e42493f1692af1c4ee521bb7c892a91b17d734dc",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/FreeRTOS/src/timers.c",
+      "type": "file",
+      "size": 51885,
+      "sha256": "29702809d2781fb364402bbe8eadf1800b2cb7d675d60600e94762ad10fa5fb9",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app.c",
+      "type": "file",
+      "size": 10471,
+      "sha256": "c1292fc94ce564f7a671954404c5f8f0ec8bf6cc490a460d2c6060754b430536",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app.h",
+      "type": "file",
+      "size": 487,
+      "sha256": "a0ed4963635618420e961930162364f7b7237921d529c64dd73ae35241332806",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_ackerman.c",
+      "type": "file",
+      "size": 6306,
+      "sha256": "e26fd8cf7c4b852b6433f8d14a8db44238cabccac537aeac67ef27d2d93e5e59",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_ackerman.h",
+      "type": "file",
+      "size": 1123,
+      "sha256": "430755aea4a02e9d2e832ecd425a7da464d3a75886da4800c788fde93452a114",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_angle.c",
+      "type": "file",
+      "size": 4356,
+      "sha256": "49de5db0c28724d05be566dcdbc706c1a7214a48be165050e86029a37c168fea",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_angle.h",
+      "type": "file",
+      "size": 881,
+      "sha256": "7f4dbe4472c91e58e1958747cbb7b34fc29ad2929e51b6fb9cdbdc3162904a2a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_bat.c",
+      "type": "file",
+      "size": 4076,
+      "sha256": "c18bf79311b537a54d2406185d3b5135c92f55d7f3cfc0cd42bf6913abc4bc7a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_bat.h",
+      "type": "file",
+      "size": 514,
+      "sha256": "aeffb84f736c7f286659a5776be734db2b18ad09eb6ef57bdfe68ca10208e68e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_flash.c",
+      "type": "file",
+      "size": 13912,
+      "sha256": "d6f884e3e0b2df4a469ffd36b62527897d44275211812c60acb55d515e11a9a6",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_flash.h",
+      "type": "file",
+      "size": 3280,
+      "sha256": "8dd24a8d9470519045700be846e3ebe48d6658d8baaf66ca85f8f58e81c7db8b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_fourwheel.c",
+      "type": "file",
+      "size": 4044,
+      "sha256": "df39649dc3863ad6267f380d4de43effe643157a64a3eddfc55b0c9109b52ed9",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_fourwheel.h",
+      "type": "file",
+      "size": 592,
+      "sha256": "37b4798a5db08a90e1a3e5d77de537ecb396a4de8b38f538d8a52ae755a0e9c2",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_math.c",
+      "type": "file",
+      "size": 871,
+      "sha256": "3c5e4fb98fbf47a722df818eceb354216f45abf6d4b648b6531b54bb31c7aafd",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_math.h",
+      "type": "file",
+      "size": 415,
+      "sha256": "adfefa09e77c149405dbd40af77a4ebcf1c4fac5645e8454a9439dab36e24058",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_mecanum.c",
+      "type": "file",
+      "size": 5672,
+      "sha256": "d0ce017b774de7a6ef16960f3ffc41f4f148020bb3c97dd7f27e0fb3f84d41fa",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_mecanum.h",
+      "type": "file",
+      "size": 1245,
+      "sha256": "0389c9478cd82831abbb562888b14ed45899895fa04c35f8c9eb92191629b8d3",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_motion.c",
+      "type": "file",
+      "size": 16136,
+      "sha256": "379de1d7961cbab49efccef6c039d7cd3d66f237969fd81b0eb38b3c8060f84b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_motion.h",
+      "type": "file",
+      "size": 2915,
+      "sha256": "a43c9a824ffeb2647884aba8ba091f91ef60235421cb6f048117a21911b4d1ce",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_oled.c",
+      "type": "file",
+      "size": 5302,
+      "sha256": "b73b81d15c530a738a81162c5ade9448edd163c13425108591ba1e2a5aab1db1",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_oled.h",
+      "type": "file",
+      "size": 1009,
+      "sha256": "c011883747a666eb789c611f94c507d7a5b9003e383a26d89f12ff0bad353bcb",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_pid.c",
+      "type": "file",
+      "size": 15075,
+      "sha256": "c5cd99775260b863735f611db2c60f35e55ebd509486257e571d0bbc780bf85f",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_pid.h",
+      "type": "file",
+      "size": 2050,
+      "sha256": "146bcabe57dee04cf7e3749e18baef14a668eb00c048be8883b4594728c81be6",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_rgb.c",
+      "type": "file",
+      "size": 12590,
+      "sha256": "369e9a3082d6e7173c8f75a759708782c03e2021d34a242997e53b3e8c665a90",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_rgb.h",
+      "type": "file",
+      "size": 673,
+      "sha256": "5c2b7f3481185d4ce45cd8f8e3ce2cebf4f28677ed6c778058bdd25de25ea0c2",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_sbus.c",
+      "type": "file",
+      "size": 2350,
+      "sha256": "5432405e1ebfe8e6cc754b6b3246f8bab036d135551d244939e28b054451399f",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_sbus.h",
+      "type": "file",
+      "size": 424,
+      "sha256": "50b002c471af839f903bdac78ef43040ff12dd43e483d59e6a131e6c24a9b1bf",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_tracked.c",
+      "type": "file",
+      "size": 5051,
+      "sha256": "1c2ef1c1a0451da38c15d6e28d98f08e8943ac4c5e1b393ea5452f0ad3514a2a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_tracked.h",
+      "type": "file",
+      "size": 936,
+      "sha256": "5ffd6d1df41f07bc69b8c51b6f5f39437933b9c01c0065ea3f3b327dde909907",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_uart_servo.c",
+      "type": "file",
+      "size": 15947,
+      "sha256": "58faf46d3a857471966e0943c7161a614d1275117d4d6907e37f3aa0811cfcc4",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/app_uart_servo.h",
+      "type": "file",
+      "size": 2413,
+      "sha256": "75a10bbff7e2e34cb877d98b97b01cd5a6282d03001d2e03aa9a8d9a249078a5",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/config.h",
+      "type": "file",
+      "size": 2381,
+      "sha256": "dc3468f85113681928c0168e3b9703187d29ccbfcda9ded726ed5a115c9918a3",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/main.c",
+      "type": "file",
+      "size": 1004,
+      "sha256": "5dd8ada4c62e63de9c6fafa6fe5e4d4ee9289f2b49b88871ecb03c22f38cf7e7",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/protocol.c",
+      "type": "file",
+      "size": 35664,
+      "sha256": "eb8b7028acd4319c1e8e147c2a63003921c6887a7964f9502183bdc9fe3f71b9",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/protocol.h",
+      "type": "file",
+      "size": 3283,
+      "sha256": "09a4b4e0ebb2a13ec5dca391e2dd4a5c47ad87e7be435c9bde362901f793ea60",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/APP/stm32f10x_conf.h",
+      "type": "file",
+      "size": 3281,
+      "sha256": "3257f81431852616f3fbdc4209d1ccb9bb6e191da001612b91af798e2cfccd2c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp.c",
+      "type": "file",
+      "size": 8893,
+      "sha256": "a36c62453d31e14be49865c3dd57935710a3871dfeae1c494954124a27a75280",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp.h",
+      "type": "file",
+      "size": 1547,
+      "sha256": "b696e67356db772e08e4c811ef310a781e265065ce51bb6250c640352a0d6e9a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_adc.c",
+      "type": "file",
+      "size": 3097,
+      "sha256": "5e6afcc989fdc28dd5a4bd3e14bd6c55cb17207fa7c53f7e786ecd5bc8731cc2",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_adc.h",
+      "type": "file",
+      "size": 498,
+      "sha256": "cb40689457eb2ab32014909541e09e07b3e4a26d2e00628f97e8cd2894bfdd7d",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_beep.c",
+      "type": "file",
+      "size": 2047,
+      "sha256": "491e15ddadb6ed7960986b6abdedd085a6cbf540aae6ec844e3d4d8f9b570920",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_beep.h",
+      "type": "file",
+      "size": 895,
+      "sha256": "d6f571b67530772a9e085305204e7df87d1e615d28b2c955cb4348666b45f39e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_can.c",
+      "type": "file",
+      "size": 6510,
+      "sha256": "bf80a3458cd8ef224f8dfc0487fb9c7398671a549afa04bc571b7c18892df0f8",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_can.h",
+      "type": "file",
+      "size": 1083,
+      "sha256": "c59527ec8e402f0f70b4926f5ec3d18077bb4f9d992c699b752ccf2bfb2dec5a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_common.h",
+      "type": "file",
+      "size": 2735,
+      "sha256": "06f88f533d9f3410f4338e78a5d2bde12ddbfed9acd616f1a86cb938a23f87da",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_encoder.c",
+      "type": "file",
+      "size": 12548,
+      "sha256": "d2030c620a8601148e0282dacacf8b8c6c84148b18da2d236dc755133ed4ab43",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_encoder.h",
+      "type": "file",
+      "size": 1199,
+      "sha256": "9e1e149430a2df37e3eb5b1bf04385f10d82026121b603ee2446dcabdba4ed83",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_flash.c",
+      "type": "file",
+      "size": 6723,
+      "sha256": "d8aaba06bbc3253a8e894a229729a87657bc4cbb5f61ee6c87311bfc8e1a5b87",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_flash.h",
+      "type": "file",
+      "size": 1336,
+      "sha256": "28ca8e55a3cb6dfa082d1d10546047c1367c5f7749a8fa4e5ca08199baf86f2b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_io_i2c.c",
+      "type": "file",
+      "size": 9976,
+      "sha256": "2c70b1ce33d3b3d22d893f50d3bf21369aa02227e83805bb3075a19cf3308161",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_io_i2c.h",
+      "type": "file",
+      "size": 1498,
+      "sha256": "7421e0e9f67905840bd853c4d340b3ffac7c874f5cbdfd3611de699bd14daf1b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_key.c",
+      "type": "file",
+      "size": 2251,
+      "sha256": "c9cbeb7cb2e7b0ed4beeee0dee0a2559bdea75288d0aedce17bf1244a04694fd",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_key.h",
+      "type": "file",
+      "size": 567,
+      "sha256": "b350c19788e6ee67c9ce96f63e5fdd19fef3e466c0c32c4c8766203c28d04c72",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_motor.c",
+      "type": "file",
+      "size": 8486,
+      "sha256": "f2d699bb6f2ff4743d6389f3bc13c50bc2c385537f0a69e32db93088eeb25f4e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_motor.h",
+      "type": "file",
+      "size": 3557,
+      "sha256": "edf8c7a51cdf8d4788dc4b323c3f2a6ba384e0870bfb64a6328fe7d0105d3c0e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_mpu9250.c",
+      "type": "file",
+      "size": 11938,
+      "sha256": "dbf69fee285b7fc002e622b3dc97df1b88df8b210e0362a1343cf05010ec9096",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_mpu9250.h",
+      "type": "file",
+      "size": 5408,
+      "sha256": "3454b5cbd8e96f043378d996d934e242427dea7d1bb1f3f7b405e3e16a2d7a07",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_mpuiic.c",
+      "type": "file",
+      "size": 6599,
+      "sha256": "e1fcc5e2a30925462eb797b27c1dfd386f371e61ec62882d84b160f97e2fa8ab",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_mpuiic.h",
+      "type": "file",
+      "size": 1652,
+      "sha256": "858293af5a99e65d28a877972d6cc7679de95f41770771ab26f0452b8e24b999",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_pwmServo.c",
+      "type": "file",
+      "size": 5108,
+      "sha256": "f8122c5715febcf99ebb66b6f38c6b1e74411692172e8cbb545eeb45a5897913",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_pwmServo.h",
+      "type": "file",
+      "size": 1761,
+      "sha256": "d05731a9f93a7ec30a177dcd25990fd334e9000417f3b47d30781f7d07a3d0ce",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_rgb.c",
+      "type": "file",
+      "size": 8999,
+      "sha256": "e041f584420bb951dfb61d84c21af59978b127fd8c162734be3b544d9ceb0d5e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_rgb.h",
+      "type": "file",
+      "size": 689,
+      "sha256": "699c435010e4bbfb8b5d90f270cc4dc0b986010e9bb8c351d87f95eab7b6b342",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_spi.c",
+      "type": "file",
+      "size": 3054,
+      "sha256": "b7ab4477fac6b7e6d88d73bf78f2633c826d2cce0d8fa0ffb239670a66b95fdb",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_spi.h",
+      "type": "file",
+      "size": 561,
+      "sha256": "7aaaf5bc6a5e031a932217ea3e88b099f6f8bc47d6eff1646eb579b5dafecf95",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_ssd1306.c",
+      "type": "file",
+      "size": 13300,
+      "sha256": "fc137982f380fe5f316bf69808171c473271d851b635d70226b54c32d00d3894",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_ssd1306.h",
+      "type": "file",
+      "size": 1613,
+      "sha256": "0165f49f4dc2b40cd2e59b40287939163ac1f422498c5b8e2f0c3b385df58c0d",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_timer.c",
+      "type": "file",
+      "size": 2711,
+      "sha256": "045f5a66cd26e1d612ae0d05deca1606e040df3833d5276a857b3bb9ad602d2e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_timer.h",
+      "type": "file",
+      "size": 134,
+      "sha256": "66effcb06295a7d04658bff78c6f2f81791498d48f1fea78a287806834eb7ab2",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_usart.c",
+      "type": "file",
+      "size": 16633,
+      "sha256": "f1ceb19c5810abbe431e537ec28995eeeef1851000015a9de4330ab15fcdf92d",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_usart.h",
+      "type": "file",
+      "size": 1528,
+      "sha256": "9d15e5b65fbca5349a76555a8c60ee6c02ef1fff2da9b123137588ddae5e7068",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_wdg.c",
+      "type": "file",
+      "size": 610,
+      "sha256": "c7a74dded075b4c28737243c4f2bfe96bb2cc8cf09420f4590aff678f2ffb7c1",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/bsp_wdg.h",
+      "type": "file",
+      "size": 106,
+      "sha256": "18c54b2926305f8145053d8a41a4c5dddf3635c006dc407b6c90601422adbe20",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/oled_fonts.c",
+      "type": "file",
+      "size": 42686,
+      "sha256": "18e18e7c97838cec5d88be1fe9b721fdb095eabbdfc12e03a35dbe3faaddffde",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/BSP/oled_fonts.h",
+      "type": "file",
+      "size": 1393,
+      "sha256": "9118956eee499336c05fcad535f2de185e02e3a6a6090537bf64eb88b7cd46cd",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/DEBUG/yb_debug.c",
+      "type": "file",
+      "size": 360,
+      "sha256": "bfbe5fa347ff4cda78915365039e47e5f35cd639e40f2877a1515bdbc7f4c2bd",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/DEBUG/yb_debug.h",
+      "type": "file",
+      "size": 639,
+      "sha256": "451e85fc1176497704d49a0e5c519751c27bd762ede1bac2c1f17a68136e1e0c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/dmp3Default_20648.c",
+      "type": "file",
+      "size": 41359,
+      "sha256": "1c5f34874a2dfbff2a0bdbd4098522df978ec5f10adbd221304679f51a368891",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/dmp3Default_20648.h",
+      "type": "file",
+      "size": 3761,
+      "sha256": "0777866fd233e40ec57e4528a721ad503e4545ec88218db307de6ce87fb46165",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/dmp3Default_20648.txt",
+      "type": "file",
+      "size": 87938,
+      "sha256": "5317315ad7870ce5d97326ce2cdc3fb813f65d0f53b5a96d1d0bee0d2494706a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/dmp3Driver.h",
+      "type": "file",
+      "size": 4076,
+      "sha256": "402eb4376653f06f4f485e2158e2e9e681e52a493e24e73bafdbc836dc36a4c7",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/icm20948.c",
+      "type": "file",
+      "size": 72996,
+      "sha256": "4595627a373fdf0283656724d75945499068053853cd69321f6da4b174dfe202",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/icm20948.h",
+      "type": "file",
+      "size": 1751,
+      "sha256": "f94ce7bc39ee3b4a78a15b09f36a97535ce853a37295245788f45712483cdc09",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/int_types.h",
+      "type": "file",
+      "size": 7437,
+      "sha256": "2e963b0207d20c2fbe3375af6c77a9385479cf3cf070a19bca7c05a46d857251",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inttypes.h",
+      "type": "file",
+      "size": 8309,
+      "sha256": "e91a80a474099018a2edf9fc6eeae642aa256f34cf1f99dd63ef512502702892",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems.h",
+      "type": "file",
+      "size": 1825,
+      "sha256": "3221aaa7f5e70cefbc83ef2c0f22821978ac6aff7ff3d12bfc33875165aee055",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_augmented_sensors.c",
+      "type": "file",
+      "size": 9581,
+      "sha256": "61b1c18ccf6d714142981af4bbdcd571969cceaded856816cd8e9a254be12108",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_augmented_sensors.h",
+      "type": "file",
+      "size": 4012,
+      "sha256": "3365176270f65b5b031858af905c7c5b88ffd82de20961f544710dd3bf67639b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_base_control.c",
+      "type": "file",
+      "size": 73237,
+      "sha256": "46b8f66446d2565202f7317d85674c52ddfc4cab05a682b6601e51879a1e362c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_base_control.h",
+      "type": "file",
+      "size": 10437,
+      "sha256": "d752f39640c3b5055fe960bbbb02ce3891d4dd2ccfcc2c88ef79ea8e186169c7",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_base_driver.c",
+      "type": "file",
+      "size": 24723,
+      "sha256": "c3be89ea4b4835b3d73bc07d491c68992205a365c337dc96225c40aad1d88ef9",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_base_driver.h",
+      "type": "file",
+      "size": 8859,
+      "sha256": "5655dbf8ece16f3600333326a63c731ead1b9518371b1c2d30526dc1b825007a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_data_converter.c",
+      "type": "file",
+      "size": 7283,
+      "sha256": "5f4cf9a4623c6d6d4c69758a35e7ce4c575bc5e2fb00728055e4694aadc927ad",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_data_converter.h",
+      "type": "file",
+      "size": 3190,
+      "sha256": "bffbea4acf1ce8292c17981acbbfb15a5838c9a664b2b920a2ea0a191cd354df",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_defines.h",
+      "type": "file",
+      "size": 24211,
+      "sha256": "cc70de4b78555d0c4a02a3bf6d401f1d7c9ef36c929e5ec1b998e434346b7ed8",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_drv_hook.c",
+      "type": "file",
+      "size": 2003,
+      "sha256": "303df805f19baed7728ae8364653fe956df32b5d115d7637183f1f3a537a80e1",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_drv_hook.h",
+      "type": "file",
+      "size": 2826,
+      "sha256": "7d34d13dadd3bd1f8de3a9e5de93146b1ba6842c465ead8ed703766c48c6691a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_hw_config.h",
+      "type": "file",
+      "size": 2007,
+      "sha256": "3832d77edc51e4d025bc7934f2c55da0637b492dff673dcda19b367093f99516",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_interface_mapping.c",
+      "type": "file",
+      "size": 19135,
+      "sha256": "ad03500b7ee1a10f2f8f59cc84944249b6f00f9f8ce5dac6ae33ce781c346025",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_interface_mapping.h",
+      "type": "file",
+      "size": 10193,
+      "sha256": "295c8aacb6b0a784d0b6d8d5cc1321c34eedee879eb6ceca6d26814c41fe6d78",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_load_firmware.c",
+      "type": "file",
+      "size": 3171,
+      "sha256": "602fb2439813b01c90586d4b6b8504b559c8ad54972af780ecd6894f1b516bcf",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_load_firmware.h",
+      "type": "file",
+      "size": 1518,
+      "sha256": "4683676a6833d3fab55ee6c11b46134567358ae18566d496107a3afb6722ea7f",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_mpu_fifo_control.c",
+      "type": "file",
+      "size": 32465,
+      "sha256": "e8427e019f88d514278e6161789500d8d7a93d73756d5d1d9655fdadf7bfad3c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_mpu_fifo_control.h",
+      "type": "file",
+      "size": 10258,
+      "sha256": "e41f07a135acf25fccaa7431b868dc5aa3a46b8a0da57c2ac317f6e77849fa2b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_mpu_selftest.c",
+      "type": "file",
+      "size": 18810,
+      "sha256": "e7291931b92b842d96d0c54ebd6d588f431576f3676e1179117e60177c51b3b7",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_mpu_selftest.h",
+      "type": "file",
+      "size": 1348,
+      "sha256": "3138d837d50b642fa1f154215b3d3b067450cd87fa8ec789c0ceec9e6febba85",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_secondary_transport.c",
+      "type": "file",
+      "size": 6949,
+      "sha256": "e7e302c6246628ad1aca2fdbb3099e394e0306a8f6b5af969bdbeabfbafa89a5",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_secondary_transport.h",
+      "type": "file",
+      "size": 4846,
+      "sha256": "5f77eff0a60879b5be997e01512bc116e75afd414f3562f6765a8fd532f9a35d",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_slave_compass.c",
+      "type": "file",
+      "size": 21355,
+      "sha256": "a29c06c41059e9b7d6649ec4188ba1e4ceefa1ca0d86a4346e74e4bf1c57a108",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_slave_compass.h",
+      "type": "file",
+      "size": 3209,
+      "sha256": "f994c9b7cc745816075dc902652cbca3266f4de53b9c4a534f477068b781b9d7",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_slave_pressure.c",
+      "type": "file",
+      "size": 12094,
+      "sha256": "48f1027796368ee344f317acd40f46a85bcb17ef545a3e516fc22ff569e9b31e",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_slave_pressure.h",
+      "type": "file",
+      "size": 1545,
+      "sha256": "e021354a1fbd5ffc08efeaa33a6104df85de70a05b6b2e30f9247acd00c20352",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_transport.c",
+      "type": "file",
+      "size": 13467,
+      "sha256": "d2d21e9532493ff0b9993c420ed752651088120d5cfde017bc73d55dbaf31e1f",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/inv_mems_transport.h",
+      "type": "file",
+      "size": 3436,
+      "sha256": "2707996af88282cf4e56e0f1406d2d6bf9dcfbbaffa4e52bf315efe53dd87110",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/invn_assert.h",
+      "type": "file",
+      "size": 1062,
+      "sha256": "d7d98b012842bbce7be0af63e43ce5e04b19f1115347030d37c706196ca3a6e1",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/invn_enums.h",
+      "type": "file",
+      "size": 1532,
+      "sha256": "aabe9ec8021a67b6f5a4d430b181e4e84cd834b6925d7385761211129fffd5d7",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/invn_export.h",
+      "type": "file",
+      "size": 1031,
+      "sha256": "dd19deee65da03cf9bc54b9528251fb099552dc3cc9466dbd6bdfe2bcbaa8fee",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/invn_types.h",
+      "type": "file",
+      "size": 3806,
+      "sha256": "2aa0fd56eb8562abd31340f25848544f5b42e27e1471644e86954413a6f30c99",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/invn_utils.h",
+      "type": "file",
+      "size": 1371,
+      "sha256": "a924e2a4a9804f5af2716036989c56e6a9d322f77e84fec9562b69aadc6a9ca3",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/ml_math_func.c",
+      "type": "file",
+      "size": 82534,
+      "sha256": "6c96470d5500d3a6e7f869438b0bc3a957b126ef0e80e9d990eb7078cde2fa2a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/ml_math_func.h",
+      "type": "file",
+      "size": 6858,
+      "sha256": "976b20ec233ead781de5de5bb66619269f42e8d3f1d972443eb8880c25813465",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/mlmath.c",
+      "type": "file",
+      "size": 1027,
+      "sha256": "67a7455664aa106d587678c6e48a65050e44f2f219d6d9a6f0da651ab431e146",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/mlmath.h",
+      "type": "file",
+      "size": 2410,
+      "sha256": "d7a79e65eaee2426007f6614bd9e5100e18904ba15c406f71cadfb54b63328d4",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/MEMS/mltypes.h",
+      "type": "file",
+      "size": 1439,
+      "sha256": "571cd640133163fcf31aeccb67c881a66a673ccf7ddb001aa29c033c44d52825",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/TOOL/tool_pid.c",
+      "type": "file",
+      "size": 13186,
+      "sha256": "11e29b52c289bbd9d28d285edab725a0d1f24834b7854ec52432965e37d4ef6a",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/Source/TOOL/tool_pid.h",
+      "type": "file",
+      "size": 3457,
+      "sha256": "5794597ad51ba1a2ac065563b68004d6e9b929297510c41aa6f30d68169a39d9",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/HLS.c",
+      "type": "file",
+      "size": 1720,
+      "sha256": "87a39e1951836193e7733078d81c7e2ff210eb082549b44a584464063e376b78",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/HLS.h",
+      "type": "file",
+      "size": 1716,
+      "sha256": "8e5e1c24e4d5abbf1e804d1b6355efbb7a146c6f09ffa4c0aa24b08c98f7fcc0",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/INST.h",
+      "type": "file",
+      "size": 607,
+      "sha256": "ec4d25b0fe130c11b263ecacccc1c0185822f84d06c2907b1179000771879eed",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/SCS.c",
+      "type": "file",
+      "size": 9210,
+      "sha256": "4a638e676a2b765178189e265a6e8b7d36f00f3d87d00120431c7497a7dfdbf8",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/SCS.h",
+      "type": "file",
+      "size": 2211,
+      "sha256": "c5702c228feb88dd7007feb561cba00cf09455dad7743e8eee56980adf145ff9",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/SCSCL.c",
+      "type": "file",
+      "size": 3947,
+      "sha256": "c7b80db6fe054de80473ab606644c20e5d3b7014451be045fec667e7ae7cf21c",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/SCSCL.h",
+      "type": "file",
+      "size": 2243,
+      "sha256": "2de314d4471e21e0e2a998740c8d62bf01a8b3f193bb361c3824651e7b06ffc9",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/SCSerail.c",
+      "type": "file",
+      "size": 784,
+      "sha256": "9beabf3c2fefce885d0ef903dac3430dfbe26ee81e74663b14ee9c7276063732",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/SCServo.h",
+      "type": "file",
+      "size": 213,
+      "sha256": "3f1bfe4518b683f92c5b511682eb77e271f5ae596e48bf82cb6fb94548109b8b",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/SMS_STS.c",
+      "type": "file",
+      "size": 1956,
+      "sha256": "e4cf2b0b83162d685b49dcec170acc3626e0c3ba20bf07ef09ba413a0411dc57",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/SCSLib/SMS_STS.h",
+      "type": "file",
+      "size": 1964,
+      "sha256": "cae4b31d12d06585dcd5e40b50dc9458ea219061b1fc843d92a71159ec5a7744",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/port/ftservo_port.c",
+      "type": "file",
+      "size": 2132,
+      "sha256": "2f4c15d8976783f4895723d4a7c652ff3457fb6c12e98e2f0518f7c4f0205b94",
+      "mode": 436
+    },
+    {
+      "path": "firmware/robot-124-cascade/ftservo/port/ftservo_port.h",
+      "type": "file",
+      "size": 585,
+      "sha256": "8ab37541cfaad37903dfed6f0c5f8379dfbdf265049aafcd1dd9075d8f013d7b",
       "mode": 436
     }
   ],
@@ -133920,6 +135507,10 @@
       "reason": "credential/generated/runtime file"
     },
     {
+      "path": "src/localization/omnifleet_relocalization/relocalization/runtime-robot_113/last.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
       "path": "src/map/omnifleet_map_tf_generator/omnifleet_map_tf_generator/__pycache__/",
       "reason": "generated/runtime directory"
     },
@@ -134026,6 +135617,10 @@
     {
       "path": "src/sensing/rslidar_sdk/scripts/__pycache__/",
       "reason": "generated/runtime directory"
+    },
+    {
+      "path": "src/sensing/rslidar_sdk/src/rs_driver/.git",
+      "reason": "credential/generated/runtime file"
     },
     {
       "path": "src/system/omnifleet_alignment_cloud/__pycache__/",
@@ -134140,6 +135735,46 @@
       "reason": "generated/runtime directory"
     },
     {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_resume.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_sm_loop_local_mirror.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test_result_verbose.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/gicp_benchmark_build.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/mp2p_reconfigure_after_metric_maps.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/nanoflann_install.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_before.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_final.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
       "path": "src/vehicle/huaner_driver/huaner_driver/__pycache__/",
       "reason": "generated/runtime directory"
     },
@@ -134154,6 +135789,14 @@
     {
       "path": "src/visualization/foxglove_studio_source/node_modules/",
       "reason": "generated/runtime directory"
+    },
+    {
+      "path": "src/visualization/foxglove_studio_source/build-cn.log",
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "src/visualization/foxglove_studio_source/package-cn.log",
+      "reason": "credential/generated/runtime file"
     },
     {
       "path": "src/visualization/foxglove_studio_source/.yarn/cache/",
@@ -134292,72 +135935,26 @@
       "reason": "generated/runtime directory"
     },
     {
-      "path": "src/sensing/rslidar_sdk/src/rs_driver/.git",
-      "reason": "nested Git administrative pointer, excluded from publication"
-    },
-    {
-      "path": "src/localization/omnifleet_relocalization/relocalization/runtime-robot_113/last.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_resume.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_build_sm_loop_local_mirror.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/colcon_test_result_verbose.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/gicp_benchmark_build.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/mp2p_reconfigure_after_metric_maps.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/nanoflann_install.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_before.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/system/workspace_support/mola_latest_20260917_ws/manifests/rosdep_check_final.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/build-cn.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
-      "path": "src/visualization/foxglove_studio_source/package-cn.log",
-      "reason": "log file excluded from release source and runtime image"
-    },
-    {
       "path": "models/vision/vendor/mediapipe_tensorrt/hand-build.log",
-      "reason": "log file excluded from release source and runtime image"
+      "reason": "credential/generated/runtime file"
     },
     {
       "path": "models/vision/vendor/mediapipe_tensorrt/palm-build.log",
-      "reason": "log file excluded from release source and runtime image"
+      "reason": "credential/generated/runtime file"
+    },
+    {
+      "path": "follow-media/__pycache__/",
+      "reason": "generated/runtime directory"
+    },
+    {
+      "path": "follow-media/build/",
+      "reason": "generated/runtime directory"
+    },
+    {
+      "path": "firmware/robot-124-cascade/build/",
+      "reason": "generated/runtime directory"
     }
   ],
   "audit_findings": [],
-  "excluded_scope": "Build/install/log/cache/credentials, recorded camera/video/ROS data and runtime maps; no system image or credential backup.",
-  "original_archive_sha256": "f19fb7d94f8c1e75c0c09e7c4a56cb70b8da9e7c980a15f3905806a6cf734602",
-  "runtime_entrypoints_added_from_captured_image_utc": "2026-11-19T13:24:55.190446+00:00"
+  "excluded_scope": "Build/install/log/cache/credentials, recorded camera/video/ROS data and runtime maps; no system image or credential backup."
 }

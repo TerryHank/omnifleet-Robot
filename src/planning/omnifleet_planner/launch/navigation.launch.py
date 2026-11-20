@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
@@ -69,7 +70,7 @@ def generate_launch_description():
             package="nav2_controller",
             executable="controller_server",
             name="controller_server",
-            remappings=[("cmd_vel", "/navigation/nav_cmd_vel")],
+            remappings=[("cmd_vel", ("/cmd_vel" if os.environ.get("OMNIFLEET_SINGLE_CMD_VEL") == "1" else "/navigation/nav_cmd_vel"))],
             **common,
         ),
         Node(
@@ -82,13 +83,13 @@ def generate_launch_description():
             package="nav2_behaviors",
             executable="behavior_server",
             name="behavior_server",
-            remappings=[("cmd_vel", "/navigation/nav_cmd_vel")],
+            remappings=[("cmd_vel", ("/cmd_vel" if os.environ.get("OMNIFLEET_SINGLE_CMD_VEL") == "1" else "/navigation/nav_cmd_vel"))],
             **common,
         ),
         Node(
             package="nav2_bt_navigator",
             executable="bt_navigator",
-            remappings=[("/cmd_vel", "/navigation/nav_cmd_vel"),
+            remappings=[("/cmd_vel", ("/cmd_vel" if os.environ.get("OMNIFLEET_SINGLE_CMD_VEL") == "1" else "/navigation/nav_cmd_vel")),
                         ("navigate_to_pose", "navigation_backend/navigate_to_pose"),
                         ("navigate_through_poses", "navigation_backend/navigate_through_poses"),
                         ("goal_pose", "navigation_backend/goal_pose")],

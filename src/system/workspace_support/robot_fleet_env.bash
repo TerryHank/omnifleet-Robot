@@ -15,3 +15,7 @@ export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 export FASTRTPS_DEFAULT_PROFILES_FILE=/etc/omnifleet_t2/fastdds-local.xml
 export RMW_FASTRTPS_USE_QOS_FROM_XML=1
 export LD_LIBRARY_PATH="/home/iecme/omnifleet_ws/install/mrpt/lib:/home/iecme/omnifleet_ws/install/mrpt_libros_bridge/lib:${LD_LIBRARY_PATH:-}"
+
+if [[ -n ${OMNIFLEET_RCLPY_COMMAND_METADATA_OVERLAY:-} ]]; then
+    source "${OMNIFLEET_RCLPY_COMMAND_METADATA_OVERLAY}/local_setup.bash"
+fi

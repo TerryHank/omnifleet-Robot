@@ -329,6 +329,24 @@
   ],
   "topic-routes": [
     {
+      "name": "rt/cmd_vel",
+      "type": "geometry_msgs::msg::dds_::Twist_",
+      "routes": [
+        {
+          "src": "local_vehicle"
+        },
+        {
+          "src": "vehicle_link",
+          "dst": [
+            "local_vehicle"
+          ]
+        },
+        {
+          "src": "bulk_link"
+        }
+      ]
+    },
+    {
       "name": "rt/map",
       "type": "nav_msgs::msg::dds_::OccupancyGrid_",
       "routes": [

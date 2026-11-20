@@ -16,8 +16,9 @@ def remaps():
     for action,destination in (('follow_waypoints','follow_waypoints'),('navigate_to_pose','fleet_waypoint_to_pose')):
         for suffix in ('','/_action/send_goal','/_action/get_result','/_action/cancel_goal','/_action/feedback','/_action/status'):
             rules.append(('waypoint_follower:/'+action+suffix,'/navigation_backend/'+destination+suffix))
-    for node in ('controller_server','behavior_server','bt_navigator'):
-        for source in ('cmd_vel','/cmd_vel'):rules.append((node+':'+source,'/navigation/nav_cmd_vel'))
+    if os.environ.get('OMNIFLEET_SINGLE_CMD_VEL') != '1':
+        for node in ('controller_server','behavior_server','bt_navigator'):
+            for source in ('cmd_vel','/cmd_vel'):rules.append((node+':'+source,'/navigation/nav_cmd_vel'))
     rules.append(('/lidar_odometry/nav_grid_gridmap','/map'))
     return rules
 def ros_args():

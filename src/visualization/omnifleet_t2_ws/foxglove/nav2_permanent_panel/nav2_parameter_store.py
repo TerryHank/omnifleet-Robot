@@ -548,7 +548,10 @@ def main():
                     lambda msg, topic=topic: self.navigation_active.update({topic: any(s.status in (1, 2, 3) for s in msg.status_list)}),
                     QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.TRANSIENT_LOCAL),
                     callback_group=self.clients_group)
-            for motion_topic in ('/cmd_vel', '/navigation/nav_cmd_vel', '/motor_command_sent'):
+            motion_topics = ['/cmd_vel', '/motor_command_sent']
+            if os.environ.get('OMNIFLEET_SINGLE_CMD_VEL') != '1':
+                motion_topics.append('/navigation/nav_cmd_vel')
+            for motion_topic in motion_topics:
                 self.create_subscription(Twist, motion_topic, self.observe_motion, 1, callback_group=self.clients_group)
             self.clear_costmaps = [self.create_client(ClearEntireCostmap,
                 f'/{scope}_costmap/clear_entirely_{scope}_costmap', callback_group=self.clients_group) for scope in ('local', 'global')]
@@ -583,7 +586,7 @@ def main():
                 robot_topic('/received_global_plan'),
                 robot_topic('/transformed_global_plan'),
                 robot_topic('/controller_server/local_plan'),
-                robot_topic('/navigation/nav_cmd_vel'),
+                robot_topic('/cmd_vel' if os.environ.get('OMNIFLEET_SINGLE_CMD_VEL') == '1' else '/navigation/nav_cmd_vel'),
                 robot_topic('/lidar_odometry/nav_odom'),
                 robot_topic('/local_costmap/costmap'),
                 robot_topic('/global_costmap/costmap'),

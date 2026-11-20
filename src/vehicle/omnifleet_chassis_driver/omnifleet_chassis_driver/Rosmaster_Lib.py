@@ -1,3 +1,4 @@
+import math
 import struct, threading, time, serial
 
 class Rosmaster:
@@ -12,6 +13,11 @@ class Rosmaster:
     FUNC_REQUEST_DATA = 0x50
     FUNC_VERSION = 0x51
     FUNC_REPORT_SPEED = 0x0A
+    FUNC_YAW_PID = 0x14
+    FUNC_YAW_RATE_PI = 0x18
+    FUNC_HEADING_TRIM = 0x19
+    FUNC_TRACKED_STARTUP_PWM = 0x1A
+    FUNC_REVERSE_HEADING_TRIM = 0x1B
     FUNC_TRACKED_PWM_COMP = 0x16
     FUNC_REPORT_MPU_RAW = 0x0B
     FUNC_REPORT_IMU_ATT = 0x0C
@@ -57,6 +63,11 @@ class Rosmaster:
         self._control_state_at = 0.0
         self._tracked_pwm_condition = threading.Condition()
         self._tracked_pwm_response = None
+        self._yaw_pid_condition = threading.Condition()
+        self._yaw_pid_response = None
+        self._yaw_rate_pi_response = None
+        self._heading_trim_response = None
+        self._startup_pwm_response = None
         self.last_imu_frame_time = None
 
     def create_receive_threading(self):
@@ -129,6 +140,22 @@ class Rosmaster:
             with self._tracked_pwm_condition:
                 self._tracked_pwm_response = struct.unpack('<HHB', f[4:9])
                 self._tracked_pwm_condition.notify_all()
+        elif f[3] == self.FUNC_YAW_PID and len(f) == 12 and f[4] == 5:
+            with self._yaw_pid_condition:
+                self._yaw_pid_response = struct.unpack_from('<HHH', f, 5)
+                self._yaw_pid_condition.notify_all()
+        elif f[3] == self.FUNC_YAW_RATE_PI and len(f) == 9:
+            with self._yaw_pid_condition:
+                self._yaw_rate_pi_response = struct.unpack_from('<HH', f, 4)
+                self._yaw_pid_condition.notify_all()
+        elif f[3] in (self.FUNC_HEADING_TRIM, self.FUNC_REVERSE_HEADING_TRIM) and len(f) == 7:
+            with self._yaw_pid_condition:
+                self._heading_trim_response = (f[3], struct.unpack_from('<H', f, 4)[0])
+                self._yaw_pid_condition.notify_all()
+        elif f[3] == self.FUNC_TRACKED_STARTUP_PWM and len(f) == 13:
+            with self._yaw_pid_condition:
+                self._startup_pwm_response = struct.unpack_from('<4H', f, 4)
+                self._yaw_pid_condition.notify_all()
         elif f[3] == self.FUNC_REPORT_SPEED and len(f) >= 12:
             vx_mm_s, vy_mm_s, wz_mrad_s = struct.unpack(
                 '<hhh', f[4:10]
@@ -194,15 +221,115 @@ class Rosmaster:
             raise RuntimeError('STM32 PWM compensation readback mismatch')
         return actual
 
-    def set_motion(self, vx, vy, vz):
+    def set_motion(self, vx, vy, vz, adjust=False):
         """Send tracked-body velocity; STM32 owns differential kinematics/PID.
 
         Units are Vx/Vy in mm/s and Vz in mrad/s. The tracked chassis uses
         Vy=0 and supports both moving turns and zero-radius rotation.
         """
-        parm = 0
+        parm = 0x80 if adjust else 0
         data = struct.pack('<Bhhh', parm, int(vx), int(vy), int(vz))
         self._send(self.FUNC_MOTION, data)
+
+    def get_yaw_pid(self, timeout=0.15):
+        with self._yaw_pid_condition:
+            self._yaw_pid_response = None
+            self._send(self.FUNC_REQUEST_DATA, bytes((self.FUNC_YAW_PID, 5)))
+            if not self._yaw_pid_condition.wait_for(
+                    lambda: self._yaw_pid_response is not None, timeout):
+                raise TimeoutError('STM32 yaw PID readback timed out')
+            return tuple(value / 1000.0 for value in self._yaw_pid_response)
+
+    @staticmethod
+    def encode_yaw_gains(gains):
+        if any(not math.isfinite(value) or not 0.0 <= value <= 65.535 for value in gains):
+            raise ValueError('Yaw PID gains must be finite and in [0, 65.535]')
+        encoded = tuple(round(value * 1000.0) for value in gains)
+        if any(value != packed / 1000.0 for value, packed in zip(gains, encoded)):
+            raise ValueError('Yaw PID gains support up to three decimal places')
+        return encoded
+
+    def set_yaw_pid(self, kp, ki, kd):
+        gains = (kp, ki, kd)
+        encoded = self.encode_yaw_gains(gains)
+        with self._yaw_pid_condition:
+            self._send(self.FUNC_YAW_PID, struct.pack('<HHHB', *encoded, 0))
+            actual = self.get_yaw_pid()
+        if actual != gains:
+            raise RuntimeError(f'STM32 yaw PID readback mismatch: {actual}')
+        return actual
+
+    def get_yaw_rate_pi(self, timeout=0.15):
+        with self._yaw_pid_condition:
+            self._yaw_rate_pi_response = None
+            self._send(self.FUNC_REQUEST_DATA, bytes((self.FUNC_YAW_RATE_PI, 0)))
+            if not self._yaw_pid_condition.wait_for(
+                    lambda: self._yaw_rate_pi_response is not None, timeout):
+                raise TimeoutError('STM32 yaw rate PI readback timed out')
+            return tuple(value / 1000.0 for value in self._yaw_rate_pi_response)
+
+    def set_yaw_rate_pi(self, kp, ki):
+        gains = (kp, ki)
+        with self._yaw_pid_condition:
+            self._send(self.FUNC_YAW_RATE_PI, struct.pack('<HH', *self.encode_yaw_gains(gains)))
+            actual = self.get_yaw_rate_pi()
+        if actual != gains:
+            raise RuntimeError(f'STM32 yaw rate PI readback mismatch: {actual}')
+        return actual
+
+    def get_heading_trim(self, timeout=0.15, *, reverse=False):
+        command = self.FUNC_REVERSE_HEADING_TRIM if reverse else self.FUNC_HEADING_TRIM
+        with self._yaw_pid_condition:
+            self._heading_trim_response = None
+            self._send(self.FUNC_REQUEST_DATA, bytes((command, 0)))
+            if not self._yaw_pid_condition.wait_for(
+                    lambda: self._heading_trim_response is not None
+                    and self._heading_trim_response[0] == command, timeout):
+                raise TimeoutError('STM32 heading trim readback timed out')
+            value = self._heading_trim_response[1]
+            return -1.0 if reverse and value == 65535 else value / 1000.0
+
+    @classmethod
+    def encode_reverse_heading_trim(cls, values):
+        if values[0] == -1.0:
+            return 65535
+        encoded = cls.encode_yaw_gains(values)[0]
+        if encoded == 65535:
+            raise ValueError('Reverse heading trim supports up to 65.534, or -1 to inherit')
+        return encoded
+
+    def set_heading_trim(self, trim, *, reverse=False):
+        command = self.FUNC_REVERSE_HEADING_TRIM if reverse else self.FUNC_HEADING_TRIM
+        encoded = self.encode_reverse_heading_trim((trim,)) if reverse else self.encode_yaw_gains((trim,))[0]
+        with self._yaw_pid_condition:
+            self._send(command, struct.pack('<H', encoded))
+            actual = self.get_heading_trim(reverse=reverse)
+        if actual != trim:
+            raise RuntimeError(f'STM32 heading trim readback mismatch: {actual}')
+        return actual
+
+    @staticmethod
+    def validate_startup_pwm(values):
+        if any(type(value) is not int or not 0 <= value <= 3600 for value in values):
+            raise ValueError('Startup PWM boosts must be integers in [0, 3600] timer counts')
+
+    def get_startup_pwm(self, timeout=0.15):
+        with self._yaw_pid_condition:
+            self._startup_pwm_response = None
+            self._send(self.FUNC_REQUEST_DATA, bytes((self.FUNC_TRACKED_STARTUP_PWM, 0)))
+            if not self._yaw_pid_condition.wait_for(
+                    lambda: self._startup_pwm_response is not None, timeout):
+                raise TimeoutError('STM32 startup PWM readback timed out')
+            return self._startup_pwm_response
+
+    def set_startup_pwm(self, *values):
+        self.validate_startup_pwm(values)
+        with self._yaw_pid_condition:
+            self._send(self.FUNC_TRACKED_STARTUP_PWM, struct.pack('<4H', *values))
+            actual = self.get_startup_pwm()
+        if actual != values:
+            raise RuntimeError(f'STM32 startup PWM readback mismatch: {actual}')
+        return actual
 
     def set_tank_motion(self, vx_mm_s, wz_mrad_s):
         """Drive M2 as the left track and M1 as the right track."""

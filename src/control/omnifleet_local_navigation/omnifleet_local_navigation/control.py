@@ -3,6 +3,9 @@ from .scope import frame, topic
 import argparse,copy,json,math,time,os
 
 from collections import deque
+from concurrent.futures import ThreadPoolExecutor
+
+import numpy as np
 
 from pathlib import Path
 
@@ -46,6 +49,24 @@ from source_time_executor import velocity_command_time,with_source_time
 
 def yaw(q):return math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))
 
+
+
+def project_obstacle_grid(msg, origin, robot, received):
+    resolution = msg.info.resolution
+    ox, oy, heading = origin
+    if not math.isfinite(resolution) or resolution <= 0 or msg.info.width <= 0:
+        return msg, [], resolution, heading, 0., False
+    indices = np.flatnonzero(np.asarray(msg.data, dtype=np.int8) >= 100)
+    x = (indices % msg.info.width + .5) * resolution
+    y = (indices // msg.info.width + .5) * resolution
+    cosine, sine = math.cos(heading), math.sin(heading)
+    world_x = ox + cosine * x - sine * y
+    world_y = oy + sine * x + cosine * y
+    near = np.square(world_x - robot[0]) + np.square(world_y - robot[1]) < 16.
+    if np.count_nonzero(near) > 10000:
+        return msg, [], resolution, heading, 0., False
+    obstacles = np.column_stack((world_x[near], world_y[near])).tolist()
+    return msg, obstacles, resolution, heading, received, True
 
 
 class LocalControl(Node):
@@ -173,7 +194,13 @@ class LocalControl(Node):
 
             QoSProfile(depth=1,durability=DurabilityPolicy.TRANSIENT_LOCAL))
 
-        self.create_subscription(OccupancyGrid,'/local_costmap/costmap',self.on_obstacle_grid,
+        self._status_workers = ThreadPoolExecutor(max_workers=1, thread_name_prefix='nav_status')
+        self._status_future = None
+        self._status_pending = None
+        self._obstacle_workers = ThreadPoolExecutor(max_workers=1, thread_name_prefix='local_costmap')
+        self._obstacle_future = None
+        self._obstacle_pending = None
+        self.create_subscription(OccupancyGrid,'/local_costmap/costmap',self.queue_obstacle_grid,
 
             QoSProfile(depth=1,durability=DurabilityPolicy.TRANSIENT_LOCAL))
 
@@ -193,7 +220,7 @@ class LocalControl(Node):
 
         self.cancel_clients={a:self.create_client(CancelGoal,self.backend_name(a)+'/_action/cancel_goal') for a in actions}
 
-        self.create_timer(.02,self.control_tick);self.create_timer(.2,self.snapshot);self.create_timer(1.,self.discovery)
+        self.create_timer(.2,self.snapshot);self.create_timer(1.,self.discovery)
 
 
 
@@ -328,6 +355,43 @@ class LocalControl(Node):
             self.obstacle_stamp=time.monotonic()
 
         except Exception:self.obstacles=[];self.obstacle_stamp=0.
+
+    def queue_obstacle_grid(self, msg):
+        self._obstacle_pending = msg
+
+    def update_obstacle_grid(self):
+        future = self._obstacle_future
+        if future is not None:
+            if not future.done():
+                return
+            self._obstacle_future = None
+            grid, obstacles, resolution, orientation, stamp, complete = future.result()
+            self.obstacle_grid = grid
+            self.obstacles = obstacles
+            self.obstacle_resolution = resolution
+            self.obstacle_yaw = orientation
+            self.obstacle_stamp = stamp
+            self.obstacle_complete = complete
+        msg = self._obstacle_pending
+        if msg is None or self.local_pose is None:
+            return
+        self._obstacle_pending = None
+        origin = msg.info.origin
+        transform = [0., 0., 0.]
+        try:
+            if msg.header.frame_id != frame('map'):
+                v = self.tf.lookup_transform(frame('map'), msg.header.frame_id, Time()).transform
+                transform = [v.translation.x, v.translation.y, yaw(v.rotation)]
+            combined = compose(transform, [origin.position.x, origin.position.y, yaw(origin.orientation)])
+        except Exception:
+            self.obstacle_grid = msg
+            self.obstacles = []
+            self.obstacle_stamp = 0.
+            self.obstacle_complete = False
+            return
+        self._obstacle_future = self._obstacle_workers.submit(
+            project_obstacle_grid, msg, combined, tuple(self.local_pose[:2]), time.monotonic()
+        )
 
     def on_plan(self,msg):
 
@@ -831,14 +895,23 @@ class LocalControl(Node):
         )
         fleet_status = {key: state[key] for key in fleet_fields}
         fleet_status['robot_id'] = self.config['robot_id']
+        self._status_pending = (fleet_status, {'robot_id': self.config['robot_id'], **state})
+        self.flush_status()
+
+    def flush_status(self):
+        if self._status_future is not None and not self._status_future.done():
+            return
+        if self._status_future is not None:
+            self._status_future.result()
+            self._status_future = None
+        if self._status_pending is not None:
+            payload = self._status_pending
+            self._status_pending = None
+            self._status_future = self._status_workers.submit(self.publish_snapshot_payload, *payload)
+
+    def publish_snapshot_payload(self, fleet_status, state):
         self.fleet_status_pub.publish(String(data=json.dumps(fleet_status)))
-        msg=String();msg.data=json.dumps({'robot_id':self.config['robot_id'],**state});self.heartbeat_pub.publish(msg)
-
-
-
-
-
-
+        self.heartbeat_pub.publish(String(data=json.dumps(state)))
 
     @staticmethod
 
