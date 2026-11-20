@@ -1,9 +1,9 @@
-# OmniFleet 126 工作区
+# OmniFleet T2 · 124 工作区
 
 | 项目 | 本机配置 |
 | --- | --- |
-| 主机与工作区 | `iecme@192.168.3.126`，`/home/iecme/omnifleet_ws` |
-| ROS | Humble，`robot_101`，`ROS_DOMAIN_ID=101`，`rmw_zenoh_cpp` |
+| 主机与工作区 | `iecme@192.168.3.124`，`/home/iecme/omnifleet_ws` |
+| ROS（robot.env） | Humble，`robot_101`，`ROS_DOMAIN_ID=101`，`rmw_fastrtps_cpp` |
 | 底盘 | 亚博履带 STM32，`omnifleet_chassis_driver t2_driver` |
 | 环境与数据 | [env.bash](env.bash)，持久数据在 `/home/iecme/omnifleet_data` |
 

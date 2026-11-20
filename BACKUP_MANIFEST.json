@@ -131546,13 +131546,6 @@
       "mode": 420
     },
     {
-      "path": "README.workspace.md",
-      "type": "file",
-      "size": 2306,
-      "sha256": "077034212cf2ff81355a101ed0297188c8fcfc8b4f10c77f1e40bbbdae44e6d3",
-      "mode": 436
-    },
-    {
       "path": "AGENTS.md",
       "type": "file",
       "size": 1464,
@@ -135953,6 +135946,10 @@
     {
       "path": "firmware/robot-124-cascade/build/",
       "reason": "generated/runtime directory"
+    },
+    {
+      "path": "README.workspace.md",
+      "reason": "Workspace documentation adjusted to reflect robot 124 after source capture"
     }
   ],
   "audit_findings": [],

@@ -14,7 +14,7 @@
 
 ## 源码
 
-ROS 2 工作区和车端配置采自 124 号车。
+ROS 2 工作区和车端配置采自 124 号车。车端入口见 [124 工作区说明](README.workspace.md)。
 
 - [`src/`](src) 为车端工作区源码。
 - [`firmware/robot-124-cascade/`](firmware/robot-124-cascade) 为 124 号车当天的 STM32 级联控制固件源码。
