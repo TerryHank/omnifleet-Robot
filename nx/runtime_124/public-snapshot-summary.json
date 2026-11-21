@@ -1,0 +1,18 @@
+{
+  "public_filtering": true,
+  "known_private_key_token_or_embedded_url_credential_findings": 0,
+  "snapshot_stats": {
+    "files": 21166,
+    "bytes": 1030667972,
+    "symlinks": 1275
+  },
+  "export_exclusion_counts": {
+    "missing_optional": 2,
+    "cache_git_or_runtime_data": 159,
+    "telemetry_cache_or_non_source": 849,
+    "archives_requiring_content_review": 8,
+    "model_weights_unverified_redistribution": 23,
+    "vendor_camera_sdk": 4
+  },
+  "superseded_source_commit": "3d719241af29355c2f3016623025f3304ee1ae94"
+}

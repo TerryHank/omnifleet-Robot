@@ -1,0 +1,56 @@
+{
+  "frames": 13,
+  "palm_verified_frames": 12,
+  "errors": {
+    "": 12
+  },
+  "palm": "TensorRT FP32 Full palm",
+  "tracker": {
+    "active": false,
+    "owner": null,
+    "bbox": null,
+    "score": null,
+    "backend": "NanoTrack CUDA FP32"
+  },
+  "hand": "TensorRT FP32 Full",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "body_tracking": {
+    "state": "INITING",
+    "track_id": 0,
+    "serial_lost_num": 0,
+    "has_face_head": false,
+    "source_stamp": [
+      1794433175,
+      678579968
+    ],
+    "range_base_m": null,
+    "motion_enabled": false,
+    "operator_mode": "unified",
+    "follow_active": false,
+    "distance_mode": "APPROACH_FOR_DEPTH",
+    "control_mode": "APPROACH_FOR_DEPTH",
+    "target_distance_m": 1,
+    "heading_error_rad": 0,
+    "gesture_motion": "NONE",
+    "rotation_degrees": 0,
+    "rotation_active": false,
+    "rotation_done": false,
+    "tuning": {
+      "reverse_max_speed": 0.25,
+      "reverse_p": 1,
+      "steering_p": 1.8,
+      "steering_d": 0.35,
+      "steering_max_speed": 0.8,
+      "derivative_weight": 0.7
+    }
+  },
+  "velocity": {
+    "linear_x": 0.0,
+    "angular_z": 0.0
+  },
+  "hand_ms": 0.05,
+  "processing_fps": 28.04
+}

@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet onboard Fast DDS link to %i
+PartOf=omnifleet-onboard-dispatch@discovery.service
+After=docker.service
+
+[Service]
+ExecStartPre=-/usr/bin/docker rm -f omnifleet-onboard-peer-%i
+ExecStart=/usr/bin/docker run --rm --pull=never --name omnifleet-onboard-peer-%i --network host --ipc host --user 1000:1000 -e HOME=/tmp -v /home/iecme/omnifleet_data/dispatch/run/discovery/%i.router.yaml:/ddsrouter.yaml:ro eprosima/vulcanexus:humble-cloud-2.10.0 ddsrouter -c /ddsrouter.yaml
+ExecStop=-/usr/bin/docker stop -t 3 omnifleet-onboard-peer-%i
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=8
+Nice=5

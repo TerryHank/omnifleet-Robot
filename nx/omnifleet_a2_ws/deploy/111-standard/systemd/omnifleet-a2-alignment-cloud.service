@@ -1,0 +1,19 @@
+[Unit]
+Description=OmniFleet A2 live Airy geometry and MOLA snapshot for RMF registration
+After=omnifleet-local-navigation.service omnifleet-t2-airy.service
+Requires=omnifleet-local-navigation.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+EnvironmentFile=/home/iecme/omnifleet_a2_ws/deploy/111-standard/config/robot.env
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_a2_ws/src/system/workspace_support/robot_fleet_env.bash && exec python3 /home/iecme/omnifleet_a2_ws/src/system/omnifleet_alignment_cloud/alignment_cloud.py'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+[Unit]
+Description=Open-RMF 124 scheduling mutex supervisor
+After=omnifleet-124-dispatch@schedule.service
+[Service]
+User=iecme
+Environment=ROS_DOMAIN_ID=52
+Environment=ROS_LOCALHOST_ONLY=1
+Environment=RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+Environment=FASTRTPS_DEFAULT_PROFILES_FILE=/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet_rmf_adapter/config/fastdds-central.xml
+ExecStart=/bin/bash -c 'source /opt/ros/humble/setup.bash && exec /home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-dispatch-web/mutex_group_supervisor'
+Restart=on-failure
+RestartSec=3
+Nice=4
+[Install]
+WantedBy=multi-user.target

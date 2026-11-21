@@ -1,0 +1,63 @@
+# =====================================================================================
+# Pipeline block: initial localization
+#
+# Shared by the pipelines/*.yaml files through `$import`. See the
+# "Pipeline blocks" section in the docs for how to override it.
+# =====================================================================================
+
+# re-localization method to use at start up:
+initial_localization:
+  method: "${MOLA_LO_INITIAL_LOCALIZATION_METHOD|InitLocalization::FixedPose}"
+  # Format: x(m) y(m) z(m) yaw(deg) pitch(deg) roll(deg)
+  fixed_initial_pose:
+    ["${MOLA_INITIAL_X|0.0}", "${MOLA_INITIAL_Y|0.0}", "${MOLA_INITIAL_Z|0.0}", "${MOLA_INITIAL_YAW|0.0}", "${MOLA_INITIAL_PITCH|0.0}", "${MOLA_INITIAL_ROLL|0.0}"]
+  # Seconds of accelerometer data to average for the initial pitch & roll.
+  # A duration, not a sample count: what limits accuracy is platform motion
+  # during the window, so the same setting must mean the same averaging time
+  # on a 100 Hz and on a 400 Hz IMU.
+  imu_initial_calibration_window_seconds: "${MOLA_LO_INITIAL_IMU_WINDOW|1.0}"
+  # Sanity floor only, to reject a degenerate handful of samples:
+  imu_initial_calibration_min_samples: "${MOLA_LO_INITIAL_IMU_MIN_SAMPLES|20}"
+  # Defer initialization while the accelerometer directions in the window
+  # disagree by more than this: such a window is measuring platform motion,
+  # not gravity. After the timeout it is accepted anyway, so a start that is
+  # never still still initializes.
+  imu_initial_calibration_max_dispersion_deg: "${MOLA_LO_INITIAL_IMU_MAX_DISPERSION|1.5}"
+  imu_initial_calibration_dispersion_timeout: "${MOLA_LO_INITIAL_IMU_DISPERSION_TIMEOUT|5.0}"
+  use_imu_orientation: "${MOLA_LO_INITIAL_IMU_USE_ORIENTATION|true}"
+  # Right after a re-localization (or initial localization), also hold off
+  # local map / simplemap updates for this many timesteps (shares the same
+  # recovery-window counter as additional_uncertainty_after_reloc_how_many_
+  # timesteps above). 0 (default) disables this and is a no-op: this fires
+  # on every initial-localization convergence too, not just explicit
+  # relocalizations, so a nonzero default here would drop early keyframes
+  # on any dataset where the vehicle is already moving at t=0.
+  additional_map_freeze_after_reloc_how_many_timesteps: "${MOLA_LO_INIT_MAP_FREEZE_STEPS|0}"
+
+  # Parameters for InitLocalization::FromStateEstimator:
+  from_state_estimator_max_position_sigma: "${MOLA_LO_INIT_SE_MAX_POS_SIGMA|0.5}"
+  from_state_estimator_max_orientation_sigma_deg: "${MOLA_LO_INIT_SE_MAX_ORI_SIGMA|3.0}"
+  from_state_estimator_timeout: "${MOLA_LO_INIT_SE_TIMEOUT|60.0}"
+
+  # Also for InitLocalization::FromStateEstimator: if its pose may be too
+  # uncertain for ICP to converge from it (e.g. plain GNSS, or no heading at
+  # all), search for it in the map around that pose, and only accept an
+  # unambiguous match. min_half_width_xy covers biases the state estimator
+  # doesn't model (e.g. GNSS multipath). Yaw is also searched if uncertain.
+  global_search:
+    enabled: "${MOLA_LO_INIT_GLOBAL_SEARCH|false}"
+    min_half_width_xy: "${MOLA_LO_INIT_GLOBAL_SEARCH_MIN_XY|0.0}"
+    max_half_width_xy: "${MOLA_LO_INIT_GLOBAL_SEARCH_MAX_XY|20.0}"
+    # Yaw is searched at least +-this [deg] (0: only if its sigma requires it).
+    # For heading sources with a bias, e.g. a magnetometer-based IMU attitude:
+    min_half_width_yaw_deg: "${MOLA_LO_INIT_GLOBAL_SEARCH_MIN_YAW|0.0}"
+    max_position_sigma: "${MOLA_LO_INIT_GLOBAL_SEARCH_MAX_POS_SIGMA|5.0}"
+    resolution_xy: "${MOLA_LO_INIT_GLOBAL_SEARCH_RES_XY|1.0}"
+    resolution_yaw_deg: "${MOLA_LO_INIT_GLOBAL_SEARCH_RES_YAW|30.0}"
+    # Searches with more initial guesses (one ICP each) are retried later instead:
+    max_initial_guesses: "${MOLA_LO_INIT_GLOBAL_SEARCH_MAX_GUESSES|5000}"
+    # z from the ground of the map below the prior (x,y), not from the prior
+    # itself (e.g. a GNSS altitude). 0: keep the prior z.
+    z_from_map_radius: "${MOLA_LO_INIT_GLOBAL_SEARCH_Z_FROM_MAP_RADIUS|5.0}"
+    min_quality: "${MOLA_LO_INIT_GLOBAL_SEARCH_MIN_QUALITY|0.5}"
+    min_quality_margin: "${MOLA_LO_INIT_GLOBAL_SEARCH_MIN_MARGIN|0.1}"

@@ -1,0 +1,15 @@
+[Unit]
+Description=OmniFleet 124 current MOLA map snapshot for fleet alignment
+After=network-online.target
+
+[Service]
+User=iecme
+Nice=10
+CPUAffinity=6 7
+Environment=OMNIFLEET_MOLA_RELEASE=/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/release105
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_a2_ws/deploy/chassis-111/chassis_env.bash && set -a && source /etc/omnifleet_a2/fastdds-robot.env && set +a && exec /usr/bin/python3 /home/iecme/.local/share/omnifleet-dispatch-124/alignment/alignment_snapshot.py'
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

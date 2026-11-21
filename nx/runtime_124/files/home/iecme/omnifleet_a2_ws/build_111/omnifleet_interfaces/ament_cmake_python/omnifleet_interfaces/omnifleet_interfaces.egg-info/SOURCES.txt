@@ -1,0 +1,6 @@
+setup.py
+omnifleet_interfaces/__init__.py
+omnifleet_interfaces.egg-info/PKG-INFO
+omnifleet_interfaces.egg-info/SOURCES.txt
+omnifleet_interfaces.egg-info/dependency_links.txt
+omnifleet_interfaces.egg-info/top_level.txt

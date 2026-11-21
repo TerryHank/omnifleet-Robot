@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -e
+exec "$(ros2 pkg prefix omnifleet_sensor_processing)/lib/omnifleet_sensor_processing/airy_imu_adapter_node" "$@"

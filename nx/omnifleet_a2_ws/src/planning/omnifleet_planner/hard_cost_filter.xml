@@ -1,0 +1,5 @@
+<library path="omnifleet_hard_cost_filter">
+  <class name="omnifleet_planner::HardCostFilter" type="omnifleet_planner::HardCostFilter" base_class_type="nav2_costmap_2d::Layer">
+    <description>Convert the high inflation-cost inner zone to lethal after all costmap plugins.</description>
+  </class>
+</library>

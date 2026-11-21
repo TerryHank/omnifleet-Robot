@@ -1,0 +1,21 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from omnifleet_interfaces/srv/Capability.srv
+// generated code does not contain a copyright notice
+
+
+module omnifleet_interfaces {
+  module srv {
+    struct Capability_Request {
+      string capability;
+    };
+    struct Capability_Response {
+      boolean available;
+
+      boolean accepted;
+
+      string transaction_id;
+
+      string message;
+    };
+  };
+};

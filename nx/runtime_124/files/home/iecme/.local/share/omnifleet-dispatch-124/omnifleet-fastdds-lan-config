@@ -1,0 +1,44 @@
+#!/usr/bin/python3
+import json
+from pathlib import Path
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+
+SOURCE = Path('/home/iecme/.local/share/omnifleet-dispatch-124/ddsrouter.yaml')
+STATE = Path('/run/omnifleet-124-ddsrouter')
+NS = 'http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles'
+ET.register_namespace('', NS)
+
+def ipv4_address():
+    routes = json.loads(subprocess.check_output(['ip', '-j', '-4', 'route', 'show', 'default']))
+    route = min((r for r in routes if 'dev' in r), key=lambda r: r.get('metric', 0))
+    devices = json.loads(subprocess.check_output(['ip', '-j', '-4', 'addr', 'show', 'dev', route['dev'], 'scope', 'global']))
+    return next(address['local'] for device in devices for address in device['addr_info'] if address['family'] == 'inet')
+
+def render(config, address):
+    local = next(p for p in config['participants'] if p['name'] == 'local_vehicle')
+    local['whitelist-interfaces'] = ['127.0.0.1', address]
+    listener = next(p for p in config['participants'] if p['name'] == 'vehicle_link')
+    for entry in listener['listening-addresses']:
+        entry['ip'] = address
+    root = ET.fromstring(config['xml']['raw'])
+    wire = root.find(f".//{{{NS}}}participant[@profile_name='wire']")
+    elements = wire.findall(f'.//{{{NS}}}tcpv4/{{{NS}}}address')
+    if len(elements) != 2:
+        raise ValueError('Unexpected Fast DDS TCP locator schema')
+    for element in elements:
+        element.text = address
+    config['xml']['raw'] = ET.tostring(root, encoding='unicode')
+    return config
+
+if __name__ == '__main__':
+    address = ipv4_address()
+    if len(sys.argv) == 2 and sys.argv[1] == '--address':
+        print(address)
+    else:
+        config = render(json.loads(SOURCE.read_text()), address)
+        temporary = STATE / 'ddsrouter.tmp'
+        temporary.write_text(json.dumps(config, ensure_ascii=False, indent=2) + '\n')
+        temporary.replace(STATE / 'ddsrouter.yaml')
+        (STATE / 'lan-address').write_text(address + '\n')

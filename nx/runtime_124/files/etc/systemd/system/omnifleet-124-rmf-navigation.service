@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet 124 leased RMF to native Ackermann Nav2 action bridge
+After=omnifleet-a2-navigation.service
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/.local/share/omnifleet-dispatch-124
+ExecStart=/bin/bash /home/iecme/.local/share/omnifleet-dispatch-124/run-nav-124.sh
+Nice=4
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+[Install]
+WantedBy=multi-user.target

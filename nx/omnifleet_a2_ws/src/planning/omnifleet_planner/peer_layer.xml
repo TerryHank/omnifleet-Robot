@@ -1,0 +1,5 @@
+<library path="omnifleet_peer_layer">
+  <class type="omnifleet_planner::PeerLayer" base_class_type="nav2_costmap_2d::Layer">
+    <description>Maximum-only local-frame peer occupancy overlay with a steady-clock timeout.</description>
+  </class>
+</library>

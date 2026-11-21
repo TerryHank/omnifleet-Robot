@@ -1,0 +1,166 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-e803969cbf4f9c4834ec.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						5,
+						6,
+						7,
+						8
+					]
+				},
+				{
+					"build" : "gtest",
+					"jsonFile" : "directory-gtest-Release-a2408fe1a73b92c5e636.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "/opt/ros/humble/src/gtest_vendor",
+					"targetIndexes" : 
+					[
+						3,
+						4
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "omnifleet_a2_localization",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						5,
+						6,
+						7,
+						8
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "gtest",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						3,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "airy_imu_adapter_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-airy_imu_adapter_node-Release-3ab197b737e55024566c.json",
+					"name" : "airy_imu_adapter_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_omnifleet_a2_localization_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_omnifleet_a2_localization_egg-Release-60a0b3ebea6ad60b68b0.json",
+					"name" : "ament_cmake_python_build_omnifleet_a2_localization_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_symlink_omnifleet_a2_localization::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_symlink_omnifleet_a2_localization-Release-65570accbf3239338f4d.json",
+					"name" : "ament_cmake_python_symlink_omnifleet_a2_localization",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "gtest::@0af4add9fe94340e763e",
+					"jsonFile" : "target-gtest-Release-d8614acd0bd904c5b76f.json",
+					"name" : "gtest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "gtest_main::@0af4add9fe94340e763e",
+					"jsonFile" : "target-gtest_main-Release-4a5057cb15d9007f3e80.json",
+					"name" : "gtest_main",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "omnifleet_a2_localization_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-omnifleet_a2_localization_uninstall-Release-ce3f5a768d8fe45b4af2.json",
+					"name" : "omnifleet_a2_localization_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "omnifleet_sensor_conversions::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-omnifleet_sensor_conversions-Release-77774b848bdfa6251dd4.json",
+					"name" : "omnifleet_sensor_conversions",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_airy_imu_rotation::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_airy_imu_rotation-Release-5dc37cd61d38ad098bb5.json",
+					"name" : "test_airy_imu_rotation",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-176b248d890ea70cdb17.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_localization",
+		"source" : "/home/iecme/omnifleet_a2_ws/src/omnifleet_a2_localization"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

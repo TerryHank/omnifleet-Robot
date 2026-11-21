@@ -1,0 +1,11 @@
+[Unit]
+Description=OmniFleet Fast DDS link for %i
+PartOf=omnifleet-rmf-discovery.service
+
+[Service]
+ExecStartPre=-/usr/bin/sudo -n /usr/bin/docker rm -f omnifleet-dds-%i
+ExecStart=/usr/bin/sudo -n /usr/bin/docker run --rm --pull=never --name omnifleet-dds-%i --network host --ipc host --user %U:%G -e HOME=/tmp -v %h/workspaces/omnifleet_ws/data/run/discovery/%i.router.yaml:/ddsrouter.yaml:ro eprosima/vulcanexus:humble-cloud-2.10.0 ddsrouter -c /ddsrouter.yaml
+ExecStop=-/usr/bin/sudo -n /usr/bin/docker stop --time 3 omnifleet-dds-%i
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=8

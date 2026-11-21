@@ -1,0 +1,15 @@
+[Unit]
+Description=OmniFleet sampled point cloud for web visualization
+After=network.target
+
+[Service]
+Type=simple
+User=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_a2_ws/src/system/workspace_support/robot_fleet_env.bash; exec python3 /home/iecme/omnifleet_a2_ws/src/system/omnifleet_a2_gateway/omnifleet_a2_gateway/web_pointcloud.py'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

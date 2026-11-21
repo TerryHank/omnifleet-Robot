@@ -1,0 +1,19 @@
+-- run_test.py: invoking following command in '/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_bringup':
+ - /usr/bin/python3 -u -m pytest /home/iecme/omnifleet_a2_ws/src/omnifleet_a2_bringup/test/test_foxglove_status_publisher.py -o cache_dir=/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_bringup/ament_cmake_pytest/test_foxglove_status_publisher/.cache --junit-xml=/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_bringup/test_results/omnifleet_a2_bringup/test_foxglove_status_publisher.xunit.xml --junit-prefix=omnifleet_a2_bringup
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
+cachedir: build/omnifleet_a2_bringup/ament_cmake_pytest/test_foxglove_status_publisher/.cache
+rootdir: /home/iecme/omnifleet_a2_ws
+plugins: launch-testing-ros-0.19.9, launch-testing-1.0.8, ament-lint-0.12.12, ament-flake8-0.12.12, ament-copyright-0.12.12, ament-xmllint-0.12.12, ament-pep257-0.12.12, cov-3.0.0, colcon-core-0.21.0
+collected 3 items
+
+../../src/omnifleet_a2_bringup/test/test_foxglove_status_publisher.py .. [ 66%]
+.                                                                        [100%]
+
+- generated xml file: /home/iecme/omnifleet_a2_ws/build/omnifleet_a2_bringup/test_results/omnifleet_a2_bringup/test_foxglove_status_publisher.xunit.xml -
+============================== 3 passed in 0.23s ===============================
+
+
+-- run_test.py: return code 0
+-- run_test.py: verify result file '/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_bringup/test_results/omnifleet_a2_bringup/test_foxglove_status_publisher.xunit.xml'

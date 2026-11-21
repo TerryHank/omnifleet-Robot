@@ -1,0 +1,40 @@
+// generated from rosidl_adapter/resource/action.idl.em
+// with input from omnifleet_navigation_interfaces/action/ExecuteFormation.action
+// generated code does not contain a copyright notice
+
+#include "omnifleet_navigation_interfaces/msg/NavigationPoint.idl"
+
+module omnifleet_navigation_interfaces {
+  module action {
+    struct ExecuteFormation_Goal {
+      string task_id;
+
+      string command_epoch;
+
+      uint64 revision;
+
+      sequence<omnifleet_navigation_interfaces::msg::NavigationPoint> waypoints;
+
+      @default (value=0.25)
+      float pass_radius;
+    };
+    struct ExecuteFormation_Result {
+      boolean success;
+
+      string code;
+
+      string message;
+    };
+    struct ExecuteFormation_Feedback {
+      string task_id;
+
+      string phase;
+
+      string message;
+
+      uint32 passed_points;
+
+      float tf_age_ms;
+    };
+  };
+};

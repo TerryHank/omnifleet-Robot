@@ -1,0 +1,8 @@
+source;share/omnifleet_a2_simulator/hook/cmake_prefix_path.ps1
+source;share/omnifleet_a2_simulator/hook/cmake_prefix_path.dsv
+source;share/omnifleet_a2_simulator/hook/cmake_prefix_path.sh
+source;share/omnifleet_a2_simulator/local_setup.bash
+source;share/omnifleet_a2_simulator/local_setup.dsv
+source;share/omnifleet_a2_simulator/local_setup.ps1
+source;share/omnifleet_a2_simulator/local_setup.sh
+source;share/omnifleet_a2_simulator/local_setup.zsh

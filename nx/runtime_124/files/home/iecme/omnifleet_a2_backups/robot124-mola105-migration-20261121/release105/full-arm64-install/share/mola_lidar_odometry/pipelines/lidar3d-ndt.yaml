@@ -1,0 +1,55 @@
+# =====================================================================================
+# Pipeline: point-to-{point,plane} 3D ICP with 3D-NDT-like maps
+#
+# For paper references, see https://github.com/MOLAorg/mola_lidar_odometry/
+#
+# This file holds parameters for mola::LidarOdometry,
+# for use either programmatically calling initialize(), or from a MOLA system
+# launch file. See "mola-cli-launchs/*" examples or the main project docs.
+#
+# The pipeline is assembled from the blocks in blocks/, merged in the order
+# listed below. Each one can be replaced by a user file by setting the
+# environment variable next to it; see the "Pipeline blocks" docs section.
+# =====================================================================================
+
+$import:
+  - ${MOLA_LO_BLOCK_INPUTS|blocks/inputs.yaml}
+  - ${MOLA_LO_BLOCK_RUNTIME|blocks/runtime.yaml}
+  - ${MOLA_LO_BLOCK_ACCEPTANCE|blocks/acceptance.yaml}
+  - ${MOLA_LO_BLOCK_ADAPTIVE_THRESHOLD|blocks/adaptive-threshold.yaml}
+  - ${MOLA_LO_BLOCK_SIMPLEMAP|blocks/simplemap.yaml}
+  - ${MOLA_LO_BLOCK_VISUALIZATION|blocks/visualization.yaml}
+  - ${MOLA_LO_BLOCK_INITIAL_LOCALIZATION|blocks/initial-localization.yaml}
+  - ${MOLA_LO_BLOCK_ICP|blocks/icp-ndt.yaml}
+  - ${MOLA_LO_BLOCK_LOCALMAP_UPDATES|blocks/localmap-updates.yaml}
+  - ${MOLA_LO_BLOCK_LOCALMAP|blocks/localmap-ndt.yaml}
+  - ${MOLA_LO_BLOCK_OBSERVATIONS_COMMON|blocks/observations-common.yaml}
+  - ${MOLA_LO_BLOCK_OBSERVATIONS|blocks/observations-ndt.yaml}
+
+params:
+  pipeline_name: "point-to-{point,plane} 3D ICP with 3D-NDT-like maps" # For display/debug only
+
+  # If enabled, vehicle twist will be optimized during ICP
+  # enabling better and more robust odometry in high dynamics motion.
+  optimize_twist: "${MOLA_OPTIMIZE_TWIST|true}"
+  optimize_twist_max_corrections: 8 # (max number of corrections)
+  optimize_twist_rerun_min_trans: 0.15 # [m]
+  optimize_twist_rerun_min_rot_deg: 0.75 # [deg]
+
+  local_map_updates:
+    min_rotation_between_keyframes: "${MOLA_MIN_ROT_BETWEEN_MAP_UPDATES|(15 + sqrt(wx^2+wy^2+wz^2)*500 )}" # [deg]
+    publish_map_updates_every_n: ${MOLA_PUBLISH_LOCAL_MAP_UPDATES_EVERY_N|5}
+
+  # Minimum ICP quality to insert it into the map:
+  min_icp_goodness: ${MOLA_MINIMUM_ICP_QUALITY|0.25}
+
+  simplemap:
+    min_translation_between_keyframes: ${MOLA_SIMPLEMAP_MIN_XYZ|1.0e-2*ESTIMATED_OBSERVATION_RADIUS} # m
+    min_rotation_between_keyframes: ${MOLA_SIMPLEMAP_MIN_ROT|15} # deg
+
+  visualization:
+    show_localmap: ${MOLA_GUI_SHOW_LOCAL_MAP|false}
+    local_map_point_size: 3
+    observations_decay_seconds: ${MOLA_GUI_CLOUDS_DECAY_SECS|5.0}
+    current_observation_point_size: ${MOLA_GUI_CURRENT_CLOUD_POINT_SIZE|3.0}
+    current_observation_colormap: ${MOLA_GUI_CURRENT_CLOUD_COLORMAP|cmJET} # mrpt::img::TColormap

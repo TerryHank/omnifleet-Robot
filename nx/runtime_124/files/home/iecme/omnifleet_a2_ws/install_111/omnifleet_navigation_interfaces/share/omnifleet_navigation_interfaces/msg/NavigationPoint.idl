@@ -1,0 +1,23 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from omnifleet_navigation_interfaces/msg/NavigationPoint.msg
+// generated code does not contain a copyright notice
+
+#include "geometry_msgs/msg/PoseStamped.idl"
+
+module omnifleet_navigation_interfaces {
+  module msg {
+    module NavigationPoint_Constants {
+      const uint8 PASS = 0;
+      const uint8 STOP = 1;
+    };
+    struct NavigationPoint {
+      string name;
+
+      geometry_msgs::msg::PoseStamped pose;
+
+      uint8 kind;
+
+      float dwell_seconds;
+    };
+  };
+};

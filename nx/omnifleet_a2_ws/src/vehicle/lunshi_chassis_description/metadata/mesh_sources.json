@@ -1,0 +1,882 @@
+[
+  {
+    "link": "base_link",
+    "source": "full_assembly - 00-A-DP_AF0-1 00-A-01-1-1.STL",
+    "mesh": "sw_part_001_3633009ae9.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 00-A-DP_AF0-1 00-A-01-1.STL",
+    "mesh": "sw_part_002_e78aa04ea8.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 00-A-DP_AF0-1 00-A-01-2-1.STL",
+    "mesh": "sw_part_003_7093eddc6d.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 00-A-DP_AF0-1 00-A-01-2.STL",
+    "mesh": "sw_part_004_13395ffafe.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 00-A-DP_AF0-1 00-A-01-3-1.STL",
+    "mesh": "sw_part_005_8bcc7fc08d.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 00-A-DP_AF0-1 00-A-01-3.STL",
+    "mesh": "sw_part_006_0436e3fb28.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 00-A-DP_AF0-1 00-A-01-4-1.STL",
+    "mesh": "sw_part_007_d973dab162.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 00-A-DP_AF0-1 00-A-01-4.STL",
+    "mesh": "sw_part_008_93bc5c7974.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-000LUNSHI202600001-1 000-000LUNSHI202600002-1 LUNSHI-10-1-1.STL",
+    "mesh": "sw_part_009_bf2929afc5.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-000LUNSHI202600001-1 000-000LUNSHI202600002-1 LUNSHI-10-1.STL",
+    "mesh": "sw_part_010_53321976d9.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-000LUNSHI202600001-1 000-000LUNSHI202600002-1 LUNSHI-3-1-1.STL",
+    "mesh": "sw_part_011_256aa68fd6.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-000LUNSHI202600001-1 000-000LUNSHI202600002-1 LUNSHI-3-1.STL",
+    "mesh": "sw_part_012_aa55bd141e.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-000LUNSHI202600001-1 000-000LUNSHI202600002-1 LUNSHI-4-1-1.STL",
+    "mesh": "sw_part_013_17aef547ed.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-000LUNSHI202600001-1 000-000LUNSHI202600002-1 LUNSHI-4-1.STL",
+    "mesh": "sw_part_014_9eefcaee3f.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-1-1.STL",
+    "mesh": "sw_part_015_72abcd5d28.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-1.STL",
+    "mesh": "sw_part_016_9368eccf78.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-2-1.STL",
+    "mesh": "sw_part_017_61eb6a460b.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-2.STL",
+    "mesh": "sw_part_018_815a708bf5.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-3-1.STL",
+    "mesh": "sw_part_019_9910a8fb2c.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-3.STL",
+    "mesh": "sw_part_020_aae9db7bbc.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-4-1.STL",
+    "mesh": "sw_part_021_a5becf8b4b.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000-4.STL",
+    "mesh": "sw_part_022_ebe636baef.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _1_AKM__25_02_06-A0001-1-1.STL",
+    "mesh": "sw_part_023_b2d48b0e61.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _1_AKM__25_02_06-A0001-1.STL",
+    "mesh": "sw_part_024_337649c364.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _1_AKM__25_02_06-A0001-2-1.STL",
+    "mesh": "sw_part_025_b188110bb0.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _1_AKM__25_02_06-A0001-2.STL",
+    "mesh": "sw_part_026_1409ff7399.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _1_AKM__25_02_06-A0002-1-1.STL",
+    "mesh": "sw_part_027_155776a776.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _1_AKM__25_02_06-A0002-1.STL",
+    "mesh": "sw_part_028_71e5d6d001.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _1_AKM__25_02_06-A0002-2-1.STL",
+    "mesh": "sw_part_029_1eaf383dc2.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _1_AKM__25_02_06-A0002-2.STL",
+    "mesh": "sw_part_030_aa3c489f27.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _35_AKM__25_02_06-0001-1-1.STL",
+    "mesh": "sw_part_031_46ed68528e.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000-1 _35_AKM__25_02_06-0001-1.STL",
+    "mesh": "sw_part_032_419e96348e.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _1_AKM__25_02_06-A0001-1-1.STL",
+    "mesh": "sw_part_033_02904175a3.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _1_AKM__25_02_06-A0001-1.STL",
+    "mesh": "sw_part_034_92e8e3e31d.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _1_AKM__25_02_06-A0001-2-1.STL",
+    "mesh": "sw_part_035_3c44a1765f.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _1_AKM__25_02_06-A0001-2.STL",
+    "mesh": "sw_part_036_5fac2b219a.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _1_AKM__25_02_06-A0002-1-1.STL",
+    "mesh": "sw_part_037_e28a596db6.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _1_AKM__25_02_06-A0002-1.STL",
+    "mesh": "sw_part_038_6dec9e4d2a.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _1_AKM__25_02_06-A0002-2-1.STL",
+    "mesh": "sw_part_039_8f85688579.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _1_AKM__25_02_06-A0002-2.STL",
+    "mesh": "sw_part_040_08e9188483.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _25_AKM__25_02_06-0001-1-1.STL",
+    "mesh": "sw_part_041_eff6a963a1.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 000_2-1 _25_AKM__25_02_06-0001-1.STL",
+    "mesh": "sw_part_042_4d64970562.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M314_AKM__25_02_00001-1-1.STL",
+    "mesh": "sw_part_043_210c324f57.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M314_AKM__25_02_00001-1.STL",
+    "mesh": "sw_part_044_414139380e.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M314_AKM__25_02_00001-2-1.STL",
+    "mesh": "sw_part_045_497b2b4815.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M314_AKM__25_02_00001-2.STL",
+    "mesh": "sw_part_046_e3333587eb.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M38_4_AKM__25_02_0001-1-1.STL",
+    "mesh": "sw_part_047_cb0820ef77.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M38_4_AKM__25_02_0001-1.STL",
+    "mesh": "sw_part_048_b15e918a37.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M38_4_AKM__25_02_0001-2-1.STL",
+    "mesh": "sw_part_049_54856056a7.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M38_4_AKM__25_02_0001-2.STL",
+    "mesh": "sw_part_050_4c418e1331.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M38_5_AKM__25_02_0001-1-1.STL",
+    "mesh": "sw_part_051_59924a821f.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 0003-1 _M38_5_AKM__25_02_0001-1.STL",
+    "mesh": "sw_part_052_315692d405.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 2_8INCH_HDMI_LCD_H0__X2_FFFDF_1-1-1.STL",
+    "mesh": "sw_part_053_1427eadb00.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 2_8INCH_HDMI_LCD_H0__X2_FFFDF_1-1.STL",
+    "mesh": "sw_part_054_bb60f7b185.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM_STM32-_X2_FFFDFFFD0630FFF_1-1-1.STL",
+    "mesh": "sw_part_055_ee13952fb0.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM_STM32-_X2_FFFDFFFD0630FFF_1-1.STL",
+    "mesh": "sw_part_056_dd8379ab7c.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM__X2_0421FFFDFFFD013B_X0___1-1-1.STL",
+    "mesh": "sw_part_057_75450c2ac9.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM__X2_0421FFFDFFFD013B_X0___1-1.STL",
+    "mesh": "sw_part_058_241afe2013.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM__X2_FFFDFFFD02BEFFFD-3174_1-1-1.STL",
+    "mesh": "sw_part_059_b378922962.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM__X2_FFFDFFFD02BEFFFD-3174_1-1.STL",
+    "mesh": "sw_part_060_a1836be0ab.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM__X2_FFFDFFFD02BEFFFD-3174_2-1-1.STL",
+    "mesh": "sw_part_061_875163776c.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM__X2_FFFDFFFD02BEFFFD-3174_2-1.STL",
+    "mesh": "sw_part_062_95bc4b61c2.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM__X2_FFFDFFFDFFFDFFFDFFFDF_1-1-1.STL",
+    "mesh": "sw_part_063_5e6e8604b6.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 AKM__X2_FFFDFFFDFFFDFFFDFFFDF_1-1.STL",
+    "mesh": "sw_part_064_b797b5864f.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_1-1-1.STL",
+    "mesh": "sw_part_065_b9dfb744ae.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_1-1.STL",
+    "mesh": "sw_part_066_f90ceb3043.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_2-1-1.STL",
+    "mesh": "sw_part_067_4960ed1dfe.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_2-1.STL",
+    "mesh": "sw_part_068_494e96827b.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_3-1-1.STL",
+    "mesh": "sw_part_069_e01440c7e6.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_3-1.STL",
+    "mesh": "sw_part_070_9790d972c8.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_4-1-1.STL",
+    "mesh": "sw_part_071_3946ce0f16.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_4-1.STL",
+    "mesh": "sw_part_072_f00236c269.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_5-1-1.STL",
+    "mesh": "sw_part_073_f65041677a.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_5-1.STL",
+    "mesh": "sw_part_074_99cca69f99.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_6-1-1.STL",
+    "mesh": "sw_part_075_c6fb581a2e.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_6-1.STL",
+    "mesh": "sw_part_076_2ef7cbc025.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_7-1-1.STL",
+    "mesh": "sw_part_077_8ab4f19a9f.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_7-1.STL",
+    "mesh": "sw_part_078_f29b3855cc.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_8-1-1.STL",
+    "mesh": "sw_part_079_50338ffdfe.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_8-1.STL",
+    "mesh": "sw_part_080_3dd1e5d638.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_9-1-1.STL",
+    "mesh": "sw_part_081_e386a33bcf.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-3174_9-1.STL",
+    "mesh": "sw_part_082_7344fba58f.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_10-1-1.STL",
+    "mesh": "sw_part_083_baebf5504c.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_10-1.STL",
+    "mesh": "sw_part_084_9f5cd90b97.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_11-1-1.STL",
+    "mesh": "sw_part_085_0f0495f53f.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_11-1.STL",
+    "mesh": "sw_part_086_98dd27a233.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_12-1-1.STL",
+    "mesh": "sw_part_087_3a09e0b472.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_12-1.STL",
+    "mesh": "sw_part_088_a925b230d2.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_13-1-1.STL",
+    "mesh": "sw_part_089_ffaa3a32e0.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_13-1.STL",
+    "mesh": "sw_part_090_554b1ba990.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_14-1-1.STL",
+    "mesh": "sw_part_091_6e132a8fcd.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_14-1.STL",
+    "mesh": "sw_part_092_a2ff41fbee.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_15-1-1.STL",
+    "mesh": "sw_part_093_ebd61c1eda.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_15-1.STL",
+    "mesh": "sw_part_094_2040a775ee.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_16-1-1.STL",
+    "mesh": "sw_part_095_c2a6eb4d35.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_16-1.STL",
+    "mesh": "sw_part_096_ba34ec172e.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_17-1-1.STL",
+    "mesh": "sw_part_097_5483977b10.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_17-1.STL",
+    "mesh": "sw_part_098_61af5a340a.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_18-1-1.STL",
+    "mesh": "sw_part_099_4a2af07b31.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFD01F8FFFDFFFD-317_18-1.STL",
+    "mesh": "sw_part_100_c18da94fe0.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFDFFFDFFFDFFFDFFFDF_1-1 130_MANIFOLD_SOLID_BREP__4833_1-1-1.STL",
+    "mesh": "sw_part_101_bf43f77761.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFDFFFDFFFDFFFDFFFDF_1-1 130_MANIFOLD_SOLID_BREP__4833_1-1.STL",
+    "mesh": "sw_part_102_0da7334ee2.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFDFFFDFFFDFFFDFFFDF_1-1 ____3-2736_A-1-1.STL",
+    "mesh": "sw_part_103_0385f5ca04.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFDFFFDFFFDFFFDFFFDF_1-1 ____3-2736_A-1.STL",
+    "mesh": "sw_part_104_8ba5002a07.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFDFFFDFFFDFFFDFFFDF_1-1 ____4-2737_A-1-1.STL",
+    "mesh": "sw_part_105_13c55a0a99.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - 000_3-1 _X2_FFFDFFFDFFFDFFFDFFFDFFFDF_1-1 ____4-2737_A-1.STL",
+    "mesh": "sw_part_106_3dbe6b2f31.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__2-2937770001-1 AKM__AKM__25_02_060005-1-1.STL",
+    "mesh": "sw_part_107_db2979320c.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__2-2937770001-1 AKM__AKM__25_02_060005-1.STL",
+    "mesh": "sw_part_108_3d23ddd0d0.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 DG-SZ_AKM__AKM__250001-1-1.STL",
+    "mesh": "sw_part_109_6de6e25646.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 DG-SZ_AKM__AKM__250001-1.STL",
+    "mesh": "sw_part_110_46de95b063.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 GE_AKM__AKM__25_020001-1-1.STL",
+    "mesh": "sw_part_111_c47a558b07.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 GE_AKM__AKM__25_020001-1.STL",
+    "mesh": "sw_part_112_f708e15556.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 LV-DUOBAN_AKM__AKM0001-1-1.STL",
+    "mesh": "sw_part_113_50c33979d3.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 LV-DUOBAN_AKM__AKM0001-1.STL",
+    "mesh": "sw_part_114_7b0f8198d6.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 SG-JIANRONG-MG996_0001-1-1.STL",
+    "mesh": "sw_part_115_ff905dbdd2.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 SG-JIANRONG-MG996_0001-1.STL",
+    "mesh": "sw_part_116_143e459fd5.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 XIANTAO_AKM__AKM__0001-1-1.STL",
+    "mesh": "sw_part_117_064a700624.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 XIANTAO_AKM__AKM__0001-1.STL",
+    "mesh": "sw_part_118_56982bf144.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 ZK_AKM__AKM__25_020001-1-1.STL",
+    "mesh": "sw_part_119_8e8dd7bb00.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 ZK_AKM__AKM__25_020001-1.STL",
+    "mesh": "sw_part_120_117b21ea04.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 _2988050001-1-1.STL",
+    "mesh": "sw_part_121_620a57d38b.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 _2988050001-1.STL",
+    "mesh": "sw_part_122_43a7b18ace.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 _3765040001-1-1.STL",
+    "mesh": "sw_part_123_825175e0a4.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - AKM__AKM__25_02_060004-1 _3765040001-1.STL",
+    "mesh": "sw_part_124_0eb23537be.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF-1 0002-1-1.STL",
+    "mesh": "sw_part_125_4f73546776.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF-1 0002-1.STL",
+    "mesh": "sw_part_126_e77f43f857.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF-1 1000-1-1.STL",
+    "mesh": "sw_part_127_eb044ff075.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF-1 1000-1.STL",
+    "mesh": "sw_part_128_54efec6027.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF-1 2000-1-1.STL",
+    "mesh": "sw_part_129_f930b5bb2c.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF-1 2000-1.STL",
+    "mesh": "sw_part_130_63ded0ce9e.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_2-1 0002-1-1.STL",
+    "mesh": "sw_part_131_8cf1178c28.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_2-1 0002-1.STL",
+    "mesh": "sw_part_132_345ee7c001.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_2-1 1000-1-1.STL",
+    "mesh": "sw_part_133_a0d70066d1.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_2-1 1000-1.STL",
+    "mesh": "sw_part_134_0594fadf22.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_2-1 2000-1-1.STL",
+    "mesh": "sw_part_135_48cb03f8cf.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_2-1 2000-1.STL",
+    "mesh": "sw_part_136_193c546114.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_3-1 0002-1-1.STL",
+    "mesh": "sw_part_137_d8f06494bb.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_3-1 0002-1.STL",
+    "mesh": "sw_part_138_cffd7936d0.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_3-1 1000-1-1.STL",
+    "mesh": "sw_part_139_03279554c8.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_3-1 1000-1.STL",
+    "mesh": "sw_part_140_a0fa8f2241.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_3-1 2000-1-1.STL",
+    "mesh": "sw_part_141_b85d8701ee.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_3-1 2000-1.STL",
+    "mesh": "sw_part_142_02b2f88bfb.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_4-1 0002-1-1.STL",
+    "mesh": "sw_part_143_272abf2407.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_4-1 0002-1.STL",
+    "mesh": "sw_part_144_94a3e40719.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_4-1 1000-1-1.STL",
+    "mesh": "sw_part_145_acc55899f3.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_4-1 1000-1.STL",
+    "mesh": "sw_part_146_55e8aa04ce.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_4-1 2000-1-1.STL",
+    "mesh": "sw_part_147_8f85b811e2.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _AF_4-1 2000-1.STL",
+    "mesh": "sw_part_148_8d8088d339.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-1-1.STL",
+    "mesh": "sw_part_149_ff552bd6a8.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-1.STL",
+    "mesh": "sw_part_150_a459bea413.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-10-1.STL",
+    "mesh": "sw_part_151_d2a4e5fd10.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-10.STL",
+    "mesh": "sw_part_152_a5dcc1d30a.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-2-1.STL",
+    "mesh": "sw_part_153_0cd0ab04c3.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-2.STL",
+    "mesh": "sw_part_154_efbe730702.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-3-1.STL",
+    "mesh": "sw_part_155_cef96a1376.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-3.STL",
+    "mesh": "sw_part_156_5e9ed9ab91.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-4-1.STL",
+    "mesh": "sw_part_157_618de99014.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-4.STL",
+    "mesh": "sw_part_158_75d83c0c59.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-5-1.STL",
+    "mesh": "sw_part_159_91ccd7e53a.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-5.STL",
+    "mesh": "sw_part_160_7393401c60.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-6-1.STL",
+    "mesh": "sw_part_161_4c53f29567.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-6.STL",
+    "mesh": "sw_part_162_917cd0e2b3.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-7-1.STL",
+    "mesh": "sw_part_163_5b642bf51f.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-7.STL",
+    "mesh": "sw_part_164_ae6533145d.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-8-1.STL",
+    "mesh": "sw_part_165_6b6b70358f.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-8.STL",
+    "mesh": "sw_part_166_9fd4904935.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-9-1.STL",
+    "mesh": "sw_part_167_250d05a6ad.stl"
+  },
+  {
+    "link": "base_link",
+    "source": "full_assembly - _M38_4_AKM__25_02_0001-9.STL",
+    "mesh": "sw_part_168_ddb737778d.stl"
+  },
+  {
+    "link": "front_left_wheel",
+    "source": "full_assembly - AKM__1_AKM__25_02_0001-1.STL",
+    "mesh": "front_left_wheel_sw_visual.stl",
+    "visual": "front_left_wheel_sw_visual",
+    "global_geometry": "front_left_wheel_global",
+    "template": "left",
+    "template_component": "front_left_wheel",
+    "target_component": "AKM__1_AKM__25_02_0001-1"
+  },
+  {
+    "link": "front_right_wheel",
+    "source": "full_assembly - AKM__1_AKM__25_02_0001-2.STL",
+    "mesh": "front_right_wheel_sw_visual.stl",
+    "visual": "front_right_wheel_sw_visual",
+    "global_geometry": "front_right_wheel_global",
+    "template": "right",
+    "template_component": "front_right_wheel",
+    "target_component": "AKM__1_AKM__25_02_0001-2"
+  },
+  {
+    "link": "rear_left_wheel",
+    "source": "full_assembly - AKM__1_AKM__25_02_0001-1.STL",
+    "mesh": "rear_left_wheel_sw_visual.stl",
+    "visual": "rear_left_wheel_sw_visual",
+    "global_geometry": "rear_left_wheel_global",
+    "template": "left",
+    "template_component": "front_left_wheel",
+    "target_component": "AKM__2-2937770001-1/AKM__AKM__25_02_060006-1"
+  },
+  {
+    "link": "rear_right_wheel",
+    "source": "full_assembly - AKM__1_AKM__25_02_0001-2.STL",
+    "mesh": "rear_right_wheel_sw_visual.stl",
+    "visual": "rear_right_wheel_sw_visual",
+    "global_geometry": "rear_right_wheel_global",
+    "template": "right",
+    "template_component": "front_right_wheel",
+    "target_component": "AKM__2-2937770001-1/AKM__AKM__25_02_060006-2"
+  }
+]

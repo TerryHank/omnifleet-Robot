@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet 112 single robot web dashboard
+After=omnifleet-a2-chassis.service
+
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+ExecStart=/bin/bash -c 'source deploy/vr-debug/vr_env.bash && exec python3 deploy/web-112/server.py'
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

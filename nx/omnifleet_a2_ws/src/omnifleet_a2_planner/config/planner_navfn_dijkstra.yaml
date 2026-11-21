@@ -1,0 +1,10 @@
+planner_server:
+  ros__parameters:
+    planner_plugins: ["GridBased"]
+    GridBased:
+      # 教学对照：与A*使用同一NavFn插件，只改变use_astar。
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      use_astar: false
+      allow_unknown: true
+      tolerance: 0.25
+      use_final_approach_orientation: false

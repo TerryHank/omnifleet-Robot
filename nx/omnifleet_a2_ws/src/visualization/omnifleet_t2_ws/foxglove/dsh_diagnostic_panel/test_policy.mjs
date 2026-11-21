@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {diagnosticPolicy} from './diagnostic_policy.mjs';
+const original={model:'qwen3.8-max',reasoning_effort:'xhigh',max_tokens:32768,messages:[{content:'test'}],tools:[{name:'not_allowed'}]};
+const result=diagnosticPolicy(original,true);
+assert.equal(result.thinking_budget,2048);assert.equal(result.max_tokens,6144);
+assert.equal(result.reasoning_effort,undefined);assert.equal(original.reasoning_effort,'xhigh');
+assert.equal(result.messages,original.messages);
+assert.equal(result.tools,undefined);assert.equal(original.tools.length,1);
+assert.equal(diagnosticPolicy(original,false),original);
+const different={model:'other'};assert.equal(diagnosticPolicy(different,true),different);
+console.log('PASS diagnostic policy scope, budget, no effort conflict, unchanged prompt');

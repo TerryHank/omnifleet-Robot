@@ -1,0 +1,12 @@
+[Unit]
+Description=OmniFleet 124 LAN robot announcement
+After=network-online.target omnifleet-124-ddsrouter.service
+Wants=network-online.target omnifleet-124-ddsrouter.service
+[Service]
+User=iecme
+ExecStart=/usr/bin/python3 /home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-discovery/fleet_beacon.py
+Restart=on-failure
+RestartSec=3
+Nice=4
+[Install]
+WantedBy=multi-user.target

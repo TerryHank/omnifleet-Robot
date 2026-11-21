@@ -1,0 +1,20 @@
+omnifleet_a2_vr_bridge:
+  ros__parameters:
+    car_id: "CAR-IECME112"
+    display_name: "OmniFleet-Ackermann"
+    ctrl_port: 8888
+    discovery_target: "255.255.255.255"
+    discovery_port: 9100
+    discovery_period_sec: 1.0
+    pose_port: 9000
+    pose_period_sec: 0.04
+    video_port: 8090
+    video_retry_sec: 1.0
+    jpeg_quality: 70
+    control_timeout_sec: 0.20
+    wheelbase_m: 0.362296
+    maximum_speed_mps: 1.0
+    minimum_motion_speed_mps: 0.40
+    cmd_vel_topic: "/cmd_vel"
+    odometry_topic: "/omnifleet_a2/chassis/wheel_odometry"
+    image_topic: "/tof/color/image_raw"

@@ -1,0 +1,6 @@
+[Unit]
+Description=OmniFleet public Web frontend
+[Socket]
+ListenStream=0.0.0.0:80
+[Install]
+WantedBy=sockets.target

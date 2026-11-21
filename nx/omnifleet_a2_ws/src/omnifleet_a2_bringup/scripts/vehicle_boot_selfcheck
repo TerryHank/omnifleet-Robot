@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+from omnifleet_a2_bringup.boot_selfcheck import main
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

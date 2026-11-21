@@ -1,0 +1,18 @@
+[Unit]
+Description=OmniFleet A2 Gemini Pro visual follow
+After=omnifleet-a2-gemini-pro.service
+
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+Environment=PYTHONUNBUFFERED=1
+Environment=YOLO_CONFIG_DIR=/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/.ultralytics
+ExecStart=/bin/bash -c 'source deploy/chassis-111/chassis_env.bash && exec python3 deploy/vision-gemini-122/manager.py'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

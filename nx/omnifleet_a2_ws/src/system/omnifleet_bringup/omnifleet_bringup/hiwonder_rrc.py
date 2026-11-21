@@ -15,7 +15,6 @@ SBUS_FUNCTION = 9
 SBUS_REPORT = struct.Struct('<16H4B')
 WHEELBASE_MM = 224.92
 REAR_TRACK_M = 0.21333
-WHEEL_CIRCUMFERENCE_M = math.pi * 0.100
 
 
 def crc8(data):
@@ -45,8 +44,11 @@ def motion_frame(vx_mm_s, steering_deg, yaw_mrad_s):
 
 
 class HiwonderRRC:
-    def __init__(self, port):
+    def __init__(self, port, *, wheel_radius_m=0.050):
+        if not math.isfinite(wheel_radius_m) or wheel_radius_m <= 0.0:
+            raise ValueError("wheel_radius_m must be finite and positive")
         self.port = port
+        self.wheel_circumference_m = math.tau * wheel_radius_m
         self._serial = None
         self._lock = threading.Lock()
         self._stopping = threading.Event()
@@ -125,8 +127,9 @@ class HiwonderRRC:
             return
         if len(data) != 88 or not data.startswith(b"RRC\x01"):
             return
-        left = struct.unpack_from("<f", data, 12)[0] * WHEEL_CIRCUMFERENCE_M
-        right = -struct.unpack_from("<f", data, 32)[0] * WHEEL_CIRCUMFERENCE_M
+        battery_mv = struct.unpack_from("<H", data, 6)[0]
+        left = struct.unpack_from("<f", data, 12)[0] * self.wheel_circumference_m
+        right = -struct.unpack_from("<f", data, 32)[0] * self.wheel_circumference_m
         if not (math.isfinite(left) and math.isfinite(right)):
             self.receive_error_count += 1
             return
@@ -135,7 +138,7 @@ class HiwonderRRC:
         vx = (left + right) / 2.0
         wz = (right - left) / REAR_TRACK_M
         with self._lock:
-            self._feedback = (vx, self._steering_deg, wz, counts)
+            self._feedback = (vx, self._steering_deg, wz, counts, battery_mv / 1000.0)
             self.speed_frame_count += 1
             self.last_speed_frame_time = time.monotonic()
 

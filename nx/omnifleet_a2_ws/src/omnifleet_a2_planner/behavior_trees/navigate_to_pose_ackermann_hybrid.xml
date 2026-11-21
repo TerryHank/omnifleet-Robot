@@ -1,0 +1,25 @@
+<!-- Keep a valid path and replan with the reverse-capable Hybrid-A* planner when needed. -->
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <PipelineSequence name="NavigateWithReplanning">
+      <RateController hz="1.0">
+        <Fallback name="KeepValidOrReplan">
+          <ReactiveSequence name="CheckIfNewPathNeeded">
+            <Inverter>
+              <GlobalUpdatedGoal/>
+            </Inverter>
+            <IsPathValid path="{path}"/>
+          </ReactiveSequence>
+          <Sequence name="PlanAndValidate">
+            <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+            <IsPathValid path="{path}"/>
+          </Sequence>
+        </Fallback>
+      </RateController>
+      <RecoveryNode number_of_retries="1" name="FollowPathWithLocalCostmapClear">
+        <FollowPath path="{path}" controller_id="FollowPath"/>
+        <ClearEntireCostmap name="ClearLocalCostmapAfterControllerFailure" service_name="local_costmap/clear_entirely_local_costmap"/>
+      </RecoveryNode>
+    </PipelineSequence>
+  </BehaviorTree>
+</root>

@@ -1,0 +1,661 @@
+/*               _
+ _ __ ___   ___ | | __ _
+| '_ ` _ \ / _ \| |/ _` | Modular Optimization framework for
+| | | | | | (_) | | (_| | Localization and mApping (MOLA)
+|_| |_| |_|\___/|_|\__,_| https://github.com/MOLAorg/mola
+
+ Copyright (C) 2018-2026 Jose Luis Blanco, University of Almeria,
+                         and individual contributors.
+ SPDX-License-Identifier: GPL-3.0
+ See LICENSE for full license information.
+*/
+
+/**
+ * @file   IncrementalPointCloud.h
+ * @brief  Sliding-window point cloud with an incremental (self-balancing) k-d tree
+ * @author Jose Luis Blanco Claraco
+ * @date   Jul 25, 2026
+ */
+#pragma once
+
+/** \def MOLA_METRIC_MAPS_HAS_INCREMENTAL_POINT_CLOUD
+ *  Defined by the build system when nanoflann >= 1.10.0 (the version that
+ *  introduced the incremental k-d tree index) was available, i.e. when
+ *  mola::IncrementalPointCloud is actually functional.
+ *
+ *  The class is declared, compiled and registered in the class factory either
+ *  way, so this header is always usable; without a suitable nanoflann,
+ *  *constructing* the map throws an explanatory std::runtime_error instead of
+ *  failing earlier with a confusing "no such registered CMetricMap class".
+ */
+
+#include <mola_metric_maps/MatchingDistanceProfileCompat.h>
+#include <mola_metric_maps/OptionsCapable.h>
+#include <mola_metric_maps/PointIndexType.h>
+#include <mola_metric_maps/ViewDirectionFilter.h>
+#include <mp2p_icp/NearestPointWithCovCapable.h>
+#include <mrpt/config/CLoadableOptions.h>
+#include <mrpt/maps/CGenericPointsMap.h>
+#include <mrpt/maps/CSimplePointsMap.h>
+#include <mrpt/math/CMatrixFixed.h>
+#include <mrpt/math/TPoint3D.h>
+
+#include <atomic>
+#include <cstdint>
+#include <memory>
+#include <mutex>
+#include <utility>
+#include <vector>
+
+namespace mola
+{
+namespace internal
+{
+class IncrementalKDTree;
+}
+
+/** A single-global-frame, sliding-window point map for LiDAR (inertial)
+ *  odometry, backed by **one incremental spatial index**, updated in place
+ *  instead of rebuilt on every scan: a hashed voxel grid by default, or an
+ *  incremental, self-balancing nanoflann k-d tree. See
+ *  `TCreationOptions::index_type`.
+ *
+ * ## Why
+ * `mrpt::maps::CPointsMap` is a `mrpt::math::KDTreeCapable`: every insertion
+ * marks the index dirty and the **entire** tree is rebuilt on the next query,
+ * i.e. O(N log N) per scan. Here insertion is O(1) per point with the voxel
+ * index, or amortized O(log N) per point plus bounded (optionally
+ * backgrounded) partial rebuilds with the k-d tree.
+ *
+ * ## Role
+ * This is the *odometry local map*, playing the same role as
+ * `mola::HashedVoxelPointCloud` / `mola::SparseTreesPointCloud`, but exact
+ * (per-point) rather than voxelized:
+ * - points are added by the usual `insertObservation()` / `insertAnotherMap()`
+ *   / `insertPoint()` entry points inherited from `CGenericPointsMap`, so all
+ *   per-point channels (`t`, `intensity`, `view_x/y/z`, ...) are supported;
+ * - points far from the robot are evicted on insertion, see
+ *   `TCreationOptions::remove_points_farther_than`;
+ * - nearest-neighbor queries go through `mrpt::maps::NearestNeighborsCapable`;
+ * - GICP-style matching goes through `mp2p_icp::NearestPointWithCovCapable`
+ *   (per-point, plane-regularized covariances), optionally rejecting pairs
+ *   by their view directions, see `TCreationOptions::view_direction_filter`.
+ *
+ * ## View-direction fields are kept in the map frame
+ * When the inserted clouds carry `view_x/y/z` (unit vectors from each point
+ * toward the sensor, as produced by `mp2p_icp_filters::Generator`), they are
+ * rotated along with the point coordinates by `insertObservation()` and by
+ * `changeCoordinatesReference()`, so the stored ones are always expressed in
+ * this map's frame. `insertAnotherMap()` called directly treats them as for any
+ * `CGenericPointsMap`: it rotates them since MRPT 3.6.0, and copies them
+ * verbatim before that, so with older versions a caller using that path must
+ * rotate them itself (`mp2p_icp::rotateViewDirectionFields()`). A coordinate
+ * rewrite this class cannot see (a non-virtual `CPointsMap` mutator called
+ * through a base pointer) leaves their frame unknown, so they are zeroed when
+ * it is detected, and a zero direction never rejects a pairing.
+ *
+ * ## Not for loop closure
+ * A single global index cannot cheaply absorb a global SE(3) re-map: every
+ * coordinate moves, forcing a full rebuild and a full covariance recompute. For
+ * loop-closing maps use `mola::KeyframePointCloudMap`, which keeps points in
+ * per-keyframe local frames.
+ *
+ * ## Point indices are storage slots
+ * Removed points free their slots right away with the voxel index, or lazily
+ * with the k-d tree (tombstones reclaimed by later rebuilds), and freed slots
+ * are recycled by subsequent insertions to keep memory bounded.
+ * As a consequence, the inherited `size()` reports the **storage** size (live,
+ * plus reclaimed-but-not-yet-reused, plus not-yet-reclaimed slots); use
+ * `livePointCount()` for the number of points actually in the map, or
+ * `compact()` to make the two equal. The indices reported by the `nn_*` methods
+ * are storage slots, valid for `getPointFast()` and stable until the slot is
+ * recycled. Views of the live set only (visualization, serialization,
+ * `getAsSimplePointsMap()`) are compacted on the fly.
+ *
+ * Reclaimed slots are blanked to NaN rather than left holding the evicted
+ * point's coordinates, so that generic code walking the inherited `CPointsMap`
+ * buffers (notably `insertAnotherMap()`, used to copy map layers out for
+ * publishing/visualization) does not resurrect long-evicted geometry. With the
+ * k-d tree, slots of points that are tombstoned but not reclaimed yet do still
+ * hold their coordinates; that fraction is bounded by
+ * `TCreationOptions::alpha_deleted`.
+ *
+ * ## The inherited static k-d tree is disabled
+ * `CPointsMap` also carries the cached, rebuilt-from-scratch index of
+ * `mrpt::math::KDTreeCapable` (`kdTreeNClosestPoint3D*()` and friends). That
+ * index is built over the *raw storage*, i.e. over the tombstoned and blanked
+ * slots too, so its answers on this class would be meaningless; and building it
+ * concurrently with an insertion is a data race on the coordinate buffers.
+ *
+ * It is therefore switched off here via `kdtree_disable()`, and every one of
+ * those inherited methods throws `std::logic_error` explaining what to use
+ * instead: the `nn_*()` methods of `mrpt::maps::NearestNeighborsCapable`, or
+ * `liveCompactedCopy()` for a plain points map that any other API can query.
+ * Generic code holding this map as a `mrpt::maps::CPointsMap` therefore fails
+ * loudly rather than silently returning neighbors that do not exist.
+ *
+ * @note Requires an MRPT providing the opt-out (feature macro
+ *       `MRPT_HAS_KDTREE_CAPABLE_DISABLE`). Without it the inherited methods
+ *       stay reachable and keep their old, unsupported behavior.
+ *
+ * @note Thread-safety: all index access is serialized internally, so a mapping
+ *       thread and an ICP thread may use the map concurrently through the
+ *       `nn_*` and `insert*` APIs.
+ */
+class IncrementalPointCloud : public mrpt::maps::CGenericPointsMap,
+                              public mp2p_icp::NearestPointWithCovCapable,
+                              public mola::OptionsCapable
+{
+  DEFINE_SERIALIZABLE(IncrementalPointCloud, mola)
+
+ public:
+  IncrementalPointCloud();
+  ~IncrementalPointCloud() override;
+
+  IncrementalPointCloud(const IncrementalPointCloud& o);
+  IncrementalPointCloud& operator=(const IncrementalPointCloud& o);
+
+  /** @name Data access API
+   *  @{ */
+
+  /** Number of points actually in the map, i.e. excluding the tombstoned
+   *  storage slots still counted by the inherited `size()`.
+   */
+  [[nodiscard]] std::size_t livePointCount() const;
+
+  /** Number of storage slots ready to be reused by the next insertion. */
+  [[nodiscard]] std::size_t recyclableSlotCount() const;
+
+  /** Number of per-point covariance estimations run so far, i.e. cache misses
+   *  plus the points whose neighborhood never qualified for caching. For
+   *  diagnostics and benchmarks.
+   *  \sa TCreationOptions::min_neighbors_to_cache_cov
+   */
+  [[nodiscard]] uint64_t covarianceComputations() const
+  {
+    return cov_computations_.load(std::memory_order_relaxed);
+  }
+
+  /** Number of points whose covariance is currently held in the cache. */
+  [[nodiscard]] std::size_t cachedCovarianceCount() const;
+
+  /** Physically drops the tombstoned storage slots (so `size()` becomes
+   *  `livePointCount()`) and rebuilds the k-d tree with the current
+   *  `creationOptions`. Point indices previously returned by the `nn_*`
+   *  methods are invalidated.
+   *
+   *  Call it after changing any structural option (`async_rebuild`, `alpha_*`,
+   *  `reserve_points`) on an already-populated map; `trySetCreationOptions()`
+   *  does it for you.
+   */
+  void compact();
+
+  /** Removes every point outside the axis-aligned cube of half side
+   *  `half_side` centered at `center`. This is what insertions do
+   *  automatically when `TCreationOptions::remove_points_farther_than` is set.
+   */
+  void keepOnlyPointsNear(const mrpt::math::TPoint3Df& center, double half_side);
+
+  /** A copy holding only the live points, in ascending slot order, with all
+   *  per-point fields preserved.
+   */
+  [[nodiscard]] mrpt::maps::CGenericPointsMap::Ptr liveCompactedCopy() const;
+
+  /** O(1): the AABB maintained by the k-d tree. It is a conservative superset
+   *  of the live points, since not-yet-reclaimed points still contribute.
+   */
+  mrpt::math::TBoundingBoxf boundingBox() const override;
+
+  /** @} */
+
+  /** @name CPointsMap storage interface
+   *  Overridden so that growing the coordinate buffers can never happen while a
+   *  background k-d tree rebuild is reading them (see `async_rebuild`).
+   *  @{ */
+  void reserve(std::size_t newLength) override;
+  void resize(std::size_t newLength) override;
+  void setSize(std::size_t newLength) override;
+  /** @} */
+
+  /** @name Global re-map of all points
+   *  These shadow the (non-virtual) `mrpt::maps::CPointsMap` methods of the
+   *  same name: moving every point invalidates the whole incremental k-d tree
+   *  (its split planes and bounding boxes were built from the old
+   *  coordinates), so they apply the transform and then rebuild the index and
+   *  drop the cached per-point covariances. Point indices previously returned
+   *  by the `nn_*` methods are invalidated.
+   *
+   *  Being non-virtual in the base class, a call made through a
+   *  `mrpt::maps::CPointsMap*` cannot be routed here; that case is still
+   *  handled, but lazily: the next query notices that the coordinates moved
+   *  and pays the same full rebuild then. That fallback samples a bounded
+   *  number of points, so it is reliable for a **global** re-map (which moves
+   *  all of them) but not for a mutator rewriting only a few points, nor for a
+   *  caller writing through the inherited coordinate buffer references: those
+   *  can still leave the index stale, exactly as before. Prefer calling the
+   *  methods below, which are also the only ones that wait for a pending
+   *  background rebuild (see `async_rebuild`) before the coordinate buffers
+   *  are rewritten. \sa compact()
+   *
+   *  @note This is an O(N log N) rebuild plus a full covariance recompute, so
+   *  it is meant for one-shot re-mappings (e.g. re-leveling the odometry frame
+   *  against gravity), not for loop closure. \sa KeyframePointCloudMap
+   *  @{ */
+  void changeCoordinatesReference(const mrpt::poses::CPose2D& b);
+  void changeCoordinatesReference(const mrpt::poses::CPose3D& b);
+  void changeCoordinatesReference(
+      const mrpt::maps::CPointsMap& other, const mrpt::poses::CPose3D& b);
+  /** @} */
+
+  /** @name API of the NearestNeighborsCapable virtual interface
+   *  @{ */
+  [[nodiscard]] bool   nn_has_indices_or_ids() const override;
+  [[nodiscard]] size_t nn_index_count() const override;
+
+  void nn_prepare_for_3d_queries() const override;
+
+  [[nodiscard]] bool nn_single_search(
+      const mrpt::math::TPoint3Df& query, mrpt::math::TPoint3Df& result, float& out_dist_sqr,
+      uint64_t& resultIndexOrID) const override;
+  [[nodiscard]] bool nn_single_search(
+      const mrpt::math::TPoint2Df& query, mrpt::math::TPoint2Df& result, float& out_dist_sqr,
+      uint64_t& resultIndexOrID) const override;
+  void nn_multiple_search(
+      const mrpt::math::TPoint3Df& query, const size_t N,
+      std::vector<mrpt::math::TPoint3Df>& results, std::vector<float>& out_dists_sqr,
+      std::vector<uint64_t>& resultIndicesOrIDs) const override;
+  void nn_multiple_search(
+      const mrpt::math::TPoint2Df& query, const size_t N,
+      std::vector<mrpt::math::TPoint2Df>& results, std::vector<float>& out_dists_sqr,
+      std::vector<uint64_t>& resultIndicesOrIDs) const override;
+  void nn_radius_search(
+      const mrpt::math::TPoint3Df& query, const float search_radius_sqr,
+      std::vector<mrpt::math::TPoint3Df>& results, std::vector<float>& out_dists_sqr,
+      std::vector<uint64_t>& resultIndicesOrIDs, size_t maxPoints) const override;
+  void nn_radius_search(
+      const mrpt::math::TPoint2Df& query, const float search_radius_sqr,
+      std::vector<mrpt::math::TPoint2Df>& results, std::vector<float>& out_dists_sqr,
+      std::vector<uint64_t>& resultIndicesOrIDs, size_t maxPoints) const override;
+  /** @} */
+
+  /** @name API of the mp2p_icp::NearestPointWithCovCapable virtual interface
+   *  @{ */
+
+  /** Pairs each point of `localMap` (which must also be an
+   *  `IncrementalPointCloud`) with its nearest point in this map, weighting the
+   *  pair by the GICP matrix `(COV_global + R*COV_local*R^T)^-1`.
+   */
+  void nn_search_cov2cov(
+      const NearestPointWithCovCapable& localMap, const mrpt::poses::CPose3D& localMapPose,
+      float max_search_distance, mp2p_icp::MatchedPointWithCovList& outPairings) const override;
+
+#if defined(MP2P_ICP_HAS_MATCHING_DISTANCE_PROFILE)
+  void nn_search_cov2cov(
+      const NearestPointWithCovCapable& localMap, const mrpt::poses::CPose3D& localMapPose,
+      const mp2p_icp::MatchingDistanceProfile& matchingDistance,
+      mp2p_icp::MatchedPointWithCovList&       outPairings) const override;
+#endif
+
+  [[nodiscard]] std::size_t point_count() const override;
+
+  /** @} */
+
+  /** @name Public virtual methods implementation for CMetricMap
+   *  @{ */
+  std::string asString() const override;
+  bool        isEmpty() const override;
+  void        getVisualizationInto(mrpt::viz::CSetOfObjects& outObj) const override;
+  void        saveMetricMapRepresentationToFile(const std::string& filNamePrefix) const override;
+  const mrpt::maps::CSimplePointsMap* getAsSimplePointsMap() const;
+  /** @} */
+
+  /** All parameters specific to this class. The standard `insertionOptions`,
+   *  `likelihoodOptions` and `renderOptions` groups inherited from
+   *  `mrpt::maps::CPointsMap` apply as usual.
+   *
+   *  Changing any of the index parameters (`index_type`, `index_voxel_size`,
+   *  `async_rebuild`, `alpha_*`, `reserve_points`) on an already-populated map
+   *  is fine: `trySetCreationOptions()` compacts and rebuilds the index with
+   *  the new values, so no point is lost, but the point indices previously
+   *  returned by the `nn_*` methods are invalidated. \sa compact()
+   */
+  struct TCreationOptions : public mrpt::config::CLoadableOptions
+  {
+    TCreationOptions() = default;
+
+    void loadFromConfigFile(
+        const mrpt::config::CConfigFileBase& source,
+        const std::string&                   section) override;  // See base docs
+    void dumpToTextStream(std::ostream& out) const override;  // See base docs
+
+    void writeToStream(mrpt::serialization::CArchive& out) const;
+    void readFromStream(mrpt::serialization::CArchive& in);
+
+    /** If !=0, on each insertion with a known robot pose, keep only the points
+     *  inside the axis-aligned cube of this half side [m] around it. This is
+     *  the sliding-window trim of FAST-LIO-style local maps, the analogous of
+     *  `HashedVoxelPointCloud::remove_voxels_farther_than`.
+     */
+    double remove_points_farther_than = .0;
+
+    /** If !=0, an inserted point closer than this distance [m] to a point
+     *  already in the map is dropped, which caps the map density where scans
+     *  overlap (in LO, almost everywhere). Points inserted in the same batch
+     *  are not compared with each other. 0 (default) keeps every point.
+     */
+    double min_distance_between_points = .0;
+
+    /** The spatial index answering every nearest-neighbor query (ICP matching,
+     *  covariance estimation, the `nn_*` methods). Both are exact, returning
+     *  the same neighbor distances (they may only pick different points
+     *  among exactly equidistant ones):
+     *  - `VoxelHash` (default): points bucketed in a hashed grid of
+     *    `index_voxel_size` voxels, searched ring by ring around the query.
+     *    O(1) insertion and removal per point and no rebuilds, so no latency
+     *    spikes and no background thread, and results are deterministic. In
+     *    LiDAR odometry on KITTI-07 it took the mean time per scan from 75 to
+     *    56 ms and the worst map update from 131 to 30 ms, against the k-d
+     *    tree with background rebuilds, at the same accuracy.
+     *  - `KDTree`: incremental nanoflann k-d tree, tuned by `async_rebuild`,
+     *    `alpha_balance` and `alpha_deleted`, which only apply to it, as does
+     *    `serialize_kdtree`.
+     */
+    PointIndexType index_type = PointIndexType::VoxelHash;
+
+    /** Voxel side [m] of the `VoxelHash` index. Results are exact for any
+     *  value; it only trades the number of voxels a query visits against the
+     *  number of points it scans in each, so it is best near the typical
+     *  nearest-neighbor distance of the queries. On KITTI, 1.0 m was faster
+     *  than 0.5 m and 1.5 m.
+     */
+    float index_voxel_size = 1.0f;
+
+    /** k-d tree only: perform the balancing rebuilds on a background thread. Bounds
+     *  the mapping-thread tail latency (on a LiDAR-odometry local map this
+     *  turns ~300 ms insertion spikes into a flat ~10 ms), at the cost of
+     *  roughly twice the index memory.
+     *
+     *  @note The worker reads the inherited coordinate buffers, so they must
+     *  not be reallocated while it runs. `reserve()`, `resize()` and
+     *  `setSize()` wait for it, which covers `insertObservation()` and
+     *  `insertAnotherMap()`; a hand-written `insertPointFast()` loop bypasses
+     *  them, so either reserve the storage up front (`reserve_points`) or grow
+     *  it through `reserve()`.
+     */
+    bool async_rebuild = false;
+
+    /** k-d tree only: weight-balance rebuild threshold. A subtree is rebuilt when its larger
+     *  child holds more than this fraction of its points. Lower keeps queries
+     *  faster and rebuilds more frequent.
+     */
+    float alpha_balance = 0.75f;
+
+    /** k-d tree only: tombstone rebuild threshold. A subtree is rebuilt, physically dropping
+     *  removed points, once this fraction of it is dead.
+     */
+    float alpha_deleted = 0.5f;
+
+    /** If !=0, pre-allocate storage for this many points. Recommended together
+     *  with `async_rebuild`, since it avoids reallocating the coordinate
+     *  buffers the background worker reads.
+     */
+    uint64_t reserve_points = 0;
+
+    /** Number of neighbors used to estimate each point covariance for
+     *  `nn_search_cov2cov()`. \sa mola::KeyframePointCloudMap
+     */
+    uint32_t k_correspondences_for_cov = 20;
+
+    /** Below this number of neighbors actually found, a plane fit is deemed
+     *  unreliable and an isotropic covariance is used instead.
+     */
+    uint32_t min_correspondences_for_cov = 5;
+
+    /** Maximum distance [m] to search neighbors for the covariance estimate. */
+    double max_distance_for_cov = 1.0;
+
+    /** Minimum number of neighbors that must have been found for a computed
+     *  per-point covariance to be stored in the cache. A point whose
+     *  neighborhood was still too thin keeps its estimate only until the map
+     *  content changes (e.g. across the iterations of one ICP call), and is
+     *  recomputed after that, by which time the map may have densified around
+     *  it, so an unreliable estimate (in particular the isotropic fallback) is
+     *  never frozen for the whole life of the point.
+     *
+     *  0 (default) means `k_correspondences_for_cov`, i.e. only a full
+     *  neighborhood is trusted. 1 caches every result, which is cheapest but
+     *  never revisits an early estimate. A value above
+     *  `k_correspondences_for_cov` can never be met, so every estimate is then
+     *  recomputed after each change of the map, at a large cost.
+     *
+     *  @note Eviction is not covered: a point that was already well populated
+     *  keeps its covariance when its neighbors are trimmed away.
+     */
+    uint32_t min_neighbors_to_cache_cov = 0;
+
+    /** Maximum distance [m] any neighbor may sit from the least-squares plane
+     *  through the neighborhood for that neighborhood to receive the plane
+     *  regularization below. 0 (default) disables the test. Same semantics as
+     *  the option of the same name on KeyframePointCloudMap. */
+    double max_plane_deviation_for_cov = 0;
+
+    /** Variance asserted along the estimated surface normal, the other two
+     *  being 1, i.e. the plane confidence ratio written as its reciprocal. The
+     *  shipped 1e-3 asserts 1000:1.
+     *
+     *  Values in (0, 1] regularize that way. A value <= 0 switches the
+     *  regularization off and keeps the eigenvalues the neighborhood actually
+     *  produced, so a sparse or rough neighborhood carries less information
+     *  than a dense flat one instead of the same amount; the magnitude is then
+     *  a floor on the smaller eigenvalues, relative to the largest one, and
+     *  never below 1e-5 so the matrix stays invertible in single precision. The
+     *  two regimes are not on the same scale, since kept eigenvalues carry
+     *  squared metric units. Same semantics as the option of the same name on
+     *  KeyframePointCloudMap. */
+    double plane_regularization_lambda = 1e-3;
+
+    /** Master switch of the view-direction filter: `false` disables it,
+     *  whatever `view_direction_filter` says. Same option as in
+     *  `KeyframePointCloudMap`, so that a pipeline configuring both classes
+     *  from one block of options switches both at once.
+     */
+    bool use_view_direction_filter = true;
+
+    /** Whether and how `nn_search_cov2cov()` uses per-point view directions
+     *  (`view_x`, `view_y`, `view_z`: unit vectors pointing FROM the point
+     *  TOWARD the sensor at acquisition time) to reject a cov-to-cov pair. It
+     *  acts only when both this map and the query cloud carry those fields.
+     *  See ViewDirectionFilter.
+     *
+     *  Default: `SurfaceSide`, unlike `KeyframePointCloudMap` (`MaxAngle`):
+     *  this map keeps the whole area around the robot, where the same surface
+     *  is often seen from very different directions on the same side, which
+     *  `MaxAngle` rejects. Measured end to end, `MaxAngle` was consistently
+     *  worse on hand-held sequences, while `SurfaceSide` was neutral or better
+     *  on most sequences and much better on a few hard ones.
+     */
+    ViewDirectionFilter view_direction_filter = ViewDirectionFilter::SurfaceSide;
+
+    /** Maximum allowed angle [degrees] between the view directions of a pair,
+     *  used by `ViewDirectionFilter::MaxAngle` only. Same meaning and default
+     *  as the option of the same name on `KeyframePointCloudMap`.
+     */
+    double max_view_angle_deg = 120.0;
+
+    /** k-d tree only (with `VoxelHash`, rebuilt in linear time on load, there
+     *  is nothing to cache). If `true`, the k-d tree index is serialized alongside the points (see
+     *  `IncrementalPointCloud` serialization), so it does NOT have to be
+     *  rebuilt (an O(N log N) bulk build) when the map is loaded. Requires an
+     *  MRPT/nanoflann build providing the incremental index's save/load API
+     *  (feature-detected at compile time via
+     *  `MOLA_METRIC_MAPS_HAS_INCREMENTAL_KDTREE_BAKE`); when unavailable this
+     *  option is silently a no-op on write, and a reader without the feature
+     *  skips any baked blob found in the file. Default `false`. Typically
+     *  enabled offline by the `mm-ipc-bake-kdtree` tool: the map is always
+     *  serialized compacted (no tombstoned slots, see
+     *  `IncrementalPointCloud::serializeTo()`), so baking rebuilds the index
+     *  once over that compacted point order at save time instead of leaving
+     *  the O(N log N) build for every subsequent load.
+     */
+    bool serialize_kdtree = false;
+  };
+  TCreationOptions creationOptions;
+
+  // mola::OptionsCapable interface:
+  [[nodiscard]] std::map<std::string, mrpt::config::CLoadableOptions*> optionsByName() override;
+  bool                                                                 trySetCreationOptions(
+                                                                      const mrpt::config::CConfigFileBase& cfg, const std::string& section) override;
+
+  /** Same as trySetCreationOptions(cfg, section), from an already filled set of
+   *  creation options. */
+  bool trySetCreationOptions(const TCreationOptions& newOpts);
+
+ public:
+  // Interface for use within a mrpt::maps::CMultiMetricMap:
+  MAP_DEFINITION_START(IncrementalPointCloud)
+  mola::IncrementalPointCloud::TCreationOptions creationOpts;
+  mrpt::maps::CPointsMap::TInsertionOptions     insertionOpts;
+  mrpt::maps::CPointsMap::TLikelihoodOptions    likelihoodOpts;
+  mrpt::maps::CPointsMap::TRenderOptions        renderOpts;
+  MAP_DEFINITION_END(IncrementalPointCloud)
+
+ protected:
+  // See docs in base CMetricMap class:
+  void internal_clear() override;
+
+  bool internal_insertObservation(
+      const mrpt::obs::CObservation&                   obs,
+      const std::optional<const mrpt::poses::CPose3D>& robotPose = std::nullopt) override;
+
+ private:
+  /** Declares the static k-d tree inherited from `mrpt::math::KDTreeCapable`
+   *  unsupported for this class, so that its query methods throw instead of
+   *  indexing the raw storage. Called from every constructor; a no-op when
+   *  built against an MRPT without the opt-out.
+   */
+  void disableInheritedKDTree();
+
+  /// The actual cov2cov search. Both public overloads forward here, so the
+  /// implementation stays free of preprocessor branches.
+  void nn_search_cov2cov_impl(
+      const NearestPointWithCovCapable& localMap, const mrpt::poses::CPose3D& localMapPose,
+      const MatchingDistanceProfile&     matchingDistance,
+      mp2p_icp::MatchedPointWithCovList& outPairings) const;
+
+  /// Serializes all access to index_ and to the caches below.
+  mutable std::recursive_mutex mtx_;
+
+  mutable std::unique_ptr<internal::IncrementalKDTree> index_;
+
+  /// Storage slots reclaimed by the index, ready to be reused.
+  mutable std::vector<uint32_t> free_slots_;
+
+  /// Number of leading storage slots already handed to the index.
+  mutable std::size_t indexed_up_to_ = 0;
+
+  /// A few (slot, coordinates) samples taken the last time the index was left
+  /// consistent. \sa coordinatesChangedExternally()
+  mutable std::vector<std::pair<uint32_t, mrpt::math::TPoint3Df>> coordinates_watch_;
+
+  /// Size of the last appended batch, used to keep spare capacity when the
+  /// rebuilds run on a background thread (see internal_insertObservation()).
+  std::size_t last_insert_batch_ = 0;
+
+  /// Per-point, plane-regularized covariance cache, in this map's frame.
+  mutable std::vector<mrpt::math::CMatrixFloat33> cov_;
+  /// One of the COV_* states, see IncrementalPointCloud.cpp.
+  mutable std::vector<uint8_t> cov_valid_;
+
+  /// Slots holding a provisional covariance (one too thin to be cached for
+  /// good), valid only while the index content version stays the same.
+  mutable std::vector<uint32_t> provisional_cov_slots_;
+  mutable uint64_t              provisional_cov_version_ = 0;
+
+  /// Diagnostics only: how many times a point covariance has been estimated.
+  mutable std::atomic<uint64_t> cov_computations_{0};
+
+  /// Used for getAsSimplePointsMap() only.
+  mutable mrpt::maps::CSimplePointsMap::Ptr cachedPoints_;
+
+  /** Creates a fresh, empty index_ from `creationOptions`, sized/reserved as
+   *  configured, and points it at the current coordinate buffers. Leaves
+   *  indexed_up_to_ at 0: the caller is responsible for indexing the current
+   *  storage afterwards (either the bulk `addPoints()` done by resetIndex(),
+   *  or `internal::IncrementalKDTree::loadIndex()` when reconstructing a
+   *  baked index from a serialized stream).
+   */
+  void createEmptyIndex();
+
+  /** (Re)creates the index from `creationOptions` and bulk-loads **every**
+   *  storage slot into it. Only valid when no slot is tombstoned, i.e. right
+   *  after the storage was cleared, replaced wholesale, or compacted;
+   *  otherwise use compact(), which drops the dead slots first.
+   */
+  void resetIndex();
+
+  /** Indexes anything appended through the inherited `CPointsMap` API since
+   *  the last call, and rebuilds from scratch if the storage shrank. Must be
+   *  called under `mtx_` before any query or eviction.
+   */
+  void ensureIndexUpToDate() const;
+
+  /// Points the index at the current (possibly reallocated) coordinate buffers.
+  void refreshPointBuffers() const;
+
+  /** Rebuilds the index over the current coordinates, keeping the live/dead
+   *  status of every storage slot (unlike resetIndex(), which assumes all of
+   *  them are live). Used after the coordinates were rewritten in place.
+   */
+  void rebuildIndexInPlace() const;
+
+  /** Samples the coordinates of a few storage slots, so that a later in-place
+   *  rewrite made through the inherited (non-virtual) `CPointsMap` mutators
+   *  can be noticed. Called whenever the index is left consistent.
+   */
+  void refreshCoordinatesWatch() const;
+
+  /** Whether any sampled slot no longer holds the coordinates it had when
+   *  refreshCoordinatesWatch() was last called. Only a bounded number of slots
+   *  is sampled, so this detects a global re-map (every point moves), not a
+   *  rewrite touching just a few points. \sa coordinates_watch_
+   */
+  [[nodiscard]] bool coordinatesChangedExternally() const;
+
+  /// Moves storage slot `from` (coordinates and every field) onto slot `to`.
+  void relocatePoint(std::size_t from, std::size_t to);
+
+  /** Moves the just-appended points in [firstAppended, size()) into recycled
+   *  slots where possible, shrinking the storage accordingly, and hands every
+   *  resulting slot to the index.
+   */
+  void indexAppendedPointsRecycling(std::size_t firstAppended);
+
+  /// Collects the slots the index reclaimed, blanks them and marks them reusable.
+  void harvestRemovedSlots();
+
+  /** Computes the covariance of one live point, unless it is already cached,
+   *  and caches it only if its neighborhood was populated enough.
+   *  \sa TCreationOptions::min_neighbors_to_cache_cov
+   */
+  void computeCovariance(uint32_t slot) const;
+
+  /** Whether the raw (not regularized) neighborhood of a live point is flat.
+   *  Used by the SurfaceSide view-direction filter, see ViewDirectionFilter. */
+  [[nodiscard]] bool neighborhoodIsFlat(uint32_t slot) const;
+
+  /// Neighbors required to cache a covariance, resolving the "0 = auto" case.
+  [[nodiscard]] std::size_t covCacheThreshold() const;
+
+  /** Fills the covariance cache for the given slots, in parallel when TBB is
+   *  available. The caller must pass each slot at most once, so that threads
+   *  never write to the same cache entry.
+   */
+  void ensureCovariancesFor(const std::vector<uint32_t>& slots) const;
+
+  /** Drops the points appended from `firstAppended` on (not indexed yet) that
+   *  lie closer than `min_distance_between_points` to an indexed point.
+   */
+  void dropAppendedPointsNearExisting(std::size_t firstAppended);
+};
+
+}  // namespace mola

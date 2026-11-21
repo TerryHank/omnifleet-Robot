@@ -1,0 +1,67 @@
+/*               _
+ _ __ ___   ___ | | __ _
+| '_ ` _ \ / _ \| |/ _` | Modular Optimization framework for
+| | | | | | (_) | | (_| | Localization and mApping (MOLA)
+|_| |_| |_|\___/|_|\__,_| https://github.com/MOLAorg/mola
+
+ Copyright (C) 2018-2026 Jose Luis Blanco, University of Almeria,
+                         and individual contributors.
+ SPDX-License-Identifier: GPL-3.0
+ See LICENSE for full license information.
+*/
+
+/**
+ * @file   Dataset_UI.h
+ * @brief  Virtual interface for offline dataset sources to have a GUI
+ * @author Jose Luis Blanco Claraco
+ * @date   Feb 20, 2024
+ */
+#pragma once
+
+#include <cstdlib>
+#include <optional>
+
+/** Feature macro: Dataset_UI exposes the dataset playback time via
+ *  datasetUI_time() / datasetUI_total_time(). Intended for out-of-tree
+ *  dataset sources (e.g. mola_input_rosbag1, mola_academic_datasets), which
+ *  may be built against an older mola_kernel where overriding them fails. */
+#define MOLA_KERNEL_DATASET_UI_HAS_TIME 1
+
+namespace mola
+{
+/** Virtual base for offline dataset sources to have a GUI within MolaViz
+ * \ingroup mola_kernel_interfaces_grp */
+class Dataset_UI
+{
+ public:
+  Dataset_UI() = default;
+
+  /** @name Virtual interface of Dataset_UI
+   *{ */
+
+  /** Number of different time steps available to call getObservations() */
+  virtual size_t datasetUI_size() const = 0;
+
+  /** Returns the latest requested observation, range [0, datasetSize()] */
+  virtual size_t datasetUI_lastQueriedTimestep() const = 0;
+
+  virtual double datasetUI_playback_speed() const       = 0;
+  virtual void   datasetUI_playback_speed(double speed) = 0;
+
+  virtual bool datasetUI_paused() const      = 0;
+  virtual void datasetUI_paused(bool paused) = 0;
+
+  /** Forces continue replaying in this moment in time */
+  virtual void datasetUI_teleport(size_t timestep) = 0;
+
+  /** Current dataset playback time, in seconds elapsed since the beginning of
+   *  the dataset. Returns std::nullopt if the source cannot tell (default). */
+  virtual std::optional<double> datasetUI_time() const { return std::nullopt; }
+
+  /** Total dataset duration, in seconds. Returns std::nullopt if unknown
+   *  (default), e.g. for live sources or datasets read on the fly. */
+  virtual std::optional<double> datasetUI_total_time() const { return std::nullopt; }
+  /** @} */
+};
+
+}  // namespace mola

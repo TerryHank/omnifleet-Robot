@@ -1,0 +1,12 @@
+msg/SlamStatus.idl
+msg/SlamStatus.msg
+msg/SteeringAngleCommand.idl
+msg/SteeringAngleCommand.msg
+srv/SaveMap.idl
+srv/SaveMap.srv
+srv/SaveMap_Request.msg
+srv/SaveMap_Response.msg
+srv/SwitchMode.idl
+srv/SwitchMode.srv
+srv/SwitchMode_Request.msg
+srv/SwitchMode_Response.msg

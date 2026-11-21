@@ -1,0 +1,12 @@
+[Unit]
+Description=OmniFleet 124 dispatch frontend
+After=omnifleet-124-dispatch@central.service omnifleet-124-dispatch@foxglove.service
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-dispatch-web
+ExecStart=/usr/bin/python3 /home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-dispatch-web/server.py
+Restart=on-failure
+RestartSec=3
+Nice=4
+[Install]
+WantedBy=multi-user.target

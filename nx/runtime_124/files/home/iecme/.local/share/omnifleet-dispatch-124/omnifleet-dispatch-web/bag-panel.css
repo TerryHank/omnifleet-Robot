@@ -1,0 +1,23 @@
+[data-bag-open]{white-space:nowrap;cursor:pointer}
+.vehicle-toolbar [data-bag-open]{color:inherit;font:inherit;background:transparent;border:1px solid #635879;border-radius:5px;padding:4px 8px}
+.vehicle-toolbar [data-bag-open]:hover{background:#9480ed26}
+#bag-dialog{width:min(640px,calc(100vw - 24px));max-height:80vh;padding:0;border:1px solid #454452;border-radius:8px;background:#25252e;color:#f0f0f4;font:14px/1.5 system-ui,"Microsoft YaHei",sans-serif;box-sizing:border-box}
+#bag-dialog::backdrop{background:#0e0d17aa}
+#bag-dialog header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #454452}
+#bag-dialog h2{margin:0;font-size:16px}
+#bag-dialog button{font:inherit;padding:5px 10px;border:1px solid #666473;border-radius:5px;background:#292837;color:inherit;cursor:pointer;white-space:nowrap}
+#bag-dialog button:focus-visible{outline:2px solid #a591ff;outline-offset:2px}
+#bag-dialog button:hover:not(:disabled){border-color:#a591ff}
+#bag-dialog button:disabled{opacity:.5;cursor:default}
+#bag-dialog .bag-primary{background:#a591ff;color:#181222;border-color:#a591ff;font-weight:600}
+#bag-dialog .bag-delete{color:#ffacb4}
+#bag-dialog .bag-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px 6px}
+#bag-dialog p{margin:0;overflow-wrap:anywhere}
+#bag-feedback{padding:0 16px 6px;color:#ddcdfb}
+#bag-feedback:empty{display:none}
+#bag-dialog .bag-table{max-height:52vh;overflow:auto;padding:5px 16px 14px}
+#bag-dialog table{width:100%;min-width:380px;border-collapse:collapse;text-align:left}
+#bag-dialog th,#bag-dialog td{border-bottom:1px solid #454452;padding:8px}
+#bag-dialog td:first-child{overflow-wrap:anywhere}
+#bag-dialog td:nth-child(2),#bag-dialog td:nth-child(3){white-space:nowrap}
+#bag-empty{padding:10px 8px;color:#aaaab9}

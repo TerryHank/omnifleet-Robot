@@ -1,0 +1,120 @@
+{
+  "baseline_regular_source_files": 14870,
+  "missing_source_files": [],
+  "protected_original_files": 1276,
+  "changed_protected_files": [],
+  "raw_package_manifests": 138,
+  "colcon_packages": 115,
+  "native_built_packages": [
+    "hik_rgbd",
+    "nav2_costmap_2d",
+    "nav2_smac_planner",
+    "omnifleet_a2_gateway",
+    "omnifleet_backend_adapters",
+    "omnifleet_behaviors",
+    "omnifleet_bringup",
+    "omnifleet_chassis_driver",
+    "omnifleet_cloud_grid_export",
+    "omnifleet_description",
+    "omnifleet_dwb_hot",
+    "omnifleet_hikrobot_rgbd",
+    "omnifleet_interfaces",
+    "omnifleet_kinematic_sim",
+    "omnifleet_local_navigation",
+    "omnifleet_localization",
+    "omnifleet_map_tf_generator",
+    "omnifleet_mola_grid",
+    "omnifleet_multi_robot_sim",
+    "omnifleet_navigation_interfaces",
+    "omnifleet_person_follow",
+    "omnifleet_planner",
+    "omnifleet_sensor_processing",
+    "omnifleet_servo_rqt",
+    "omnifleet_simulator",
+    "omnifleet_teleop",
+    "omnifleet_terrain_analysis",
+    "omnifleet_tutorials",
+    "omnifleet_vision",
+    "omnifleet_vr_bridge",
+    "omnifleet_waypoint_ui",
+    "ros_robot_controller",
+    "rrc_tank_bridge",
+    "rslidar_msg",
+    "rslidar_sdk",
+    "yahboomcar_bringup",
+    "yahboomcar_ctrl"
+  ],
+  "native_built_count": 37,
+  "python_files_checked": 363,
+  "python_syntax_errors": [],
+  "chassis_launch_preserved": true,
+  "vision_model_target": "/home/iecme/omnifleet_a2_ws/src/omnifleet_a2_vision/models",
+  "vision_environment_target": "/home/iecme/omnifleet_vision_runtime",
+  "dependency_checks": {
+    "mola_launcher/bin/mola-cli": {
+      "exit": 0,
+      "missing": [],
+      "environment_errors": []
+    },
+    "mola_lidar_odometry/lib/libmola_lidar_odometry.so": {
+      "exit": 0,
+      "missing": [],
+      "environment_errors": []
+    },
+    "rmw_zenoh_cpp/lib/librmw_zenoh_cpp.so": {
+      "exit": 0,
+      "missing": [],
+      "environment_errors": []
+    },
+    "rslidar_sdk/lib/rslidar_sdk/rslidar_sdk_node": {
+      "exit": 0,
+      "missing": [],
+      "environment_errors": []
+    },
+    "omnifleet_mola_grid/lib/omnifleet_mola_grid/registered_cloud_grid": {
+      "exit": 0,
+      "missing": [],
+      "environment_errors": []
+    },
+    "omnifleet_vision/lib/omnifleet_vision/kcf_follower_node": {
+      "exit": 0,
+      "missing": [],
+      "environment_errors": []
+    }
+  },
+  "launch_argument_checks": {
+    "chassis_core.launch.py": {
+      "exit": 0,
+      "stderr": []
+    },
+    "mola_localization.launch.py": {
+      "exit": 0,
+      "stderr": []
+    },
+    "production_nav2.launch.py": {
+      "exit": 0,
+      "stderr": []
+    }
+  },
+  "existing_services": {
+    "omnifleet-a2-chassis": [
+      "MainPID=1710",
+      "ActiveState=active"
+    ],
+    "omnifleet-a2-airy": [
+      "MainPID=1029",
+      "ActiveState=active"
+    ],
+    "omnifleet-a2-foxglove-bridge": [
+      "MainPID=1035",
+      "ActiveState=active"
+    ],
+    "omnifleet-a2-waypoints": [
+      "MainPID=1041",
+      "ActiveState=active"
+    ]
+  },
+  "services_switched": false,
+  "firmware_flashed": false,
+  "motion_commands_sent": false
+}

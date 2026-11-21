@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<robot name="iecme_tank">
+  <material name="body_blue"><color rgba="0.08 0.22 0.42 1.0"/></material>
+  <material name="track_dark"><color rgba="0.06 0.06 0.06 1.0"/></material>
+  <material name="sensor_gray"><color rgba="0.35 0.38 0.42 1.0"/></material>
+  <material name="camera_black"><color rgba="0.03 0.03 0.03 1.0"/></material>
+
+  <link name="base_footprint"/>
+  <link name="base_link">
+    <visual><origin xyz="0 0 0"/><geometry><box size="0.26 0.16 0.08"/></geometry><material name="body_blue"/></visual>
+    <collision><origin xyz="0 0 0"/><geometry><box size="0.26 0.16 0.08"/></geometry></collision>
+    <inertial><mass value="4.0"/><origin xyz="0 0 0"/><inertia ixx="0.010" ixy="0" ixz="0" iyy="0.025" iyz="0" izz="0.030"/></inertial>
+  </link>
+  <joint name="base_footprint_joint" type="fixed"><parent link="base_footprint"/><child link="base_link"/><origin xyz="0 0 0.075"/></joint>
+
+  <link name="left_track_link">
+    <visual><geometry><box size="0.28 0.035 0.065"/></geometry><material name="track_dark"/></visual>
+  </link>
+  <joint name="left_track_joint" type="fixed"><parent link="base_link"/><child link="left_track_link"/><origin xyz="0 0.0975 -0.035"/></joint>
+
+  <link name="right_track_link">
+    <visual><geometry><box size="0.28 0.035 0.065"/></geometry><material name="track_dark"/></visual>
+  </link>
+  <joint name="right_track_joint" type="fixed"><parent link="base_link"/><child link="right_track_link"/><origin xyz="0 -0.0975 -0.035"/></joint>
+
+  <link name="sensor_mast_link">
+    <visual><origin xyz="0 0 0.055"/><geometry><cylinder radius="0.012" length="0.11"/></geometry><material name="sensor_gray"/></visual>
+  </link>
+  <joint name="sensor_mast_joint" type="fixed"><parent link="base_link"/><child link="sensor_mast_link"/><origin xyz="0.02 0 0.04"/></joint>
+
+  <link name="rslidar">
+    <visual><origin xyz="0 0 0.03"/><geometry><cylinder radius="0.045" length="0.06"/></geometry><material name="sensor_gray"/></visual>
+  </link>
+  <joint name="rslidar_joint" type="fixed"><parent link="base_link"/><child link="rslidar"/><origin xyz="0.02 0 0.15"/></joint>
+
+  <link name="camera_link">
+    <visual><geometry><box size="0.07 0.025 0.028"/></geometry><material name="camera_black"/></visual>
+  </link>
+  <joint name="camera_mount_joint" type="fixed"><parent link="base_link"/><child link="camera_link"/><origin xyz="0.105 0 0.105"/></joint>
+</robot>

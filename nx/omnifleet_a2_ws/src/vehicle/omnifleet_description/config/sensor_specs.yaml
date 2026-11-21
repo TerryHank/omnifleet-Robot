@@ -1,0 +1,34 @@
+# Sensor parameters used by urdf/gazebo_sensors.gazebo.xacro
+# Units: m, rad, Hz unless otherwise noted.
+rplidar_s3:
+  frame_id: laser_frame
+  topic: /scan
+  scan_frequency_hz_typical: 10
+  scan_frequency_hz_range: [10, 20]
+  sample_rate_hz: 32000
+  samples_per_scan_at_10hz: 3200
+  angular_resolution_deg_at_10hz: 0.1125
+  horizontal_fov_deg: 360
+  min_angle_rad: -3.141592653589793
+  max_angle_rad: 3.141592653589793
+  range_min_m: 0.05
+  range_max_m: 40.0
+  range_resolution_m: 0.01
+  gazebo_noise_stddev_m: 0.025
+  mass_kg: 0.115
+mv_dt01sdu:
+  rgb_frame_id: camera_color_optical_frame
+  depth_frame_id: camera_depth_optical_frame
+  rgb_topic: /camera/color/image_raw
+  depth_topic: /camera/depth/image_raw
+  update_rate_hz: 30
+  working_range_m: [0.3, 3.5]
+  depth_fov_deg: [64, 50]
+  rgb_fov_deg: [74, 63]
+  depth_resolution: [640, 480]
+  rgb_resolution: [1536, 1280]
+  depth_hfov_rad: 1.117010721276
+  rgb_hfov_rad: 1.291543646475
+  depth_accuracy_m: [0.010_at_1m, 0.015_at_2m]
+  output_latency_s: 0.133
+  mass_kg: 0.070

@@ -1,0 +1,7 @@
+string mode
+string operation
+string map_id
+---
+bool accepted
+string transaction_id
+string message

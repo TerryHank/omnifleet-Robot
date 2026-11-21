@@ -1,0 +1,10 @@
+planner_server:
+  ros__parameters:
+    planner_plugins: ["GridBased"]
+    GridBased:
+      # 教学对照：二维A*只比较搜索结果，不保证阿克曼曲率或倒车路径。
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      use_astar: true
+      allow_unknown: true
+      tolerance: 0.25
+      use_final_approach_orientation: false

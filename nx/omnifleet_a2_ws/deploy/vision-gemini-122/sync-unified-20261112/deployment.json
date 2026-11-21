@@ -1,0 +1,642 @@
+{
+  "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335",
+  "files": [
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/display.py",
+      "source_sha256": "353b4bc01f0b1d0643d8641a5eb765472d3ae85d335c66d813a981e95ced4d71",
+      "existed": true,
+      "old_sha256": "cb661d991d7df5f965bb6afb618ca848e0626d8b1dc62e4e110e892a99fbb3e8",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/display.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/jpeg.py",
+      "source_sha256": "ff8679d65d2fd7e1192414f2c5aa0583e5948f586942fe0e12fb461d4f60b420",
+      "existed": true,
+      "old_sha256": "ff8679d65d2fd7e1192414f2c5aa0583e5948f586942fe0e12fb461d4f60b420",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/jpeg.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/person_masks.py",
+      "source_sha256": "f5cb59694f1ea4c360ff91f0cf3938a9043ec9ee018603526c1da2dacadd75a3",
+      "existed": true,
+      "old_sha256": "f5cb59694f1ea4c360ff91f0cf3938a9043ec9ee018603526c1da2dacadd75a3",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/person_masks.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_wait.py",
+      "source_sha256": "790166b9f1e9424e657df6ed65bd874208bd120a55d7b62f289f317513b52da0",
+      "existed": true,
+      "old_sha256": "790166b9f1e9424e657df6ed65bd874208bd120a55d7b62f289f317513b52da0",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_wait.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/hand_only_detector.py",
+      "source_sha256": "ab0ec35d2f085fcb564709251b3f9c54b1ddecc29c3edbb6acd84011fbb88756",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_gmc.py",
+      "source_sha256": "730ffc479fb58ddc37be186a1dc1c3963131004654e52c19d83cc44e45be4562",
+      "existed": true,
+      "old_sha256": "730ffc479fb58ddc37be186a1dc1c3963131004654e52c19d83cc44e45be4562",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_gmc.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/hand_full_gpu.py",
+      "source_sha256": "40a4923b2a24e2e36005427af7ac18f45775222cac7ad492c63021a2bdfb65f6",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/core.py",
+      "source_sha256": "a1ad9205992de9b83a78b99dd259d09589acdd8351c1f4c6e54c98143156dbcd",
+      "existed": true,
+      "old_sha256": "b0a1c65a510290ae8d55551ac371379a8978ae5e52691ab7d59db6141b0ee6c0",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/core.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/__init__.py",
+      "source_sha256": "8763f3ab9b0e8a0bdd70aeddff11235b2551401a80e724d2900217c527c10675",
+      "existed": true,
+      "old_sha256": "8763f3ab9b0e8a0bdd70aeddff11235b2551401a80e724d2900217c527c10675",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/__init__.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/frame_pairing.py",
+      "source_sha256": "764d1450abfe27d9c193c1f93be2f4344b5b7bba68789ce4e023cf32b7ab5994",
+      "existed": true,
+      "old_sha256": "764d1450abfe27d9c193c1f93be2f4344b5b7bba68789ce4e023cf32b7ab5994",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/frame_pairing.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/navigation.py",
+      "source_sha256": "dbdde15e5576400dc239d990b0835e59b01cf729ea7c67193499e52f712b0459",
+      "existed": true,
+      "old_sha256": "dbdde15e5576400dc239d990b0835e59b01cf729ea7c67193499e52f712b0459",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/navigation.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/hand_preprocess.py",
+      "source_sha256": "ae5dd24e93eb7d0d36a29002a4d274d43f40f107a1739ee7eba5c6d0475e6699",
+      "existed": true,
+      "old_sha256": "ae5dd24e93eb7d0d36a29002a4d274d43f40f107a1739ee7eba5c6d0475e6699",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/hand_preprocess.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/body_adapter.py",
+      "source_sha256": "a069c0a8d0aafc4cbdc64108d8193e4eb150483ecb84a6052b0120100b37a645",
+      "existed": true,
+      "old_sha256": "1b2b90738c84944d45c484b88106b03d71499f3db54e98850900c43c37172031",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/body_adapter.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/recovery.py",
+      "source_sha256": "49886007da8cdf5eba9a2e080859ad209e22e49d1c900abe6032d08735be1d5d",
+      "existed": true,
+      "old_sha256": "49886007da8cdf5eba9a2e080859ad209e22e49d1c900abe6032d08735be1d5d",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/recovery.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/identity.py",
+      "source_sha256": "a7918234792f88fb052a86725da2739ceda8dbca61c20c91706e77c588d87423",
+      "existed": true,
+      "old_sha256": "a7918234792f88fb052a86725da2739ceda8dbca61c20c91706e77c588d87423",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/identity.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/perception.py",
+      "source_sha256": "35e78ef34e4278f51ae99f43d7d80ac4326da5967e74de12176a10047984cccd",
+      "existed": true,
+      "old_sha256": "a9cad85e8e60593dc2d03f64a2c93fccce584e46c0a7ae301dc52bcb0f5ad56d",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/perception.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/following.py",
+      "source_sha256": "54fa90e4658a52e576cf87bae4e028e1816474f6cc32836d00f24fbbf44f8745",
+      "existed": true,
+      "old_sha256": "54fa90e4658a52e576cf87bae4e028e1816474f6cc32836d00f24fbbf44f8745",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/following.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/trt_net.py",
+      "source_sha256": "1901e7c0a8426529ba4b32fd13c14560d7e95d0469d230ff14384ca9c2d31788",
+      "existed": true,
+      "old_sha256": "1901e7c0a8426529ba4b32fd13c14560d7e95d0469d230ff14384ca9c2d31788",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/trt_net.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/node.py",
+      "source_sha256": "581ddb17ccef06d786c3427ffedbdb96cb2d27ea43c5a74e7a09aa360077aeda",
+      "existed": true,
+      "old_sha256": "3b02118c95fc58d6001f4e937bc0ccd54be7562bb4fb61f453a3380184bb0ff6",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/node.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/tros_adapter.py",
+      "source_sha256": "dd7236041c3fc4f0757d1f60eb88f50c92011f5baa989308599db4c0d97c7eae",
+      "existed": true,
+      "old_sha256": "dd7236041c3fc4f0757d1f60eb88f50c92011f5baa989308599db4c0d97c7eae",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/tros_adapter.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/face_rois.py",
+      "source_sha256": "c81edf2bc0ff463945fadd6bc4a15c8490de39f16b00e608e26c51f479ff299f",
+      "existed": true,
+      "old_sha256": "c81edf2bc0ff463945fadd6bc4a15c8490de39f16b00e608e26c51f479ff299f",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/face_rois.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/src/main.cpp",
+      "source_sha256": "b1f022451b526f19c0f0852a363953cf2de64ec66e2e5eb3cc9e25cffc937653",
+      "existed": true,
+      "old_sha256": "b1f022451b526f19c0f0852a363953cf2de64ec66e2e5eb3cc9e25cffc937653",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/src/main.cpp"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/src/smart_subscriber.cpp",
+      "source_sha256": "8a5178da5db8654de6a96e2ec3cd60c13dc89dd3029def6a67d226350dcae1c6",
+      "existed": true,
+      "old_sha256": "8a5178da5db8654de6a96e2ec3cd60c13dc89dd3029def6a67d226350dcae1c6",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/src/smart_subscriber.cpp"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/src/util.cpp",
+      "source_sha256": "1f19013697d70f197545252a0180f853939e25ee2e30460fc4fcbae6f9b94d3e",
+      "existed": true,
+      "old_sha256": "1f19013697d70f197545252a0180f853939e25ee2e30460fc4fcbae6f9b94d3e",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/src/util.cpp"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/src/body_tracking.cpp",
+      "source_sha256": "e3477384eff8d1e24fa272d531e5dffb3ebedb96ba007ce7daaeaf281f6e6d42",
+      "existed": true,
+      "old_sha256": "c2a69428990284d63e415b5fae14429771a777a1785017bd61034657396d4c62",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/src/body_tracking.cpp"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/util.h",
+      "source_sha256": "a696d0cd4c80d0adabbcd59575d08ea26f75322f784d67dcd7536d447bb9dfaf",
+      "existed": true,
+      "old_sha256": "a696d0cd4c80d0adabbcd59575d08ea26f75322f784d67dcd7536d447bb9dfaf",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/util.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/bearing_centering.h",
+      "source_sha256": "54c461be675b41a604ed3d1dae3926dafc350a3bbbd380381c304870a3d6f758",
+      "existed": true,
+      "old_sha256": "54c461be675b41a604ed3d1dae3926dafc350a3bbbd380381c304870a3d6f758",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/bearing_centering.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/param_node.h",
+      "source_sha256": "1431f668ef089fa4036cb0df86a2d0fadc53a6d24e23e8cc614ed3d1fba7385e",
+      "existed": true,
+      "old_sha256": "1431f668ef089fa4036cb0df86a2d0fadc53a6d24e23e8cc614ed3d1fba7385e",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/param_node.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/time_helper.h",
+      "source_sha256": "6ad540fb282b705bce58910fe8d92a273edff3f0efabc7a03fd7b996a620bafe",
+      "existed": true,
+      "old_sha256": "6ad540fb282b705bce58910fe8d92a273edff3f0efabc7a03fd7b996a620bafe",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/time_helper.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/body_tracking.h",
+      "source_sha256": "abe214c379a6aa5d8199c10f15710f60566e7f1cfc14aad82d5227bcc881789d",
+      "existed": true,
+      "old_sha256": "7278571bd2d0a29faa1f8dd0bbd2345891b227f2910bf285f28ef8ff5ed61ca3",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/body_tracking.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/depth_backoff.h",
+      "source_sha256": "98c088238bbf419da23a8bad07029d2de22a509df1b68971ab14628459431e07",
+      "existed": true,
+      "old_sha256": "98c088238bbf419da23a8bad07029d2de22a509df1b68971ab14628459431e07",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/depth_backoff.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/common.h",
+      "source_sha256": "e7e0160e3d4cd085e61812bcc90dcfe662ef054d28e49b91121f4778ffc4c4c2",
+      "existed": true,
+      "old_sha256": "e7e0160e3d4cd085e61812bcc90dcfe662ef054d28e49b91121f4778ffc4c4c2",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/common.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/robot_ctrl_node.h",
+      "source_sha256": "f512ea902fa903496d08d739e2bd2c75aa711c5e33fb9924f47294b29303a189",
+      "existed": true,
+      "old_sha256": "28ab325144da94e2629691b7a0b540b1cb6b81cdf7a0b637f20981b8caa7c78b",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/robot_ctrl_node.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/one_turn.h",
+      "source_sha256": "250cd593972b62d023101271171f96e675af71a0c2ffd55783abba9495fd245a",
+      "existed": true,
+      "old_sha256": "250cd593972b62d023101271171f96e675af71a0c2ffd55783abba9495fd245a",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/one_turn.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/smart_subscriber.h",
+      "source_sha256": "9d1cd584073d4d79c58d2eb6d703b161c9f2f45f53d7abdc32e86868b5af6704",
+      "existed": true,
+      "old_sha256": "9d1cd584073d4d79c58d2eb6d703b161c9f2f45f53d7abdc32e86868b5af6704",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/include/smart_subscriber.h"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/CMakeLists.txt",
+      "source_sha256": "70c7ff8561bae3b038b00c293bd0ae8b8fab201f2a6286d28a71fc134003d765",
+      "existed": true,
+      "old_sha256": "70c7ff8561bae3b038b00c293bd0ae8b8fab201f2a6286d28a71fc134003d765",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/CMakeLists.txt"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/package.xml",
+      "source_sha256": "d0bcf9d2d3ea5e445b5f4fcd0d91233690f798d2cbfde5b731f801f0638c84a4",
+      "existed": true,
+      "old_sha256": "d0bcf9d2d3ea5e445b5f4fcd0d91233690f798d2cbfde5b731f801f0638c84a4",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/perception/body_tracking/package.xml"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/display.py",
+      "source_sha256": "353b4bc01f0b1d0643d8641a5eb765472d3ae85d335c66d813a981e95ced4d71",
+      "existed": true,
+      "old_sha256": "353b4bc01f0b1d0643d8641a5eb765472d3ae85d335c66d813a981e95ced4d71",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/display.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/jpeg.py",
+      "source_sha256": "ff8679d65d2fd7e1192414f2c5aa0583e5948f586942fe0e12fb461d4f60b420",
+      "existed": true,
+      "old_sha256": "ff8679d65d2fd7e1192414f2c5aa0583e5948f586942fe0e12fb461d4f60b420",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/jpeg.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/person_masks.py",
+      "source_sha256": "f5cb59694f1ea4c360ff91f0cf3938a9043ec9ee018603526c1da2dacadd75a3",
+      "existed": true,
+      "old_sha256": "f5cb59694f1ea4c360ff91f0cf3938a9043ec9ee018603526c1da2dacadd75a3",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/person_masks.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_wait.py",
+      "source_sha256": "790166b9f1e9424e657df6ed65bd874208bd120a55d7b62f289f317513b52da0",
+      "existed": true,
+      "old_sha256": "790166b9f1e9424e657df6ed65bd874208bd120a55d7b62f289f317513b52da0",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_wait.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/hand_only_detector.py",
+      "source_sha256": "ab0ec35d2f085fcb564709251b3f9c54b1ddecc29c3edbb6acd84011fbb88756",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_gmc.py",
+      "source_sha256": "730ffc479fb58ddc37be186a1dc1c3963131004654e52c19d83cc44e45be4562",
+      "existed": true,
+      "old_sha256": "730ffc479fb58ddc37be186a1dc1c3963131004654e52c19d83cc44e45be4562",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/cuda_gmc.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/hand_full_gpu.py",
+      "source_sha256": "40a4923b2a24e2e36005427af7ac18f45775222cac7ad492c63021a2bdfb65f6",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/core.py",
+      "source_sha256": "a1ad9205992de9b83a78b99dd259d09589acdd8351c1f4c6e54c98143156dbcd",
+      "existed": true,
+      "old_sha256": "8522a6d70c33408019822c616ba9b405a7adc4a7682b7a36b8ab639e67177ad6",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/core.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/__init__.py",
+      "source_sha256": "8763f3ab9b0e8a0bdd70aeddff11235b2551401a80e724d2900217c527c10675",
+      "existed": true,
+      "old_sha256": "8763f3ab9b0e8a0bdd70aeddff11235b2551401a80e724d2900217c527c10675",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/__init__.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/frame_pairing.py",
+      "source_sha256": "764d1450abfe27d9c193c1f93be2f4344b5b7bba68789ce4e023cf32b7ab5994",
+      "existed": true,
+      "old_sha256": "764d1450abfe27d9c193c1f93be2f4344b5b7bba68789ce4e023cf32b7ab5994",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/frame_pairing.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/navigation.py",
+      "source_sha256": "dbdde15e5576400dc239d990b0835e59b01cf729ea7c67193499e52f712b0459",
+      "existed": true,
+      "old_sha256": "dbdde15e5576400dc239d990b0835e59b01cf729ea7c67193499e52f712b0459",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/navigation.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/hand_preprocess.py",
+      "source_sha256": "ae5dd24e93eb7d0d36a29002a4d274d43f40f107a1739ee7eba5c6d0475e6699",
+      "existed": true,
+      "old_sha256": "ae5dd24e93eb7d0d36a29002a4d274d43f40f107a1739ee7eba5c6d0475e6699",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/hand_preprocess.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/body_adapter.py",
+      "source_sha256": "a069c0a8d0aafc4cbdc64108d8193e4eb150483ecb84a6052b0120100b37a645",
+      "existed": true,
+      "old_sha256": "5e98ac5819d9ad24f6924044db645665f85db647b7cb6bbcdc0c96f2b318f34e",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/body_adapter.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/recovery.py",
+      "source_sha256": "49886007da8cdf5eba9a2e080859ad209e22e49d1c900abe6032d08735be1d5d",
+      "existed": true,
+      "old_sha256": "49886007da8cdf5eba9a2e080859ad209e22e49d1c900abe6032d08735be1d5d",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/recovery.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/identity.py",
+      "source_sha256": "a7918234792f88fb052a86725da2739ceda8dbca61c20c91706e77c588d87423",
+      "existed": true,
+      "old_sha256": "a7918234792f88fb052a86725da2739ceda8dbca61c20c91706e77c588d87423",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/identity.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/perception.py",
+      "source_sha256": "35e78ef34e4278f51ae99f43d7d80ac4326da5967e74de12176a10047984cccd",
+      "existed": true,
+      "old_sha256": "96b1a319d881bf4bf09db2eb78b8c910c0bf4534ef377783ba1739a6356afa5f",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/perception.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/following.py",
+      "source_sha256": "54fa90e4658a52e576cf87bae4e028e1816474f6cc32836d00f24fbbf44f8745",
+      "existed": true,
+      "old_sha256": "54fa90e4658a52e576cf87bae4e028e1816474f6cc32836d00f24fbbf44f8745",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/following.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/trt_net.py",
+      "source_sha256": "1901e7c0a8426529ba4b32fd13c14560d7e95d0469d230ff14384ca9c2d31788",
+      "existed": true,
+      "old_sha256": "1901e7c0a8426529ba4b32fd13c14560d7e95d0469d230ff14384ca9c2d31788",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/trt_net.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/node.py",
+      "source_sha256": "581ddb17ccef06d786c3427ffedbdb96cb2d27ea43c5a74e7a09aa360077aeda",
+      "existed": true,
+      "old_sha256": "cfd22b49e09e6ab3dd2bcf7b09571c81a6da9ab6af61e7253fc22baf3f1dc745",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/node.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/tros_adapter.py",
+      "source_sha256": "dd7236041c3fc4f0757d1f60eb88f50c92011f5baa989308599db4c0d97c7eae",
+      "existed": true,
+      "old_sha256": "dd7236041c3fc4f0757d1f60eb88f50c92011f5baa989308599db4c0d97c7eae",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/tros_adapter.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/face_rois.py",
+      "source_sha256": "c81edf2bc0ff463945fadd6bc4a15c8490de39f16b00e608e26c51f479ff299f",
+      "existed": true,
+      "old_sha256": "c81edf2bc0ff463945fadd6bc4a15c8490de39f16b00e608e26c51f479ff299f",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/omnifleet_person_follow/omnifleet_person_follow/face_rois.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/src/main.cpp",
+      "source_sha256": "b1f022451b526f19c0f0852a363953cf2de64ec66e2e5eb3cc9e25cffc937653",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/src/smart_subscriber.cpp",
+      "source_sha256": "8a5178da5db8654de6a96e2ec3cd60c13dc89dd3029def6a67d226350dcae1c6",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/src/util.cpp",
+      "source_sha256": "1f19013697d70f197545252a0180f853939e25ee2e30460fc4fcbae6f9b94d3e",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/src/body_tracking.cpp",
+      "source_sha256": "e3477384eff8d1e24fa272d531e5dffb3ebedb96ba007ce7daaeaf281f6e6d42",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/util.h",
+      "source_sha256": "a696d0cd4c80d0adabbcd59575d08ea26f75322f784d67dcd7536d447bb9dfaf",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/bearing_centering.h",
+      "source_sha256": "54c461be675b41a604ed3d1dae3926dafc350a3bbbd380381c304870a3d6f758",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/param_node.h",
+      "source_sha256": "1431f668ef089fa4036cb0df86a2d0fadc53a6d24e23e8cc614ed3d1fba7385e",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/time_helper.h",
+      "source_sha256": "6ad540fb282b705bce58910fe8d92a273edff3f0efabc7a03fd7b996a620bafe",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/body_tracking.h",
+      "source_sha256": "abe214c379a6aa5d8199c10f15710f60566e7f1cfc14aad82d5227bcc881789d",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/depth_backoff.h",
+      "source_sha256": "98c088238bbf419da23a8bad07029d2de22a509df1b68971ab14628459431e07",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/common.h",
+      "source_sha256": "e7e0160e3d4cd085e61812bcc90dcfe662ef054d28e49b91121f4778ffc4c4c2",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/robot_ctrl_node.h",
+      "source_sha256": "f512ea902fa903496d08d739e2bd2c75aa711c5e33fb9924f47294b29303a189",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/one_turn.h",
+      "source_sha256": "250cd593972b62d023101271171f96e675af71a0c2ffd55783abba9495fd245a",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/include/smart_subscriber.h",
+      "source_sha256": "9d1cd584073d4d79c58d2eb6d703b161c9f2f45f53d7abdc32e86868b5af6704",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/CMakeLists.txt",
+      "source_sha256": "70c7ff8561bae3b038b00c293bd0ae8b8fab201f2a6286d28a71fc134003d765",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/perception/body_tracking/package.xml",
+      "source_sha256": "d0bcf9d2d3ea5e445b5f4fcd0d91233690f798d2cbfde5b731f801f0638c84a4",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/build/body_tracking/body_tracking",
+      "source_sha256": "575def274c17e37c51dd4a0700d5b92aaeacd786fa00a13cc248cff60db2def1",
+      "existed": true,
+      "old_sha256": "a0594f6a499be4e9e2838e20528ff11fc96136ea9d3fe8c0bd2f536904837ed1",
+      "mode": 33261,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/build/body_tracking/body_tracking"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/manager.py",
+      "source_sha256": "c0ee69c81d2210d38e879453217d9a57f6c7ccb43d6db7944b04f8aa8febdeba",
+      "existed": true,
+      "old_sha256": "0f17d5ffe334c6ea4f41103488d9e4cfb790cf8a0a8ee84cf99d63e067f83ad0",
+      "mode": 33188,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/manager.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/local_frames.py",
+      "source_sha256": "f452306e4099945f6ebb64e8d38ba5a7fce58992c66565d868a7caff2991c8c5",
+      "existed": true,
+      "old_sha256": "1eeda0140ef449915e5bcde126cd452de4bad867ccf1c39151776071e7a073b9",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/vendor/home/iecme/omnifleet_ws/src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/local_frames.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/local_frames.py",
+      "source_sha256": "f452306e4099945f6ebb64e8d38ba5a7fce58992c66565d868a7caff2991c8c5",
+      "existed": true,
+      "old_sha256": "bd84361040586cbd724b18b14c1433c516206a40855c60fc28d3c64993dc25da",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/src/sensing/omnifleet_hikrobot_rgbd/omnifleet_hikrobot_rgbd/local_frames.py"
+    },
+    {
+      "target": "/home/iecme/omnifleet_data/ml_models/omnifleet_vision/vendor/mediapipe_tensorrt/hand_full_fp32.engine",
+      "source_sha256": "8093c921bb0fe418a9d1c4b31a25caeafcd5112953cbb27af6a96e186691c6de",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_data/ml_models/omnifleet_vision/vendor/mediapipe_tensorrt/hand_full.onnx",
+      "source_sha256": "a7fb61db3190c2e0e9c55e695a4e24ccb3dc98dbb6c386ea3a4472a19a03bb56",
+      "existed": false
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/site/vision-follow.html",
+      "source_sha256": "99e6ecf64a44c370b8e00e7555212e668e91322b9f1d8db3cfbc6287314aa0ae",
+      "existed": true,
+      "old_sha256": "69b94be5de7c18aa37d20d4df5c9b60fd303703b80d6aa8192dacf01d5fbc44c",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/site/vision-follow.html"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/site/vision-follow.web.js",
+      "source_sha256": "eedfd7bb1cc6e42c97b0d7f8bcc953eb5c31f6517b2ca6110f1ae831747a27b6",
+      "existed": true,
+      "old_sha256": "8aa0ba0530c2fad730539cb61e5a0a65d48d3cdf522a29b8443d8d45de93ad02",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/site/vision-follow.web.js"
+    },
+    {
+      "target": "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/site/vision-reference.js",
+      "source_sha256": "8b75580bbbbbc1939066a1e62ae5989f3b027226dc5e0998b49080683bd3b0ae",
+      "existed": true,
+      "old_sha256": "8b75580bbbbbc1939066a1e62ae5989f3b027226dc5e0998b49080683bd3b0ae",
+      "mode": 33204,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/from-126.4EV8FJM3/site/vision-reference.js"
+    },
+    {
+      "target": "/opt/foxglove-studio-cn-122/site/vision-follow.html",
+      "source_sha256": "99e6ecf64a44c370b8e00e7555212e668e91322b9f1d8db3cfbc6287314aa0ae",
+      "existed": true,
+      "old_sha256": "6d81eed27a2acdef0aad67e6f1cd82115560e4128f9ac16b249c119e3c33db32",
+      "mode": 33188,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/opt/foxglove-studio-cn-122/site/vision-follow.html"
+    },
+    {
+      "target": "/opt/foxglove-studio-cn-122/site/vision-follow.web.js",
+      "source_sha256": "eedfd7bb1cc6e42c97b0d7f8bcc953eb5c31f6517b2ca6110f1ae831747a27b6",
+      "existed": true,
+      "old_sha256": "cfb28b6e10baac1703990e92967609e37d3232e4d18c2fd263013ca6a7db4250",
+      "mode": 33188,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/opt/foxglove-studio-cn-122/site/vision-follow.web.js"
+    },
+    {
+      "target": "/opt/foxglove-studio-cn-122/site/vision-reference.js",
+      "source_sha256": "8b75580bbbbbc1939066a1e62ae5989f3b027226dc5e0998b49080683bd3b0ae",
+      "existed": true,
+      "old_sha256": "8b75580bbbbbc1939066a1e62ae5989f3b027226dc5e0998b49080683bd3b0ae",
+      "mode": 33188,
+      "backup": "/home/iecme/omnifleet_a2_backups/vision-unified-20261112-034335/opt/foxglove-studio-cn-122/site/vision-reference.js"
+    }
+  ],
+  "protected_configurations": {
+    "/etc/omnifleet_a2/robot.env": "15c5e0b8b496b1b6a8f35c3e70c54f75792e1c74b2e2dcc15c64f440f1d5e120",
+    "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/split1080/rgb1080-calibration.yaml": "d8ea9be54605203e80b3c22495a5ac3a073dbcb35a554407515b60e14c315b03",
+    "/home/iecme/omnifleet_a2_ws/deploy/vision-gemini-122/split1080/gemini_pro_1080.launch.py": "36e88f8b40913989eb630df03990d92cbe432f4f45e11d5069eb8fe7c8f76b84",
+    "/home/iecme/omnifleet_a2_ws/deploy/chassis-111/firmware.json": "57210b19b2785ab9b2ae7e59ba6573383ff0a42aa6aa78ffdce7d41587426c0d",
+    "/home/iecme/omnifleet_a2_ws/deploy/web-112/server.py": "03b9206b91347afcf0443a677393a7ecf9654ff1b2c41bf985ffa0bd20ff737d",
+    "/home/iecme/omnifleet_a2_ws/src/system/omnifleet_bringup/omnifleet_bringup/omnifleet_t2_driver.py": "c49e0d60ae680a9d54768950fa10d17d91e11a237c2c9faa94f6d807319956a0",
+    "/home/iecme/omnifleet_a2_ws/src/system/omnifleet_bringup/omnifleet_bringup/Ackman_driver_R2.py": "f917241fb008c93e0e6951a4d062b2a3c3c0b8d1d037b947fad24bd93d1cb7e3"
+  },
+  "success": true,
+  "runtime_tuning": {
+    "steering_max_speed": 0.3,
+    "reverse_max_speed": 0.2
+  },
+  "protected_configurations_unchanged": true
+}

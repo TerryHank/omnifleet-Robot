@@ -1,0 +1,35 @@
+# Sensor frames added to the new user-provided chassis URDF.
+# Units: meters/radians. Meshes are unscaled: no <scale> attribute is used.
+
+rplidar_s3_link:
+  parent: base_link
+  xyz: [0.020, 0.000, 0.13465]
+  rpy: [0.0, 0.0, 0.0]
+  visual_mesh: meshes/sensors/rplidar_s3_from_user_step.stl
+  mesh_scale: [1.0, 1.0, 1.0]
+  mesh_bbox_size_m: [0.116373120, 0.055599999, 0.041299999]
+laser_frame:
+  parent: rplidar_s3_link
+  xyz: [0.000, 0.000, 0.00990]
+  rpy: [0.0, 0.0, 3.141592653589793]
+
+hik_camera_link:
+  parent: base_link
+  xyz: [0.240, 0.000, 0.125]
+  rpy: [0.024859535234, -0.0430526811853, -0.0252014322581]
+  visual_mesh: meshes/sensors/mv_dt01sdu_from_user_step.stl
+  mesh_scale: [1.0, 1.0, 1.0]
+  mesh_bbox_size_m: [0.031205075, 0.089963868, 0.026005769]
+camera_color_optical_frame:
+  parent: hik_camera_link
+  xyz: [0.015603, 0.0, 0.0]
+  rpy: [-1.57079632679, 0.0, -1.57079632679]
+camera_depth_optical_frame:
+  parent: hik_camera_link
+  xyz: [0.015603, 0.0, 0.0]
+  rpy: [-1.57079632679, 0.0, -1.57079632679]
+
+livox_frame:
+  parent: base_link
+  xyz: [0.00523090362549, 2.51457095146e-08, 0.316025078297]
+  rpy: [-3.48706456905e-07, -2.34943204895e-07, -1.5852245826]

@@ -1,0 +1,13 @@
+omnifleet_a2_foxglove_heavy:
+  ros__parameters:
+    topic_whitelist: [".*"]
+    client_topic_whitelist: [".*"]
+    service_whitelist: [".*"]
+    param_whitelist: [".*"]
+    best_effort_qos_topic_whitelist:
+      - "^/(rslidar_points|glim_ros/.*points.*|tof/.*|omnifleet_a2/lidar/obstacles)$"
+    max_qos_depth: 1
+    min_qos_depth: 1
+    message_backlog_size: 500
+    send_buffer_limit: 4000000
+    include_hidden: false

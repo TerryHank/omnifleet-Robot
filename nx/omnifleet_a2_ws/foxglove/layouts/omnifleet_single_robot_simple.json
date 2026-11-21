@@ -1,0 +1,157 @@
+{
+  "configById": {
+    "3D!single-waypoints": {
+      "cameraState": {
+        "perspective": false,
+        "distance": 14,
+        "phi": 0,
+        "thetaOffset": 0,
+        "targetOffset": [0, 0, 0],
+        "target": [0, 0, 0],
+        "targetOrientation": [0, 0, 0, 1],
+        "fovy": 45,
+        "near": 0.1,
+        "far": 5000
+      },
+      "followMode": "follow-none",
+      "followTf": "map",
+      "scene": {
+        "transforms": {
+          "showLabel": false,
+          "axisScale": 0.5,
+          "lineWidth": 1,
+          "enablePreloading": false
+        },
+        "meshUpAxis": "z_up",
+        "enableStats": false
+      },
+      "topics": {
+        "/map": {"visible": true, "colorMode": "map", "alpha": 0.9},
+        "/global_costmap/costmap": {"visible": false},
+        "/local_costmap/costmap": {"visible": true, "alpha": 0.35},
+        "/plan": {"visible": true, "color": "#31d158"},
+        "/local_plan": {"visible": true, "color": "#0a84ff"},
+        "/robot_description": {"visible": true, "displayMode": "visual"},
+        "/omnifleet_a2/lidar/obstacles": {
+          "visible": true,
+          "frameLocked": false,
+          "pointSize": 2,
+          "pointShape": "circle",
+          "decayTime": 0.5,
+          "colorMode": "flat",
+          "flatColor": "#ff453a"
+        },
+        "/omnifleet_a2/waypoints/path": {"visible": true, "color": "#ffd60a"},
+        "/omnifleet_a2/waypoints/markers": {"visible": true}
+      },
+      "layers": {
+        "mapGrid": {
+          "layerId": "foxglove.Grid",
+          "visible": true,
+          "frameLocked": true,
+          "label": "地图网格",
+          "frameId": "map",
+          "size": 20,
+          "divisions": 20,
+          "lineWidth": 1,
+          "color": "#3a6ea5",
+          "position": [0, 0, 0],
+          "rotation": [0, 0, 0]
+        }
+      },
+      "publish": {
+        "type": "pose",
+        "poseTopic": "/omnifleet_a2/waypoints/add_pose",
+        "pointTopic": "/clicked_point",
+        "poseEstimateTopic": "/initialpose",
+        "poseEstimateXDeviation": 0.5,
+        "poseEstimateYDeviation": 0.5,
+        "poseEstimateThetaDeviation": 0.26179939
+      },
+      "imageMode": {},
+      "foxglovePanelTitle": "① 点击姿态工具，在地图上依次添加航点"
+    },
+    "RawMessages!semantic-status": {
+      "topicPath": "/omnifleet_a2/waypoints/status",
+      "expansion": "all",
+      "fontSize": 22,
+      "foxglovePanelTitle": "当前状态"
+    },
+    "Publish!semantic-next-name": {
+      "topicName": "/omnifleet_a2/waypoints/next_name",
+      "datatype": "std_msgs/msg/String",
+      "value": "{\"data\":\"\"}",
+      "advancedView": true,
+      "buttonText": "应用到下一个点",
+      "buttonTooltip": "data 留空时自动命名为航点N",
+      "foxglovePanelTitle": "② 输入下一个点的中文名称"
+    },
+    "Publish!semantic-start": {
+      "topicName": "/omnifleet_a2/waypoints/start",
+      "datatype": "std_msgs/msg/Empty",
+      "value": "{}",
+      "advancedView": false,
+      "buttonText": "开始整条路线",
+      "foxglovePanelTitle": "开始导航"
+    },
+    "Publish!semantic-stop": {
+      "topicName": "/omnifleet_a2/waypoints/stop",
+      "datatype": "std_msgs/msg/Empty",
+      "value": "{}",
+      "advancedView": false,
+      "buttonText": "停止导航",
+      "buttonColor": "#d84a4a",
+      "foxglovePanelTitle": "安全停止"
+    },
+    "Publish!semantic-undo": {
+      "topicName": "/omnifleet_a2/waypoints/undo",
+      "datatype": "std_msgs/msg/Empty",
+      "value": "{}",
+      "advancedView": false,
+      "buttonText": "撤销上一点",
+      "foxglovePanelTitle": "撤销"
+    },
+    "Publish!semantic-clear": {
+      "topicName": "/omnifleet_a2/waypoints/clear",
+      "datatype": "std_msgs/msg/Empty",
+      "value": "{}",
+      "advancedView": false,
+      "buttonText": "清空全部点",
+      "foxglovePanelTitle": "清空"
+    }
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "playbackConfig": {"speed": 1},
+  "layout": {
+    "direction": "row",
+    "first": "3D!single-waypoints",
+    "second": {
+      "direction": "column",
+      "splitPercentage": 24,
+      "first": "RawMessages!semantic-status",
+      "second": {
+        "direction": "column",
+        "splitPercentage": 45,
+        "first": "Publish!semantic-next-name",
+        "second": {
+          "direction": "column",
+          "splitPercentage": 50,
+          "first": {
+            "direction": "row",
+            "splitPercentage": 50,
+            "first": "Publish!semantic-start",
+            "second": "Publish!semantic-stop"
+          },
+          "second": {
+            "direction": "row",
+            "splitPercentage": 50,
+            "first": "Publish!semantic-undo",
+            "second": "Publish!semantic-clear"
+          }
+        }
+      }
+    },
+    "splitPercentage": 76
+  }
+}

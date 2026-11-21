@@ -1,0 +1,28 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from omnifleet_interfaces/srv/StoreMission.srv
+// generated code does not contain a copyright notice
+
+#include "geometry_msgs/msg/Pose.idl"
+
+module omnifleet_interfaces {
+  module srv {
+    struct StoreMission_Request {
+      string mission_id;
+
+      sequence<geometry_msgs::msg::Pose> poses;
+
+      boolean loop;
+    };
+    struct StoreMission_Response {
+      boolean accepted;
+
+      uint64 revision;
+
+      string map_id;
+
+      string map_sha256;
+
+      string message;
+    };
+  };
+};

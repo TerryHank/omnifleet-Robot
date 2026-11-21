@@ -1,0 +1,12 @@
+# External dependency freeze
+
+- PMC: `4bbd40ababd8e925c4e1845c509173afe766b443` (official CMake pin)
+- Xenium main resolved and frozen for this build: `1c449ae953ce2a440b0d16c5ed1181d2754860ab`
+- Local bare mirrors were used only because GitHub downloads on 113 timed out; no source logic was changed.
+- MOLA submodules:
+
+```text
+bd14e6830a1474fed9d2d03f5c3b0683d818d540 mola_metric_maps/3rdparty/robin-map (v1.4.1)
+ 934c6a5f5ef2355d6df25395d555cb71f790c4e9 mola_viz_imgui/3rdparty/imgui (v1.92.6-docking-28-g934c6a5f5)
+ d65a2bef53d32502407de3a4be80f191e2f412d7 mola_viz_imgui/3rdparty/implot (v1.0-6-gd65a2be)
+```

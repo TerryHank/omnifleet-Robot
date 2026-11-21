@@ -1,0 +1,189 @@
+{
+  "system": "124",
+  "hostname": "iecme-ackermann",
+  "arch": "aarch64",
+  "kernel": "5.15.148-tegra",
+  "captured_at": "2026-11-21T08:49:22+08:00",
+  "runtime_rpp_overlay": "/home/iecme/omnifleet_a2_backups/124-rpp-gear-20261121.0dtFaH",
+  "runtime_mola_overlay": "/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121",
+  "mapped_roots": [
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/build",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/build_111/omnifleet_bringup",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build_111/omnifleet_bringup"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/build_111/nav2_costmap_2d",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build_111/nav2_costmap_2d"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/build_111/omnifleet_sensor_processing",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build_111/omnifleet_sensor_processing"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/build_111/omnifleet_navigation_interfaces",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build_111/omnifleet_navigation_interfaces"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/build_111/omnifleet_interfaces",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build_111/omnifleet_interfaces"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/.colcon_install_layout",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/.colcon_install_layout"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/COLCON_IGNORE",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/COLCON_IGNORE"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/_local_setup_util_ps1.py",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/_local_setup_util_ps1.py"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/_local_setup_util_sh.py",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/_local_setup_util_sh.py"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/local_setup.bash",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/local_setup.bash"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/local_setup.ps1",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/local_setup.ps1"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/local_setup.sh",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/local_setup.sh"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/local_setup.zsh",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/local_setup.zsh"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/setup.bash",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/setup.bash"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/setup.ps1",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/setup.ps1"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/setup.sh",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/setup.sh"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/setup.zsh",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/setup.zsh"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/.colcon_install_layout",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/.colcon_install_layout"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/COLCON_IGNORE",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/COLCON_IGNORE"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/_local_setup_util_ps1.py",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/_local_setup_util_ps1.py"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/_local_setup_util_sh.py",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/_local_setup_util_sh.py"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/local_setup.bash",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/local_setup.bash"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/local_setup.ps1",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/local_setup.ps1"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/local_setup.sh",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/local_setup.sh"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/local_setup.zsh",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/local_setup.zsh"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/setup.bash",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/setup.bash"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/setup.ps1",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/setup.ps1"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/setup.sh",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/setup.sh"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/setup.zsh",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/setup.zsh"
+    }
+  ],
+  "auxiliary_service_scripts": [
+    "/home/iecme/.local/share/omnifleet-shared-sim-124/simulation.py",
+    "/opt/ros/humble/setup.bash"
+  ],
+  "upstream_sources": [],
+  "tar_entries": 3528,
+  "exclusion_counts": {
+    "cache_git_or_runtime_data": 99,
+    "telemetry_cache_or_non_source": 26
+  },
+  "exclusion_examples": {
+    "cache_git_or_runtime_data": [
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_behaviors/local/lib/python3.10/dist-packages/omnifleet_a2_behaviors/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_bringup/local/lib/python3.10/dist-packages/omnifleet_a2_bringup/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_bringup/share/omnifleet_a2_bringup/launch/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_bringup/share/omnifleet_a2_bringup/launch/production/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_interfaces/local/lib/python3.10/dist-packages/omnifleet_a2_interfaces/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_interfaces/local/lib/python3.10/dist-packages/omnifleet_a2_interfaces/msg/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_interfaces/local/lib/python3.10/dist-packages/omnifleet_a2_interfaces/srv/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_localization/local/lib/python3.10/dist-packages/omnifleet_a2_localization/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_localization/share/omnifleet_a2_localization/launch/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_localization/share/omnifleet_a2_localization/launch/includes/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_planner/local/lib/python3.10/dist-packages/omnifleet_a2_planner/__pycache__",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install/omnifleet_a2_planner/share/omnifleet_a2_planner/launch/__pycache__"
+    ],
+    "telemetry_cache_or_non_source": [
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_behaviors/colcon_command_prefix_build.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_behaviors/colcon_command_prefix_test.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_bringup/colcon_command_prefix_build.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_bringup/colcon_command_prefix_test.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_description/colcon_command_prefix_build.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_description/colcon_command_prefix_test.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_interfaces/colcon_command_prefix_build.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_interfaces/colcon_command_prefix_test.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_localization/colcon_command_prefix_build.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_localization/colcon_command_prefix_test.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_planner/colcon_command_prefix_build.sh.env",
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_planner/colcon_command_prefix_test.sh.env"
+    ]
+  },
+  "sensor_build_files": [
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_core/rslidar_sdkConfig-version.cmake",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_core/rslidar_sdkConfig.cmake",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_environment_hooks/ament_prefix_path.dsv",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_environment_hooks/local_setup.bash",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_environment_hooks/local_setup.dsv",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_environment_hooks/local_setup.sh",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_environment_hooks/local_setup.zsh",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_environment_hooks/path.dsv",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/rslidar_sdk",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_index/share/ament_index/resource_index/packages/rslidar_sdk",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/rslidar_sdk",
+    "/home/iecme/sensor_drivers_ws/build/rslidar_sdk/rslidar_sdk_node"
+  ]
+}

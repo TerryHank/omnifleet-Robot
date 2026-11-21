@@ -1,0 +1,4 @@
+[console_scripts]
+semantic_waypoint_panel = omnifleet_a2_waypoint_ui.semantic_waypoint_panel:main
+waypoint_ui_bridge = omnifleet_a2_waypoint_ui.waypoint_ui_bridge:main
+

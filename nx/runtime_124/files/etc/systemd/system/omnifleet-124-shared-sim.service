@@ -1,0 +1,17 @@
+[Unit]
+Description=OmniFleet shared two-vehicle simulation
+After=network-online.target
+Wants=network-online.target
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/.local/share/omnifleet-shared-sim-124
+StateDirectory=omnifleet-shared-sim-124
+UMask=0077
+Environment=SIM_STATE_FILE=/var/lib/omnifleet-shared-sim-124/state.json
+ExecStart=/usr/bin/python3 /home/iecme/.local/share/omnifleet-shared-sim-124/simulation.py
+Restart=on-failure
+RestartSec=3
+Nice=10
+CPUWeight=50
+[Install]
+WantedBy=multi-user.target

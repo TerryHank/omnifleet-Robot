@@ -1,0 +1,2759 @@
+{
+  "one": [
+    {
+      "file": "one/1794413882109094542.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 72.73866100058513
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 89.08932599933905
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          768.7837142944336,
+          305.86873161792755,
+          71.86280822753906,
+          100.83120846748352
+        ],
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413882375767926.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 54.76728799931152
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 87.22555000076682
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          769.286862373352,
+          307.3753305673599,
+          72.10523414611816,
+          93.72150492668152
+        ],
+        "score": 0.9999936819076538,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413882642403326.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 30.320891999508603
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 58.03514199942583
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          768.035493850708,
+          307.0822659730911,
+          71.79392623901367,
+          92.44480776786804
+        ],
+        "score": 0.9951634407043457,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413882942393389.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 39.108582999688224
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 52.798429999711516
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": true,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          766.312502861023,
+          308.59249716997147,
+          72.0113582611084,
+          92.35714781284332
+        ],
+        "score": 0.9969087243080139,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413883209053701.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 36.359766000714444
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 56.29949100057274
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": true,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          764.0915536880493,
+          307.8209398984909,
+          72.75567054748535,
+          92.46606373786926
+        ],
+        "score": 0.9983764886856079,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413883475726669.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 32.65944499980833
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 55.09771900051419
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          763.0695219039917,
+          306.35382574796677,
+          70.97946739196777,
+          91.6631487607956
+        ],
+        "score": 0.9978529214859009,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413883775719325.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 35.57881899996573
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 58.74156200025027
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          760.3455247879028,
+          309.2814509868622,
+          72.5580997467041,
+          91.04383850097656
+        ],
+        "score": 0.9975488781929016,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413884042364613.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 31.320365999818023
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 60.855771000206005
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          750.9807958602905,
+          290.31119298934937,
+          71.85960960388184,
+          88.6360559463501
+        ],
+        "score": 0.9992658495903015,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413884309027422.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 36.78555399983452
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 57.25471200003085
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          733.3207511901855,
+          256.6155897974968,
+          69.32533264160156,
+          85.17957580089569
+        ],
+        "score": 0.9981290698051453,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413884575698470.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 28.47673499945813
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 57.62894500003313
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          748.7905654907227,
+          271.2715859413147,
+          70.75028228759766,
+          82.72538995742798
+        ],
+        "score": 0.9904772043228149,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413884809029574.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 29.363376000219432
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 53.65598900061741
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          681.6204471588135,
+          313.3779678940773,
+          50.672298431396484,
+          89.99907410144806
+        ],
+        "score": 0.9929149150848389,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413885075715813.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 66.0535710003387
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 74.42325299962249
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          698.0,
+          275.0,
+          53.0,
+          86.0
+        ],
+        "score": 0.9344874620437622,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413885375660997.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 74.64386399988143
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 63.695951999761746
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          710.0,
+          261.0,
+          56.0,
+          82.0
+        ],
+        "score": 0.9638199806213379,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413885608977189.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 66.32406799963064
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 80.20473099986702
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          729.0,
+          272.0,
+          53.0,
+          81.0
+        ],
+        "score": 0.987697422504425,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413885875656317.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 66.76959700052976
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 74.68626399986533
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          749.0,
+          280.0,
+          51.0,
+          80.0
+        ],
+        "score": 0.9786136746406555,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413886142314637.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 68.13347800016345
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 70.45023900082015
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          765.0,
+          283.0,
+          46.0,
+          83.0
+        ],
+        "score": 0.9893680214881897,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413886408965614.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 67.91284800056019
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 56.4337109999542
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          747.0,
+          274.0,
+          43.0,
+          84.0
+        ],
+        "score": 0.9952104687690735,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413886675615206.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 54.377937999561254
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 56.265106999489944
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          698.0,
+          254.0,
+          42.0,
+          83.0
+        ],
+        "score": 0.9979573488235474,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "one/1794413886975596957.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 55.70364400045946
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 53.83698700006789
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          681.0,
+          204.0,
+          44.0,
+          77.0
+        ],
+        "score": 0.9344801902770996,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    }
+  ],
+  "victory": [
+    {
+      "file": "victory/1794414102267595566.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 41.702826000801
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 43.37665399998514
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414102567538230.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 45.73533500024496
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 43.10939499919186
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414102867498598.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 43.49850800008426
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 39.625420000447775
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414103134232614.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 41.83607200047845
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 38.85042500041891
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414103400891926.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 40.25024200018379
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 44.690839999930176
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414103634139973.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 40.85666700029833
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 44.3036189999475
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414103934118701.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 46.29068899976119
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 39.25998999966396
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414104234167142.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 41.61921499962773
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 39.52219400071044
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414104534102886.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 40.94415400049911
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 42.9950320003627
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414104800753870.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 41.2882440004978
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 43.874537000192504
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414105067420054.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 43.200533000344876
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 40.3238760000022
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414105434076694.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 45.48139500002435
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 40.793440000015835
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414105734076549.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 41.20239399981074
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 40.407045999927504
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414106000721149.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 42.07431499980885
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 38.17306699966139
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414106300771309.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 40.24045799997111
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 41.80132700003014
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414106567377853.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 41.14853800001583
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 61.70813600056135
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          709.1558704376221,
+          264.3148970603943,
+          59.04555130004883,
+          111.2934136390686
+        ],
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414106867361229.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 39.54206900016288
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 67.18756499958545
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          699.1685800552368,
+          244.406663864851,
+          63.209489822387695,
+          104.1525165438652
+        ],
+        "score": 0.9999417066574097,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414107167347526.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 40.39287400064495
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 43.836721999468864
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          699.5238876342773,
+          241.7373804152012,
+          59.35009002685547,
+          98.51989370584488
+        ],
+        "score": 0.9995970129966736,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414107467327062.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 40.77625999980228
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 52.52422699959425
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": true,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          697.7288331985474,
+          243.89975050091743,
+          63.628732681274414,
+          96.77882891893387
+        ],
+        "score": 0.9969295859336853,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414107769285413.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 39.94209699976636
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 49.46434199973737
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": true,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          696.105131149292,
+          241.67485329508781,
+          63.07492446899414,
+          96.99645155668259
+        ],
+        "score": 0.9984607696533203,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414108033976269.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 40.180685999985144
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 48.91791899990494
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          696.8334760665894,
+          241.2958032488823,
+          64.58608818054199,
+          98.36530673503876
+        ],
+        "score": 0.9977705478668213,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414108300636822.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 42.21553200022754
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 51.26037600075506
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          694.226583480835,
+          242.95335853099823,
+          63.57182693481445,
+          97.65888047218323
+        ],
+        "score": 0.9988704323768616,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414108600632333.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 38.7355929997284
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 51.71579699981521
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          702.3197679519653,
+          243.91805014014244,
+          61.626543045043945,
+          98.14134496450424
+        ],
+        "score": 0.9784864187240601,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414108934290653.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 56.35652199998731
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 48.58106400024553
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          705.6516036987305,
+          243.29370993375778,
+          59.00017547607422,
+          98.24429833889008
+        ],
+        "score": 0.9986274242401123,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414109233925885.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 26.984168000126374
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 48.463017999893054
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          706.7547769546509,
+          246.57760521769524,
+          61.031747817993164,
+          96.16512554883957
+        ],
+        "score": 0.9969209432601929,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414109500581582.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 37.77583300052356
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 55.338041999675625
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          717.5745306015015,
+          249.64088129997253,
+          59.20882987976074,
+          94.07741689682007
+        ],
+        "score": 0.9988651275634766,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414109767242757.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 36.004949000016495
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 56.38724100026593
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          722.1150741577148,
+          243.6725443303585,
+          61.37608337402344,
+          95.754818379879
+        ],
+        "score": 0.9946188926696777,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414110033900981.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 43.399836999924446
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 71.54005500069616
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          709.316728591919,
+          247.69626340270042,
+          65.35591506958008,
+          92.62567180395126
+        ],
+        "score": 0.9975074529647827,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414110300569557.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 29.078600000502774
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 51.20557000009285
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          716.9426536560059,
+          248.38931053876877,
+          64.45003509521484,
+          94.12566125392914
+        ],
+        "score": 0.9844004511833191,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414110567203030.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 31.448449999516015
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 67.7942290003557
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          721.5027379989624,
+          253.02115586400032,
+          62.28278160095215,
+          93.29971200227737
+        ],
+        "score": 0.9989000558853149,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414110833875318.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 36.59547100050986
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 63.77199100006692
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          726.9478569030762,
+          257.80491346120834,
+          61.10680389404297,
+          92.98737895488739
+        ],
+        "score": 0.9989810585975647,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414111200527366.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 32.019192000007024
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 67.8318609998314
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          742.4393520355225,
+          256.01327481865883,
+          58.63047409057617,
+          93.78650718927383
+        ],
+        "score": 0.9996069073677063,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414111433845654.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 36.51668800011976
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 56.693453000661975
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          747.9088068008423,
+          254.66740080714226,
+          59.18160438537598,
+          93.39649361371994
+        ],
+        "score": 0.9967792630195618,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414111733841006.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 39.155943999503506
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 61.55347200001415
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          755.3764801025391,
+          254.69508603215218,
+          57.995361328125,
+          93.39896231889725
+        ],
+        "score": 0.9946538209915161,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414112000499310.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 29.52387599998474
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 65.46201600031054
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          758.4881200790405,
+          255.55663838982582,
+          59.80154228210449,
+          95.2237120270729
+        ],
+        "score": 0.9892629981040955,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414112300488798.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 34.710960999291274
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 58.45486499947583
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          760.384111404419,
+          257.45758563280106,
+          58.953609466552734,
+          96.31444036960602
+        ],
+        "score": 0.9952612519264221,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414112634162445.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 29.449413000293134
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 64.85645800057682
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          757.8686370849609,
+          256.1432527899742,
+          61.29931640625,
+          95.91969859600067
+        ],
+        "score": 0.9954078793525696,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414112933798886.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 33.57664200029831
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 63.60288300038519
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          756.8237371444702,
+          254.79594406485558,
+          60.165143966674805,
+          94.60666126012802
+        ],
+        "score": 0.9980596899986267,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414113200446086.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 31.822978000491275
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 65.26954499986459
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          756.6632795333862,
+          254.37831687927246,
+          64.70927238464355,
+          95.98124885559082
+        ],
+        "score": 0.9930665493011475,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414113467137069.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 40.73307500038936
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 54.441270000097575
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          757.1017656326294,
+          256.09536811709404,
+          61.42778205871582,
+          93.98747652769089
+        ],
+        "score": 0.9977908134460449,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414113733772910.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 31.310377000409062
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 58.162811000329384
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          749.4498167037964,
+          256.19312980771065,
+          61.60556602478027,
+          93.51511698961258
+        ],
+        "score": 0.9981045722961426,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414114033765853.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 40.47464699942793
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 60.6677949999721
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          745.8331089019775,
+          255.07759049534798,
+          59.82601547241211,
+          93.65587502717972
+        ],
+        "score": 0.9985981583595276,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414114333743341.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 38.96119899945916
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 65.22753300032491
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          745.1429071426392,
+          254.35495913028717,
+          57.71648597717285,
+          94.27985072135925
+        ],
+        "score": 0.9984671473503113,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414114667065502.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 29.610567000418087
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 67.1742880003876
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          743.4651145935059,
+          253.285920470953,
+          60.08473205566406,
+          96.30178302526474
+        ],
+        "score": 0.9976980090141296,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "victory/1794414114933719413.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 28.490489999967394
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 58.794870000383526
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          744.7068729400635,
+          254.95779955387115,
+          60.37320327758789,
+          95.50901484489441
+        ],
+        "score": 0.9982907176017761,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    }
+  ],
+  "recent": [
+    {
+      "file": "recent/1794419420208171596.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 50.30371400061995
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 50.82079299972975
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419421341522236.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 51.89911200068309
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 51.378672999817354
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419422374874076.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 51.20296299992333
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 49.49566200048139
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419423474916548.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 50.639132000469544
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 52.97477599924605
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419424541624854.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 58.047238999279216
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 47.43223900004523
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419425541680309.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 41.48484899997129
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 40.36841899960564
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419426641919854.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 39.46964900023886
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 37.44452899991302
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419427675314988.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 38.58828699958394
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 38.58819099968969
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419428675218126.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 0.031519999538431875
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 0.01673499991738936
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419429708607222.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 41.13099900041561
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 59.58283499967365
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": false
+      },
+      "tracker": {
+        "active": false,
+        "owner": null,
+        "bbox": null,
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419430742180012.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 61.65221100036433
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 84.10808000007819
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          741.9935073852539,
+          277.5428937077522,
+          101.2181396484375,
+          118.15235531330109
+        ],
+        "score": null,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419431942233061.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 54.33303200061346
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 84.01522399981332
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          753.3882064819336,
+          283.6799595952034,
+          103.298583984375,
+          108.26665556430817
+        ],
+        "score": 0.9999067783355713,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419433008965806.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 64.57834600041679
+      },
+      "nanotrack": {
+        "labels": [
+          "open_palm"
+        ],
+        "ms": 51.76993900022353
+      },
+      "dropout": {
+        "labels": [
+          "open_palm"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          685.9084539413452,
+          295.4958246946335,
+          159.51260948181152,
+          108.25489783287048
+        ],
+        "score": 0.9985145926475525,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419434075671205.jpg",
+      "baseline": {
+        "labels": [
+          "open_palm"
+        ],
+        "ms": 56.01076800030569
+      },
+      "nanotrack": {
+        "labels": [
+          "open_palm"
+        ],
+        "ms": 48.735298999417864
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": true,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          678.6968078613281,
+          302.7829483151436,
+          167.59925079345703,
+          105.61350882053375
+        ],
+        "score": 0.9997970461845398,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419435175737364.jpg",
+      "baseline": {
+        "labels": [
+          "open_palm"
+        ],
+        "ms": 47.634291999202105
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 51.7611390005186
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": true,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          735.4173345565796,
+          300.903961122036,
+          108.79910087585449,
+          117.5048850774765
+        ],
+        "score": 0.9980952143669128,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419436209127598.jpg",
+      "baseline": {
+        "labels": [
+          "one"
+        ],
+        "ms": 26.305442999728257
+      },
+      "nanotrack": {
+        "labels": [
+          "one"
+        ],
+        "ms": 59.804468999573146
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          738.5716896057129,
+          302.91736882925034,
+          92.68629455566406,
+          117.22889220714569
+        ],
+        "score": 0.9991956353187561,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419437275862581.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 56.085329999405076
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 101.01349399974424
+      },
+      "dropout": {
+        "labels": [
+          "one"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          724.6199426651001,
+          297.97896391153336,
+          104.40835762023926,
+          103.57929575443268
+        ],
+        "score": 0.9997007846832275,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419438409673578.jpg",
+      "baseline": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 29.506611000215344
+      },
+      "nanotrack": {
+        "labels": [
+          "victory"
+        ],
+        "ms": 67.38893100009591
+      },
+      "dropout": {
+        "labels": [
+          "victory"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          719.4929323196411,
+          289.26871222257614,
+          112.98215675354004,
+          115.88491237163544
+        ],
+        "score": 0.9999376535415649,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419439442659669.jpg",
+      "baseline": {
+        "labels": [
+          "open_palm"
+        ],
+        "ms": 35.7357939992653
+      },
+      "nanotrack": {
+        "labels": [
+          "open_palm"
+        ],
+        "ms": 58.4096149996185
+      },
+      "dropout": {
+        "labels": [
+          "open_palm"
+        ],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          680.4914703369141,
+          291.28875356912613,
+          153.57737731933594,
+          106.69170534610748
+        ],
+        "score": 0.9944190382957458,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419440576053342.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 55.17481900005805
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 54.10357099935936
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          739.0,
+          179.0,
+          141.0,
+          119.0
+        ],
+        "score": 0.9672076106071472,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419441642782486.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 63.22681999972701
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 70.64385800003947
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          755.0,
+          141.0,
+          133.0,
+          123.0
+        ],
+        "score": 0.9713079929351807,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419442876171573.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 70.12329400004091
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 71.6247750006005
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          758.0,
+          137.0,
+          134.0,
+          121.0
+        ],
+        "score": 0.9658085107803345,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419444009573102.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 81.50602899968362
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 68.96958500055916
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          763.0,
+          132.0,
+          131.0,
+          121.0
+        ],
+        "score": 0.9613261818885803,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419445009635916.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 76.16752000012639
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 68.15126200035593
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          770.0,
+          129.0,
+          128.0,
+          123.0
+        ],
+        "score": 0.975536584854126,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419446209715429.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 77.03662699987035
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 70.69151499945292
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          775.0,
+          126.0,
+          126.0,
+          124.0
+        ],
+        "score": 0.9874293208122253,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419447276469913.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 70.96063100016181
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 69.61310000042431
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          787.0,
+          119.0,
+          125.0,
+          124.0
+        ],
+        "score": 0.9886005520820618,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419448376484213.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 67.21841699982178
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 77.15420000022277
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          798.0,
+          111.0,
+          128.0,
+          125.0
+        ],
+        "score": 0.9950166344642639,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419449476546854.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 69.45326200002455
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 71.48158400013926
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          771.0,
+          120.0,
+          129.0,
+          125.0
+        ],
+        "score": 0.995278000831604,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    },
+    {
+      "file": "recent/1794419450509944869.jpg",
+      "baseline": {
+        "labels": [],
+        "ms": 66.46825400002854
+      },
+      "nanotrack": {
+        "labels": [],
+        "ms": 76.03086299968709
+      },
+      "dropout": {
+        "labels": [],
+        "dropped": false,
+        "active": true
+      },
+      "tracker": {
+        "active": true,
+        "owner": 1,
+        "bbox": [
+          753.0,
+          136.0,
+          129.0,
+          124.0
+        ],
+        "score": 0.9954829216003418,
+        "backend": "NanoTrack CUDA FP32"
+      }
+    }
+  ]
+}

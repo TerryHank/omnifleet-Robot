@@ -1,0 +1,16 @@
+package.xml
+setup.cfg
+setup.py
+launch/waypoint_ui.launch.py
+launch/waypoint_ui_with_panel.launch.py
+omnifleet_a2_waypoint_ui/__init__.py
+omnifleet_a2_waypoint_ui/semantic_waypoint_panel.py
+omnifleet_a2_waypoint_ui/waypoint_ui_bridge.py
+omnifleet_a2_waypoint_ui.egg-info/PKG-INFO
+omnifleet_a2_waypoint_ui.egg-info/SOURCES.txt
+omnifleet_a2_waypoint_ui.egg-info/dependency_links.txt
+omnifleet_a2_waypoint_ui.egg-info/entry_points.txt
+omnifleet_a2_waypoint_ui.egg-info/requires.txt
+omnifleet_a2_waypoint_ui.egg-info/top_level.txt
+omnifleet_a2_waypoint_ui.egg-info/zip-safe
+resource/omnifleet_a2_waypoint_ui

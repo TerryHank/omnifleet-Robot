@@ -17,6 +17,7 @@ AXIS_EVENT = 0x02
 RIGHT_STICK_X = 3
 STEERING_DEGREES = 60.0
 FORWARD_SPEED = 0.15
+MAX_SPEED = 1.0
 SPEED_STEP = 0.05
 DPAD_Y = 7
 WHEELBASE_M = 0.22492
@@ -45,14 +46,14 @@ def speed_input(events, previous_direction, speed):
             continue
         direction = (raw > 0) - (raw < 0)
         if not kind & 0x80 and direction and direction != previous_direction:
-            speed = round(max(0.05, min(0.40, speed - direction * SPEED_STEP)), 2)
+            speed = round(max(0.05, min(MAX_SPEED, speed - direction * SPEED_STEP)), 2)
         previous_direction = direction
     return previous_direction, speed
 
 
 def motion_command(horizontal, vertical, limit=STEERING_DEGREES, speed_limit=FORWARD_SPEED):
     angle = -limit * stick_fraction(horizontal)
-    speed = -speed_limit * stick_fraction(vertical)
+    speed = -min(speed_limit, MAX_SPEED) * stick_fraction(vertical)
     command = Twist()
     command.linear.x = speed
     if speed:

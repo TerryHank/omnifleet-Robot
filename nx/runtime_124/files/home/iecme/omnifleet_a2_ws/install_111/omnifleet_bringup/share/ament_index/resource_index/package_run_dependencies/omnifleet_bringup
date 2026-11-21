@@ -1,0 +1,1 @@
+geometry_msgs;nav_msgs;std_msgs;launch;launch_ros;nav2_collision_monitor;nav2_lifecycle_manager;omnifleet_behaviors;omnifleet_description;omnifleet_localization;omnifleet_planner;python3-serial;rclpy;robot_state_publisher;ros2cli;ros2lifecycle;ros2param;ros2topic;sensor_msgs;std_srvs;teleop_twist_keyboard;tf2_ros;twist_mux;omnifleet_teleop;ament_cmake_pytest

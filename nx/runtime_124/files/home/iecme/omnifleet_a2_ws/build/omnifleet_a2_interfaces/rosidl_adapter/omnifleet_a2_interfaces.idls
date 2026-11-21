@@ -1,0 +1,4 @@
+/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_interfaces/rosidl_adapter/omnifleet_a2_interfaces:msg/SlamStatus.idl
+/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_interfaces/rosidl_adapter/omnifleet_a2_interfaces:msg/SteeringAngleCommand.idl
+/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_interfaces/rosidl_adapter/omnifleet_a2_interfaces:srv/SaveMap.idl
+/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_interfaces/rosidl_adapter/omnifleet_a2_interfaces:srv/SwitchMode.idl

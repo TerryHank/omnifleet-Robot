@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet 124 local Ackermann scheduling participant
+After=omnifleet-124-rmf-navigation.service omnifleet-124-dispatch@central.service
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/.local/share/omnifleet-dispatch-124
+ExecStart=/bin/bash /home/iecme/.local/share/omnifleet-dispatch-124/run-local-observer.sh
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+Nice=4
+[Install]
+WantedBy=multi-user.target

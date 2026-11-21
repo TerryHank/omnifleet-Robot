@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-51e20c1a71580bdc0209.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "omnifleet_a2_vr_bridge",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_omnifleet_a2_vr_bridge_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_omnifleet_a2_vr_bridge_egg-4372c37cfa478afbfd9c.json",
+					"name" : "ament_cmake_python_build_omnifleet_a2_vr_bridge_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_symlink_omnifleet_a2_vr_bridge::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_symlink_omnifleet_a2_vr_bridge-376945ab213da936b234.json",
+					"name" : "ament_cmake_python_symlink_omnifleet_a2_vr_bridge",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "omnifleet_a2_vr_bridge_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-omnifleet_a2_vr_bridge_uninstall-f27ebb6c15c0776b10f7.json",
+					"name" : "omnifleet_a2_vr_bridge_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-6b6e2d6869b1617e7cb2.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_vr_bridge",
+		"source" : "/home/iecme/omnifleet_a2_ws/src/omnifleet_a2_vr_bridge"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

@@ -1,0 +1,39 @@
+omnifleet_t2_foxglove_bridge:
+  ros__parameters:
+    topic_whitelist: [".*"]
+    client_topic_whitelist:
+      - "^/omnifleet_t2/diagnostics/question$"
+      - "^/goal_pose$"
+      - "^/initialpose$"
+      - "^/(planner_selector|controller_selector)$"
+      - "^/omnifleet_t2/waypoints/(add_pose|next_name|rename|navigate_to|start|stop|undo|clear)$"
+    service_whitelist:
+      - "^/omnifleet_t2/nav2/reset_map$"
+      - "^/omnifleet_t2/nav2/(read_saved|save_parameters)$"
+      - "^/map_save$"
+      - "^/map_load$"
+    # Expose only the Nav2 inflation controls through Foxglove Parameters.
+    param_whitelist:
+      - '^/planner_server[./]GridBased\.(cost_travel_multiplier|allow_unknown)$'
+      - '^/planner_server[./](GridBased|GridNavFn|GridThetaStar)\.(cost_travel_multiplier|allow_unknown|tolerance|max_planning_time|max_iterations|downsample_costmap|use_astar|use_final_approach_orientation|how_many_corners|w_euc_cost|w_traversal_cost)$'
+      - '^/controller_server[./]FollowPath\.(BaseObstacle|PathAlign|PathDist)\.scale$'
+      - '^/controller_server[./]FollowPath\.BaseObstacle\.scale$'
+      - '^/(local_costmap/local_costmap|global_costmap/global_costmap)[./]footprint_padding$'
+      - '^/controller_server[./]FollowPath\.(max_vel_x|max_speed_xy|max_vel_theta)$'
+      - '^/controller_server[./](FollowPath|FollowPathRPP|FollowPathMPPI)\.(max_vel_x|max_speed_xy|max_vel_theta|sim_time|vx_samples|vtheta_samples|desired_linear_vel|lookahead_dist|min_lookahead_dist|max_lookahead_dist|lookahead_time|rotate_to_heading_angular_vel|max_angular_accel|use_regulated_linear_velocity_scaling|use_cost_regulated_linear_velocity_scaling|cost_scaling_dist|cost_scaling_gain|inflation_cost_scaling_factor|use_rotate_to_heading|time_steps|model_dt|batch_size|iteration_count|vx_max|vx_min|wz_max|temperature|gamma)$'
+      - '^/planner_server[./]GridBased\.(tolerance|max_planning_time|max_iterations|downsample_costmap|smooth_path|use_astar|use_final_approach_orientation|max_cycles_factor|how_many_corners|w_euc_cost|w_traversal_cost)$'
+      - '^/controller_server[./]FollowPath\.(sim_time|vx_samples|vtheta_samples|desired_linear_vel|lookahead_dist|min_lookahead_dist|max_lookahead_dist|lookahead_time|rotate_to_heading_angular_vel|max_angular_accel|use_regulated_linear_velocity_scaling|use_cost_regulated_linear_velocity_scaling|cost_scaling_dist|cost_scaling_gain|inflation_cost_scaling_factor|use_rotate_to_heading|time_steps|model_dt|batch_size|iteration_count|vx_max|vx_min|wz_max|temperature|gamma|motion_model)$'
+      - '^.*inflation_layer\.(cost_scaling_factor|inflation_radius)$'
+    capabilities: [clientPublish, parameters, parametersSubscribe, services, assets]
+    best_effort_qos_topic_whitelist:
+      - "^/tf$"
+      - "^/odom$"
+      - "^/plan$"
+      - "^/local_plan$"
+      - "^/(local_costmap|global_costmap)/published_footprint$"
+    max_qos_depth: 1
+    min_qos_depth: 1
+    message_backlog_size: 20
+    send_buffer_limit: 2000000
+    include_hidden: false
+    sysinfo: false

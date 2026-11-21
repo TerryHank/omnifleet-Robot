@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""Thin adapter to MOLA's native voxel-slice and ROS map export tools."""
+import argparse
+import math
+from pathlib import Path
+import subprocess
+import tempfile
+import yaml
+from ament_index_python.packages import get_package_prefix
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('input',type=Path,help='Registered world-frame .pcd or XYZ .txt/.xyz point cloud')
+    p.add_argument('output',type=Path,help='New output basename for .png and .yaml')
+    p.add_argument('--resolution',type=float,required=True)
+    p.add_argument('--z-min',type=float,required=True)
+    p.add_argument('--z-max',type=float,required=True)
+    a=p.parse_args()
+    if not a.input.is_file():p.error('Input file does not exist')
+    if a.input.suffix.lower() not in ('.pcd','.txt','.xyz'):p.error('Expected .pcd, .txt or .xyz')
+    if not all(math.isfinite(v) for v in (a.resolution,a.z_min,a.z_max)) or a.resolution<=0 or a.z_min>=a.z_max:
+        p.error('Resolution must be positive; finite slice bounds must satisfy z-min < z-max')
+    if any(Path(str(a.output)+ext).exists() for ext in ('.png','.yaml')):p.error('Output already exists')
+    a.output.parent.mkdir(parents=True,exist_ok=True)
+    tools=Path(get_package_prefix('mp2p_icp_core'))/'bin'
+    with tempfile.TemporaryDirectory(prefix='omnifleet-grid-') as directory:
+        work=Path(directory);xyz=a.input.resolve()
+        if a.input.suffix.lower()=='.pcd':
+            xyz=work/'cloud.xyz'
+            helper=Path(get_package_prefix('omnifleet_cloud_grid_export'))/'lib/omnifleet_cloud_grid_export/pcd_to_xyz'
+            subprocess.run([str(helper),str(a.input.resolve()),str(xyz)],check=True)
+        pipeline={
+            'generators':[{'class_name':'mp2p_icp_filters::Generator','params':{
+                'target_layer':'voxelmap','process_class_names_regex':'',
+                'metric_map_definition':{'class':'mrpt::maps::CVoxelMap',
+                    'creationOpts':{'resolution':a.resolution},
+                    'insertionOpts':{'ray_trace_free_space':False}}}}],
+            'filters':[{'class_name':'mp2p_icp_filters::FilterMerge','params':{
+                'input_pointcloud_layer':'raw','target_layer':'voxelmap','robot_pose':[0,0,0,0,0,0]}},
+                {'class_name':'mp2p_icp_filters::FilterVoxelSlice','params':{
+                    'input_layer':'voxelmap','output_layer':'gridmap',
+                    'slice_z_min':a.z_min,'slice_z_max':a.z_max}}]}
+        config=work/'pipeline.yaml';config.write_text(yaml.safe_dump(pipeline,sort_keys=False))
+        subprocess.run([str(tools/'txt2mm'),'-i',str(xyz),'-o',str(work/'raw.mm'),'-f','xyz'],check=True)
+        subprocess.run([str(tools/'mm-filter'),'-i',str(work/'raw.mm'),'-o',str(work/'grid.mm'),'-p',str(config)],check=True)
+        subprocess.run([str(tools/'mm2grid'),str(work/'grid.mm'),'--layer','gridmap','-o',str(a.output.resolve())],check=True)
+    print('Exported obstacle grid. Unobserved space remains unknown: a merged cloud has no ray viewpoints.')
+
+if __name__=='__main__':main()

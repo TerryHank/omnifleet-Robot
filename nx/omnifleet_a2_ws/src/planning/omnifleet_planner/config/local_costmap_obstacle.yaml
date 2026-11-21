@@ -1,0 +1,25 @@
+# 默认局部障碍模式：上游已完成自车、高度、距离、异常点和降采样处理。
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      plugins: [obstacle_layer, inflation_layer]
+      obstacle_layer:
+        plugin: nav2_costmap_2d::ObstacleLayer
+        enabled: true
+        footprint_clearing_enabled: true
+        max_obstacle_height: 0.80
+        observation_sources: lidar
+        lidar:
+          topic: /navigation/deskewed_points
+          sensor_frame: rslidar
+          clearing: true
+          marking: true
+          data_type: PointCloud2
+          raytrace_max_range: 8.0
+          raytrace_min_range: 0.12
+          obstacle_max_range: 6.0
+          obstacle_min_range: 0.12
+          min_obstacle_height: -0.03
+          max_obstacle_height: 0.80
+          observation_persistence: 0.35
+

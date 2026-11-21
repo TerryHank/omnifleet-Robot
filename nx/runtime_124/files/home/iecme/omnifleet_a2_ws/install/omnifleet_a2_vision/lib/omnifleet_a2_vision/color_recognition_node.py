@@ -1,0 +1,1 @@
+/home/iecme/omnifleet_a2_ws/src/omnifleet_a2_vision/scripts/classical/color_recognition_node.py

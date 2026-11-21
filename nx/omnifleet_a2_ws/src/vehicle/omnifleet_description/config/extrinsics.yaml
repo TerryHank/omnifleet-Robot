@@ -1,0 +1,31 @@
+schema_version: 1
+calibration_status: manual_ccw_90_applied
+source_file: /home/iecme/omnifleet_a2_data/calibration/frame_calibration.yaml
+applied_at: '2026-08-21T12:17:00+08:00'
+frame_convention:
+  base_link: rear_axle_midpoint_at_wheel_center_height__x_forward_y_left_z_up
+  livox_frame: mid360_factory_point_origin_and_axes
+  hik_camera_link: mechanical_mount__x_forward_y_left_z_up
+  camera_color_optical_frame: rgb_optical_center__z_forward_x_right_y_down
+base_to_livox:
+  parent_frame: base_link
+  child_frame: livox_frame
+  translation_m:
+  - 0.005230903625488281
+  - 2.514570951461792e-08
+  - 0.3160250782966614
+  rotation_rpy_rad:
+  - -3.4870645690483486e-07
+  - -2.3494320489470027e-07
+  - 0.0
+base_to_hik_camera:
+  parent_frame: base_link
+  child_frame: hik_camera_link
+  translation_m:
+  - 0.23999999463558197
+  - 0.0
+  - 0.125
+  rotation_rpy_rad:
+  - 0.024859535233999613
+  - -0.0430526811852671
+  - -0.025201432258079286

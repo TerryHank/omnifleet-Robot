@@ -1,0 +1,20 @@
+[
+  {
+    "test": "victory",
+    "present": true,
+    "cpu_label": "victory",
+    "gpu_label": "victory",
+    "max_error_px": 0.000400543212890625
+  },
+  {
+    "test": "okay",
+    "present": true,
+    "cpu_label": "okay",
+    "gpu_label": "okay",
+    "max_error_px": 8.58306884765625e-05
+  },
+  {
+    "test": "background",
+    "present": false
+  }
+]

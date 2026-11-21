@@ -1,0 +1,5 @@
+
+bool available
+bool accepted
+string transaction_id
+string message

@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_interfaces/rosidl_generator_py/omnifleet_a2_interfaces/omnifleet_a2_interfaces_s__rosidl_typesupport_c.cpython-310-aarch64-linux-gnu.so" "TARGETS" "omnifleet_a2_interfaces__rosidl_typesupport_c__pyext" "DESTINATION" "local/lib/python3.10/dist-packages/omnifleet_a2_interfaces")

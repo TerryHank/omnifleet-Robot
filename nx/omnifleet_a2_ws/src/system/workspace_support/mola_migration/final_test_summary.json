@@ -1,0 +1,54 @@
+{
+  "mola_targeted_regression_gates": 20,
+  "mola_targeted_regression_gates_passed_before_grouping": true,
+  "full_workspace_build_packages": 68,
+  "full_workspace_build_passed_before_grouping": true,
+  "post_group_build_status": "PASS: all 68 packages built from the grouped source tree",
+  "post_group_test_result": {
+    "tests": 676,
+    "errors": 0,
+    "failures": 20,
+    "skipped": 0,
+    "failure_packages": [
+      "ros_robot_controller",
+      "ros_robot_controller_msgs",
+      "rslidar_msg"
+    ],
+    "omnifleet_localization_group_path_tests": "PASS after updating workspace-root depth"
+  },
+  "full_colcon_test_result": {
+    "tests": 676,
+    "errors": 0,
+    "failures": 20,
+    "skipped": 0,
+    "remaining_failures": {
+      "ros_robot_controller": "lint/copyright",
+      "ros_robot_controller_msgs": "CMake formatting lint",
+      "rslidar_msg": "CMake formatting and copyright lint"
+    }
+  },
+  "bridge_odometry_regression": "PASS",
+  "smoother_direct_tf_regression": "PASS",
+  "static_gnss_ros_integration": "PASS",
+  "moving_georef_ros_integration": "PASS",
+  "arm_extrapolation_fixture": "PASS after avoiding negative Unix epoch conversion",
+  "bag_replay": {
+    "registrations": 2025,
+    "icp_rejected": 0,
+    "dropped_frame_ratio": 0.0078,
+    "finite_timestamped_pose_and_covariance": true
+  },
+  "active_map_relocalizer_smoke": "PASS",
+  "live_map_export_and_reload": "PASS",
+  "stationary_live_robot": {
+    "status": "PASS",
+    "duration_s": 8,
+    "odom_samples": 81,
+    "finite_poses": true,
+    "endpoint_displacement_m": 0.0,
+    "nav_cmd_vel_samples": 0,
+    "map": [500, 500, 0.10000000149011612]
+  },
+  "mola_cli_module_discovery": "PASS",
+  "chassis_motion_commands_sent": false
+}

@@ -1,0 +1,438 @@
+{
+  "system": "124",
+  "hostname": "iecme-ackermann",
+  "arch": "aarch64",
+  "kernel": "5.15.148-tegra",
+  "captured_at": "2026-11-21T08:43:17+08:00",
+  "runtime_rpp_overlay": "/home/iecme/omnifleet_a2_backups/124-rpp-gear-20261121.0dtFaH",
+  "runtime_mola_overlay": "/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121",
+  "mapped_roots": [
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/src",
+      "archive": "nx/omnifleet_a2_ws/src"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/deploy",
+      "archive": "nx/omnifleet_a2_ws/deploy"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/firmware",
+      "archive": "nx/omnifleet_a2_ws/firmware"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/foxglove",
+      "archive": "nx/omnifleet_a2_ws/foxglove"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/vendor",
+      "archive": "nx/omnifleet_a2_ws/vendor"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/README.md",
+      "archive": "nx/omnifleet_a2_ws/README.md"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/CUTOVER_CHECKLIST.md",
+      "archive": "nx/omnifleet_a2_ws/CUTOVER_CHECKLIST.md"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/src",
+      "archive": "nx/sensor_drivers_ws/src"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/rslidar_sdk",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/rslidar_sdk"
+    },
+    {
+      "source": "/home/iecme/sensor_drivers_ws/install/mvs_camera_driver",
+      "archive": "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/mvs_camera_driver"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/release105",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/release105"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/run-mola105.sh",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/run-mola105.sh"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/cpu-profile.py",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/cpu-profile.py"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/fastdds-124-compatible.xml",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/fastdds-124-compatible.xml"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/mp2p-3.1-source",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/mp2p-3.1-source"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_backups/124-rpp-gear-20261121.0dtFaH/src",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_backups/124-rpp-gear-20261121.0dtFaH/src"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_backups/124-rpp-gear-20261121.0dtFaH/install",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_backups/124-rpp-gear-20261121.0dtFaH/install"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/omnifleet_bringup",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/omnifleet_bringup"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/omnifleet_sensor_processing",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/omnifleet_sensor_processing"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/nav2_costmap_2d",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/nav2_costmap_2d"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/omnifleet_navigation_interfaces",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/omnifleet_navigation_interfaces"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/omnifleet_interfaces",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/omnifleet_interfaces"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/rslidar_msg",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/rslidar_msg"
+    },
+    {
+      "source": "/home/iecme/omnifleet_a2_ws/install_111/omnifleet_chassis_driver",
+      "archive": "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/omnifleet_chassis_driver"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-dispatch-web",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-dispatch-web"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet_rmf_adapter",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet_rmf_adapter"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet_formation_planner",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet_formation_planner"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-fastdds-lan-config",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-fastdds-lan-config"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-discovery",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/omnifleet-discovery"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/ddsrouter-runtime",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/ddsrouter-runtime"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/ros",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/ros"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/alignment",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/alignment"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/ddsrouter.yaml",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/ddsrouter.yaml"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/dispatch_nav_124.py",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/dispatch_nav_124.py"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/fleet_lease.py",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/fleet_lease.py"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/run-local-observer.sh",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/run-local-observer.sh"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-dispatch-124/run-nav-124.sh",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-dispatch-124/run-nav-124.sh"
+    },
+    {
+      "source": "/opt/foxglove-studio-cn-122/site",
+      "archive": "nx/runtime_124/files/opt/foxglove-studio-cn-122/site"
+    },
+    {
+      "source": "/etc/omnifleet_a2",
+      "archive": "nx/runtime_124/files/etc/omnifleet_a2"
+    },
+    {
+      "source": "/var/lib/omnifleet_a2/calibration",
+      "archive": "nx/runtime_124/files/var/lib/omnifleet_a2/calibration"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-124-alignment-snapshot.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-124-alignment-snapshot.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-124-ddsrouter.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-124-ddsrouter.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-124-discovery-beacon.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-124-discovery-beacon.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-124-dispatch-local.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-124-dispatch-local.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-124-dispatch-web.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-124-dispatch-web.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-124-dispatch@.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-124-dispatch@.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-124-rmf-mutex.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-124-rmf-mutex.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-124-rmf-navigation.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-124-rmf-navigation.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-124-shared-sim.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-124-shared-sim.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-airy.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-airy.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-airy.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-airy.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-chassis.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-chassis.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-chassis.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-chassis.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-foxglove-bridge.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-foxglove-bridge.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-foxglove-bridge.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-foxglove-bridge.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-foxglove-heavy.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-foxglove-heavy.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-gemini-pro.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-gemini-pro.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-gemini-pro.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-gemini-pro.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-mola.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-mola.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-mola.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-mola.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-navigation.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-navigation.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-navigation.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-navigation.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-sbus-steering.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-sbus-steering.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-vision-follow.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-vision-follow.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-vision-follow.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-vision-follow.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-vr-attitude.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-vr-attitude.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-vr-attitude.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-vr-attitude.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-vr-camera.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-vr-camera.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-waypoints.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-waypoints.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-waypoints.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-waypoints.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-web.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-web.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-web.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-web.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-a2-xbox-steering.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-a2-xbox-steering.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-onboard-peer@.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-onboard-peer@.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-t2-vr-adapter.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-t2-vr-adapter.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-t2-vr-adapter.service.d",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-t2-vr-adapter.service.d"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-web-http.service",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-web-http.service"
+    },
+    {
+      "source": "/etc/systemd/system/omnifleet-web-http.socket",
+      "archive": "nx/runtime_124/files/etc/systemd/system/omnifleet-web-http.socket"
+    },
+    {
+      "source": "/opt/ros/humble/setup.bash",
+      "archive": "nx/runtime_124/files/opt/ros/humble/setup.bash"
+    },
+    {
+      "source": "/home/iecme/.local/share/omnifleet-shared-sim-124/simulation.py",
+      "archive": "nx/runtime_124/files/home/iecme/.local/share/omnifleet-shared-sim-124/simulation.py"
+    }
+  ],
+  "auxiliary_service_scripts": [
+    "/home/iecme/.local/share/omnifleet-shared-sim-124/simulation.py",
+    "/opt/ros/humble/setup.bash"
+  ],
+  "upstream_sources": [
+    {
+      "path": "nx/sensor_drivers_ws/src/rslidar_msg",
+      "commit": "fe8a95cb242bd294cc3d5e3422f2093fb49a56ee",
+      "origin": "https://github.com/RoboSense-LiDAR/rslidar_msg.git"
+    },
+    {
+      "path": "nx/sensor_drivers_ws/src/rslidar_sdk",
+      "commit": "8b4b4b7ff910799260347821084c59e1c73d50d5",
+      "origin": "https://github.com/RoboSense-LiDAR/rslidar_sdk.git"
+    },
+    {
+      "path": "nx/sensor_drivers_ws/src/rslidar_sdk/src/rs_driver",
+      "commit": "897b14d3bdb6186a75df27ba51b65b5bd5557723",
+      "origin": "https://github.com/RoboSense-LiDAR/rs_driver.git"
+    },
+    {
+      "path": "nx/runtime_124/files/home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/mp2p-3.1-source",
+      "commit": "921bf64493e81b6e470378e2a77ad44e0255d17b",
+      "origin": "https://github.com/MOLAorg/mp2p_icp.git"
+    }
+  ],
+  "tar_entries": 25900,
+  "exclusion_counts": {
+    "missing_optional": 2,
+    "cache_git_or_runtime_data": 159,
+    "telemetry_cache_or_non_source": 849,
+    "archives_requiring_content_review": 8,
+    "model_weights_unverified_redistribution": 23,
+    "vendor_camera_sdk": 4
+  },
+  "exclusion_examples": {
+    "missing_optional": [
+      "nx/runtime_124/files/home/iecme/omnifleet_a2_ws/install_111/foxglove_bridge",
+      "nx/runtime_124/files/opt/omnifleet-web-display"
+    ],
+    "cache_git_or_runtime_data": [
+      "nx/omnifleet_a2_ws/src/common/mrpt/.gitmodules",
+      "nx/omnifleet_a2_ws/src/common/mrpt/3rdparty/nanogui/.gitmodules",
+      "nx/omnifleet_a2_ws/src/common/mrpt/share/mrpt/datasets",
+      "nx/omnifleet_a2_ws/src/common/mrpt_ros_bridge/.vscode",
+      "nx/omnifleet_a2_ws/src/control/omnifleet_behaviors/omnifleet_behaviors/__pycache__",
+      "nx/omnifleet_a2_ws/src/control/omnifleet_behaviors/test/__pycache__",
+      "nx/omnifleet_a2_ws/src/control/omnifleet_local_navigation/omnifleet_local_navigation/__pycache__",
+      "nx/omnifleet_a2_ws/src/control/omnifleet_local_navigation/test/__pycache__",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_lidar_odometry/.vscode",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_sm_loop_closure/.gitmodules",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_sm_loop_closure/.vscode",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_source_metadata/mola/.gitmodules"
+    ],
+    "telemetry_cache_or_non_source": [
+      "nx/omnifleet_a2_ws/src/common/mrpt/3rdparty/nanogui/src/darwin.mm",
+      "nx/omnifleet_a2_ws/src/common/mrpt/tests/sample_velodyne_hdl32.pcap",
+      "nx/omnifleet_a2_ws/src/common/mrpt/tests/sample_velodyne_vlp16_gps.pcap",
+      "nx/omnifleet_a2_ws/src/common/mrpt/tests/test-3d-obs-ground.rawlog",
+      "nx/omnifleet_a2_ws/src/common/mrpt/tests/test-imu-obs-format3.rawlog",
+      "nx/omnifleet_a2_ws/src/common/mrpt/tests/test-imu-obs-format4.rawlog",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_georeferencing/tests/m2dgr_gate01_gps.simplemap",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_viz_imgui/3rdparty/imgui/backends/imgui_impl_metal.mm",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_viz_imgui/3rdparty/imgui/backends/imgui_impl_osx.mm",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_viz_imgui/3rdparty/imgui/examples/example_apple_metal/main.mm",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_viz_imgui/3rdparty/imgui/examples/example_apple_opengl2/main.mm",
+      "nx/omnifleet_a2_ws/src/localization/omnifleet_mola/mola_viz_imgui/3rdparty/imgui/examples/example_glfw_metal/main.mm"
+    ],
+    "archives_requiring_content_review": [
+      "nx/omnifleet_a2_ws/src/common/mrpt/3rdparty/rplidar_sdk/bonjour.zip",
+      "nx/omnifleet_a2_ws/src/common/mrpt/3rdparty/rplidar_sdk/dll.rar",
+      "nx/omnifleet_a2_ws/src/common/mrpt/3rdparty/rplidar_sdk/tools/cp2102_driver/CP210x_Windows_Drivers.zip",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/hand-nanotrack-20261112/regression-frames.tar.gz",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/hand-palm-20261112/current-one.tar.gz",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/hand-palm-20261112/frames.tar.gz",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/sync-unified-20261112/hand-runtime.tar.gz",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/sync-unified-20261112/source.tar.gz"
+    ],
+    "model_weights_unverified_redistribution": [
+      "nx/omnifleet_a2_ws/src/omnifleet_a2_vision/models/vendor/traffic_light.onnx",
+      "nx/omnifleet_a2_ws/src/omnifleet_a2_vision/models/vendor/traffic_light.pt",
+      "nx/omnifleet_a2_ws/src/omnifleet_a2_vision/models/vendor/yolo11n_coco.onnx",
+      "nx/omnifleet_a2_ws/src/omnifleet_a2_vision/models/vendor/yolo11n_coco.pt",
+      "nx/omnifleet_a2_ws/src/omnifleet_a2_vision/models/vendor/yolov8s_pose.onnx",
+      "nx/omnifleet_a2_ws/src/omnifleet_a2_vision/models/vendor/yolov8s_pose.pt",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/hand-nanotrack-20261112/person-raw.engine",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/hand-palm-20261112/palm_full.onnx",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/hand-palm-20261112/palm_full.tflite",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/hand-palm-20261112/palm_full_fp32.engine",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/sync-unified-20261112/hand_full.onnx",
+      "nx/omnifleet_a2_ws/deploy/vision-gemini-122/sync-unified-20261112/hand_full_fp32.engine"
+    ],
+    "vendor_camera_sdk": [
+      "nx/sensor_drivers_ws/src/mvs_camera_driver/vendor/MVS-5.0.1_aarch64_20260512.tar.gz",
+      "nx/sensor_drivers_ws/src/mvs_camera_driver/vendor/MVS-5.0.1_x86_64_20260512.tar.gz",
+      "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/mvs_camera_driver/share/mvs_camera_driver/vendor/MVS-5.0.1_aarch64_20260512.tar.gz",
+      "nx/runtime_124/files/home/iecme/sensor_drivers_ws/install/mvs_camera_driver/share/mvs_camera_driver/vendor/MVS-5.0.1_x86_64_20260512.tar.gz"
+    ]
+  },
+  "post_capture_calibration": {
+    "max_angle_deg": 40,
+    "planner_minimum_turning_radius_m": 1.15,
+    "rpp_minimum_turning_radius_m": 1.15,
+    "mppi_minimum_turning_radius_m": 1.15,
+    "runtime_verified": true,
+    "evidence": "124 live steering service and linked Nav2 parameter API readback"
+  }
+}

@@ -1,0 +1,19 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from omnifleet_a2_interfaces/srv/SaveMap.srv
+// generated code does not contain a copyright notice
+
+
+module omnifleet_a2_interfaces {
+  module srv {
+    struct SaveMap_Request {
+      string label;
+    };
+    struct SaveMap_Response {
+      boolean success;
+
+      string map_id;
+
+      string message;
+    };
+  };
+};

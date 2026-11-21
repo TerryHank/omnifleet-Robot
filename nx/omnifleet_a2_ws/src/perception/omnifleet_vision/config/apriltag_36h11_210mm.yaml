@@ -1,0 +1,6 @@
+/**:
+  ros__parameters:
+    target_id: 0
+    # Measured between the outer black edges, excluding any surrounding white margin.
+    tag_size_m: 0.21
+    camera_info_topic: /camera/color/camera_info

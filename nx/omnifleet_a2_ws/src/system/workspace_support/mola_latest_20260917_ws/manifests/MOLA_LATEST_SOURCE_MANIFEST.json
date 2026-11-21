@@ -1,0 +1,324 @@
+{
+  "selection_policy": "latest stable semantic-version tag per official repository as of 2026-09-17; no develop HEAD; compatibility validated by one isolated colcon graph/build/test",
+  "mola_core_anchor": "mola 3.2.1",
+  "repositories": [
+    {
+      "repo": "mola",
+      "url": "https://github.com/MOLAorg/mola.git",
+      "tag": "3.2.1",
+      "branch": null,
+      "commit": "3de167ad809112fcc34097f97071e5b25e2c3a87",
+      "commit_date": "2026-09-15T19:53:36+02:00",
+      "subject": "3.2.1",
+      "packages": [
+        {
+          "path": "mola/package.xml",
+          "name": "mola",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_bridge_ros2/package.xml",
+          "name": "mola_bridge_ros2",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_demos/package.xml",
+          "name": "mola_demos",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_input_lidar_bin_dataset/package.xml",
+          "name": "mola_input_lidar_bin_dataset",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_input_rawlog/package.xml",
+          "name": "mola_input_rawlog",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_input_rosbag2/package.xml",
+          "name": "mola_input_rosbag2",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_input_video/package.xml",
+          "name": "mola_input_video",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_kernel/package.xml",
+          "name": "mola_kernel",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_launcher/package.xml",
+          "name": "mola_launcher",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_metric_maps/package.xml",
+          "name": "mola_metric_maps",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_msgs/package.xml",
+          "name": "mola_msgs",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_pose_list/package.xml",
+          "name": "mola_pose_list",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_relocalization/package.xml",
+          "name": "mola_relocalization",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_traj_tools/package.xml",
+          "name": "mola_traj_tools",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_viz/package.xml",
+          "name": "mola_viz",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_viz_imgui/package.xml",
+          "name": "mola_viz_imgui",
+          "version": "3.2.1"
+        },
+        {
+          "path": "mola_yaml/package.xml",
+          "name": "mola_yaml",
+          "version": "3.2.1"
+        }
+      ],
+      "submodules": [
+        " bd14e6830a1474fed9d2d03f5c3b0683d818d540 mola_metric_maps/3rdparty/robin-map (v1.4.1)",
+        " 934c6a5f5ef2355d6df25395d555cb71f790c4e9 mola_viz_imgui/3rdparty/imgui (v1.92.6-docking-28-g934c6a5f5)",
+        " d65a2bef53d32502407de3a4be80f191e2f412d7 mola_viz_imgui/3rdparty/implot (v1.0-6-gd65a2be)"
+      ]
+    },
+    {
+      "repo": "mola_common",
+      "url": "https://github.com/MOLAorg/mola_common.git",
+      "tag": "0.6.1",
+      "branch": null,
+      "commit": "d25cf0b4950c47039234586d6dd3e15e6d6f0be0",
+      "commit_date": "2026-05-17T22:50:02+02:00",
+      "subject": "0.6.1",
+      "packages": [
+        {
+          "path": "package.xml",
+          "name": "mola_common",
+          "version": "0.6.1"
+        }
+      ],
+      "submodules": []
+    },
+    {
+      "repo": "mp2p_icp",
+      "url": "https://github.com/MOLAorg/mp2p_icp.git",
+      "tag": "2.14.1",
+      "branch": null,
+      "commit": "e41bac069b1e63fbae12b62957edba6363d61e1f",
+      "commit_date": "2026-09-15T21:01:11+02:00",
+      "subject": "2.14.1",
+      "packages": [
+        {
+          "path": "mp2p_icp/package.xml",
+          "name": "mp2p_icp",
+          "version": "2.14.1"
+        },
+        {
+          "path": "mp2p_icp_core/package.xml",
+          "name": "mp2p_icp_core",
+          "version": "2.14.1"
+        },
+        {
+          "path": "mp2p_icp_viz/package.xml",
+          "name": "mp2p_icp_viz",
+          "version": "2.14.1"
+        }
+      ],
+      "submodules": [
+        " bd14e6830a1474fed9d2d03f5c3b0683d818d540 mp2p_icp_core/3rdparty/robin-map (v1.4.1)",
+        " b334d19b667958ed970000073644d911fae17e57 mp2p_icp_viz/3rdparty/imgui (v1.62-7373-gb334d19b6)"
+      ]
+    },
+    {
+      "repo": "mola_lidar_odometry",
+      "url": "https://github.com/MOLAorg/mola_lidar_odometry.git",
+      "tag": "3.2.0",
+      "branch": null,
+      "commit": "7267828daf83eef47754fc35757a326fef8cb4bf",
+      "commit_date": "2026-08-21T15:29:54+02:00",
+      "subject": "3.2.0",
+      "packages": [
+        {
+          "path": "package.xml",
+          "name": "mola_lidar_odometry",
+          "version": "3.2.0"
+        }
+      ],
+      "submodules": []
+    },
+    {
+      "repo": "mola_state_estimation",
+      "url": "https://github.com/MOLAorg/mola_state_estimation.git",
+      "tag": "2.4.2",
+      "branch": null,
+      "commit": "c59a3de2cfb4b15985fbe5bce37970e5c465086e",
+      "commit_date": "2026-06-04T01:02:44+02:00",
+      "subject": "2.4.2",
+      "packages": [
+        {
+          "path": "mola_georeferencing/package.xml",
+          "name": "mola_georeferencing",
+          "version": "2.4.2"
+        },
+        {
+          "path": "mola_gtsam_factors/package.xml",
+          "name": "mola_gtsam_factors",
+          "version": "2.4.2"
+        },
+        {
+          "path": "mola_state_estimation/package.xml",
+          "name": "mola_state_estimation",
+          "version": "2.4.2"
+        },
+        {
+          "path": "mola_state_estimation_simple/package.xml",
+          "name": "mola_state_estimation_simple",
+          "version": "2.4.2"
+        },
+        {
+          "path": "mola_state_estimation_smoother/package.xml",
+          "name": "mola_state_estimation_smoother",
+          "version": "2.4.2"
+        }
+      ],
+      "submodules": []
+    },
+    {
+      "repo": "mola_imu_preintegration",
+      "url": "https://github.com/MOLAorg/mola_imu_preintegration.git",
+      "tag": "2.0.0",
+      "branch": null,
+      "commit": "054edd88944cfe582bc752b183163dd2480d39eb",
+      "commit_date": "2026-09-05T00:18:08+02:00",
+      "subject": "2.0.0",
+      "packages": [
+        {
+          "path": "package.xml",
+          "name": "mola_imu_preintegration",
+          "version": "2.0.0"
+        }
+      ],
+      "submodules": []
+    },
+    {
+      "repo": "mola_sm_loop_closure",
+      "url": "https://github.com/MOLAorg/mola_sm_loop_closure.git",
+      "tag": "1.2.2",
+      "branch": null,
+      "commit": "cc6f30fdc2acb98315c0a10048d2fd40ccc55011",
+      "commit_date": "2026-06-17T00:00:23+02:00",
+      "subject": "1.2.2",
+      "packages": [
+        {
+          "path": "package.xml",
+          "name": "mola_sm_loop_closure",
+          "version": "1.2.2"
+        },
+        {
+          "path": "third_party/kiss-matcher/ros/package.xml",
+          "name": "kiss_matcher_ros",
+          "version": "0.1.0"
+        }
+      ],
+      "submodules": [
+        " 669fe866b1c612daa3702292571c25dc1bc61c86 third_party/kiss-matcher (v1.0.2-2-g669fe86)",
+        " 64f4096d3010dd569eb0061eaab3b6073428ee8d third_party/robin (v.1.2.7-3-g64f4096)"
+      ]
+    },
+    {
+      "repo": "mola_test_datasets",
+      "url": "https://github.com/MOLAorg/mola_test_datasets.git",
+      "tag": "0.5.0",
+      "branch": null,
+      "commit": "3d1d930219b8b1187a8d19a4cd70b85258d34308",
+      "commit_date": "2026-06-16T20:39:15+02:00",
+      "subject": "0.5.0",
+      "packages": [
+        {
+          "path": "package.xml",
+          "name": "mola_test_datasets",
+          "version": "0.5.0"
+        }
+      ],
+      "submodules": []
+    },
+    {
+      "repo": "mola_academic_datasets",
+      "url": "https://github.com/MOLAorg/mola_academic_datasets.git",
+      "tag": "3.0.0",
+      "branch": null,
+      "commit": "29b0aabc1e2c28722af73bf375d97808a4fbd18a",
+      "commit_date": "2026-05-12T12:44:43+02:00",
+      "subject": "3.0.0",
+      "packages": [
+        {
+          "path": "kitti_metrics_eval/package.xml",
+          "name": "kitti_metrics_eval",
+          "version": "3.0.0"
+        },
+        {
+          "path": "mola_academic_datasets/package.xml",
+          "name": "mola_academic_datasets",
+          "version": "3.0.0"
+        },
+        {
+          "path": "mola_input_euroc_dataset/package.xml",
+          "name": "mola_input_euroc_dataset",
+          "version": "3.0.0"
+        },
+        {
+          "path": "mola_input_kitti360_dataset/package.xml",
+          "name": "mola_input_kitti360_dataset",
+          "version": "3.0.0"
+        },
+        {
+          "path": "mola_input_kitti_dataset/package.xml",
+          "name": "mola_input_kitti_dataset",
+          "version": "3.0.0"
+        },
+        {
+          "path": "mola_input_mulran_dataset/package.xml",
+          "name": "mola_input_mulran_dataset",
+          "version": "3.0.0"
+        },
+        {
+          "path": "mola_input_paris_luco_dataset/package.xml",
+          "name": "mola_input_paris_luco_dataset",
+          "version": "3.0.0"
+        }
+      ],
+      "submodules": []
+    }
+  ],
+  "external_build_dependencies": {
+    "pmc": {
+      "commit": "4bbd40ababd8e925c4e1845c509173afe766b443",
+      "source": "official CMake pin"
+    },
+    "xenium": {
+      "commit": "1c449ae953ce2a440b0d16c5ed1181d2754860ab",
+      "source": "main resolved and frozen at build time"
+    }
+  }
+}

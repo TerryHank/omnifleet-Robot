@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-6f28b37b334f321081bf.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "omnifleet_a2_bringup",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_omnifleet_a2_bringup_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_omnifleet_a2_bringup_egg-Release-2e742e1e3250959d1232.json",
+					"name" : "ament_cmake_python_build_omnifleet_a2_bringup_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_symlink_omnifleet_a2_bringup::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_symlink_omnifleet_a2_bringup-Release-45938bfb056acbcaf01b.json",
+					"name" : "ament_cmake_python_symlink_omnifleet_a2_bringup",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "omnifleet_a2_bringup_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-omnifleet_a2_bringup_uninstall-Release-5ba1abd3381232aea516.json",
+					"name" : "omnifleet_a2_bringup_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-9caa104593654ff1ae2c.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_bringup",
+		"source" : "/home/iecme/omnifleet_a2_ws/src/omnifleet_a2_bringup"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

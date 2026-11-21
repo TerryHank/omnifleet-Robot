@@ -1,73 +1,43 @@
-import base64
 import json
 import math
+import socket
+from collections import OrderedDict
 import threading
 import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
 
-import numpy as np
 import rclpy
-from geometry_msgs.msg import Twist, Vector3
-from nav_msgs.msg import OccupancyGrid, Odometry
+from geometry_msgs.msg import Twist
 from omnifleet_interfaces.srv import ServoCommand
 from rclpy.executors import ExternalShutdownException
-from rclpy.qos import DurabilityPolicy, QoSProfile, qos_profile_sensor_data
-from sensor_msgs.msg import CompressedImage, Imu, PointCloud2
-from sensor_msgs_py.point_cloud2 import read_points
-from std_msgs.msg import Float32, Float64, String
 from std_srvs.srv import Trigger
-
-state = {}
-jpeg = b''
-cloud_at = 0.0
-page = Path(__file__).with_name('index.html').read_bytes()
-
-
-def update(key, value):
-    state[key] = {'value': value, 'at': time.monotonic()}
-
-
-def odometry(msg, key="odom"):
-    p, q = msg.pose.pose.position, msg.pose.pose.orientation
-    yaw = math.atan2(2 * (q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z))
-    update(key, [p.x, p.y, yaw, msg.twist.twist.linear.x])
-
-
-def occupancy(msg):
-    i = msg.info
-    q = i.origin.orientation
-    yaw = math.atan2(2 * (q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z))
-    update('map', {
-        'width': i.width, 'height': i.height, 'resolution': i.resolution,
-        'origin': [i.origin.position.x, i.origin.position.y, yaw],
-        'cells': base64.b64encode(bytes(msg.data)).decode(),
-    })
-
-
-def camera(msg):
-    global jpeg
-    jpeg = bytes(msg.data)
-
-
-def cloud(msg):
-    global cloud_at
-    now = time.monotonic()
-    if now - cloud_at < 0.4:
-        return
-    cloud_at = now
-    records = read_points(msg, field_names=('x', 'y', 'z'), skip_nans=False)
-    xyz = np.column_stack([records[field] for field in ('x', 'y', 'z')])
-    xyz = xyz[::max(1, (len(xyz) + 2499)//2500)]
-    xyz = xyz[np.isfinite(xyz).all(axis=1)]
-    update('points', xyz.round(2).tolist())
-
+from navigation_parameters import NavigationParameters
+from navigation_display import NavigationDisplay
 
 class Handler(SimpleHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+
+    def setup(self):
+        super().setup()
+        self.connection.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory="/opt/foxglove-studio-cn-122/site", **kwargs)
 
     def do_POST(self):
+        if self.path == '/api/nav2/parameters':
+            try:
+                size = int(self.headers.get('Content-Length', 0))
+                if not 0 < size <= 1024 or self.headers.get_content_type() != 'application/json':
+                    raise ValueError("无效参数请求")
+                request = json.loads(self.rfile.read(size))
+                result = self.server.navigation_parameters.set(request['id'], request['value'])
+                self.send_json(result)
+            except (ValueError, KeyError, TypeError) as error:
+                self.send_json({"error": str(error)}, status=400)
+            except OSError as error:
+                self.send_json({"error": str(error)}, status=503)
+            return
         if self.path == '/api/steering-limit':
             self.steering_limit(save=True)
             return
@@ -90,16 +60,32 @@ class Handler(SimpleHTTPRequestHandler):
             self.connection.settimeout(1.0)
             command = json.loads(self.rfile.read(size))
             linear = float(command['linear'])
-            angular = float(command['angular'])
+            # angular_z follows ROS. The older Foxglove panel sent right-positive angular.
+            angular = float(command['angular_z']) if 'angular_z' in command else -float(command['angular'])
             if not math.isfinite(linear) or not math.isfinite(angular):
+                raise ValueError
+            source = command.get("stream")
+            sequence = command.get("sequence")
+            if source is not None and (not isinstance(source, str) or len(source) > 64
+                                       or type(sequence) is not int or sequence < 0):
                 raise ValueError
         except (ValueError, TypeError, KeyError, OSError):
             self.send_error(400)
             return
         twist = Twist()
-        twist.linear.x = max(-0.4, min(0.4, linear))
+        twist.linear.x = max(-1.0, min(1.0, linear))
         twist.angular.z = max(-3.1, min(3.1, angular))
-        self.server.drive.publish(twist)
+        if source is None:
+            self.server.drive.publish(twist)
+        else:
+            with self.server.drive_lock:
+                order = self.server.drive_order
+                if sequence > order.get(source, -1):
+                    order[source] = sequence
+                    order.move_to_end(source)
+                    while len(order) > 64:
+                        order.popitem(last=False)
+                    self.server.drive.publish(twist)
         self.send_response(204)
         self.end_headers()
     def reset_heading(self):
@@ -228,35 +214,35 @@ class Handler(SimpleHTTPRequestHandler):
             return
         self.steering_center(90 + offset)
 
+    def send_json(self, value, status=200):
+        content = json.dumps(value, ensure_ascii=False).encode('utf-8')
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json; charset=utf-8')
+        self.send_header('Cache-Control', 'no-store')
+        self.send_header('Content-Length', str(len(content)))
+        self.end_headers()
+        self.wfile.write(content)
+
     def do_GET(self):
+        if self.path == '/api/nav2/parameters':
+            try:
+                self.send_json(self.server.navigation_parameters.read())
+            except (OSError, ValueError, StopIteration) as error:
+                self.send_json({"error": str(error)}, status=503)
+            return
         if self.path == '/api/steering-limit':
             self.steering_limit()
             return
         if self.path == '/api/steering-center':
             self.steering_center()
             return
-        if self.path == '/dashboard':
-            body, kind = page, 'text/html; charset=utf-8'
-        elif self.path == '/api/state':
-            now = time.monotonic()
-            body = json.dumps({k: {'value': v['value'], 'age': round(now-v['at'], 2)}
-                               for k, v in state.copy().items() if k != 'map'}, ensure_ascii=False).encode()
-            kind = 'application/json'
-        elif self.path == '/api/map' and 'map' in state:
-            grid = state['map']
-            body = json.dumps({'value': grid['value'], 'age': round(time.monotonic()-grid['at'], 2)}).encode()
-            kind = 'application/json'
-        elif self.path.split('?', 1)[0] == '/camera.jpg' and jpeg:
-            body, kind = jpeg, 'image/jpeg'
-        else:
-            super().do_GET()
+        if self.path.split('?', 1)[0] == '/dashboard':
+            self.send_response(302)
+            self.send_header('Location', '/')
+            self.send_header('Content-Length', '0')
+            self.end_headers()
             return
-        self.send_response(200)
-        self.send_header('Content-Type', kind)
-        self.send_header('Cache-Control', 'no-store')
-        self.send_header('Content-Length', str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
+        super().do_GET()
 
     def log_message(self, *_):
         pass
@@ -265,24 +251,13 @@ class Handler(SimpleHTTPRequestHandler):
 def main():
     rclpy.init()
     node = rclpy.create_node('omnifleet_112_web')
-    subscriptions = [
-        (Float64, '/vr/heading_rad', lambda m: update('heading', m.data)),
-        (Vector3, '/vr/attitude_rpy_rad', lambda m: update('attitude', [m.x, m.y, m.z])),
-        (Odometry, '/odom', odometry),
-        (Odometry, '/lidar_odometry/pose', lambda m: odometry(m, 'localization')),
-        (Imu, '/rslidar_imu_data_corrected', lambda m: update('angular', m.angular_velocity.z)),
-        (Float32, '/omnifleet_a2/chassis/voltage', lambda m: update('voltage', m.data)),
-        (String, '/omnifleet_a2/waypoints/status', lambda m: update('waypoints', m.data)),
-        (PointCloud2, '/rslidar_points', cloud),
-        (CompressedImage, '/tof/color/image_raw/compressed', camera),
-    ]
-    for msg, topic, callback in subscriptions:
-        node.create_subscription(msg, topic, callback, qos_profile_sensor_data)
-    node.create_subscription(OccupancyGrid, '/map', occupancy,
-                             QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL))
-    with ThreadingHTTPServer(('0.0.0.0', 80), Handler) as server:
+    with ThreadingHTTPServer(('127.0.0.1', 8781), Handler) as server:
         server.heading_reset = node.create_client(Trigger, '/vr/reset_heading')
         server.drive = node.create_publisher(Twist, '/cmd_vel', 1)
+        server.drive_lock = threading.Lock()
+        server.drive_order = OrderedDict()
+        server.navigation_parameters = NavigationParameters(node)
+        server.navigation_display = NavigationDisplay(node)
         server.steering_center = node.create_client(ServoCommand, '/omnifleet_a2/chassis/steering_center')
         server.steering_center_lock = threading.Lock()
         threading.Thread(target=server.serve_forever, daemon=True).start()

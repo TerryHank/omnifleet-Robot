@@ -1,0 +1,16 @@
+vr_protocol_adapter:
+  ros__parameters:
+    car_id: CAR-IECME112
+    car_name: OmniFleet-Ackermann
+    enable_drive: false
+    ctrl_port: 8888
+    discovery_port: 9100
+    pose_port: 9000
+    video_port: 8090
+    odom_topic: /odom
+    heading_topic: /lidar_odometry/pose
+    heading_zero_file: /run/omnifleet-112-vr/mola-heading-zero
+    attitude_topic: /vr/imu/filtered
+    rep103_attitude: true
+    camera_topic: /tof/color/image_raw/compressed
+    network_interface: wlP1p1s0

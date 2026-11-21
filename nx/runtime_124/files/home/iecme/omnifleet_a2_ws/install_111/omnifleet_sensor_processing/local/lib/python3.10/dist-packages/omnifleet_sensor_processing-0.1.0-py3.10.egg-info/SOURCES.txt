@@ -1,0 +1,11 @@
+setup.py
+omnifleet_sensor_processing/__init__.py
+omnifleet_sensor_processing/fresh_pointcloud_filter.py
+omnifleet_sensor_processing/height_filtered_cloud.py
+omnifleet_sensor_processing/lidar_velocity.py
+omnifleet_sensor_processing/pointcloud_radius_filter.py
+omnifleet_sensor_processing/usb_camera_publisher.py
+omnifleet_sensor_processing.egg-info/PKG-INFO
+omnifleet_sensor_processing.egg-info/SOURCES.txt
+omnifleet_sensor_processing.egg-info/dependency_links.txt
+omnifleet_sensor_processing.egg-info/top_level.txt

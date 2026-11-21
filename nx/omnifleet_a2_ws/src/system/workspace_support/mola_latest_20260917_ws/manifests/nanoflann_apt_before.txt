@@ -1,0 +1,6 @@
+ros-humble-nanoflann-vendor:
+  已安装： (无)
+  候选：  1.12.1-1jammy.20260813.031146
+  版本列表：
+     1.12.1-1jammy.20260813.031146 500
+        500 https://mirrors.ustc.edu.cn/ros2/ubuntu jammy/main arm64 Packages

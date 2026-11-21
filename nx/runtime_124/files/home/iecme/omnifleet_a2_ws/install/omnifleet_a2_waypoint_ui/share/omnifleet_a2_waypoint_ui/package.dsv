@@ -1,0 +1,9 @@
+source;share/omnifleet_a2_waypoint_ui/hook/pythonpath.ps1
+source;share/omnifleet_a2_waypoint_ui/hook/pythonpath.dsv
+source;share/omnifleet_a2_waypoint_ui/hook/pythonpath.sh
+source;share/omnifleet_a2_waypoint_ui/hook/ament_prefix_path.ps1
+source;share/omnifleet_a2_waypoint_ui/hook/ament_prefix_path.dsv
+source;share/omnifleet_a2_waypoint_ui/hook/ament_prefix_path.sh
+source;../../build/omnifleet_a2_waypoint_ui/share/omnifleet_a2_waypoint_ui/hook/pythonpath_develop.ps1
+source;../../build/omnifleet_a2_waypoint_ui/share/omnifleet_a2_waypoint_ui/hook/pythonpath_develop.dsv
+source;../../build/omnifleet_a2_waypoint_ui/share/omnifleet_a2_waypoint_ui/hook/pythonpath_develop.sh

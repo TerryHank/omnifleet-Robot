@@ -1,0 +1,4 @@
+source;share/omnifleet_sensor_processing/local_setup.bash
+source;share/omnifleet_sensor_processing/local_setup.dsv
+source;share/omnifleet_sensor_processing/local_setup.sh
+source;share/omnifleet_sensor_processing/local_setup.zsh

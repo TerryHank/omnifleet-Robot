@@ -1,0 +1,4 @@
+source;share/omnifleet_a2_vision/local_setup.bash
+source;share/omnifleet_a2_vision/local_setup.dsv
+source;share/omnifleet_a2_vision/local_setup.sh
+source;share/omnifleet_a2_vision/local_setup.zsh

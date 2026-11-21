@@ -1,0 +1,14 @@
+{
+  "package_name": "omnifleet_interfaces",
+  "non_idl_tuples": [
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_interfaces:msg/SlamStatus.msg",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_interfaces:msg/MissionStatus.msg",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_interfaces:srv/Capability.srv",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_interfaces:srv/LoadMission.srv",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_interfaces:srv/RunMission.srv",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_interfaces:srv/SaveMap.srv",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_interfaces:srv/ServoCommand.srv",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_interfaces:srv/StoreMission.srv",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_interfaces:srv/SwitchMode.srv"
+  ]
+}

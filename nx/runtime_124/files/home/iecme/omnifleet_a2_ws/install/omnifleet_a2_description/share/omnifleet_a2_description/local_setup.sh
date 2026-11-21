@@ -1,0 +1,1 @@
+/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_description/ament_cmake_environment_hooks/local_setup.sh

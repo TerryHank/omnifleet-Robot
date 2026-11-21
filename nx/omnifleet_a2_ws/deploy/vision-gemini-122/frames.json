@@ -1,0 +1,31 @@
+{
+  "seconds": 12.000529114999992,
+  "counts": {
+    "/camera/depth/image_raw": 361,
+    "/camera/color/image_raw": 360
+  },
+  "last": {
+    "/camera/depth/image_raw": {
+      "width": 640,
+      "height": 400,
+      "encoding": "16UC1",
+      "stamp": [
+        1794443030,
+        117843968
+      ],
+      "sample_max": 255,
+      "sample_std": 82.98093903873347
+    },
+    "/camera/color/image_raw": {
+      "width": 1920,
+      "height": 1080,
+      "encoding": "rgb8",
+      "stamp": [
+        1794443030,
+        89682944
+      ],
+      "sample_max": 255,
+      "sample_std": 63.85839514071001
+    }
+  }
+}

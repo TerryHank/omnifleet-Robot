@@ -1,0 +1,31 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from omnifleet_interfaces/srv/ServoCommand.srv
+// generated code does not contain a copyright notice
+
+
+module omnifleet_interfaces {
+  module srv {
+    struct ServoCommand_Request {
+      uint8 operation;
+
+      uint8 id;
+
+      int32 arg0;
+
+      int32 arg1;
+
+      int32 arg2;
+    };
+    struct ServoCommand_Response {
+      boolean success;
+
+      int32 value0;
+
+      int32 value1;
+
+      int32 value2;
+
+      string message;
+    };
+  };
+};

@@ -1,0 +1,31 @@
+=head1 NAME
+
+mrpt-performance - Complete performance test for MRPT
+
+=head1 SYNOPSIS
+
+mrpt-performance
+
+=head1 DESCRIPTION
+
+B<mrpt-performance> is a command-line tool for performing a complete test of 
+performance (in execution time) of many different modules of MRPT. The results
+are dumped as an HTML document.
+
+=head1 BUGS
+
+Please report bugs at https://github.com/MRPT/mrpt/issues
+
+=head1 SEE ALSO
+
+The application list and their documentation: https://docs.mrpt.org/reference/latest/applications.html
+
+=head1 AUTHORS
+
+B<mrpt-performance> is part of the Mobile Robot Programming Toolkit (MRPT), 
+and was originally written by the MAPIR laboratory (University of Malaga).
+
+This manual page was written by Jose Luis Blanco <joseluisblancoc@gmail.com>.
+
+=cut
+

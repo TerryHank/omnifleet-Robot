@@ -1,0 +1,21 @@
+repositories:
+  mola:
+    type: git
+    url: https://github.com/MOLAorg/mola.git
+    version: 0888abca0f1fc369fe71315d05f6ba274673e2f4
+  mola_lidar_odometry:
+    type: git
+    url: https://github.com/MOLAorg/mola_lidar_odometry.git
+    version: 7267828daf83eef47754fc35757a326fef8cb4bf
+  mola_state_estimation:
+    type: git
+    url: https://github.com/MOLAorg/mola_state_estimation.git
+    version: c59a3de2cfb4b15985fbe5bce37970e5c465086e
+  mola_imu_preintegration:
+    type: git
+    url: https://github.com/MOLAorg/mola_imu_preintegration.git
+    version: a9c7e337f368fe3ac07d96c128c5d50ab68de684
+  mp2p_icp:
+    type: git
+    url: https://github.com/MOLAorg/mp2p_icp.git
+    version: 4c6fbba5a2506a9900f5c18bd9d69404997645c4

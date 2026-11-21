@@ -1,0 +1,1 @@
+action_msgs;geometry_msgs;launch;launch_ros;nav2_msgs;omnifleet_a2_interfaces;python3-serial;python3-smbus;python3-yaml;rclpy;std_msgs;std_srvs;ament_cmake_pytest

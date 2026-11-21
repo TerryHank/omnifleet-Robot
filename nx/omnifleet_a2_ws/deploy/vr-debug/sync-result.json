@@ -1,0 +1,30 @@
+{
+  "copied_files": [],
+  "already_identical_files": [
+    "src/control/omnifleet_vr_bridge/README.md",
+    "src/control/omnifleet_vr_bridge/CMakeLists.txt",
+    "src/control/omnifleet_vr_bridge/package.xml",
+    "src/control/omnifleet_vr_bridge/omnifleet_vr_bridge/__init__.py",
+    "src/control/omnifleet_vr_bridge/omnifleet_vr_bridge/bridge_node.py",
+    "src/control/omnifleet_vr_bridge/launch/vr_bridge.launch.py",
+    "src/control/omnifleet_vr_bridge/scripts/vr_bridge",
+    "src/control/omnifleet_vr_bridge/config/vr_bridge.yaml",
+    "src/control/omnifleet_teleop/setup.cfg",
+    "src/control/omnifleet_teleop/README.md",
+    "src/control/omnifleet_teleop/README.omnifleet.md",
+    "src/control/omnifleet_teleop/setup.py",
+    "src/control/omnifleet_teleop/package.xml",
+    "src/control/omnifleet_teleop/omnifleet_teleop/vr_protocol_adapter.py",
+    "src/control/omnifleet_teleop/omnifleet_teleop/__init__.py",
+    "src/control/omnifleet_teleop/resource/omnifleet_teleop",
+    "src/system/omnifleet_bringup/omnifleet_bringup/vr_protocol_adapter.py",
+    "src/system/omnifleet_bringup/docs/VR_PROTOCOL_QUICKSTART.md",
+    "src/system/omnifleet_bringup/scripts/vr_protocol_adapter"
+  ],
+  "identity": "CAR-IECME112",
+  "domain": 42,
+  "middleware": "rmw_fastrtps_cpp",
+  "source_113_enable_drive": false,
+  "target_enable_drive": false,
+  "chassis_or_firmware_changed": false
+}

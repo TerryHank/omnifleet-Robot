@@ -1,0 +1,78 @@
+# =====================================================================================
+# Pipeline block: publishing, profiling, debugging and diagnostics
+#
+# Shared by the pipelines/*.yaml files through `$import`. See the
+# "Pipeline blocks" section in the docs for how to override it.
+# =====================================================================================
+
+params:
+  # When publishing pose updates, the reference frame for both, estimated robot poses, and the local map.
+  publish_reference_frame: "${MOLA_LO_PUBLISH_REF_FRAME|odom}"
+
+  # When publishing pose updates, the vehicle frame name.
+  publish_vehicle_frame: "${MOLA_LO_PUBLISH_VEHICLE_FRAME|base_link}"
+
+  # If enabled, deskewed scans will be published (so, they will be available as ROS2 messages), mostly for visualization.
+  # This may slow-down the system, so it is disabled by default.
+  publish_deskewed_scans: "${MOLA_LO_PUBLISH_DESKEWED_SCANS|false}"
+  publish_navigation_deskewed_scans: "${MOLA_LO_PUBLISH_NAVIGATION_DESKEWED_SCANS|false}"
+
+  # REP-107 diagnostics thresholds published on /diagnostics via mola_bridge_ros2.
+  # Any of these can be omitted to keep its built-in default.
+  diagnostics:
+    icp_quality_warn: 0.30 # [0-1] WARN if icp_quality below this
+    icp_quality_error: 0.10 # [0-1] ERROR if icp_quality below this
+    input_stale_sec: 3.0 # [s]   STALE if no observation for this long
+    input_error_sec: 5.0 # [s]   ERROR if no observation for this long
+    dropped_ratio_warn: 0.20 # [0-1] WARN if dropped-frames ratio exceeds
+    dropped_ratio_error: 0.50 # [0-1] ERROR if dropped-frames ratio exceeds
+    timing_utilization_warn: 0.80 # [0-1] WARN if avg process time / sensor period exceeds
+
+  # Save the final trajectory in TUM format. Disabled by default.
+  estimated_trajectory:
+    save_to_file: ${MOLA_SAVE_TRAJECTORY|false}
+    output_file: ${MOLA_TUM_TRAJECTORY_OUTPUT|'estimated_trajectory.tum'}
+
+  # Profile the main steps of the odometry pipeline:
+  pipeline_profiler_enabled: ${MOLA_PROFILER|true}
+  # Profile the internal steps of the ICP implementation:
+  icp_profiler_enabled: ${MOLA_PROFILER|true}
+
+  # If set to false, the odometry pipeline will ignore incoming observations
+  # until active is set to true (e.g. via the GUI).
+  start_active: "${MOLA_START_ACTIVE|true}"
+
+  # [m^-2] Minimum motion model covariance (in X,Y,Z) to consider a state estimation as valid as prior for ICP.
+  min_motion_model_xyz_cov_inv: 1.0
+
+  # [m/s^2] A state estimator prediction whose speed changes between two scans
+  # by more than the velocity change measured by the IMU (rotated with the
+  # odometry attitude, gravity removed), plus this margin times the interval,
+  # is not used (ICP starts from the last pose) and the estimator is reset.
+  # Needs an IMU; 0 disables it.
+  motion_model_max_extra_acceleration: ${MOLA_MOTION_MODEL_MAX_EXTRA_ACC|10.0}
+
+  # [m/s] A prediction faster than this (its twist, or its pose since the last
+  # pose) is never used, not even while the estimator settles after a start or
+  # reset, and the estimator is reset. 0 disables it.
+  motion_model_max_speed: ${MOLA_MOTION_MODEL_MAX_SPEED|100.0}
+
+  # If registration fails and there is no usable prediction for this many
+  # consecutive scans, the pose cannot move again: restart the local map at the
+  # last registered pose (not one from predictions, which may have run away)
+  # and reset the state estimator. Not applied to a loaded map.
+  stall_recovery:
+    enabled: ${MOLA_STALL_RECOVERY|true}
+    after_n_scans: ${MOLA_STALL_RECOVERY_AFTER_N_SCANS|5}
+
+  # Generate CSV with the evolution of internal variables:
+  debug_traces:
+    save_to_file: "${MOLA_SAVE_DEBUG_TRACES|false}"
+    output_file: "${MOLA_DEBUG_TRACES_FILE|mola-lo-traces.csv}"
+
+  # Optional filters to discard incomplete 3D scans from
+  # faulty network, missing UDP packets, etc.
+  observation_validity_checks:
+    enabled: "${MOLA_ENABLE_OBS_VALIDITY_FILTER|false}"
+    check_layer_name: "raw"
+    minimum_point_count: "${MOLA_OBS_VALIDITY_MIN_POINTS|1000}"

@@ -1,0 +1,33 @@
+{
+  "source_chassis_zip": "lunshi_chassis_description_sw_mesh(2).zip",
+  "main_urdf": "urdf/lunshi_chassis_ackermann_s3_camera.urdf",
+  "sensor_meshes_unscaled": true,
+  "sensor_meshes": {
+    "rplidar_s3": {
+      "path": "meshes/sensors/rplidar_s3_from_user_step.stl",
+      "bbox_m": [
+        0.11637311987578869,
+        0.05559999868273735,
+        0.04129999876022339
+      ],
+      "triangles": 58287
+    },
+    "mv_dt01sdu": {
+      "path": "meshes/sensors/mv_dt01sdu_from_user_step.stl",
+      "bbox_m": [
+        0.0312050748616457,
+        0.0899638682603836,
+        0.02600576914846897
+      ],
+      "triangles": 67729
+    }
+  },
+  "joints": {
+    "front_left_steering_joint": "position command/state",
+    "front_right_steering_joint": "position command/state",
+    "rear_left_wheel_joint": "velocity command/state",
+    "rear_right_wheel_joint": "velocity command/state",
+    "front_left_wheel_joint": "passive/state-only",
+    "front_right_wheel_joint": "passive/state-only"
+  }
+}

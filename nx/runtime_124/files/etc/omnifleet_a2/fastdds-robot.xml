@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dds>
+  <profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+    <transport_descriptors>
+      <transport_descriptor>
+        <transport_id>omni-robot-udp</transport_id>
+        <type>UDPv4</type>
+        <sendBufferSize>10485760</sendBufferSize>
+        <receiveBufferSize>10485760</receiveBufferSize>
+        <maxMessageSize>65500</maxMessageSize>
+        <maxInitialPeersRange>72</maxInitialPeersRange>
+
+      </transport_descriptor>
+      <transport_descriptor>
+        <transport_id>omni-shm</transport_id>
+        <type>SHM</type>
+        <segment_size>12582912</segment_size>
+        <port_queue_capacity>512</port_queue_capacity>
+      </transport_descriptor>
+    </transport_descriptors>
+    <participant profile_name="omni-local-participant" is_default_profile="true">
+      <rtps>
+
+        <userTransports>
+          <transport_id>omni-robot-udp</transport_id>
+          <transport_id>omni-shm</transport_id>
+        </userTransports>
+        <useBuiltinTransports>false</useBuiltinTransports>
+      </rtps>
+    </participant>
+    <publisher profile_name="omni-default-writer" is_default_profile="true">
+      <qos>
+        <publishMode><kind>SYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <subscriber profile_name="omni-default-reader" is_default_profile="true">
+      <qos><data_sharing><kind>OFF</kind></data_sharing></qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </subscriber>
+
+    <publisher profile_name="/rslidar_points">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/navigation/deskewed_points">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/camera/color/image_raw/compressed">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/camera/color/receiver_display/compressed">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/camera/color/receiver_follow/compressed">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/map">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/global_costmap/costmap">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/global_costmap/costmap_raw">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/local_costmap/costmap">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/local_costmap/costmap_raw">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/navigation/recovery_costmap_raw">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/lidar_odometry/localmap_points">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/visualization/receiver_slam_points_1hz">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/visualization/receiver_obstacle_points_1hz">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/visualization/receiver_global_costmap">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/visualization/receiver_local_costmap">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/visualization/foxglove_map">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/visualization/foxglove_global_costmap">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/visualization/foxglove_local_costmap">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+    <publisher profile_name="/visualization/local_obstacle_points">
+      <qos>
+        <publishMode><kind>ASYNCHRONOUS</kind></publishMode>
+        <data_sharing><kind>OFF</kind></data_sharing>
+      </qos>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+    </publisher>
+  </profiles>
+</dds>

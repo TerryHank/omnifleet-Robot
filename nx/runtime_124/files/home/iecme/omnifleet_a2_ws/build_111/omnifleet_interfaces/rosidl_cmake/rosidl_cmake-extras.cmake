@@ -1,0 +1,4 @@
+# generated from rosidl_cmake/cmake/rosidl_cmake-extras.cmake.in
+
+set(omnifleet_interfaces_IDL_FILES "msg/SlamStatus.idl;msg/MissionStatus.idl;srv/Capability.idl;srv/LoadMission.idl;srv/RunMission.idl;srv/SaveMap.idl;srv/ServoCommand.idl;srv/StoreMission.idl;srv/SwitchMode.idl")
+set(omnifleet_interfaces_INTERFACE_FILES "msg/SlamStatus.msg;msg/MissionStatus.msg;srv/Capability.srv;srv/Capability_Request.msg;srv/Capability_Response.msg;srv/LoadMission.srv;srv/LoadMission_Request.msg;srv/LoadMission_Response.msg;srv/RunMission.srv;srv/RunMission_Request.msg;srv/RunMission_Response.msg;srv/SaveMap.srv;srv/SaveMap_Request.msg;srv/SaveMap_Response.msg;srv/ServoCommand.srv;srv/ServoCommand_Request.msg;srv/ServoCommand_Response.msg;srv/StoreMission.srv;srv/StoreMission_Request.msg;srv/StoreMission_Response.msg;srv/SwitchMode.srv;srv/SwitchMode_Request.msg;srv/SwitchMode_Response.msg")

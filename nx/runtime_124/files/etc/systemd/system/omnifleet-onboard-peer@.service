@@ -1,0 +1,11 @@
+[Unit]
+Description=OmniFleet 124 peer DDS link for %i
+After=network-online.target
+PartOf=omnifleet-124-dispatch@discovery.service
+[Service]
+User=iecme
+Environment=LD_LIBRARY_PATH=/home/iecme/.local/share/omnifleet-dispatch-124/ddsrouter-runtime/lib
+ExecStart=/home/iecme/.local/share/omnifleet-dispatch-124/ddsrouter-runtime/bin/ddsrouter -c /home/iecme/.local/share/omnifleet-dispatch-124/data/run/discovery/%i.router.yaml
+Restart=on-failure
+RestartSec=3
+Nice=4

@@ -1,0 +1,14 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from omnifleet_a2_interfaces/msg/SteeringAngleCommand.msg
+// generated code does not contain a copyright notice
+
+
+module omnifleet_a2_interfaces {
+  module msg {
+    @verbatim (language="comment", text=
+      "Front-wheel steering target in radians. Positive means left turn.")
+    struct SteeringAngleCommand {
+      float steering_angle_rad;
+    };
+  };
+};

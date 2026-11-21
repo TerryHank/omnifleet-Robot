@@ -1,0 +1,23 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from mola_msgs/srv/RelocalizeNearPose.srv
+// generated code does not contain a copyright notice
+
+#include "geometry_msgs/msg/PoseWithCovarianceStamped.idl"
+
+module mola_msgs {
+  module srv {
+    @verbatim (language="comment", text=
+      "This service requests re-localization around a given pose.")
+    struct RelocalizeNearPose_Request {
+      @verbatim (language="comment", text=
+        "Request")
+      geometry_msgs::msg::PoseWithCovarianceStamped pose;
+    };
+    @verbatim (language="comment", text=
+      "Result. False if there was no MOLA localization module" "\n"
+      "accepting this request.")
+    struct RelocalizeNearPose_Response {
+      boolean accepted;
+    };
+  };
+};

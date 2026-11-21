@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "omnifleet_a2_interfaces__py",
+		"source" : "/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_interfaces/omnifleet_a2_interfaces__py"
+	}
+}

@@ -1,0 +1,51 @@
+<!--
+  Ackermann-safe navigation:
+  - replan only when the current smoothed path becomes invalid or the goal changes;
+  - constrain path curvature before handing it to MPPI;
+  - never request an in-place spin.
+-->
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <RecoveryNode number_of_retries="3" name="NavigateRecovery">
+      <PipelineSequence name="NavigateWithStablePath">
+        <RateController hz="1.0">
+          <Fallback name="KeepValidPath">
+            <ReactiveSequence>
+              <Inverter>
+                <GlobalUpdatedGoal/>
+              </Inverter>
+              <IsPathValid path="{path}"/>
+            </ReactiveSequence>
+            <RecoveryNode number_of_retries="1" name="PlanAndConstrainPath">
+              <Sequence>
+                <ComputePathToPose goal="{goal}" path="{raw_path}" planner_id="GridBased"/>
+                <SmoothPath
+                  unsmoothed_path="{raw_path}"
+                  smoothed_path="{path}"
+                  smoother_id="SmoothPath"
+                  max_smoothing_duration="1.0"
+                  check_for_collisions="false"/>
+              </Sequence>
+              <ClearEntireCostmap service_name="global_costmap/clear_entirely_global_costmap"/>
+            </RecoveryNode>
+          </Fallback>
+        </RateController>
+        <RecoveryNode number_of_retries="1" name="FollowConstrainedPath">
+          <FollowPath path="{path}" controller_id="FollowPath"/>
+          <ClearEntireCostmap service_name="local_costmap/clear_entirely_local_costmap"/>
+        </RecoveryNode>
+      </PipelineSequence>
+      <ReactiveFallback name="RecoveryFallback">
+        <GoalUpdated/>
+        <RoundRobin name="RecoveryActions">
+          <Sequence>
+            <ClearEntireCostmap service_name="local_costmap/clear_entirely_local_costmap"/>
+            <ClearEntireCostmap service_name="global_costmap/clear_entirely_global_costmap"/>
+          </Sequence>
+          <Wait wait_duration="1"/>
+          <BackUp backup_dist="0.50" backup_speed="0.30"/>
+        </RoundRobin>
+      </ReactiveFallback>
+    </RecoveryNode>
+  </BehaviorTree>
+</root>

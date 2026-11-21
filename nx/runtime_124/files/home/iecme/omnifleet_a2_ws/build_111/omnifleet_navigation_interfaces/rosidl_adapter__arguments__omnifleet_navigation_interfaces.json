@@ -1,0 +1,8 @@
+{
+  "package_name": "omnifleet_navigation_interfaces",
+  "non_idl_tuples": [
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_navigation_interfaces:msg/NavigationPoint.msg",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_navigation_interfaces:action/ExecuteNavigation.action",
+    "/home/iecme/omnifleet_a2_ws/src/common/omnifleet_navigation_interfaces:action/ExecuteFormation.action"
+  ]
+}

@@ -1,0 +1,11 @@
+uint8 operation
+uint8 id
+int32 arg0
+int32 arg1
+int32 arg2
+---
+bool success
+int32 value0
+int32 value1
+int32 value2
+string message

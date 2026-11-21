@@ -1,0 +1,15 @@
+# 2.5D模式在二维静态底图之上叠加地形代价，InflationLayer保持最后加载。
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      plugins: [static_layer, traversability_layer, inflation_layer]
+      traversability_layer:
+        plugin: nav2_costmap_2d::StaticLayer
+        enabled: true
+        map_topic: /omnifleet_a2/terrain/costmap
+        map_subscribe_transient_local: true
+        subscribe_to_updates: false
+        trinary_costmap: false
+        use_maximum: true
+        lethal_cost_threshold: 100
+        unknown_cost_value: 255

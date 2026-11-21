@@ -1,0 +1,94 @@
+#include "nav2_mppi_controller/controller.hpp"
+#include "omnifleet_planner/ordered_progress.hpp"
+#include "omnifleet_planner/footprint_safe_goal_checker.hpp"
+#include "nav2_core/exceptions.hpp"
+#include "pluginlib/class_list_macros.hpp"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
+#include <nlohmann/json.hpp>
+#include <chrono>
+#include <thread>
+
+namespace omnifleet_planner {
+class OrderedMPPI : public nav2_mppi_controller::MPPIController {
+ public:
+  ~OrderedMPPI() override {stopProgress();}
+  void cleanup() override {stopProgress();nav2_mppi_controller::MPPIController::cleanup();}
+  void setPlan(const nav_msgs::msg::Path& path) override {
+    const auto fingerprint=routeFingerprint(path);
+    requested_stamp_=rclcpp::Time(path.header.stamp).nanoseconds();
+    if(fingerprint==fingerprint_)return;
+    nav2_mppi_controller::MPPIController::setPlan(path);
+    route_=path;fingerprint_=fingerprint;geometry_.reset(path);waiting_=false;adopted_s_=0.;version_.clear();
+    if(!subscription_){
+      auto node=parent_.lock();group_=node->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive,false);
+      rclcpp::SubscriptionOptions options;options.callback_group=group_;
+      subscription_=node->create_subscription<std_msgs::msg::String>("omnifleet_t2/waypoints/execution_state",rclcpp::QoS(1),[this](std_msgs::msg::String::ConstSharedPtr m){
+        try{auto j=nlohmann::json::parse(m->data);std::lock_guard<std::mutex> lock(state_mutex_);if(j.value("stamp_ns",int64_t(0))>state_.value("stamp_ns",int64_t(0)))state_=j;}catch(const nlohmann::json::exception&){}
+      },options);
+      telemetry_=node->create_publisher<std_msgs::msg::String>("omnifleet_t2/waypoints/controller_progress",10);telemetry_->on_activate();
+      executor_.add_callback_group(group_,node->get_node_base_interface());thread_=std::thread([this]{executor_.spin();});
+    }
+  }
+  geometry_msgs::msg::TwistStamped computeVelocityCommands(const geometry_msgs::msg::PoseStamped& pose,const geometry_msgs::msg::Twist& speed,nav2_core::GoalChecker* checker) override {
+    auto ordered=dynamic_cast<FootprintSafeGoalChecker*>(checker);
+    if(!ordered||!ordered->requiresOrderedWaypoints())return nav2_mppi_controller::MPPIController::computeVelocityCommands(pose,speed,checker);
+    nlohmann::json state;{std::lock_guard<std::mutex> lock(state_mutex_);state=state_;}
+    const auto now=clock_->now();
+    bool valid=false;
+    try{valid=state.at("fingerprint")==fingerprint_&&(state.at("path_stamp_ns").get<int64_t>()==rclcpp::Time(route_.header.stamp).nanoseconds()||state.at("path_stamp_ns").get<int64_t>()==requested_stamp_)&&
+        now.nanoseconds()-state.at("stamp_ns").get<int64_t>()<=500000000&&now.nanoseconds()>=state.at("stamp_ns").get<int64_t>();}
+    catch(const nlohmann::json::exception&){}
+    if(!valid)return wait(pose,"ordered route progress state unavailable");
+    const auto v=state.at("path_version").get<std::string>();
+    if(!version_.empty()&&v!=version_){
+      if(state.at("path_stamp_ns").get<int64_t>()!=requested_stamp_||requested_stamp_<=rclcpp::Time(route_.header.stamp).nanoseconds())return wait(pose,"ordered route progress version mismatch");
+      route_.header.stamp=rclcpp::Time(requested_stamp_);adopted_s_=0.;waiting_=false;
+    }
+    version_=v;
+    const double s=state.at("progress_m").get<double>();
+    if(!std::isfinite(s)||s<adopted_s_-1e-8||s>geometry_.arc().back()+1e-6)return wait(pose,"ordered route progress matching failed");
+    adopted_s_=s;
+    if(state.at("state")!="tracking"){publishTelemetry(state,state.value("lateral_m",0.));return wait(pose,"ordered route progress matching failed");}
+    const auto pose_stamp=state.at("pose_stamp_ns").get<int64_t>();
+    if(now.nanoseconds()-pose_stamp>500000000||pose_stamp-now.nanoseconds()>100000000)throw nav2_core::PlannerException("stale localization transform in ordered controller");
+    auto global=pose;double horizon=1.7,tolerance=.3;auto node=parent_.lock();
+    node->get_parameter(name_+".prune_distance",horizon);node->get_parameter(name_+".transform_tolerance",tolerance);
+    if(pose.header.frame_id!=route_.header.frame_id)tf_buffer_->transform(pose,global,route_.header.frame_id,tf2::durationFromSec(tolerance));
+    const auto projection=OrderedProgress::project(route_,geometry_.arc(),global.pose.position.x,global.pose.position.y,state.at("branch_begin").get<double>(),state.at("branch_end").get<double>());
+    publishTelemetry(state,projection.distance);
+    if(projection.distance>.30)return wait(pose,"ordered route lateral deviation exceeds 0.30 m");
+    waiting_=false;
+    if(clock_->now()-last_time_called_>rclcpp::Duration::from_seconds(reset_period_))reset();last_time_called_=clock_->now();
+    std::lock_guard<std::mutex> parameters(*parameters_handler_->getLock());
+    nav_msgs::msg::Path reference;reference.header.frame_id=costmap_ros_->getGlobalFrameID();reference.header.stamp=pose.header.stamp;
+    const double until=std::min(state.at("control_end").get<double>(),s+horizon);
+    const size_t cursor=state.at("cursor").get<size_t>();
+    auto* grid=costmap_ros_->getCostmap();std::unique_lock<nav2_costmap_2d::Costmap2D::mutex_t> lock(*grid->getMutex());
+    for(size_t i=cursor;i<route_.poses.size()&&geometry_.at(i)<=until+1e-6;++i){
+      auto p=route_.poses[i];p.header=route_.header;p.header.stamp=pose.header.stamp;auto transformed=p;
+      if(p.header.frame_id!=reference.header.frame_id)tf_buffer_->transform(p,transformed,reference.header.frame_id,tf2::durationFromSec(tolerance));
+      unsigned mx,my;if(!grid->worldToMap(transformed.pose.position.x,transformed.pose.position.y,mx,my))break;reference.poses.push_back(transformed);
+    }
+    if(reference.poses.empty())return wait(pose,"ordered route reference outside local costmap");
+    auto command=optimizer_.evalControl(pose,speed,reference,checker);if(visualize_)visualize(reference);return command;
+  }
+ private:
+  void stopProgress(){executor_.cancel();if(thread_.joinable())thread_.join();if(group_)executor_.remove_callback_group(group_);subscription_.reset();telemetry_.reset();group_.reset();}
+  geometry_msgs::msg::TwistStamped wait(const geometry_msgs::msg::PoseStamped& pose,const std::string& reason){
+    auto now=std::chrono::steady_clock::now();if(!waiting_){waiting_=true;wait_since_=now;reset();}
+    if(std::chrono::duration<double>(now-wait_since_).count()>=.5)throw nav2_core::PlannerException(reason);
+    geometry_msgs::msg::TwistStamped zero;zero.header=pose.header;return zero;
+  }
+  void publishTelemetry(const nlohmann::json& state,double lateral){
+    if(!telemetry_)return;auto j=state;j.erase("controller");j["controller_cursor"]=state.at("cursor");j["controller_progress_m"]=adopted_s_;j["controller_lateral_m"]=lateral;j["controller_stamp_ns"]=clock_->now().nanoseconds();
+    std_msgs::msg::String m;m.data=j.dump();telemetry_->publish(m);
+  }
+  nav_msgs::msg::Path route_;OrderedProgress geometry_;std::string fingerprint_,version_;double adopted_s_{0};int64_t requested_stamp_{0};
+  std::mutex state_mutex_;nlohmann::json state_=nlohmann::json::object();
+  bool waiting_{false};std::chrono::steady_clock::time_point wait_since_;
+  rclcpp::CallbackGroup::SharedPtr group_;rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
+  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>::SharedPtr telemetry_;
+  rclcpp::executors::SingleThreadedExecutor executor_;std::thread thread_;
+};
+}
+PLUGINLIB_EXPORT_CLASS(omnifleet_planner::OrderedMPPI,nav2_core::Controller)

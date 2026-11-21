@@ -1,0 +1,1820 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="lunshi_ackermann_optimized">
+  <material name="mesh_default">
+    <color rgba="0.62 0.64 0.66 1" />
+  </material>
+  <material name="wheel_black">
+    <color rgba="0.02 0.02 0.02 1" />
+  </material>
+  <material name="sensor_dark">
+    <color rgba="0.02 0.02 0.02 1" />
+  </material>
+  <material name="sensor_glass">
+    <color rgba="0.01 0.01 0.015 0.85" />
+  </material>
+  <material name="hik_orange">
+    <color rgba="1.0 0.45 0.05 1" />
+  </material>
+  <material name="hik_body">
+    <color rgba="0.08 0.08 0.085 1" />
+  </material>
+  <material name="mount_black">
+    <color rgba="0.05 0.05 0.055 1" />
+  </material>
+  <material name="laser_window">
+    <color rgba="0.0 0.05 0.18 0.6" />
+  </material>
+  <link name="base_footprint" />
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="4" />
+      <inertia ixx="0.0206753333" ixy="0" ixz="0" iyy="0.0426104167" iyz="0" izz="0.0632690833" />
+    </inertial>
+    <collision name="base_plate">
+      <origin xyz="0.0704405689 5.86852988e-08 0.023028263" rpy="0 0 0" />
+      <geometry>
+        <box size="0.3575 0.249 0.005" />
+      </geometry>
+    </collision>
+    <collision name="rear_body">
+      <origin xyz="-0.0993094311 5.86852988e-08 0.0535289029" rpy="0 0 0" />
+      <geometry>
+        <box size="0.0180068392 0.156002508 0.0610055594" />
+      </geometry>
+    </collision>
+    <collision name="front_body">
+      <origin xyz="0.181190569 5.8685295e-08 0.0550284244" rpy="0 0 0" />
+      <geometry>
+        <box size="0.0270002062 0.100000852 0.0640005289" />
+      </geometry>
+    </collision>
+    <visual name="sw_part_001_3633009ae9">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_001_3633009ae9.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_002_e78aa04ea8">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_002_e78aa04ea8.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_003_7093eddc6d">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_003_7093eddc6d.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_004_13395ffafe">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_004_13395ffafe.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_005_8bcc7fc08d">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_005_8bcc7fc08d.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_006_0436e3fb28">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_006_0436e3fb28.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_007_d973dab162">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_007_d973dab162.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_008_93bc5c7974">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_008_93bc5c7974.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_009_93a5806ff6">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_009_93a5806ff6.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_010_70ea5e2f08">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_010_70ea5e2f08.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_011_69bb8e3d4a">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_011_69bb8e3d4a.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_012_7d1b071e61">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_012_7d1b071e61.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_013_fd987f8ced">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_013_fd987f8ced.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_014_7f98c757ff">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_014_7f98c757ff.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_015_735b25d803">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_015_735b25d803.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_016_9b84d880d1">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_016_9b84d880d1.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_017_bfdd9d8285">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_017_bfdd9d8285.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_018_0394c00b33">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_018_0394c00b33.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_019_588c78d56c">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_019_588c78d56c.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_020_925f5d97bd">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_020_925f5d97bd.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_021_75fdd19b43">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_021_75fdd19b43.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_022_e3866debb4">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_022_e3866debb4.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_023_1698efe8d6">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_023_1698efe8d6.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_024_686dd14a16">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_024_686dd14a16.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_025_7248a55626">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_025_7248a55626.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_026_9083072d3d">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_026_9083072d3d.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_027_7135c67fc8">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_027_7135c67fc8.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_028_4dfc06bccb">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_028_4dfc06bccb.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_029_bf2929afc5">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_029_bf2929afc5.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_030_53321976d9">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_030_53321976d9.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_031_256aa68fd6">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_031_256aa68fd6.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_032_aa55bd141e">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_032_aa55bd141e.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_033_17aef547ed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_033_17aef547ed.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_034_9eefcaee3f">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_034_9eefcaee3f.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_035_72abcd5d28">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_035_72abcd5d28.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_036_9368eccf78">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_036_9368eccf78.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_037_61eb6a460b">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_037_61eb6a460b.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_038_815a708bf5">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_038_815a708bf5.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_039_9910a8fb2c">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_039_9910a8fb2c.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_040_aae9db7bbc">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_040_aae9db7bbc.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_041_a5becf8b4b">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_041_a5becf8b4b.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_042_ebe636baef">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_042_ebe636baef.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_043_b2d48b0e61">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_043_b2d48b0e61.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_044_337649c364">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_044_337649c364.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_045_b188110bb0">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_045_b188110bb0.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_046_1409ff7399">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_046_1409ff7399.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_047_155776a776">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_047_155776a776.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_048_71e5d6d001">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_048_71e5d6d001.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_049_1eaf383dc2">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_049_1eaf383dc2.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_050_aa3c489f27">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_050_aa3c489f27.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_051_46ed68528e">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_051_46ed68528e.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_052_419e96348e">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_052_419e96348e.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_053_02904175a3">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_053_02904175a3.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_054_92e8e3e31d">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_054_92e8e3e31d.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_055_3c44a1765f">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_055_3c44a1765f.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_056_5fac2b219a">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_056_5fac2b219a.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_057_e28a596db6">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_057_e28a596db6.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_058_6dec9e4d2a">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_058_6dec9e4d2a.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_059_8f85688579">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_059_8f85688579.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_060_08e9188483">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_060_08e9188483.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_061_eff6a963a1">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_061_eff6a963a1.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_062_4d64970562">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_062_4d64970562.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_063_210c324f57">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_063_210c324f57.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_064_414139380e">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_064_414139380e.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_065_497b2b4815">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_065_497b2b4815.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_066_e3333587eb">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_066_e3333587eb.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_067_cb0820ef77">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_067_cb0820ef77.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_068_b15e918a37">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_068_b15e918a37.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_069_54856056a7">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_069_54856056a7.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_070_4c418e1331">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_070_4c418e1331.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_071_59924a821f">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_071_59924a821f.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_072_315692d405">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_072_315692d405.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_073_1427eadb00">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_073_1427eadb00.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_074_bb60f7b185">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_074_bb60f7b185.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_075_ee13952fb0">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_075_ee13952fb0.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_076_dd8379ab7c">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_076_dd8379ab7c.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_077_75450c2ac9">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_077_75450c2ac9.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_078_241afe2013">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_078_241afe2013.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_079_b378922962">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_079_b378922962.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_080_a1836be0ab">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_080_a1836be0ab.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_081_875163776c">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_081_875163776c.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_082_95bc4b61c2">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_082_95bc4b61c2.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_083_5e6e8604b6">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_083_5e6e8604b6.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_084_b797b5864f">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_084_b797b5864f.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_085_b9dfb744ae">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_085_b9dfb744ae.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_086_f90ceb3043">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_086_f90ceb3043.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_087_4960ed1dfe">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_087_4960ed1dfe.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_088_494e96827b">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_088_494e96827b.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_089_e01440c7e6">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_089_e01440c7e6.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_090_9790d972c8">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_090_9790d972c8.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_091_3946ce0f16">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_091_3946ce0f16.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_092_f00236c269">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_092_f00236c269.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_093_f65041677a">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_093_f65041677a.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_094_99cca69f99">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_094_99cca69f99.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_095_c6fb581a2e">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_095_c6fb581a2e.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_096_2ef7cbc025">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_096_2ef7cbc025.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_097_8ab4f19a9f">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_097_8ab4f19a9f.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_098_f29b3855cc">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_098_f29b3855cc.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_099_50338ffdfe">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_099_50338ffdfe.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_100_3dd1e5d638">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_100_3dd1e5d638.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_101_e386a33bcf">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_101_e386a33bcf.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_102_7344fba58f">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_102_7344fba58f.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_103_baebf5504c">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_103_baebf5504c.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_104_9f5cd90b97">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_104_9f5cd90b97.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_105_0f0495f53f">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_105_0f0495f53f.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_106_98dd27a233">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_106_98dd27a233.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_107_3a09e0b472">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_107_3a09e0b472.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_108_a925b230d2">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_108_a925b230d2.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_109_ffaa3a32e0">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_109_ffaa3a32e0.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_110_554b1ba990">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_110_554b1ba990.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_111_6e132a8fcd">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_111_6e132a8fcd.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_112_a2ff41fbee">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_112_a2ff41fbee.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_113_ebd61c1eda">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_113_ebd61c1eda.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_114_2040a775ee">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_114_2040a775ee.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_115_c2a6eb4d35">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_115_c2a6eb4d35.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_116_ba34ec172e">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_116_ba34ec172e.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_117_5483977b10">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_117_5483977b10.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_118_61af5a340a">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_118_61af5a340a.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_119_4a2af07b31">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_119_4a2af07b31.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_120_c18da94fe0">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_120_c18da94fe0.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_121_bf43f77761">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_121_bf43f77761.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_122_0da7334ee2">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_122_0da7334ee2.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_123_0385f5ca04">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_123_0385f5ca04.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_124_8ba5002a07">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_124_8ba5002a07.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_125_13c55a0a99">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_125_13c55a0a99.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_126_3dbe6b2f31">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_126_3dbe6b2f31.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_127_3a6786ac23">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_127_3a6786ac23.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_128_a96cfdf6d4">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_128_a96cfdf6d4.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_129_db2979320c">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_129_db2979320c.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_130_3d23ddd0d0">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_130_3d23ddd0d0.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_131_a258780ca5">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_131_a258780ca5.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_132_b7c2a24f72">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_132_b7c2a24f72.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_133_ffbdc18680">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_133_ffbdc18680.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_134_8ad3d47521">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_134_8ad3d47521.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_135_175a7f6d78">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_135_175a7f6d78.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_136_ae22b7e7e0">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_136_ae22b7e7e0.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_137_39690de82b">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_137_39690de82b.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_138_ffa929ced7">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_138_ffa929ced7.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_139_87725c3aa0">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_139_87725c3aa0.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_140_cac86e959a">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_140_cac86e959a.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_141_6de6e25646">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_141_6de6e25646.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_142_46de95b063">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_142_46de95b063.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_143_c47a558b07">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_143_c47a558b07.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_144_f708e15556">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_144_f708e15556.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_145_50c33979d3">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_145_50c33979d3.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_146_7b0f8198d6">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_146_7b0f8198d6.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_147_ff905dbdd2">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_147_ff905dbdd2.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_148_143e459fd5">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_148_143e459fd5.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_149_064a700624">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_149_064a700624.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_150_56982bf144">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_150_56982bf144.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_151_8e8dd7bb00">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_151_8e8dd7bb00.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_152_117b21ea04">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_152_117b21ea04.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_153_620a57d38b">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_153_620a57d38b.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_154_43a7b18ace">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_154_43a7b18ace.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_155_825175e0a4">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_155_825175e0a4.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_156_0eb23537be">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_156_0eb23537be.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_157_4f73546776">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_157_4f73546776.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_158_e77f43f857">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_158_e77f43f857.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_159_eb044ff075">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_159_eb044ff075.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_160_54efec6027">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_160_54efec6027.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_161_f930b5bb2c">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_161_f930b5bb2c.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_162_63ded0ce9e">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_162_63ded0ce9e.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_163_8cf1178c28">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_163_8cf1178c28.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_164_345ee7c001">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_164_345ee7c001.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_165_a0d70066d1">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_165_a0d70066d1.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_166_0594fadf22">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_166_0594fadf22.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_167_48cb03f8cf">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_167_48cb03f8cf.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_168_193c546114">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_168_193c546114.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_169_d8f06494bb">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_169_d8f06494bb.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_170_cffd7936d0">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_170_cffd7936d0.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_171_03279554c8">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_171_03279554c8.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_172_a0fa8f2241">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_172_a0fa8f2241.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_173_b85d8701ee">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_173_b85d8701ee.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_174_02b2f88bfb">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_174_02b2f88bfb.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_175_272abf2407">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_175_272abf2407.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_176_94a3e40719">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_176_94a3e40719.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_177_acc55899f3">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_177_acc55899f3.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_178_55e8aa04ce">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_178_55e8aa04ce.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_179_8f85b811e2">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_179_8f85b811e2.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_180_8d8088d339">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_180_8d8088d339.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_181_ff552bd6a8">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_181_ff552bd6a8.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_182_a459bea413">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_182_a459bea413.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_183_d2a4e5fd10">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_183_d2a4e5fd10.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_184_a5dcc1d30a">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_184_a5dcc1d30a.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_185_0cd0ab04c3">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_185_0cd0ab04c3.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_186_efbe730702">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_186_efbe730702.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_187_cef96a1376">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_187_cef96a1376.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_188_5e9ed9ab91">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_188_5e9ed9ab91.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_189_618de99014">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_189_618de99014.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_190_75d83c0c59">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_190_75d83c0c59.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_191_91ccd7e53a">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_191_91ccd7e53a.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_192_7393401c60">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_192_7393401c60.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_193_4c53f29567">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_193_4c53f29567.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_194_917cd0e2b3">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_194_917cd0e2b3.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_195_5b642bf51f">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_195_5b642bf51f.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_196_ae6533145d">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_196_ae6533145d.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_197_6b6b70358f">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_197_6b6b70358f.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_198_9fd4904935">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_198_9fd4904935.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_199_250d05a6ad">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_199_250d05a6ad.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <visual name="sw_part_200_ddb737778d">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/sw_part_200_ddb737778d.stl" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+  </link>
+  <link name="front_left_steering_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.08" />
+      <inertia ixx="1.63333333e-05" ixy="0" ixz="0" iyy="1.63333333e-05" iyz="0" izz="1.63333333e-05" />
+    </inertial>
+    <visual name="front_left_steering_knuckle_visual">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.035 0.045" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <collision name="front_left_steering_knuckle_collision">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.035 0.045" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="front_right_steering_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.08" />
+      <inertia ixx="1.63333333e-05" ixy="0" ixz="0" iyy="1.63333333e-05" iyz="0" izz="1.63333333e-05" />
+    </inertial>
+    <visual name="front_right_steering_knuckle_visual">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.035 0.045" />
+      </geometry>
+      <material name="mesh_default" />
+    </visual>
+    <collision name="front_right_steering_knuckle_collision">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.035 0.035 0.045" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="front_left_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.45" />
+      <inertia ixx="0.000470496214" ixy="0" ixz="0" iyy="0.00077144428" iyz="0" izz="0.000470496214" />
+    </inertial>
+    <visual name="front_left_wheel_sw_visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/front_left_wheel_sw_visual.stl" />
+      </geometry>
+      <material name="wheel_black" />
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.0585546005" length="0.0475462089" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="front_right_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.45" />
+      <inertia ixx="0.000468389088" ixy="0" ixz="0" iyy="0.000770304985" iyz="0" izz="0.000468389088" />
+    </inertial>
+    <visual name="front_right_wheel_sw_visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/front_right_wheel_sw_visual.stl" />
+      </geometry>
+      <material name="wheel_black" />
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.0585113469" length="0.0471130825" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="rear_left_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.45" />
+      <inertia ixx="0.000468177224" ixy="0" ixz="0" iyy="0.000770626388" iyz="0" izz="0.000468177224" />
+    </inertial>
+    <visual name="rear_left_wheel_sw_visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/rear_left_wheel_sw_visual.stl" />
+      </geometry>
+      <material name="wheel_black" />
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.0585235522" length="0.0470075257" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="rear_right_wheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.45" />
+      <inertia ixx="0.000468177224" ixy="0" ixz="0" iyy="0.000770626388" iyz="0" izz="0.000468177224" />
+    </inertial>
+    <visual name="rear_right_wheel_sw_visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://omnifleet_a2_description/meshes/sw_visual/rear_right_wheel_sw_visual.stl" />
+      </geometry>
+      <material name="wheel_black" />
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.0585235522" length="0.0470075257" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="sensor_mount_plate_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.12" />
+      <inertia ixx="8.325e-05" ixy="0" ixz="0" iyy="8.325e-05" iyz="0" izz="0.000162" />
+    </inertial>
+    <visual name="sensor_mount_plate_visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.09 0.09 0.015" />
+      </geometry>
+      <material name="mount_black" />
+    </visual>
+    <collision name="sensor_mount_plate_collision">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.09 0.09 0.015" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="rplidar_s3_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.115" />
+      <inertia ixx="4.59717292e-05" ixy="0" ixz="0" iyy="4.59717292e-05" iyz="0" izz="5.92510667e-05" />
+    </inertial>
+    <visual name="rplidar_s3_lower_body">
+      <origin xyz="0 0 -0.008975" rpy="0 0 0" />
+      <geometry>
+        <box size="0.0556 0.0556 0.02335" />
+      </geometry>
+      <material name="sensor_dark" />
+    </visual>
+    <visual name="rplidar_s3_scan_window">
+      <origin xyz="0 0 0.011675" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.025" length="0.01795" />
+      </geometry>
+      <material name="sensor_glass" />
+    </visual>
+    <visual name="rplidar_s3_top">
+      <origin xyz="0 0 0.02265" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.023" length="0.004" />
+      </geometry>
+      <material name="sensor_dark" />
+    </visual>
+    <collision name="rplidar_s3_collision">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.0556 0.0556 0.0413" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="laser_frame">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1.66666667e-10" ixy="0" ixz="0" iyy="1.66666667e-10" iyz="0" izz="1.66666667e-10" />
+    </inertial>
+  </link>
+  <link name="hik_camera_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.07" />
+      <inertia ixx="5.22491667e-05" ixy="0" ixz="0" iyy="9.62173333e-06" iyz="0" izz="5.39842333e-05" />
+    </inertial>
+    <visual name="hik_camera_body">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.0312 0.091 0.026" />
+      </geometry>
+      <material name="hik_body" />
+    </visual>
+    <visual name="hik_camera_top_orange_strip">
+      <origin xyz="0 0 0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.032 0.085 0.004" />
+      </geometry>
+      <material name="hik_orange" />
+    </visual>
+    <visual name="hik_camera_left_depth_lens">
+      <origin xyz="0.0175 0.026 0" rpy="0 1.57079632679 0" />
+      <geometry>
+        <cylinder radius="0.008" length="0.004" />
+      </geometry>
+      <material name="sensor_glass" />
+    </visual>
+    <visual name="hik_camera_rgb_lens">
+      <origin xyz="0.0175 0.0 0" rpy="0 1.57079632679 0" />
+      <geometry>
+        <cylinder radius="0.006" length="0.004" />
+      </geometry>
+      <material name="sensor_glass" />
+    </visual>
+    <visual name="hik_camera_right_depth_lens">
+      <origin xyz="0.0175 -0.026 0" rpy="0 1.57079632679 0" />
+      <geometry>
+        <cylinder radius="0.008" length="0.004" />
+      </geometry>
+      <material name="sensor_glass" />
+    </visual>
+    <collision name="hik_camera_collision">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.0312 0.091 0.026" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="camera_color_optical_frame">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1.66666667e-10" ixy="0" ixz="0" iyy="1.66666667e-10" iyz="0" izz="1.66666667e-10" />
+    </inertial>
+  </link>
+  <link name="camera_depth_optical_frame">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1.66666667e-10" ixy="0" ixz="0" iyy="1.66666667e-10" iyz="0" izz="1.66666667e-10" />
+    </inertial>
+  </link>
+  <joint name="base_footprint_to_base_link" type="fixed">
+    <parent link="base_footprint" />
+    <child link="base_link" />
+    <origin xyz="0 0 0.058528263" rpy="0 0 0" />
+  </joint>
+  <joint name="front_left_steering_joint" type="revolute">
+    <origin xyz="0.181084631 0.132478341 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="front_left_steering_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.261799" upper="0.261799" effort="8" velocity="3.0" />
+    <dynamics damping="0.2" friction="0.05" />
+  </joint>
+  <joint name="front_left_wheel_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="front_left_steering_link" />
+    <child link="front_left_wheel" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="0.02" friction="0.01" />
+  </joint>
+  <joint name="front_right_steering_joint" type="revolute">
+    <origin xyz="0.181211312 -0.132478458 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="front_right_steering_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.261799" upper="0.261799" effort="8" velocity="3.0" />
+    <dynamics damping="0.2" friction="0.05" />
+  </joint>
+  <joint name="front_right_wheel_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="front_right_steering_link" />
+    <child link="front_right_wheel" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="0.02" friction="0.01" />
+  </joint>
+  <joint name="rear_left_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rear_left_wheel" />
+    <origin xyz="-0.181147972 0.122700068 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="0.05" friction="0.0" />
+  </joint>
+  <joint name="rear_right_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rear_right_wheel" />
+    <origin xyz="-0.181147972 -0.122699951 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="0.05" friction="0.0" />
+  </joint>
+  <joint name="sensor_mount_plate_joint" type="fixed">
+    <origin xyz="0.020 0 0.1065" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="sensor_mount_plate_link" />
+  </joint>
+  <joint name="rplidar_s3_joint" type="fixed">
+    <origin xyz="0.020 0 0.13465" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="rplidar_s3_link" />
+  </joint>
+  <joint name="laser_frame_joint" type="fixed">
+    <origin xyz="0 0 0.00990" rpy="0 0 3.141592653589793" />
+    <parent link="rplidar_s3_link" />
+    <child link="laser_frame" />
+  </joint>
+  <joint name="hik_camera_joint" type="fixed">
+    <origin xyz="0.240 0 0.125" rpy="0 0.13962634016 0" />
+    <parent link="base_link" />
+    <child link="hik_camera_link" />
+  </joint>
+  <joint name="camera_color_optical_joint" type="fixed">
+    <origin xyz="0.0156 0 0" rpy="-1.57079632679 0 -1.57079632679" />
+    <parent link="hik_camera_link" />
+    <child link="camera_color_optical_frame" />
+  </joint>
+  <joint name="camera_depth_optical_joint" type="fixed">
+    <origin xyz="0.0156 0 0" rpy="-1.57079632679 0 -1.57079632679" />
+    <parent link="hik_camera_link" />
+    <child link="camera_depth_optical_frame" />
+  </joint>
+  <ros2_control name="LunshiAckermannSystem" type="system">
+    <hardware>
+      <plugin>mock_components/GenericSystem</plugin>
+    </hardware>
+    <joint name="front_left_steering_joint">
+      <command_interface name="position">
+        <param name="min">-0.261799</param>
+        <param name="max">0.261799</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="front_right_steering_joint">
+      <command_interface name="position">
+        <param name="min">-0.261799</param>
+        <param name="max">0.261799</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="rear_left_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-30</param>
+        <param name="max">30</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="rear_right_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-30</param>
+        <param name="max">30</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="front_left_wheel_joint">
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="front_right_wheel_joint">
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+  </ros2_control>
+</robot>

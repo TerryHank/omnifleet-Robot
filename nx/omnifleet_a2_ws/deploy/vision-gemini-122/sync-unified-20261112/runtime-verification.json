@@ -1,0 +1,72 @@
+{
+  "ready": true,
+  "frames": 36,
+  "camera": {
+    "depth": [
+      640,
+      400
+    ],
+    "rgb": [
+      1920,
+      1080
+    ]
+  },
+  "modes": {
+    "null": 1,
+    "unified": 35
+  },
+  "backends": {
+    "TensorRT FP32 Full": 36
+  },
+  "errors": {
+    "": 36
+  },
+  "coordinate_errors": {
+    "": 36
+  },
+  "manager": {
+    "phase": "RUNNING",
+    "case_id": "04_09_body_tracking",
+    "request_id": "sync122-unified-check",
+    "message": ""
+  },
+  "last_state": {
+    "state": "INITING",
+    "track_id": 0,
+    "serial_lost_num": 0,
+    "has_face_head": false,
+    "source_stamp": [
+      1794426390,
+      38238976
+    ],
+    "range_base_m": null,
+    "motion_enabled": false,
+    "operator_mode": "unified",
+    "follow_active": false,
+    "distance_mode": "APPROACH_FOR_DEPTH",
+    "control_mode": "APPROACH_FOR_DEPTH",
+    "target_distance_m": 1,
+    "heading_error_rad": 0,
+    "gesture_motion": "NONE",
+    "rotation_degrees": 0,
+    "rotation_active": false,
+    "rotation_done": false,
+    "tuning": {
+      "reverse_max_speed": 0.25,
+      "reverse_p": 1,
+      "steering_p": 1.8,
+      "steering_d": 0.35,
+      "steering_max_speed": 0.8,
+      "derivative_weight": 0.7
+    }
+  },
+  "rgb_resolution": [
+    1920,
+    1080
+  ],
+  "velocity": {
+    "linear_x": 0.0,
+    "angular_z": 0.0
+  },
+  "processing_fps": 21.7
+}

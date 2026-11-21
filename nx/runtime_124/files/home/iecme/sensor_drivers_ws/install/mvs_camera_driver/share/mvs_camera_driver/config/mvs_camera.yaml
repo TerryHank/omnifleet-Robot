@@ -1,0 +1,16 @@
+mvs_camera_node:
+  ros__parameters:
+    camera_index: 0
+    serial_number: ""
+    user_defined_name: ""
+    frame_id: "mvs_camera"
+    image_topic: "image_raw"
+    camera_info_topic: "camera_info"
+    runtime_sdk_dir: ""
+    pixel_format: ""
+    exposure_time: -1.0
+    gain: -1.0
+    auto_packet_size: true
+    trigger_mode: false
+    trigger_source: ""
+    grab_timeout_ms: 1000

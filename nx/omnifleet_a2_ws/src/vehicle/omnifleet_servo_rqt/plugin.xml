@@ -1,0 +1,10 @@
+<library path="src">
+  <class name="omnifleet_servo_rqt" type="omnifleet_servo_rqt.servo_plugin.ServoPlugin" base_class_type="rqt_gui_py::Plugin">
+    <description>FTServo SMS/STS/HTS setup and motion panel.</description>
+    <qtgui>
+      <group><label>OmniFleet</label></group>
+      <label>FTServo Panel</label>
+      <statustip>FTServo SMS/STS/HTS operation panel</statustip>
+    </qtgui>
+  </class>
+</library>

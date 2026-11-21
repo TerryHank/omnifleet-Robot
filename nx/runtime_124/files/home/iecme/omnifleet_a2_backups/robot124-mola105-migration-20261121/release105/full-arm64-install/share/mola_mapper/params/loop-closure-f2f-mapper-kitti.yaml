@@ -1,0 +1,9 @@
+# Loop closure detector pipeline for the KITTI launcher: the mapper one, with
+# clouds without per-point timestamps passed through the deskew filters
+# unmodified (instead of an error), and a longer loop search radius.
+
+$define:
+  MOLA_DESKEW_IGNORE_NO_TIMESTAMPS: true
+  MAX_LC_DISTANCE: 30.0  # [m]
+
+$import: loop-closure-f2f-mapper.yaml

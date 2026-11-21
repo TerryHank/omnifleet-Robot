@@ -1,0 +1,4 @@
+# generated from rosidl_cmake/cmake/rosidl_cmake-extras.cmake.in
+
+set(mola_msgs_IDL_FILES "srv/MapLoad.idl;srv/MapSave.idl;srv/MolaRuntimeParamGet.idl;srv/MolaRuntimeParamSet.idl;srv/RelocalizeFromStateEstimator.idl;srv/RelocalizeNearPose.idl")
+set(mola_msgs_INTERFACE_FILES "srv/MapLoad.srv;srv/MapLoad_Request.msg;srv/MapLoad_Response.msg;srv/MapSave.srv;srv/MapSave_Request.msg;srv/MapSave_Response.msg;srv/MolaRuntimeParamGet.srv;srv/MolaRuntimeParamGet_Request.msg;srv/MolaRuntimeParamGet_Response.msg;srv/MolaRuntimeParamSet.srv;srv/MolaRuntimeParamSet_Request.msg;srv/MolaRuntimeParamSet_Response.msg;srv/RelocalizeFromStateEstimator.srv;srv/RelocalizeFromStateEstimator_Request.msg;srv/RelocalizeFromStateEstimator_Response.msg;srv/RelocalizeNearPose.srv;srv/RelocalizeNearPose_Request.msg;srv/RelocalizeNearPose_Response.msg")

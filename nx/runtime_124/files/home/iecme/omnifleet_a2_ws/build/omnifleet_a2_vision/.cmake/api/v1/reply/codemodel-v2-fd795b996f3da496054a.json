@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-bcce9557cb8692d53581.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "omnifleet_a2_vision",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "kcf_follower_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-kcf_follower_node-26fab5dd8e8e267a3a7d.json",
+					"name" : "kcf_follower_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "omnifleet_a2_vision_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-omnifleet_a2_vision_uninstall-30fb241e7e059129fffe.json",
+					"name" : "omnifleet_a2_vision_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-a4bdfc1c3d6983d47ab4.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_vision",
+		"source" : "/home/iecme/omnifleet_a2_ws/src/omnifleet_a2_vision"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

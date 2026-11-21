@@ -1,0 +1,3 @@
+source;share/omnifleet_a2_behaviors/environment/ament_prefix_path.sh
+source;share/omnifleet_a2_behaviors/environment/path.sh
+source;share/omnifleet_a2_behaviors/environment/pythonpath.sh

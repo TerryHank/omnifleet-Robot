@@ -1,0 +1,29 @@
+omnifleet_a2_foxglove_bridge:
+  ros__parameters:
+    topic_whitelist:
+      - "^/tf$"
+      - "^/tf_static$"
+      - "^/map$"
+      - "^/odom$"
+      - "^/plan$"
+      - "^/local_plan$"
+      - "^/robot_description$"
+      - "^/joint_states$"
+      - "^/diagnostics$"
+      - "^/(local_costmap|global_costmap)/published_footprint$"
+      - "^/omnifleet_a2/(chassis|navigation|waypoints|slam|system|performance)/.*$"
+    client_topic_whitelist:
+      - "^/initialpose$"
+      - "^/omnifleet_a2/nav/waypoint_poses$"
+      - "^/omnifleet_a2/waypoints/.*$"
+    service_whitelist:
+      - "^/omnifleet_a2/.*$"
+    param_whitelist:
+      - "^/(controller_server|planner_server|bt_navigator|omnifleet_a2_.*)/.*$"
+    best_effort_qos_topic_whitelist:
+      - "(?!)"
+    max_qos_depth: 1
+    min_qos_depth: 1
+    message_backlog_size: 500
+    send_buffer_limit: 2000000
+    include_hidden: false

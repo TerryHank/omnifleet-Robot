@@ -1,0 +1,30 @@
+=head1 NAME
+
+ptg-configurator - GUI app to evaluate and test PTGs for navigation
+
+=head1 SYNOPSIS
+
+ptg-configurator
+
+=head1 DESCRIPTION
+
+A GUI application for visualizing, debugging and selecting the 
+optimal parameters for Parameterized Trajectory Generators (PTGs), 
+entities employed in a variety of navigation algorithms in MRPT.
+
+=head1 BUGS
+
+Please report bugs at https://github.com/MRPT/mrpt/issues
+
+=head1 SEE ALSO
+
+The application list and their documentation: https://docs.mrpt.org/reference/latest/applications.html
+
+=head1 AUTHORS
+
+B<ptg-configurator> is part of the Mobile Robot Programming Toolkit (MRPT), 
+and was originally written by Jose Luis Blanco (University of Almeria).
+
+This manual page was written by Jose Luis Blanco <jlblanco@ual.es>.
+
+=cut

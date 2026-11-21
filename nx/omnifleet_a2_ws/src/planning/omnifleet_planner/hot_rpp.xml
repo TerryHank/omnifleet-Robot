@@ -1,0 +1,5 @@
+<library path="omnifleet_hot_rpp">
+  <class name="omnifleet_planner::HotRegulatedPurePursuitController" type="omnifleet_planner::HotRegulatedPurePursuitController" base_class_type="nav2_core::Controller">
+    <description>Humble RPP with runtime interpolation and approach-distance settings.</description>
+  </class>
+</library>

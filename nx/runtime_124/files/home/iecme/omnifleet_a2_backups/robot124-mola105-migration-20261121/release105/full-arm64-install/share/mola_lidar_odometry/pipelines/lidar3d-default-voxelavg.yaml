@@ -1,0 +1,13 @@
+# =====================================================================================
+# Pipeline: GICP (Generalized ICP) with cov-to-cov pairings
+#
+# Identical to lidar3d-gicp.yaml except for one parameter: FilterDecimateAdaptive's
+# decimate_method is VoxelAverage (the per-voxel centroid, matching PCL's
+# pcl::VoxelGrid used by DLIO) instead of the stock default FirstPoint (an
+# arbitrary real point per voxel).
+# =====================================================================================
+
+$import: lidar3d-gicp.yaml
+
+$define:
+  MOLA_DECIMATE_METHOD: DecimateMethod::VoxelAverage

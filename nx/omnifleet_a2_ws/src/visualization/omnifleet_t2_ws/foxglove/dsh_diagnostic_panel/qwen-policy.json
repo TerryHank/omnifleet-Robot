@@ -1,0 +1,6 @@
+{
+  "model": "MiniMax-M3",
+  "enable_thinking": false,
+  "thinking_budget": 2048,
+  "max_tokens": 6144
+}

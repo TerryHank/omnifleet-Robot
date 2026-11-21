@@ -1,0 +1,2 @@
+<library path="omnifleet_dwb_hot"><class name="omnifleet_dwb_hot::HotDWBLocalPlanner" type="omnifleet_dwb_hot::HotDWBLocalPlanner" base_class_type="nav2_core::Controller"><description>DWB with live critic scales.</description></class></library>
+

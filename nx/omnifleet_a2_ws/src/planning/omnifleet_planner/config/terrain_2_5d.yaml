@@ -1,0 +1,18 @@
+# 2.5D参数只在terrain_mode:=2_5d时加载；二维默认模式不会启动本节点。
+terrain_mapper:
+  ros__parameters:
+    input_cloud_topic: /glim_ros/map
+    aligned_points_topic: /glim_ros/aligned_points
+    accumulate_aligned_points: true
+    aligned_accumulation_rate: 1.0
+    static_map_topic: /map
+    output_grid_map_topic: /terrain/grid_map
+    output_costmap_topic: /terrain/costmap
+    max_update_rate: 0.20
+    max_input_points: 2000000
+    min_points_per_cell: 1
+    ground_band: 0.12
+    hole_fill_iterations: 2
+    max_slope_deg: 15.0
+    max_roughness: 0.05
+    max_step_height: 0.10

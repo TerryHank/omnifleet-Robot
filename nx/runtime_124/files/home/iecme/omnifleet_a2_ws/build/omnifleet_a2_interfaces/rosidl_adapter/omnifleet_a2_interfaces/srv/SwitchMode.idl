@@ -1,0 +1,23 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from omnifleet_a2_interfaces/srv/SwitchMode.srv
+// generated code does not contain a copyright notice
+
+
+module omnifleet_a2_interfaces {
+  module srv {
+    struct SwitchMode_Request {
+      string mode;
+
+      string operation;
+
+      string map_id;
+    };
+    struct SwitchMode_Response {
+      boolean accepted;
+
+      string transaction_id;
+
+      string message;
+    };
+  };
+};

@@ -1,0 +1,613 @@
+/*               _
+ _ __ ___   ___ | | __ _
+| '_ ` _ \ / _ \| |/ _` | Modular Optimization framework for
+| | | | | | (_) | | (_| | Localization and mApping (MOLA)
+|_| |_| |_|\___/|_|\__,_| https://github.com/MOLAorg/mola
+
+ Copyright (C) 2018-2026 Jose Luis Blanco, University of Almeria,
+                         and individual contributors.
+ SPDX-License-Identifier: GPL-3.0
+ See LICENSE for full license information.
+ Closed-source licenses available upon request, for this package
+ alone or in combination with the complete SLAM system.
+*/
+
+#pragma once
+
+#include <gtsam/nonlinear/Marginals.h>
+#include <gtsam/nonlinear/NonlinearFactorGraph.h>
+#include <gtsam/nonlinear/Values.h>
+#include <mola_sm_loop_closure/LoopClosureInterface.h>
+#include <mola_sm_loop_closure/common/gnss_factor_helpers.h>
+#include <mola_sm_loop_closure/common/icp_pipeline_setup.h>
+#include <mola_sm_loop_closure/global_registration/bev_correlation.h>
+#include <mp2p_icp/icp_pipeline_from_yaml.h>
+#include <mp2p_icp/metricmap.h>
+#include <mp2p_icp_filters/FilterBase.h>
+#include <mp2p_icp_filters/Generator.h>
+#include <mrpt/containers/yaml.h>
+#include <mrpt/core/WorkerThreadsPool.h>
+#include <mrpt/maps/CSimpleMap.h>
+#include <mrpt/math/TPoint3D.h>
+#include <mrpt/system/CTimeLogger.h>
+#include <mrpt/topography/data_types.h>
+#include <mrpt/typemeta/TEnumType.h>
+#include <mrpt/viz/CSetOfObjects.h>
+
+#include <atomic>
+#include <list>
+#include <mutex>
+#include <set>
+#include <unordered_map>
+#include <vector>
+
+namespace mola
+{
+/** Frame-to-frame GNSS-assisted loop closure engine.
+ *
+ * This class implements a simpler loop closure strategy than SimplemapLoopClosure:
+ * 1) Uses GPS readings to optimize global frame poses
+ * 2) Runs frame-to-frame ICP between loop closure candidates
+ * 3) Optimizes the full graph with robust factors
+ */
+class FrameToFrameLoopClosure : public mola::LoopClosureInterface
+{
+    DEFINE_MRPT_OBJECT(FrameToFrameLoopClosure, mola)
+
+   public:
+    FrameToFrameLoopClosure();
+
+    /** @name Main API
+     * @{ */
+
+    using frame_id_t = uint32_t;
+
+    void initialize(const mrpt::containers::yaml& cfg) override;
+
+    /** Find and apply loop closures in the input/output simplemap */
+    void process(mrpt::maps::CSimpleMap& sm) override;
+
+    /** Detector-only loop closure: find candidates in a read-only snapshot and
+     *  return the ICP-estimated edges, without building/optimizing the internal
+     *  factor graph and without mutating the map. See LoopClosureInterface.
+     *  Not thread-safe (drives the per-thread ICP pipelines and PC cache); call
+     *  it from a single thread per instance. */
+    std::vector<ProposedLoopEdge> analyze(
+        const mrpt::maps::CSimpleMap&    snapshot,
+        const LoopClosureAnalyzeOptions& opts = {}) override;
+
+    struct Parameters
+    {
+        mp2p_icp::Parameters icp_parameters;
+
+        // GNSS optimization parameters
+        bool   use_gnss                          = true;
+        double gnss_minimum_uncertainty_xyz      = 0.10;  // [m]
+        bool   gnss_add_horizontality            = false;
+        double gnss_horizontality_sigma_rpy      = 0.01;  // [rad]
+        double gnss_edges_uncertainty_multiplier = 1.0;
+        double gnss_max_uncertainty_horiz = 20.0;  // [m] reject if sqrt(sigE²+sigN²) > this
+        double gnss_max_uncertainty_vert  = 40.0;  // [m] reject if sigU > this
+
+        /** If true, before adding the GNSS factors, move the initial guess of all
+         *  keyframes by the yaw + translation that best fits their GNSS readings.
+         *  The input odometry frame is otherwise an arbitrary initial guess for the
+         *  {enu} frame, which a stiff odometry (low input_odometry_noise_*) cannot
+         *  rotate into place within the optimizer. */
+        bool gnss_initial_alignment = true;
+
+        /** If true, add per-keyframe IMU gravity-alignment factors
+         *  (mola::factors::MeasuredGravityFactor) constraining roll/pitch against the
+         *  measured accelerometer direction. Independent of use_gnss: this works with or
+         *  without GNSS, correcting orientation drift from accelerometer data alone.
+         *  Disabled by default: only enable it if the input simplemap actually carries
+         *  per-keyframe IMU accelerometer data (see mola::extract_imu_frames_from_sm()). */
+        bool use_imu_gravity = false;
+
+        /** Sigma [deg] for the IMU gravity-alignment factors (see use_imu_gravity). */
+        double imu_gravity_sigma_deg = 3.0;
+
+        // Loop closure candidate selection. Both bounds apply to the
+        // separation of the two keyframes IN THE CURRENT ESTIMATE, so they only
+        // mean what they say to the extent that the estimate has drifted.
+        //
+        // A revisit is a return to the same place: it appears displaced only
+        // through accumulated drift, and on an accurate estimate it appears
+        // where it is, at nearly zero separation. A non-zero floor therefore
+        // discards real loop closures first, so it defaults to zero; keyframe
+        // adjacency is min_frames_between_lc's job, and that guard does not
+        // depend on the estimate's quality. The ceiling has no such
+        // estimate-free substitute and must be set to the drift the odometry
+        // actually has.
+        double min_distance_between_frames   = 0.0;  // [m] minimum separation for LC
+        double max_distance_for_lc_candidate = 50.0;  // [m] maximum distance to consider
+        size_t max_lc_candidates             = 100;  // maximum candidates to check
+        size_t min_frames_between_lc         = 50;  // minimum frame separation
+        size_t max_lc_optimization_rounds    = 5;  // maximum LC+optimization rounds to run
+
+        /** Number of accepted LCs between intermediate graph optimizations.
+         *  Within each round, after this many accepted loop closures the graph
+         *  is re-optimized so that later (larger-gap) candidates benefit from
+         *  the corrections of earlier (smaller-gap) ones.
+         *  Set to 0 to disable intermediate optimizations (optimize only at
+         *  end of each round, original behavior).
+         */
+        size_t lc_optimize_every_n = 5;
+
+        /** Loop closure candidate selection strategy */
+        enum class CandidateSelectionStrategy : uint8_t
+        {
+            PROXIMITY_ONLY      = 0,  ///< Simple method: score = 1/(1+distance)
+            DISTANCE_STRATIFIED = 1,  ///< Stratified sampling across distance bins
+            MULTI_OBJECTIVE     = 2,  ///< Complex multi-criteria scoring
+        };
+
+        /** Active candidate selection strategy */
+        CandidateSelectionStrategy lc_candidate_strategy =
+            CandidateSelectionStrategy::DISTANCE_STRATIFIED;
+
+        /** Number of distance bins for DISTANCE_STRATIFIED strategy
+         * The valid distance range [min_distance_between_frames,
+         * max_distance_for_lc_candidate] is divided into this many bins,
+         * and candidates are sampled proportionally from each bin.
+         * Typical values: 3-7
+         */
+        size_t lc_distance_bins = 5;
+
+        /** Weight for proximity in multi-objective scoring
+         * How much to favor spatially close candidates.
+         * Valid range: [0.0, 1.0]
+         */
+        double lc_weight_proximity = 0.40;
+
+        /** Weight for frame separation in multi-objective scoring
+         * How much to favor temporally distant candidates (large frame index gap).
+         * Valid range: [0.0, 1.0]
+         */
+        double lc_weight_frame_separation = 0.25;
+
+        /** Weight for distance diversity in multi-objective scoring
+         * How much to penalize candidates with similar distances to already selected ones.
+         * Valid range: [0.0, 1.0]
+         */
+        double lc_weight_diversity = 0.20;
+
+        /** Weight for geometric coverage in multi-objective scoring
+         * How much to favor candidates that cover different parts of the trajectory.
+         * Valid range: [0.0, 1.0]
+         */
+        double lc_weight_coverage = 0.15;
+
+        /** Enable detailed logging of candidate selection process
+         * When true, logs information about each distance bin, selection statistics,
+         * and distribution of selected candidates.
+         */
+        bool lc_verbose_candidate_selection = false;
+
+        // ICP parameters
+        double      min_icp_goodness              = 0.50;
+        double      icp_edge_robust_param         = 5.0;
+        double      icp_edge_additional_noise_xyz = 0.02;  // [m]
+        double      icp_edge_additional_noise_ang = 0.1;  // [deg]
+        std::string threshold_sigma_initial       = "0.10";
+        std::string threshold_sigma_final         = "0.05";
+
+        // Odometry edge parameters
+        double input_odometry_noise_xyz = 0.10;  // [m] per meter of travel
+        double input_odometry_noise_ang = 1.0;  // [deg] per meter of travel
+
+        /** If true, scale odometry noise proportionally to inter-frame distance */
+        bool scale_odometry_noise_by_distance = true;
+
+        // Optimization parameters
+        double largest_delta_for_reconsider = 15.0;  // [m] re-check LCs if change > this
+
+        // Point cloud cache parameters
+        /** Maximum memory (in bytes) for the LRU point cloud cache.
+         *  Set to 0 to disable caching. Default: 500 MB.
+         */
+        size_t pc_cache_max_bytes = 500'000'000;
+
+        /** If true, call unload() on raw observations after generating
+         *  a point cloud, freeing externally-stored data from RAM.
+         *  Disable this for live SLAM where observations may be needed again.
+         */
+        bool unload_observations_after_use = true;
+
+        // Parallel per-candidate ICP evaluation
+        /** If true, evaluate loop-closure candidates concurrently across worker
+         *  threads (each with its own ICP pipeline slot). Candidates are
+         *  independent pairwise registrations, so this speeds up both live scans
+         *  and the finalize pass roughly linearly with core count. */
+        bool parallel_icp_enabled = true;
+        /** Number of worker threads for candidate ICP. 0 = auto (a quarter of
+         *  the hardware concurrency). It also sets how many per-thread ICP slots
+         *  (pipeline, KISS-Matcher instance, share of the point-cloud cache) are
+         *  created, so memory scales with it. */
+        size_t num_icp_threads = 0;
+
+        /** Master switch for a REPRODUCIBLE scan: the same simplemap in gives
+         *  the same edges out, every time -- PROVIDED this build could pin the
+         *  runtimes it relies on. TBB and OpenMP are both optional at build
+         *  time (see CMakeLists.txt); if CMake did not find one that is
+         *  actually in use, the guarantee does not hold and DeterministicScope
+         *  says so at construction rather than letting a caller discover it by
+         *  diffing two outputs. `fully_pinned()` reports the same thing
+         *  programmatically.
+         *
+         *  Off by default because it costs wall clock -- it is one thread, all
+         *  the way down. Turn it on for a batch/offline run whose numbers are
+         *  going to be compared against another run, and leave it off for live
+         *  SLAM, where the answer only has to be good, not repeatable.
+         *
+         *  It does NOT turn off candidate parallelism -- that was measured and
+         *  is not where the nondeterminism lives. Two things are needed instead.
+         *  It sorts the accepted edges before returning, so a consumer folding
+         *  them into a graph (which typically drops a pair already closed) sees
+         *  a fixed order. And it pins, for the duration of the scan, the
+         *  parallel runtimes UNDERNEATH this library, which read none of this
+         *  library's own thread settings.
+         *
+         *  What is actually left to pin is narrower than it looks, and worth
+         *  knowing before changing any of this. mp2p_icp's pairing reduction was
+         *  the other cause and is fixed at the source (it now joins
+         *  deterministically); with that in place and KISS-Matcher disabled, a
+         *  fully parallel scan is already reproducible. The remaining cause is
+         *  KISS-Matcher, which builds an index list with its own
+         *  concatenation-joined `tbb::parallel_reduce` and uses OpenMP as well --
+         *  and which is vendored from upstream, so pinning it is the available
+         *  lever rather than fixing it.
+         *
+         *  Cost on KITTI-07: 8.5 s unpinned, 40 s here, 92.7 s if candidates are
+         *  serialized too. The output is byte-identical across all thread counts
+         *  tried, which is what "deterministic" is supposed to mean.
+         *
+         *  See DeterministicScope in module/src/ for the mechanism. */
+        bool deterministic = false;
+
+        // Sensor parameters
+        double max_sensor_range = 100.0;  // [m]
+
+        // Output and profiling
+        bool        profiler_enabled                = true;
+        bool        save_trajectory_files           = true;
+        bool        save_trajectory_files_with_cov  = false;
+        std::string debug_files_prefix              = "f2f_lc_";
+        double      min_icp_goodness_to_save_icplog = 0.50;
+
+        // 3D scene visualization output
+        bool  save_3d_scene_files               = false;
+        bool  save_3d_scene_files_per_iteration = false;
+        bool  save_3d_scene_live_preview        = false;
+        float scene_path_line_width             = 2.0f;
+        float scene_lc_line_width               = 4.0f;
+        float scene_path_color_r                = 0.0f;
+        float scene_path_color_g                = 0.0f;
+        float scene_path_color_b                = 1.0f;  // blue
+        float scene_path_color_a                = 0.7f;
+        float scene_lc_color_r                  = 0.0f;  // green (accepted)
+        float scene_lc_color_g                  = 0.9f;
+        float scene_lc_color_b                  = 0.0f;
+        float scene_lc_color_a                  = 0.9f;
+        float scene_lc_candidate_color_r        = 1.0f;  // orange (pending)
+        float scene_lc_candidate_color_g        = 0.5f;
+        float scene_lc_candidate_color_b        = 0.0f;
+        float scene_lc_candidate_color_a        = 0.7f;
+        float scene_keyframe_point_size         = 3.0f;
+
+        // ===== Planar World Annealing =====
+        /** If true, add planar-world constraints (z≈0, roll≈0, pitch≈0) that
+         *  start strong and are gradually relaxed over the first
+         *  `planar_world_annealing_rounds` LC rounds, then disappear. */
+        bool   assume_planar_world            = false;
+        double planar_world_initial_sigma_z   = 0.10;  // [m]   sigma at round 0
+        double planar_world_initial_sigma_ang = 0.02;  // [rad] sigma at round 0 (~1 deg)
+        size_t planar_world_annealing_rounds  = 2;  // rounds until constraint vanishes
+
+        // ===== KISS-Matcher initial guess =====
+        /** If true, use KISS-Matcher to compute a global-registration initial
+         *  guess before running mp2p_icp::ICP on each loop-closure candidate.
+         *  Requires the kiss-matcher git submodule to be populated. */
+        bool use_kiss_matcher = false;
+
+        /** Voxel size [m] passed to KISSMatcherConfig.  Controls feature
+         *  extraction radius (normal_radius ≈ 3×, fpfh_radius ≈ 5×). */
+        double kiss_matcher_resolution = 1.0;
+
+        /** Name of the metric-map layer extracted from each keyframe's
+         *  mp2p_icp::metric_map_t and fed into KISS-Matcher.  Must contain
+         *  an mrpt::maps::CPointsMap-derived object. */
+        std::string kiss_matcher_layer = "points_to_register_points";
+
+        /** Minimum number of final (translation) inliers for a KISS-Matcher
+         *  solution to be trusted as the ICP initial guess.  KISS-Matcher's
+         *  own `valid` flag only requires a single surviving inlier, which on
+         *  repetitive geometry (e.g. urban LiDAR) routinely yields grossly
+         *  wrong transforms (large translations, flipped orientations) that
+         *  then mislead ICP.  Below this count the graph-based guess is used
+         *  instead. */
+        uint32_t kiss_matcher_min_inliers = 5;
+
+        // ===== Global registration initial guess =====
+        /** Global registration that seeds the ICP of each loop closure
+         *  candidate, instead of the current graph estimate:
+         *  - "none": the graph estimate only.
+         *  - "kiss": KISS-Matcher (see the parameters above).
+         *  - "bev": global_registration::bev_correlation(), a gravity-aligned
+         *    4-DoF search; it needs keyframe poses with absolute roll and pitch
+         *    (e.g. from LiDAR-inertial odometry).
+         *  Empty: "kiss" if use_kiss_matcher is true, "none" otherwise. */
+        std::string global_registration;
+
+        /** Metric-map layer of each keyframe fed into the "bev" global
+         *  registration. Must contain an mrpt::maps::CPointsMap. */
+        std::string global_registration_layer = "points_to_register_points";
+
+        /** Parameters of the "bev" global registration (YAML map
+         *  `bev_correlation`). */
+        mola::global_registration::BevCorrelationParameters bev_correlation;
+
+        /** If true, a candidate whose "bev" global registration finds a match
+         *  but cannot tell it from another clearly different one (repetitive
+         *  structure) is rejected, instead of running ICP from the graph
+         *  estimate. */
+        bool skip_ambiguous_candidates = true;
+
+        // ===== Manual Loop Closure Hints =====
+        struct ManualLoopConstraint
+        {
+            double timestamp_i = 0.0;  ///< UNIX timestamp (mrpt::Clock::toDouble()) for frame i
+            double timestamp_j = 0.0;  ///< UNIX timestamp (mrpt::Clock::toDouble()) for frame j
+            double sigma_xyz = 0.10;  ///< [m] sigma for X, Y, Z; angles are left free (large sigma)
+            /** If true, mark this constraint as a known GNC inlier, bypassing
+             *  outlier rejection.  Use only when the constraint is highly trusted. */
+            bool trust_as_inlier = false;
+        };
+
+        /// List of manually specified loop closure constraints loaded from config.
+        std::vector<ManualLoopConstraint> manual_loop_constraints;
+    };
+
+    Parameters params_;
+
+    /** @} */
+
+   private:
+    struct PerThreadState
+    {
+        std::mutex mtx;
+
+        // Shared ICP pipeline (obs generators, filter, parameter source):
+        lc_common::PerThreadIcpPipeline pipeline;
+
+        std::shared_ptr<void> kissMatcher;  // holds kiss_matcher::KISSMatcher when enabled
+
+        // Per-thread LRU point-cloud cache. Kept per-thread (not shared) so that
+        // candidate ICP runs concurrently without racing on a shared cloud's
+        // lazily-built KD-tree. Budget below is per-thread (params_.pc_cache_max_bytes).
+        struct CachedPC
+        {
+            mp2p_icp::metric_map_t::Ptr pc;
+            size_t                      approxBytes = 0;
+        };
+        std::unordered_map<frame_id_t, CachedPC> pcCache;
+        std::list<frame_id_t>                    pcLruOrder;  // front = most recent
+        size_t                                   pcCacheTotalBytes = 0;
+
+        void cacheClear()
+        {
+            pcCache.clear();
+            pcLruOrder.clear();
+            pcCacheTotalBytes = 0;
+        }
+    };
+
+    struct State
+    {
+        bool initialized = false;
+
+        /// Candidate ICP runs that completed or threw: a run where every one
+        /// throws is a configuration error, not degenerate candidates.
+        std::atomic<std::size_t> lcIcpCompleted{0};
+        std::atomic<std::size_t> lcIcpFailed{0};
+
+        const mrpt::maps::CSimpleMap* sm = nullptr;
+
+        /// True while running the detector-only analyze() over a caller-owned
+        /// snapshot: point-cloud generation must then leave observations intact
+        /// (no unload) since we must not mutate the borrowed map.
+        bool readOnlySnapshot = false;
+
+        // Per-thread ICP instances, one per worker (sized in initialize()).
+        std::vector<PerThreadState> perThreadState_ = std::vector<PerThreadState>(1);
+
+        // GNSS reference coordinate
+        std::optional<mrpt::topography::TGeodeticCoords> globalGeoRef;
+
+        // GTSAM graph and values
+        gtsam::Values                   graphValues;
+        gtsam::NonlinearFactorGraph     graphFG;
+        std::optional<gtsam::Marginals> graphMarginals;
+
+        [[nodiscard]] mrpt::poses::CPose3D get_pose(frame_id_t id) const;
+
+        /// Cov in MRPT order: xyz yaw pitch roll
+        [[nodiscard]] mrpt::math::CMatrixDouble66 get_pose_cov(frame_id_t id) const;
+
+        // Indices of factors known to be inliers (prior, odometry, GNSS)
+        // for use with GNC optimizer
+        std::vector<uint64_t> knownInlierFactorIndices;
+
+        /// Index in graphFG of the prior on the first keyframe
+        std::size_t firstPosePriorFactorIndex = 0;
+
+        /// Precomputed flag per frame: true if the frame has mapping-capable
+        /// observations.  Computed once at the start of process() to avoid
+        /// repeated lazy-loading of externally-stored observations.
+        std::vector<bool> frameHasMappingObs;
+
+        // Planarity factor graph (rebuilt each LC round when assume_planar_world=true)
+        gtsam::NonlinearFactorGraph planarityFG;
+
+        /// Clears every per-thread point-cloud cache (called between scans).
+        void pcCacheClear()
+        {
+            for (auto& pts : perThreadState_)
+            {
+                pts.cacheClear();
+            }
+        }
+    };
+
+    State state_;
+
+    mrpt::system::CTimeLogger profiler_{true, "frame_to_frame_lc"};
+    mrpt::WorkerThreadsPool   threads_;  // grown in initialize()
+
+    // Private methods
+    mrpt::poses::CPose3D frame_pose_in_simplemap(frame_id_t frameId) const;
+
+    /** Generate point cloud from a frame's observations (no caching) */
+    mp2p_icp::metric_map_t::Ptr generate_frame_pointcloud(frame_id_t frameId, size_t threadIdx);
+
+    /** Get point cloud for a frame, using the LRU cache */
+    mp2p_icp::metric_map_t::Ptr get_cached_pointcloud(frame_id_t frameId, size_t threadIdx);
+
+    /** Evict oldest entries from a per-thread PC cache until under the limit */
+    void evict_pc_cache(PerThreadState& pts);
+
+    /** Build initial graph with odometry and GNSS factors */
+    void build_initial_graph();
+
+    /** Add GNSS factors to the graph */
+    void add_gnss_factors();
+
+    /** GNSS factor parameters, from params_ */
+    lc_common::GnssFactorParams gnss_factor_params() const;
+
+    /** See Parameters::gnss_initial_alignment */
+    void align_initial_values_to_gnss();
+
+    /** Sigma of the prior on the first keyframe (all 6 dims) */
+    double first_pose_prior_sigma() const;
+
+    /** Adds per-keyframe IMU gravity-alignment factors (see Parameters::use_imu_gravity). */
+    /// Returns true if at least one IMU gravity-alignment factor was added.
+    bool add_imu_gravity_factors();
+
+    struct LoopCandidate
+    {
+        frame_id_t           frame_i         = 0;
+        frame_id_t           frame_j         = 0;
+        double               distance        = 0.0;  // estimated distance between frames
+        double               score           = 0.0;  // candidate quality score
+        mrpt::math::TPoint3D spatialMidpoint = {0, 0, 0};  // (pose_i + pose_j) / 2
+        /// Its block pair holds an excluded pair (a place already closed or
+        /// rejected): it ranks after the pairs of other block pairs.
+        bool in_excluded_block = false;
+    };
+
+    /** Find potential loop closure candidates.
+     *  \param alreadyChecked Block pairs (see min_frames_between_lc) to skip.
+     *  \param minLaterFrame If >0, only generate pairs whose later frame index
+     *         is >= this value (used for incremental, new-keyframe-only scans).
+     *  \param excludedFramePairs Keyframe pairs (min,max) to skip; the other
+     *         pairs of their block pairs remain candidates, ranked after those
+     *         of other block pairs. */
+    std::vector<LoopCandidate> find_loop_candidates(
+        const std::set<std::pair<frame_id_t, frame_id_t>>& alreadyChecked,
+        frame_id_t                                         minLaterFrame      = 0,
+        const std::set<std::pair<frame_id_t, frame_id_t>>* excludedFramePairs = nullptr) const;
+
+    /** Result of running ICP on one loop-closure candidate: the relative pose
+     *  edge (i -> j) with the same diagonal, additive-noise-inflated covariance
+     *  used for the graph BetweenFactor, plus the ICP goodness. */
+    struct LcIcpEdge
+    {
+        mrpt::poses::CPose3DPDFGaussian relPose;  ///< i -> j, diagonal cov
+        gtsam::Vector6                  sigmas;  ///< gtsam Pose3 tangent order
+        double                          quality = 0;  ///< ICP goodness [0,1]
+    };
+
+    /** Run ICP for a single candidate and build its edge (no graph mutation).
+     *  Returns nullopt if point clouds are missing or ICP goodness is below
+     *  min_icp_goodness. Shared by process_loop_candidate() and analyze(). */
+    /// Registers one candidate pair with ICP using per-thread slot `threadIdx`
+    /// (its own ICP pipeline + KISS-Matcher instance), so calls with distinct
+    /// slots run concurrently. `profile` gates the per-candidate time-logger
+    /// sections, which must be off when several candidates run in parallel
+    /// (CTimeLogger forbids the same section name from multiple threads).
+    std::optional<LcIcpEdge> run_lc_icp(
+        const LoopCandidate& lc, size_t threadIdx, bool profile = true);
+
+    /** Process a single loop closure candidate with ICP.
+     *  Returns the factor index in graphFG on success, or nullopt on failure. */
+    std::optional<size_t> process_loop_candidate(const LoopCandidate& lc);
+
+    /** Optimize the graph and return the largest pose change */
+    struct OptGraphResult
+    {
+        double largestDelta  = 0;
+        size_t numLcInliers  = 0;
+        size_t numLcOutliers = 0;
+    };
+    OptGraphResult optimize_graph();
+
+    /** Save trajectory to TUM format file */
+    void save_trajectory_as_tum(const std::string& filename, bool saveCovariancesToo = false) const;
+
+    /** Save 3D scene visualization files (final optimized poses).
+     *  \param suffix Optional suffix appended before the file extension (e.g. "_iter02"). */
+    void save_3d_scene_files(const std::string& suffix = {}) const;
+
+    /** Save 3D scene visualization files (original poses before LC) */
+    void save_3d_scene_initial_files() const;
+
+    struct LivePreviewStats
+    {
+        size_t lcRound         = 0;
+        size_t totalRounds     = 0;
+        size_t acceptedLCs     = 0;
+        size_t candidatesTotal = 0;
+        size_t candidatesDone  = 0;  ///< how many have been evaluated so far this round
+        size_t gncInliers      = 0;  ///< LC inliers from latest GNC run
+        size_t gncOutliers     = 0;  ///< LC outliers rejected by latest GNC run
+    };
+
+    /** Overwrite the single live-preview .3Dscene file.
+     *  \param pendingCandidates Candidates not yet evaluated this round (drawn in orange).
+     *  \param stats Stats displayed as text overlay.
+     *  Accepted edges are taken from accepted_lc_edges_ (drawn in green). */
+    void save_3d_scene_live_preview(
+        const std::vector<LoopCandidate>& pendingCandidates, const LivePreviewStats& stats) const;
+
+    /** Update dynamic variables for ICP pipeline */
+    void update_dynamic_variables(frame_id_t frameId, size_t threadIdx);
+
+    /** Accepted loop closure edges (for 3D scene output) */
+    std::vector<std::pair<frame_id_t, frame_id_t>> accepted_lc_edges_;
+
+    /** Add manual loop closure factors specified in the config to the graph. */
+    void add_manual_loop_closure_factors();
+
+    /** Rebuild the planarity factor graph with the given z and angular sigmas.
+     *  Called once per LC round when assume_planar_world=true; sigmas grow
+     *  exponentially from initial to 1e6 over planar_world_annealing_rounds. */
+    void build_planarity_factors(double sigmaZ, double sigmaAng);
+};
+
+}  // namespace mola
+
+// Enum type machinery for CandidateSelectionStrategy:
+MRPT_ENUM_TYPE_BEGIN_NAMESPACE(
+    mola, mola::FrameToFrameLoopClosure::Parameters::CandidateSelectionStrategy)
+MRPT_FILL_ENUM_CUSTOM_NAME(
+    FrameToFrameLoopClosure::Parameters::CandidateSelectionStrategy::PROXIMITY_ONLY,
+    "PROXIMITY_ONLY");
+MRPT_FILL_ENUM_CUSTOM_NAME(
+    FrameToFrameLoopClosure::Parameters::CandidateSelectionStrategy::DISTANCE_STRATIFIED,
+    "DISTANCE_STRATIFIED");
+MRPT_FILL_ENUM_CUSTOM_NAME(
+    FrameToFrameLoopClosure::Parameters::CandidateSelectionStrategy::MULTI_OBJECTIVE,
+    "MULTI_OBJECTIVE");
+MRPT_ENUM_TYPE_END()

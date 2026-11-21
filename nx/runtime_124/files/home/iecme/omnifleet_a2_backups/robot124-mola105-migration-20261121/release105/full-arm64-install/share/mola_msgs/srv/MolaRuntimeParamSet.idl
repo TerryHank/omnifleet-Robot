@@ -1,0 +1,32 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from mola_msgs/srv/MolaRuntimeParamSet.srv
+// generated code does not contain a copyright notice
+
+
+module mola_msgs {
+  module srv {
+    @verbatim (language="comment", text=
+      "This service requests changing one or more runtime configurable parameters of running mola::ExecutableBase modules.")
+    struct MolaRuntimeParamSet_Request {
+      @verbatim (language="comment", text=
+        "Request: a multiline string in YAML format with all parameters that need to be changed, in this format:" "\n"
+        "---" "\n"
+        "module1:" "\n"
+        "  var: value" "\n"
+        "module2:" "\n"
+        "  var: value" "\n"
+        "..." "\n"
+        "---")
+      string parameters;
+    };
+    @verbatim (language="comment", text=
+      "Result. False if there was some problem changing the parameters.")
+    struct MolaRuntimeParamSet_Response {
+      boolean success;
+
+      @verbatim (language="comment", text=
+        "In case of no success, here is a human-readable error reason.")
+      string error_message;
+    };
+  };
+};

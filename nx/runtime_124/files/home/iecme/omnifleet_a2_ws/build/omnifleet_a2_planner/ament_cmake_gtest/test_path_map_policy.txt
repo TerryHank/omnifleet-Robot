@@ -1,0 +1,33 @@
+-- run_test.py: invoking following command in '/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_planner':
+ - /home/iecme/omnifleet_a2_ws/build/omnifleet_a2_planner/test_path_map_policy --gtest_output=xml:/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_planner/test_results/omnifleet_a2_planner/test_path_map_policy.gtest.xml
+
+Running main() from /opt/ros/humble/src/gtest_vendor/src/gtest_main.cc
+[==========] Running 8 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 8 tests from PathMapPolicy
+[ RUN      ] PathMapPolicy.AcceptsKnownPathInsideBounds
+[       OK ] PathMapPolicy.AcceptsKnownPathInsideBounds (0 ms)
+[ RUN      ] PathMapPolicy.RejectsAnyPoseOutsideBounds
+[       OK ] PathMapPolicy.RejectsAnyPoseOutsideBounds (0 ms)
+[ RUN      ] PathMapPolicy.RejectsUnknownShortcutForKnownGoal
+[       OK ] PathMapPolicy.RejectsUnknownShortcutForKnownGoal (0 ms)
+[ RUN      ] PathMapPolicy.AllowsUnknownCellsWhenGoalIsUnknown
+[       OK ] PathMapPolicy.AllowsUnknownCellsWhenGoalIsUnknown (0 ms)
+[ RUN      ] PathMapPolicy.RejectsLethalObstacleCells
+[       OK ] PathMapPolicy.RejectsLethalObstacleCells (0 ms)
+[ RUN      ] PathMapPolicy.HandlesRotatedMapOrigin
+[       OK ] PathMapPolicy.HandlesRotatedMapOrigin (0 ms)
+[ RUN      ] PathMapPolicy.RejectsFrameMismatch
+[       OK ] PathMapPolicy.RejectsFrameMismatch (0 ms)
+[ RUN      ] PathMapPolicy.RejectsEmptyPath
+[       OK ] PathMapPolicy.RejectsEmptyPath (0 ms)
+[----------] 8 tests from PathMapPolicy (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 8 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 8 tests.
+
+
+-- run_test.py: return code 0
+-- run_test.py: inject classname prefix into gtest result file '/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_planner/test_results/omnifleet_a2_planner/test_path_map_policy.gtest.xml'
+-- run_test.py: verify result file '/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_planner/test_results/omnifleet_a2_planner/test_path_map_policy.gtest.xml'

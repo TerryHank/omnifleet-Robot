@@ -1,0 +1,27 @@
+[Unit]
+Description=Ackermann STM32 chassis driver and robot state
+After=systemd-udevd.service
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+SupplementaryGroups=dialout
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+Environment=HOME=/home/iecme
+Environment=ROS_HOME=/home/iecme/.ros
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/home/iecme/omnifleet_a2_ws/deploy/111-standard/config/robot.env
+ExecStartPre=/bin/bash -c 'for i in {1..30}; do test -e /dev/myserial && exit 0; sleep 1; done; exit 1'
+ExecStart=/bin/bash -lc 'source /home/iecme/omnifleet_a2_ws/src/system/workspace_support/robot_fleet_env.bash && exec ros2 launch omnifleet_bringup chassis_core.launch.py serial_port:=/dev/myserial model:=lunshi_ackermann_lite.urdf'
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStopSec=15
+Restart=on-failure
+RestartSec=2
+UMask=0007
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from mola_msgs/srv/RelocalizeFromStateEstimator.srv
+// generated code does not contain a copyright notice
+
+
+module mola_msgs {
+  module srv {
+    @verbatim (language="comment", text=
+      "This service requests re-localization using the output of the MOLA system" "\n"
+      "state estimator, for example, from GNSS, odometry, and IMU data fusion.")
+    struct RelocalizeFromStateEstimator_Request {
+      uint8 structure_needs_at_least_one_member;
+    };
+    @verbatim (language="comment", text=
+      "Result. False if there was no MOLA localization module" "\n"
+      "accepting this request.")
+    struct RelocalizeFromStateEstimator_Response {
+      boolean accepted;
+    };
+  };
+};

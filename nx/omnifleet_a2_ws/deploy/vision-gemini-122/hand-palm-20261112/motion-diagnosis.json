@@ -1,0 +1,625 @@
+{
+  "topics": [
+    [
+      "/Buzzer",
+      [
+        "std_msgs/msg/Bool"
+      ]
+    ],
+    [
+      "/RGBLight",
+      [
+        "std_msgs/msg/Int32"
+      ]
+    ],
+    [
+      "/camera/color/camera_info",
+      [
+        "sensor_msgs/msg/CameraInfo"
+      ]
+    ],
+    [
+      "/camera/color/image_raw",
+      [
+        "sensor_msgs/msg/Image"
+      ]
+    ],
+    [
+      "/camera/color/image_raw/compressed",
+      [
+        "sensor_msgs/msg/CompressedImage"
+      ]
+    ],
+    [
+      "/camera/color/native_compressed",
+      [
+        "sensor_msgs/msg/CompressedImage"
+      ]
+    ],
+    [
+      "/camera/color/receiver_follow/compressed",
+      [
+        "sensor_msgs/msg/CompressedImage"
+      ]
+    ],
+    [
+      "/camera/depth/camera_info",
+      [
+        "sensor_msgs/msg/CameraInfo"
+      ]
+    ],
+    [
+      "/camera/depth/image_raw",
+      [
+        "sensor_msgs/msg/Image"
+      ]
+    ],
+    [
+      "/camera/depth/image_raw/compressed",
+      [
+        "sensor_msgs/msg/CompressedImage"
+      ]
+    ],
+    [
+      "/camera/depth_filter_status",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/camera/depth_to_color",
+      [
+        "orbbec_camera_msgs/msg/Extrinsics"
+      ]
+    ],
+    [
+      "/camera/sdk_tf",
+      [
+        "tf2_msgs/msg/TFMessage"
+      ]
+    ],
+    [
+      "/camera/sdk_tf_static",
+      [
+        "tf2_msgs/msg/TFMessage"
+      ]
+    ],
+    [
+      "/cmd_vel",
+      [
+        "geometry_msgs/msg/Twist"
+      ]
+    ],
+    [
+      "/diagnostics",
+      [
+        "diagnostic_msgs/msg/DiagnosticArray"
+      ]
+    ],
+    [
+      "/goal_update",
+      [
+        "geometry_msgs/msg/PoseStamped"
+      ]
+    ],
+    [
+      "/imu/data_raw",
+      [
+        "sensor_msgs/msg/Imu"
+      ]
+    ],
+    [
+      "/imu/mag",
+      [
+        "sensor_msgs/msg/MagneticField"
+      ]
+    ],
+    [
+      "/joint_states",
+      [
+        "sensor_msgs/msg/JointState"
+      ]
+    ],
+    [
+      "/lidar_odometry/metadata",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/lidar_odometry/pose",
+      [
+        "nav_msgs/msg/Odometry"
+      ]
+    ],
+    [
+      "/map",
+      [
+        "nav_msgs/msg/OccupancyGrid"
+      ]
+    ],
+    [
+      "/mola_diagnostics/lidar_odometry/status",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/navigate_through_poses/_action/feedback",
+      [
+        "nav2_msgs/action/NavigateThroughPoses_FeedbackMessage"
+      ]
+    ],
+    [
+      "/navigate_through_poses/_action/status",
+      [
+        "action_msgs/msg/GoalStatusArray"
+      ]
+    ],
+    [
+      "/navigate_to_pose/_action/feedback",
+      [
+        "nav2_msgs/action/NavigateToPose_FeedbackMessage"
+      ]
+    ],
+    [
+      "/navigate_to_pose/_action/status",
+      [
+        "action_msgs/msg/GoalStatusArray"
+      ]
+    ],
+    [
+      "/navigation/deskewed_points",
+      [
+        "sensor_msgs/msg/PointCloud2"
+      ]
+    ],
+    [
+      "/odom",
+      [
+        "nav_msgs/msg/Odometry"
+      ]
+    ],
+    [
+      "/omnifleet_a2/chassis/edition",
+      [
+        "std_msgs/msg/Float32"
+      ]
+    ],
+    [
+      "/omnifleet_a2/chassis/firmware_version",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/omnifleet_a2/chassis/motor_command_sent",
+      [
+        "geometry_msgs/msg/Twist"
+      ]
+    ],
+    [
+      "/omnifleet_a2/chassis/velocity_raw",
+      [
+        "geometry_msgs/msg/Twist"
+      ]
+    ],
+    [
+      "/omnifleet_a2/chassis/voltage",
+      [
+        "std_msgs/msg/Float32"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/add_pose",
+      [
+        "geometry_msgs/msg/PoseStamped"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/catalog",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/clear",
+      [
+        "std_msgs/msg/Empty"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/markers",
+      [
+        "visualization_msgs/msg/MarkerArray"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/navigate_to",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/next_name",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/path",
+      [
+        "nav_msgs/msg/Path"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/rename",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/start",
+      [
+        "std_msgs/msg/Empty"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/status",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/stop",
+      [
+        "std_msgs/msg/Empty"
+      ]
+    ],
+    [
+      "/omnifleet_a2/waypoints/undo",
+      [
+        "std_msgs/msg/Empty"
+      ]
+    ],
+    [
+      "/omnifleet_vision/kcf/status",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/parameter_events",
+      [
+        "rcl_interfaces/msg/ParameterEvent"
+      ]
+    ],
+    [
+      "/robot_description",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/rosout",
+      [
+        "rcl_interfaces/msg/Log"
+      ]
+    ],
+    [
+      "/rslidar_imu_data",
+      [
+        "sensor_msgs/msg/Imu"
+      ]
+    ],
+    [
+      "/rslidar_imu_data_corrected",
+      [
+        "sensor_msgs/msg/Imu"
+      ]
+    ],
+    [
+      "/rslidar_points",
+      [
+        "sensor_msgs/msg/PointCloud2"
+      ]
+    ],
+    [
+      "/servo/command",
+      [
+        "trajectory_msgs/msg/JointTrajectory"
+      ]
+    ],
+    [
+      "/servo/joint_states",
+      [
+        "sensor_msgs/msg/JointState"
+      ]
+    ],
+    [
+      "/stm32/encoder_counts",
+      [
+        "std_msgs/msg/Int64MultiArray"
+      ]
+    ],
+    [
+      "/tf",
+      [
+        "tf2_msgs/msg/TFMessage"
+      ]
+    ],
+    [
+      "/tf_static",
+      [
+        "tf2_msgs/msg/TFMessage"
+      ]
+    ],
+    [
+      "/tof/color/image_raw/compressed",
+      [
+        "sensor_msgs/msg/CompressedImage"
+      ]
+    ],
+    [
+      "/vision/body_tracking/cancel",
+      [
+        "std_msgs/msg/Empty"
+      ]
+    ],
+    [
+      "/vision/body_tracking/cmd_vel",
+      [
+        "geometry_msgs/msg/Twist"
+      ]
+    ],
+    [
+      "/vision/body_tracking/native_status",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/vision/body_tracking/status",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/vision/body_tracking/targets",
+      [
+        "ai_msgs/msg/PerceptionTargets"
+      ]
+    ],
+    [
+      "/vision/course_gui/course_04_08_gesture_person_follow/debug/compressed",
+      [
+        "sensor_msgs/msg/CompressedImage"
+      ]
+    ],
+    [
+      "/vision/demo/control",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/vision/demo/status",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/vision/gesture_follow/debug",
+      [
+        "sensor_msgs/msg/Image"
+      ]
+    ],
+    [
+      "/vision/mobile/control",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/vision/mobile/detections",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/vision/mobile/tracking_control",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/vision/nanotrack/selected",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/vision/person_follow/control",
+      [
+        "std_msgs/msg/String"
+      ]
+    ],
+    [
+      "/vision/person_follow/goal_markers",
+      [
+        "visualization_msgs/msg/MarkerArray"
+      ]
+    ],
+    [
+      "/vision/person_follow/nav_goal",
+      [
+        "geometry_msgs/msg/PoseStamped"
+      ]
+    ],
+    [
+      "/vision/person_follow/target",
+      [
+        "geometry_msgs/msg/PoseStamped"
+      ]
+    ],
+    [
+      "/vr/attitude_rpy_rad",
+      [
+        "geometry_msgs/msg/Vector3"
+      ]
+    ],
+    [
+      "/vr/fire",
+      [
+        "std_msgs/msg/Bool"
+      ]
+    ],
+    [
+      "/vr/heading_rad",
+      [
+        "std_msgs/msg/Float64"
+      ]
+    ],
+    [
+      "/vr/imu/filtered",
+      [
+        "sensor_msgs/msg/Imu"
+      ]
+    ]
+  ],
+  "observed": {
+    "/omnifleet_a2/chassis/motor_command_sent": {
+      "count": 241,
+      "last": {
+        "x": 0.0,
+        "z": 0.0
+      },
+      "nonzero": 0
+    },
+    "/omnifleet_a2/chassis/velocity_raw": {
+      "count": 121,
+      "last": {
+        "x": 0.0,
+        "z": 0.0
+      },
+      "nonzero": 0
+    },
+    "/vision/body_tracking/native_status": {
+      "count": 280,
+      "last": {
+        "state": "INITING",
+        "track_id": 0,
+        "serial_lost_num": 0,
+        "has_face_head": false,
+        "source_stamp": [
+          1794433604,
+          432449024
+        ],
+        "range_base_m": null,
+        "motion_enabled": false,
+        "operator_mode": "unified",
+        "follow_active": false,
+        "distance_mode": "APPROACH_FOR_DEPTH",
+        "control_mode": "APPROACH_FOR_DEPTH",
+        "target_distance_m": 1,
+        "heading_error_rad": 0,
+        "gesture_motion": "NONE",
+        "rotation_degrees": 0,
+        "rotation_active": false,
+        "rotation_done": false,
+        "tuning": {
+          "reverse_max_speed": 0.25,
+          "reverse_p": 1,
+          "steering_p": 1.8,
+          "steering_d": 0.35,
+          "steering_max_speed": 0.8,
+          "derivative_weight": 0.7
+        }
+      }
+    },
+    "/vision/body_tracking/status": {
+      "count": 280,
+      "last": {
+        "mode": "idle",
+        "state": "IDLE",
+        "gesture": "unknown",
+        "person": false,
+        "gestures_enabled": true,
+        "hands": [],
+        "body_tracking": {
+          "state": "INITING",
+          "track_id": 0,
+          "serial_lost_num": 0,
+          "has_face_head": false,
+          "source_stamp": [
+            1794433604,
+            368462080
+          ],
+          "range_base_m": null,
+          "motion_enabled": false,
+          "operator_mode": "unified",
+          "follow_active": false,
+          "distance_mode": "APPROACH_FOR_DEPTH",
+          "control_mode": "APPROACH_FOR_DEPTH",
+          "target_distance_m": 1,
+          "heading_error_rad": 0,
+          "gesture_motion": "NONE",
+          "rotation_degrees": 0,
+          "rotation_active": false,
+          "rotation_done": false,
+          "tuning": {
+            "reverse_max_speed": 0.25,
+            "reverse_p": 1,
+            "steering_p": 1.8,
+            "steering_d": 0.35,
+            "steering_max_speed": 0.8,
+            "derivative_weight": 0.7
+          }
+        },
+        "velocity_request": {
+          "linear_x": 0.0,
+          "angular_z": 0.0
+        },
+        "hand_ms": 0.03,
+        "hand_age_ms": 37.80710099999851,
+        "hand_error": "",
+        "hand_updated": true,
+        "processing_fps": 26.48,
+        "rgb_input_fps": 26.48,
+        "source_stamp": [
+          1794433604,
+          432449024
+        ],
+        "hand_debug": {
+          "people": 0,
+          "boxes": [],
+          "attempts": [],
+          "palm_backend": "TensorRT FP32 Full palm",
+          "palm_candidates": 0,
+          "search": "NanoTrack",
+          "nanotrack": {
+            "active": false,
+            "owner": null,
+            "bbox": null,
+            "score": null,
+            "backend": "NanoTrack CUDA FP32"
+          }
+        }
+      },
+      "gestures": {}
+    },
+    "/vision/demo/status": {
+      "count": 48,
+      "last": {
+        "phase": "RUNNING",
+        "case_id": "04_09_body_tracking",
+        "request_id": "final-hand-verify",
+        "message": ""
+      }
+    },
+    "/mola_diagnostics/lidar_odometry/status": {
+      "count": 12,
+      "last": "average_process_time: 0\ndropped_frames_ratio: 0\nicp_quality: 0\nparameters:\n  active: true\n  generate_simplemap: false\n  mapping_enabled: true\n  reset_state: false\n"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+[Unit]
+Description=OmniFleet A2 semantic waypoints
+Wants=network-online.target omnifleet-a2-foxglove-bridge.service
+After=network-online.target omnifleet-a2-foxglove-bridge.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+Environment=HOME=/home/iecme
+Environment=ROS_HOME=/var/lib/omnifleet_a2/ros
+EnvironmentFile=/etc/omnifleet_a2/robot.env
+ExecStart=/bin/bash -lc 'source /opt/ros/$ROS_DISTRO/setup.bash && source $OMNIFLEET_A2_WS/install/setup.bash && exec ros2 launch omnifleet_a2_waypoint_ui waypoint_ui.launch.py'
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=15
+UMask=0007
+
+[Install]
+WantedBy=multi-user.target

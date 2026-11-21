@@ -1,0 +1,200 @@
+name: CMake CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  # ===========================================
+  # Main build matrix - full test suite
+  # ===========================================
+  build:
+    name: ${{ matrix.os }} - ${{ matrix.compiler }} - ${{ matrix.build_type }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        compiler: [gcc, clang, msvc]
+        build_type: [Debug, Release]
+        exclude: &exclude-list
+        - os: windows-latest
+          compiler: gcc
+        - os: windows-latest
+          compiler: clang
+        - os: ubuntu-latest
+          compiler: msvc
+        - os: macos-latest
+          compiler: msvc
+        include: &include-list
+        - os: ubuntu-latest
+          compiler: gcc
+          cc: gcc
+          cxx: g++
+        - os: ubuntu-latest
+          compiler: clang
+          cc: clang-18
+          cxx: clang++-18
+        - os: macos-latest
+          compiler: gcc
+          cc: gcc
+          cxx: g++
+        - os: macos-latest
+          compiler: clang
+          cc: clang
+          cxx: clang++
+        - os: windows-latest
+          compiler: msvc
+          cc: cl
+          cxx: cl
+
+    steps:
+    - &checkout {
+        uses: actions/checkout@v4
+      }
+
+    - &setup-msvc {
+        name: Setup MSBuild,
+        if: runner.os == 'Windows',
+        uses: microsoft/setup-msbuild@v2,
+      }
+
+    - &install-ubuntu {
+        name: "Install dependencies (Ubuntu)",
+        if: runner.os == 'Linux',
+        run: "sudo apt-get update -qq && sudo apt-get install --no-install-recommends -y cmake ninja-build pkg-config check libyaml-dev libltdl-dev ${{ matrix.cc }} ${{ matrix.cxx }}"
+      }
+
+    - &install-macos {
+        name: "Install dependencies (macOS)",
+        if: runner.os == 'macOS',
+        run: "brew update && brew install cmake ninja pkg-config check libyaml gcc@13"
+      }
+
+    - &install-windows {
+        name: "Install dependencies (Windows)",
+        if: runner.os == 'Windows',
+        run: "choco install cmake ninja pkgconfiglite",
+      }
+
+    - &set-env {
+        name: "Set compiler environment (Unix)",
+        if: runner.os != 'Windows',
+        run: "echo \"CC=${{ matrix.cc }}\" >> $GITHUB_ENV && echo \"CXX=${{ matrix.cxx }}\" >> $GITHUB_ENV"
+      }
+
+    - &configure-unix {
+        name: "Configure (Unix)",
+        if: runner.os != 'Windows',
+        run: "cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}"
+      }
+
+    - &configure-windows {
+        name: "Configure (Windows)",
+        if: runner.os == 'Windows',
+        run: "cmake -B build -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}"
+      }
+
+    - &build {
+        name: Build,
+        run: "cmake --build build --config ${{ matrix.build_type }}"
+      }
+
+    - &test-unix {
+        name: Test,
+        if: runner.os != 'Windows',
+        working-directory: build,
+        run: "ctest --output-on-failure",
+      }
+
+    - &upload-logs {
+        name: "Upload test logs on failure",
+        if: failure(),
+        uses: actions/upload-artifact@v4,
+        with: {
+          name: "test-logs-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.build_type }}",
+          path: "build/Testing/Temporary/\nbuild/**/*.log"
+        }
+      }
+
+  # ===========================================
+  # ASAN builds - Debug only
+  # ===========================================
+  asan:
+    name: ASAN - ${{ matrix.os }} - ${{ matrix.compiler }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        compiler: [gcc, clang]
+        build_type: [Debug]
+        exclude:
+        - os: macos-latest
+          compiler: gcc
+        include:
+        - os: ubuntu-latest
+          compiler: gcc
+          cc: gcc
+          cxx: g++
+        - os: ubuntu-latest
+          compiler: clang
+          cc: clang-18
+          cxx: clang++-18
+        - os: macos-latest
+          compiler: clang
+          cc: clang
+          cxx: clang++
+
+    steps:
+    - *checkout
+    - *setup-msvc
+    - *install-ubuntu
+    - *install-macos
+    - *install-windows
+    - *set-env
+    - &configure-unix-asan {
+        name: "Configure ASAN (Unix)",
+        if: runner.os != 'Windows',
+        run: "cmake -B build -G Ninja -DENABLE_ASAN=On -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}"
+      }
+    - *build
+    - *test-unix
+    - *upload-logs
+
+  # ===========================================
+  # Smoke tests - pinned latest versions
+  # ===========================================
+  smoke-pinned:
+    name: Smoke - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-22.04, macos-14, windows-2022, ubuntu-24.04-arm]
+        build_type: [Release]
+
+    steps:
+    - *checkout
+    - *setup-msvc
+    - *install-ubuntu
+    - *install-macos
+    - *install-windows
+    - *set-env
+    - &configure-unix-smoke {
+        name: "Configure smoke (Unix)",
+        if: runner.os != 'Windows',
+        run: "cmake -B build -G Ninja -DBUILD_TESTING=Off -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}",
+      }
+    - &configure-windows-smoke {
+        name: "Configure smoke (Windows)",
+        if: runner.os == 'Windows',
+        run: "cmake -B build -A x64 -DBUILD_TESTING=Off -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}"
+      }
+    - *build
+    - *upload-logs

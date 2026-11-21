@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""Save the active GLIM 2D map, open it in EOG, and stop the manual stack."""
+
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+import rclpy
+from rclpy.node import Node
+from std_srvs.srv import Trigger
+
+from omnifleet_interfaces.srv import SaveMap
+
+
+class MapSaveViewStop(Node):
+    def __init__(self):
+        super().__init__("map_save_view_stop")
+        self.map_root = Path(
+            self.declare_parameter("map_root", "~/robot_maps").value
+        ).expanduser()
+        self.backend = str(self.declare_parameter("backend", "glim_cuda").value)
+        self.label = str(self.declare_parameter("label", "workflow").value)
+        self.viewer = str(self.declare_parameter("viewer", "eog").value)
+        self.workflow = str(
+            self.declare_parameter("workflow", "二维建图").value
+        )
+
+    def _call(self, service_type, name, request, timeout_sec):
+        client = self.create_client(service_type, name)
+        if not client.wait_for_service(timeout_sec=10.0):
+            raise RuntimeError(f"服务不可用：{name}")
+        future = client.call_async(request)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=timeout_sec)
+        if not future.done():
+            raise TimeoutError(f"调用服务超时：{name}")
+        error = future.exception()
+        if error is not None:
+            raise RuntimeError(f"调用{name}失败：{error}") from error
+        return future.result()
+
+    @staticmethod
+    def _desktop_environment():
+        environment = os.environ.copy()
+        if not environment.get("DISPLAY") and Path("/tmp/.X11-unix/X0").exists():
+            environment["DISPLAY"] = ":0"
+        xauthority = Path("/run/user") / str(os.getuid()) / "gdm" / "Xauthority"
+        if not environment.get("XAUTHORITY") and xauthority.is_file():
+            environment["XAUTHORITY"] = str(xauthority)
+        if not environment.get("DBUS_SESSION_BUS_ADDRESS"):
+            bus = Path("/run/user") / str(os.getuid()) / "bus"
+            if bus.exists():
+                environment["DBUS_SESSION_BUS_ADDRESS"] = f"unix:path={bus}"
+        return environment
+
+    def _open_map(self, map_path):
+        executable = shutil.which(self.viewer)
+        if executable is None:
+            raise FileNotFoundError(f"找不到地图查看器：{self.viewer}")
+        subprocess.Popen(
+            [executable, "--new-instance", str(map_path)],
+            env=self._desktop_environment(),
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+        self.get_logger().info(f"已使用{self.viewer}打开 {map_path}")
+
+    def run(self):
+        self.get_logger().info(
+            f"正在保存{self.workflow}；保存期间会取消导航并锁定零速度"
+        )
+        request = SaveMap.Request()
+        request.label = self.label
+        response = self._call(
+            SaveMap, "/rrc_slam/save_map", request, timeout_sec=180.0
+        )
+        if response is None or not response.success:
+            message = "保存服务没有返回结果" if response is None else response.message
+            raise RuntimeError(f"地图保存失败：{message}")
+
+        map_path = self.map_root / self.backend / response.map_id / "map.pgm"
+        if not map_path.is_file():
+            raise FileNotFoundError(f"保存服务成功但没有找到地图：{map_path}")
+
+        viewer_error = None
+        try:
+            self._open_map(map_path)
+        except Exception as error:  # Saving and stopping remain safety-critical.
+            viewer_error = error
+            self.get_logger().error(f"地图已保存，但EOG打开失败：{error}")
+
+        stop_response = self._call(
+            Trigger,
+            "/rrc_system/stop_manual_stack",
+            Trigger.Request(),
+            timeout_sec=15.0,
+        )
+        if stop_response is None or not stop_response.success:
+            message = (
+                "停止服务没有返回结果"
+                if stop_response is None
+                else stop_response.message
+            )
+            raise RuntimeError(f"地图已保存，但结束运行栈失败：{message}")
+
+        self.get_logger().info(
+            f"完成：map_id={response.map_id}，文件={map_path}；"
+            "导航/建图已取消，统一Launch正在退出"
+        )
+        if viewer_error is not None:
+            raise RuntimeError(f"地图已保存且运行栈已停止，但EOG打开失败：{viewer_error}")
+
+
+def main():
+    rclpy.init()
+    node = MapSaveViewStop()
+    exit_code = 0
+    try:
+        node.run()
+    except Exception as error:
+        node.get_logger().error(str(error))
+        exit_code = 1
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+    raise SystemExit(exit_code)
+
+
+if __name__ == "__main__":
+    main()

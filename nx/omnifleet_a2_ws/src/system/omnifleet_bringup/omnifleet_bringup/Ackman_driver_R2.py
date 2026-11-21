@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 #public lib
+from collections import deque
 import sys
 import json
 import os
@@ -17,6 +18,7 @@ from .hiwonder_rrc import HiwonderRRC
 #ros lib
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
 from std_msgs.msg import String,Float32,Int32,Bool,Int64MultiArray,UInt16MultiArray
 from geometry_msgs.msg import Twist, TransformStamped
 from nav_msgs.msg import Odometry
@@ -36,7 +38,8 @@ class yahboomcar_driver(Node):
 		self.hiwonder = self.declare_parameter(
 			'chassis_protocol', 'rosmaster').value == 'hiwonder_rrc'
 		if self.hiwonder:
-			self.car = HiwonderRRC(self.serial_port)
+			wheel_radius = self.declare_parameter("wheel_radius_m", 0.050).value
+			self.car = HiwonderRRC(self.serial_port, wheel_radius_m=wheel_radius)
 			self.sbusPublisher = self.create_publisher(UInt16MultiArray, '/stm32/sbus', 10)
 			self.sbus_timer = self.create_timer(0.02, self.publish_sbus)
 		else:
@@ -156,6 +159,11 @@ class yahboomcar_driver(Node):
 		self.odomTfBroadcaster = TransformBroadcaster(self)
 		self._odom_x = self._odom_y = self._odom_yaw = 0.0
 		self._last_odom_stamp_ns = None
+		self._odom_gyro_samples = deque(maxlen=128)
+		if self.hiwonder:
+			self._odom_imu_sub = self.create_subscription(
+				Imu, "/rslidar_imu_data_corrected", self.odom_imu_callback, qos_profile_sensor_data
+			)
 
 		#create timer
 		self.timer = self.create_timer(0.1, self.pub_data)
@@ -220,7 +228,8 @@ class yahboomcar_driver(Node):
 
 	def sbus_cmd_vel_callback(self, msg):
 		# Keep SBUS speed and steering geometry separate from the web/ROS speed caps.
-		self.cmd_vel_callback(msg, linear_limit=3.0, angular_limit=3.0 * math.sqrt(3) / 0.22492)
+		self.cmd_vel_callback(msg, linear_limit=self.xlinear_limit,
+				      angular_limit=self.xlinear_limit * math.sqrt(3) / 0.22492)
 
 	def cmd_vel_callback(self, msg, *, linear_limit=None, angular_limit=None):
 		if not isinstance(msg, Twist): return
@@ -286,9 +295,8 @@ class yahboomcar_driver(Node):
 		elif now - self._last_cmd_log_time > 0.5:
 			self._last_cmd_log_time = now
 			self.get_logger().info(
-				'STM32 tx FUNC_MOTION: Vx=%d mm/s Vy=0 Vz=%d mrad/s '
-				'(Twist v=%.3f m/s wz=%.3f rad/s; kinematics_owner=stm32)'
-				% (motion_cmd[0], motion_cmd[2], vx, angular)
+				'Chassis target: v=%.3f m/s wz=%.3f rad/s (kinematics_owner=stm32)'
+				% (vx, angular)
 			)
 
 	def send_motion_command(self):
@@ -392,14 +400,34 @@ class yahboomcar_driver(Node):
 	@staticmethod
 	def _integrate_planar_pose(x, y, yaw, vx, wz, dt):
 		"""Integrate encoder-derived body velocity in the REP-103 frame."""
-		x += vx * math.cos(yaw) * dt
-		y += vx * math.sin(yaw) * dt
+		mid_yaw = yaw + 0.5 * wz * dt
+		x += vx * math.cos(mid_yaw) * dt
+		y += vx * math.sin(mid_yaw) * dt
 		yaw += wz * dt
 		yaw = math.atan2(math.sin(yaw), math.cos(yaw))
 		return x, y, yaw
 
+	def odom_imu_callback(self, msg):
+		stamp_ns = msg.header.stamp.sec * 1000000000 + msg.header.stamp.nanosec
+		rate = msg.angular_velocity.z
+		if math.isfinite(rate) and (
+			not self._odom_gyro_samples or stamp_ns > self._odom_gyro_samples[-1][0]
+		):
+			self._odom_gyro_samples.append((stamp_ns, rate))
+
+	def odometry_yaw_rate(self, stamp_ns, encoder_rate):
+		"""Use the calibrated forward-mounted radar IMU for Ackermann yaw."""
+		since_ns = stamp_ns - 150000000
+		if self._last_odom_stamp_ns is not None:
+			since_ns = max(since_ns, self._last_odom_stamp_ns)
+		while self._odom_gyro_samples and self._odom_gyro_samples[0][0] <= since_ns:
+			self._odom_gyro_samples.popleft()
+		rates = [rate for sample_ns, rate in self._odom_gyro_samples if sample_ns <= stamp_ns]
+		return sum(rates) / len(rates) if rates else encoder_rate
+
 	def publish_odometry(self, time_stamp, vx, wz):
 		stamp_ns = time_stamp.nanoseconds
+		wz = self.odometry_yaw_rate(stamp_ns, wz)
 		if self._last_odom_stamp_ns is not None:
 			dt = (stamp_ns - self._last_odom_stamp_ns) / 1e9
 			if dt > 0.0:
@@ -463,7 +491,7 @@ class yahboomcar_driver(Node):
 			if feedback is None:
 				self._last_odom_stamp_ns = None
 				return
-			vx, steering_deg, angular, counts = feedback
+			vx, steering_deg, angular, counts, battery_voltage = feedback
 		else:
 			vx, steering_deg, angular = self.car.get_motion_data()
 			counts = self.car.get_encoder_counts()
@@ -486,6 +514,7 @@ class yahboomcar_driver(Node):
 
 		if self.hiwonder:
 			firmware.data = 'Hiwonder F407 RRC/1'
+			battery.data = battery_voltage
 			edition.data = 1.0
 		else:
 			#print ("mag: ",self.car.get_magnetometer_data())
@@ -577,6 +606,7 @@ class yahboomcar_driver(Node):
 			self.imuPublisher.publish(imu)
 			if self.publish_magnetometer:
 				self.magPublisher.publish(mag)
+		if not self.hiwonder or battery.data > 0.0:
 			self.volPublisher.publish(battery)
 		self.EdiPublisher.publish(edition)
 		self.firmwarePublisher.publish(firmware)

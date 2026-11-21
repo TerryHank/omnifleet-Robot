@@ -1,0 +1,283 @@
+/*               _
+ _ __ ___   ___ | | __ _
+| '_ ` _ \ / _ \| |/ _` | Modular Optimization framework for
+| | | | | | (_) | | (_| | Localization and mApping (MOLA)
+|_| |_| |_|\___/|_|\__,_| https://github.com/MOLAorg/mola
+ Copyright (C) 2018-2026 Jose Luis Blanco, University of Almeria,
+                         and individual contributors.
+ SPDX-License-Identifier: GPL-3.0
+ See LICENSE for full license information.
+ Closed-source licenses available upon request, for this package
+ alone or in combination with the complete SLAM system.
+*/
+/**
+ * @file   Parameters.h
+ * @brief  Parameters of mola::mapper::Mapper, loaded from YAML.
+ * @author Jose Luis Blanco Claraco
+ * @date   2026
+ */
+#pragma once
+
+#include <mola_mapper/GraphVisualization.h>
+#include <mola_mapper/LoopConsistency.h>
+#include <mola_mapper/LoopOdometryCheck.h>
+#include <mrpt/containers/yaml.h>
+
+#include <cstdint>
+#include <string>
+
+namespace mola::mapper
+{
+/** Parameters of the global pose graph (see GlobalGraph.h). */
+struct GlobalGraphParams
+{
+  /** @name Odometry chain (consecutive keyframes of the same source)
+   *  Stiff by default: the front end is accurate locally, and only its slow drift
+   *  must give way to GNSS and loop closures. Each edge sigma is a floor plus a
+   *  random walk with the keyframe step, per sqrt(m).
+   * @{ */
+  /// Multiplier of the relative covariance from the front end poses (0: ignored).
+  double odometry_uncertainty_multiplier = 0.0;
+  double odometry_additional_noise_xyz = 0.002;     ///< [m]
+  double odometry_additional_noise_ang_deg = 0.01;  ///< [deg]
+  double odometry_noise_xyz_per_sqrt_m = 0.01;      ///< [m/sqrt(m)]
+  double odometry_noise_ang_deg_per_sqrt_m = 0.05;  ///< [deg/sqrt(m)]
+  /// Extra rotation sigma per radian rotated in the edge: LiDAR odometry heading
+  /// errors concentrate in turns (e.g. short range sensors in open areas).
+  double odometry_noise_ang_per_rad = 0.02;
+  /** @} */
+
+  /** @name Gyroscope rotation between consecutive keyframes (if present)
+     * @{ */
+  bool use_gyro = true;
+  double gyro_min_sigma_deg = 0.02;  ///< floor of each factor sigma
+  /** @} */
+
+  /** @name Wheel odometry between consecutive keyframes (if present)
+   *  A factor on the translation of the relative pose, in the vehicle frame of
+   *  the previous keyframe: its forward and lateral (nonholonomic) components.
+   *  The rotation is left to the gyroscope. Sigmas: a floor, plus a fraction of
+   *  the distance, plus a term per radian turned (skid steer slip in turns).
+   * @{ */
+  bool use_wheel_odometry = true;
+  double wheel_odom_min_sigma = 0.01;            ///< [m]
+  double wheel_odom_sigma_per_m = 0.03;          ///< forward, per meter traveled
+  double wheel_odom_lateral_sigma_per_m = 0.10;  ///< lateral, per meter traveled
+  double wheel_odom_sigma_per_rad = 0.05;        ///< [m/rad]
+  /// Increments whose yaw differs from the gyroscope one (if any) by more than
+  /// this, plus a fraction of the gyroscope yaw, are not used: wheels that lose
+  /// encoder counts read false turns. Skid steer wheels read turns short.
+  double wheel_odom_max_yaw_error_deg = 3.0;
+  double wheel_odom_max_yaw_error_ratio = 0.2;
+  /// Increments shorter than this fraction of the front end forward motion,
+  /// minus a floor [m], along its direction of travel, are not used: a
+  /// degenerate front end falls short of the real motion, while wheels that lose
+  /// encoder counts read less than it. Close to 1, since wheels that win over a
+  /// correct front end must not read less than it; the floor absorbs the noise.
+  double wheel_odom_min_ratio_to_front_end = 0.95;
+  double wheel_odom_ratio_floor = 0.02;
+  /// "none" or as gnss_robust_kernel. Wheel slip makes the wheels read more
+  /// motion than real, but a redescending kernel also rejects the wheels when
+  /// the front end is the one wrong.
+  std::string wheel_odom_robust_kernel = "none";
+  double wheel_odom_robust_k = 3.0;  ///< kernel parameter, in sigmas
+  /// Where there is a wheel odometry factor, the forward component of the chain
+  /// edge goes into a factor of its own with this robust kernel ("none": the
+  /// edge stays whole), so the edges of a front end that slips along its
+  /// degenerate direction (e.g. LiDAR odometry in long streets) give way to the
+  /// wheels instead of the other way around.
+  std::string wheel_odom_chain_robust_kernel = "cauchy";
+  double wheel_odom_chain_robust_k = 1.0;  ///< kernel parameter, in sigmas
+  /** @} */
+
+  /** @name GNSS (CObservationGPS in the keyframes)
+     * @{ */
+  bool use_gnss = true;
+  double gnss_minimum_uncertainty = 0.5;  ///< [m] per-axis floor of the GNSS sigmas
+  double gnss_uncertainty_multiplier = 1.0;
+  double gnss_max_uncertainty_horiz = 20.0;  ///< [m] readings above this are not used
+  /// Robust kernel of the GNSS factors: "huber", "cauchy", "geman_mcclure" or
+  /// "tukey". The redescending ones (all but Huber) stop pulling at outliers,
+  /// e.g. low-cost receivers meters off under trees with a small reported sigma.
+  std::string gnss_robust_kernel = "cauchy";
+  double gnss_robust_k = 1.5;  ///< kernel parameter, in sigmas
+
+  /// Readings that report an RTK-grade horizontal accuracy are weighted as such:
+  /// their own sigma floor, and a Huber kernel. A redescending kernel would drop
+  /// them exactly where the front end drifted (e.g. LiDAR odometry that falls
+  /// short on a degenerate stretch), the places they must correct. RTK-grade:
+  /// sqrt(sigma_E^2 + sigma_N^2), after gnss_uncertainty_multiplier, at most this
+  /// [m] (0: none); low enough that DGPS/SBAS readings (a few decimeters even
+  /// with a good HDOP) stay out. Receivers that report more keep the above, and
+  /// so do RTK float readings above it: raise it (e.g. 0.1) for a receiver whose
+  /// float solutions are trusted.
+  /// Trade-off: a false RTK fix (wrong ambiguities, reporting centimeters) is
+  /// followed too, where the redescending kernel would have rejected it.
+  double gnss_rtk_max_reported_sigma = 0.05;
+  double gnss_rtk_minimum_uncertainty = 0.05;  ///< [m] per-axis floor
+  std::string gnss_rtk_robust_kernel = "huber";
+  double gnss_rtk_robust_k = 3.0;  ///< kernel parameter, in sigmas
+  /// Odometry chain edges with an RTK-grade factor within this time of their
+  /// span use this translation noise per sqrt(m) instead of
+  /// odometry_noise_xyz_per_sqrt_m: a chain that stiff cannot follow the fixes
+  /// where the front end slips. Elsewhere (no fixes, or low-cost ones) the chain
+  /// keeps its stiffness, so noisy fixes do not warp the map; a slip inside a
+  /// GNSS outage longer than the window is not corrected.
+  double gnss_rtk_odometry_noise_xyz_per_sqrt_m = 0.05;
+  double gnss_rtk_odometry_window = 2.0;  ///< [s]
+
+  /// The geo-reference is returned only once observable: at least this many GNSS
+  /// factors, and an azimuth sigma below this.
+  uint32_t georef_min_gnss_factors = 3;
+  double georef_max_sigma_yaw_deg = 10.0;  ///< [deg]
+  /** @} */
+
+  /** @name Gravity (averaged accelerometer, CObservationIMU in the keyframes)
+     * @{ */
+  bool use_imu_gravity = true;
+  double imu_gravity_sigma_deg = 3.0;
+  /** @} */
+
+  /** @name Loop closure edges
+   * @{ */
+  double loop_closure_robust_huber_k = 1.5;
+  /// Floors of their sigmas: the detector ICP covariance is overconfident.
+  double loop_closure_min_sigma_xyz = 0.05;      ///< [m]
+  double loop_closure_min_sigma_ang_deg = 0.25;  ///< [deg]
+  /** @} */
+
+  /// Gauge: sigma of the prior on the first keyframe [m] and [rad].
+  double first_pose_prior_sigma = 1e-4;
+
+  int max_iterations = 100;
+
+  void loadFrom(const mrpt::containers::yaml & cfg);
+};
+
+/** Parameters of mola::mapper::Mapper. */
+struct Parameters
+{
+  /// Reference frame of the global map, the same as the state estimator's.
+  std::string reference_frame_name = "map";
+
+  /** @name Sensors attached to the keyframes
+     * @{ */
+  /// Regex of the sensor labels of the GNSS readings to use (empty: none).
+  std::string gnss_sensor_labels_re = ".*";
+  /// A GNSS reading is attached to the keyframe nearest in time, if within this [s].
+  double gnss_max_time_offset = 0.5;
+
+  /// Whether to use an IMU (gravity and gyroscope factors). False leaves the
+  /// IMU to the front end only, e.g. for de-skew.
+  bool use_imu = true;
+
+  /// Regex of the sensor labels of the IMU used for gravity (empty: none).
+  std::string imu_sensor_labels_re;
+  /// Accelerometer readings averaged before each keyframe [s].
+  double imu_gravity_window = 1.0;
+  /// Minimum readings in that window to attach a gravity observation.
+  uint32_t imu_gravity_min_samples = 10;
+
+  /** Regex of the sensor label of the IMU whose gyroscope gives the rotation
+   *  between consecutive keyframes (empty: none). Its bias comes from a
+   *  mola::ImuBiasSource (e.g. the state estimator with imu_bias_tracking), if
+   *  there is one with an estimate for it; else it is taken as zero, with
+   *  sigma gyro_bias_sigma. */
+  std::string gyro_sensor_labels_re;
+  /// Only add gyroscope factors while a mola::ImuBiasSource has an estimate of
+  /// the bias: without it, the bias would be taken as zero.
+  bool gyro_require_bias_estimate = true;
+  double gyro_noise_density = 3e-4;  ///< [rad/s/sqrt(Hz)]
+  double gyro_bias_sigma = 0.005;    ///< [rad/s] without a bias source estimate
+  double gyro_scale_sigma = 0.005;   ///< relative scale factor error
+  double gyro_max_gap = 0.1;         ///< [s] longer gaps between readings: no factor
+
+  /** Regex of the sensor label of the wheel odometry (CObservationOdometry)
+   *  whose increments between consecutive keyframes become factors (empty: none). */
+  std::string wheel_odom_sensor_labels_re;
+  double wheel_odom_max_gap = 0.5;  ///< [s] longer gaps between readings: no factor
+
+  /** Regex of the sensor labels of camera images (CObservationImage) to store
+   *  in the keyframes (empty: none), e.g. for visual place recognition. As
+   *  for GNSS, each image goes to the keyframe nearest in time, within
+   *  image_max_time_offset, and a keyframe keeps the nearest image of each
+   *  camera, so no image is stored twice. */
+  std::string image_sensor_labels_re;
+  double image_max_time_offset = 0.5;  ///< [s]
+  /** Images are written as "jpg" or "png" files to `<output_simplemap>_Images/`
+   *  (without the extension) once no closer image can replace them, or kept
+   *  "inline" in RAM and in the simplemap. Inline too if output_simplemap is
+   *  empty. */
+  std::string image_format = "jpg";
+  int image_jpeg_quality = 95;  ///< [1-100]
+  /** @} */
+
+  /** @name Global graph optimization
+     * @{ */
+  GlobalGraphParams graph;
+  /// Run the optimizer in a background thread (false: only on optimize_now()).
+  bool enable_optimizer_thread = true;
+  /// Minimum period between solves [s].
+  double optimizer_min_period = 1.0;
+  /** @} */
+
+  /** If true, after each solve with new loop closures the front ends are told
+   *  (mola::LocalMapCorrectionSource), so they can rebuild their local maps
+   *  from the corrected keyframes. */
+  bool local_map_corrections = true;
+
+  /** @name Loop closure (mola_sm_loop_closure engine, detector only)
+     * @{ */
+  bool loop_closure_enabled = false;
+  /// Scans driven by a background thread (false: by the caller).
+  bool enable_loop_closure_thread = true;
+  std::string loop_closure_pipeline_file;
+  double loop_closure_check_period_sec = 5.0;  ///< [s]
+  uint32_t loop_closure_min_new_keyframes = 10;
+  bool loop_closure_incremental = true;
+  uint32_t loop_closure_full_scan_every_n = 10;
+  /// End-of-run passes (full scan + re-optimization) until no new loop.
+  uint32_t loop_closure_finalize_rounds = 4;
+  /** Reject loops that contradict the odometry chain between their keyframes
+   *  (only checked when both are in the same chain, see LoopOdometryCheck.h). */
+  bool loop_closure_odometry_check = true;
+  LoopOdometryCheckParams loop_closure_odometry_limits;
+  /** Reject loops inconsistent with most of their neighbor loops, through the
+   *  odometry chain (see LoopConsistency.h). Already accepted loops are dropped
+   *  too, once newer ones contradict them. */
+  bool loop_closure_consistency_check = true;
+  LoopConsistencyParams loop_closure_consistency;
+  /** @} */
+
+  /** @name Outputs, written at the end (empty: not written)
+     * @{ */
+  /// Keyframe poses in reference_frame_name, TUM format.
+  std::string output_tum_trajectory;
+  /// Simplemap with the optimized keyframes and all their observations.
+  std::string output_simplemap;
+  /// Geo-reference (YAML: datum, T_enu_to_map and its covariance).
+  std::string output_georeference;
+  /// Loop closure edges, one per line: "kf_from kf_to x y z yaw pitch roll".
+  std::string output_loop_closures;
+  /** The trajectory of the state estimator (its estimated_trajectory(), e.g.
+   *  the smoother with keep_finalized_trajectory) and its geo-reference, for
+   *  comparisons. */
+  std::string output_state_estimator_tum;
+  std::string output_state_estimator_georeference;
+  /** Prefix of the files with the global graph input (see GlobalGraphIO.h), to
+   *  re-optimize it offline with other parameters (mola-mapper-reoptimize). */
+  std::string output_graph_input;
+
+  /** If not empty, everything the mapper receives (keyframes, GNSS and IMU
+   *  readings, gyroscope biases) is written to this file, in arrival order, to
+   *  replay the run exactly with mola-mapper-cli. */
+  std::string record_input;
+  /** @} */
+
+  /// The keyframe graph in the GUI (only with a visualizer module).
+  GraphVisualizationParams visualization;
+
+  void loadFrom(const mrpt::containers::yaml & cfg);
+};
+
+}  // namespace mola::mapper

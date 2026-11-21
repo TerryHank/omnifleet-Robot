@@ -1,0 +1,4 @@
+source;share/mola_mapper/local_setup.bash
+source;share/mola_mapper/local_setup.dsv
+source;share/mola_mapper/local_setup.sh
+source;share/mola_mapper/local_setup.zsh

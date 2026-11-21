@@ -1,0 +1,8 @@
+source;share/mvs_camera_driver/hook/cmake_prefix_path.ps1
+source;share/mvs_camera_driver/hook/cmake_prefix_path.dsv
+source;share/mvs_camera_driver/hook/cmake_prefix_path.sh
+source;share/mvs_camera_driver/local_setup.bash
+source;share/mvs_camera_driver/local_setup.dsv
+source;share/mvs_camera_driver/local_setup.ps1
+source;share/mvs_camera_driver/local_setup.sh
+source;share/mvs_camera_driver/local_setup.zsh

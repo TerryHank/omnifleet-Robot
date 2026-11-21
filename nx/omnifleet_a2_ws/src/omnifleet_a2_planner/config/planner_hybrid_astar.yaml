@@ -1,0 +1,8 @@
+planner_server:
+  ros__parameters:
+    # Humble instances of SmacPlannerHybrid share motion and heuristic tables.
+    # Load one reverse-capable instance; reverse_penalty comes from nav2_glim.yaml.
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_smac_planner/SmacPlannerHybrid"
+      motion_model_for_search: "REEDS_SHEPP"

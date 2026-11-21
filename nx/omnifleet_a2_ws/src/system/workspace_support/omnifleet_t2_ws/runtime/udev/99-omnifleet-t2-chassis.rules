@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty", KERNEL=="ttyUSB*", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="omnifleet_t2_stm32", GROUP="dialout", MODE="0660", ENV{ID_MM_PORT_IGNORE}="1"

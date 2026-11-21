@@ -1,0 +1,29 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from omnifleet_interfaces/msg/MissionStatus.msg
+// generated code does not contain a copyright notice
+
+#include "builtin_interfaces/msg/Time.idl"
+
+module omnifleet_interfaces {
+  module msg {
+    struct MissionStatus {
+      builtin_interfaces::msg::Time stamp;
+
+      string transaction_id;
+
+      string state;
+
+      string mission_id;
+
+      uint64 revision;
+
+      uint32 current_index;
+
+      uint32 total;
+
+      string map_id;
+
+      string message;
+    };
+  };
+};

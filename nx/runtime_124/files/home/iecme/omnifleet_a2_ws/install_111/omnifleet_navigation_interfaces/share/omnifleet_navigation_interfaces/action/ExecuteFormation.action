@@ -1,0 +1,15 @@
+string task_id
+string command_epoch
+uint64 revision
+NavigationPoint[] waypoints
+float32 pass_radius 0.25
+---
+bool success
+string code
+string message
+---
+string task_id
+string phase
+string message
+uint32 passed_points
+float32 tf_age_ms

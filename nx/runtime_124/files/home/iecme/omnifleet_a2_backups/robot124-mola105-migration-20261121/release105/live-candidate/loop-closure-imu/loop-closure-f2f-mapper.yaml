@@ -1,0 +1,67 @@
+# Loop closure detector pipeline for the mapper (mola_sm_loop_closure, detection
+# only: the mapper owns the pose graph).
+#
+# It imports the shared frame-to-frame pipeline and changes only:
+#  - the ICP core: point-to-point on the decimated clouds instead of GICP, since
+#    cov2cov scores genuine cross-pass loops too low to accept them;
+#  - a wider ICP basin and a global registration initial guess, so loop
+#    candidates several meters off (accumulated drift) can still converge
+#    (ambiguous matches, e.g. repetitive structures, reject the candidate);
+#  - candidate selection: only pairs far apart in time.
+#
+# Every value can be changed with its environment variable. `$define` rebinds the
+# imported `${VAR|default}` hooks (env > $define > inline default); sibling maps
+# below deep-merge over the imported file and sibling lists replace it.
+
+$define:
+  # Global registration for a drift-independent initial guess: bev (the
+  # gravity-aligned search of mola_sm_loop_closure, from the keyframe roll and
+  # pitch), kiss (KISS-Matcher, if mola_sm_loop_closure was built with it) or
+  # none. USE_KISS_MATCHER is only read by older mola_sm_loop_closure versions.
+  LC_GLOBAL_REGISTRATION: bev
+  USE_KISS_MATCHER: true
+  MIN_ICP_QUALITY: 0.55
+
+  # ICP pairing threshold annealed from this initial value, wide enough for the
+  # odometry drift between the two keyframes [m]:
+  LC_ICP_INITIAL_SIGMA: 5.0
+
+  # Final pairing threshold, also the one that scores the ICP quality (ratio of
+  # pairs within it). Too small for dense clouds rejects correct loops; this is a
+  # registration resolution, not the acceptance level [m]:
+  LC_ICP_FINAL_SIGMA: 0.3
+
+  # Only pairs far apart in time: consecutive keyframes are already linked by the
+  # stiff front end chain, and ICP between nearly identical scans tends to
+  # underestimate the motion.
+  MIN_FRAMES_BETWEEN_LC: 50
+  MAX_LC_DISTANCE: 20.0  # [m]
+
+$import: /home/iecme/omnifleet_a2_backups/robot124-mola105-migration-20261121/release105/live-candidate/loop-closure-imu/loop-closure-f2f-lidar3d-gicp.yaml
+
+params:
+  # Reject global registration guesses backed by too few inliers (repetitive
+  # geometry yields wrong ones). The base pipeline has no hook for it.
+  kiss_matcher_min_inliers: "${KISS_MATCHER_MIN_INLIERS|5}"
+
+icp_settings:
+  solvers:
+    - class: mp2p_icp::Solver_GaussNewton
+      params:
+        maxIterations: 2
+        robustKernel: "${MOLA_LC_ROBUST_KERNEL|RobustKernel::GemanMcClure}"
+        # Point-to-point residuals are in meters: the kernel scale follows the
+        # annealed pairing threshold.
+        robustKernelScale: "sqrt(0.5*max(SIGMA_FINAL, SIGMA_INIT-(SIGMA_INIT-SIGMA_FINAL)*ICP_ITERATION/100))" # sqrt() keeps the schedule this was tuned at, now that the scale is squared
+
+  matchers:
+    - class: mp2p_icp::Matcher_Points_DistanceThreshold
+      params:
+        threshold: "max(SIGMA_FINAL, SIGMA_INIT-(SIGMA_INIT-SIGMA_FINAL)*ICP_ITERATION/100)" # [m]
+        thresholdAngularDeg: 0
+        pairingsPerPoint: 1
+        allowMatchAlreadyMatchedGlobalPoints: true # faster
+        pointLayerMatches:
+          - { global: "points_to_register_points", local: "points_to_register_points", weight: 1.0 }
+
+  # The quality evaluator comes unchanged from the imported pipeline.

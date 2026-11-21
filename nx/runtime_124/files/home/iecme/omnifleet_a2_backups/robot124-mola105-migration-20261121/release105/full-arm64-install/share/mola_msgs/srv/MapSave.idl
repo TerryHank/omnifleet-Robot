@@ -1,0 +1,28 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from mola_msgs/srv/MapSave.srv
+// generated code does not contain a copyright notice
+
+
+module mola_msgs {
+  module srv {
+    @verbatim (language="comment", text=
+      "This service requests saving the current map to a given map file(s).")
+    struct MapSave_Request {
+      @verbatim (language="comment", text=
+        "Request." "\n"
+        "File relative or absolute path. Do not add any file extension, since maps" "\n"
+        "may be loaded/saved to several files depending on implementation.")
+      string map_path;
+    };
+    @verbatim (language="comment", text=
+      "Result. False if there was no MOLA map module accepting this request, or" "\n"
+      "there was an error saving the map.")
+    struct MapSave_Response {
+      boolean success;
+
+      @verbatim (language="comment", text=
+        "In case of no success, here is a human-readable error reason.")
+      string error_message;
+    };
+  };
+};

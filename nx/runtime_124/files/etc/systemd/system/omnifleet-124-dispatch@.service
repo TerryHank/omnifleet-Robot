@@ -1,0 +1,13 @@
+[Unit]
+Description=OmniFleet 124 scheduling %i
+After=network.target
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/.local/share/omnifleet-dispatch-124
+ExecStart=/bin/bash /home/iecme/.local/share/omnifleet-dispatch-124/omnifleet_rmf_adapter/scripts/run.bash %i
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+Nice=4
+[Install]
+WantedBy=multi-user.target

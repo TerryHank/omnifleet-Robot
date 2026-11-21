@@ -1,0 +1,82 @@
+[
+  {
+    "test": "idle 1 forward",
+    "follow_active": false,
+    "last_command": [
+      0.10000000149011612,
+      0.0
+    ]
+  },
+  {
+    "test": "idle 2 reverse",
+    "follow_active": false,
+    "last_command": [
+      -0.20000000298023224,
+      0.0
+    ]
+  },
+  {
+    "test": "hand lowered stops",
+    "follow_active": false,
+    "last_command": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "test": "OK enters follow",
+    "follow_active": true,
+    "last_command": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "test": "following ignores 1",
+    "follow_active": true,
+    "last_command": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "test": "following ignores 2",
+    "follow_active": true,
+    "last_command": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "test": "missing target does not enable digits",
+    "follow_active": true,
+    "last_command": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "test": "palm exits follow",
+    "follow_active": false,
+    "last_command": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "test": "idle 2 works after palm",
+    "follow_active": false,
+    "last_command": [
+      -0.20000000298023224,
+      0.0
+    ]
+  },
+  {
+    "test": "idle palm stops",
+    "follow_active": false,
+    "last_command": [
+      0.0,
+      0.0
+    ]
+  }
+]

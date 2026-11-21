@@ -1,0 +1,14 @@
+[Unit]
+Description=OmniFleet A2 Orbbec Gemini Pro RGB-D
+
+[Service]
+User=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+ExecStart=/bin/bash -c 'source deploy/chassis-111/chassis_env.bash && exec ros2 launch orbbec_camera astra_stereo_u3.launch.py serial_number:=AY2755200NT color_format:=RGB enable_ir:=false publish_tf:=false enable_point_cloud:=false depth_registration:=true align_mode:=HW enable_publish_extrinsic:=true'
+Restart=always
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

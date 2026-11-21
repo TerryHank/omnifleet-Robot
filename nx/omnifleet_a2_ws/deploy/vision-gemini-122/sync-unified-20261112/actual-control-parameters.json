@@ -1,0 +1,5 @@
+{
+  "steering_max_speed": 0.3,
+  "reverse_max_speed": 0.2,
+  "enable_motion": false
+}

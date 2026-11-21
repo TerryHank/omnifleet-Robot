@@ -1,0 +1,7 @@
+setup.py
+omnifleet_a2_vr_bridge/__init__.py
+omnifleet_a2_vr_bridge/bridge_node.py
+omnifleet_a2_vr_bridge.egg-info/PKG-INFO
+omnifleet_a2_vr_bridge.egg-info/SOURCES.txt
+omnifleet_a2_vr_bridge.egg-info/dependency_links.txt
+omnifleet_a2_vr_bridge.egg-info/top_level.txt

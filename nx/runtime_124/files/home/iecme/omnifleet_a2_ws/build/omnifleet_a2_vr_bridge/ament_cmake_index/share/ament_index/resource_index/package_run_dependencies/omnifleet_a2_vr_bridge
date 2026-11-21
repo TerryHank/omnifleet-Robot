@@ -1,0 +1,1 @@
+geometry_msgs;nav_msgs;omnifleet_a2_interfaces;rclpy;sensor_msgs;std_msgs;cv_bridge;launch;launch_ros;python3-opencv

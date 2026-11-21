@@ -1,0 +1,42 @@
+# =====================================================================================
+# Pipeline: GICP (Generalized ICP) with cov-to-cov pairings
+#
+# For paper references, see https://github.com/MOLAorg/mola_lidar_odometry/
+#
+# This file holds parameters for mola::LidarOdometry,
+# for use either programmatically calling initialize(), or from a MOLA system
+# launch file. See "mola-cli-launchs/*" examples or the main project docs:
+#
+# The pipeline is assembled from the blocks in blocks/, merged in the order
+# listed below. Each one can be replaced by a user file by setting the
+# environment variable next to it; see the "Pipeline blocks" docs section.
+# =====================================================================================
+
+$import:
+  - ${MOLA_LO_BLOCK_INPUTS|blocks/inputs.yaml}
+  - ${MOLA_LO_BLOCK_IMU_GRAVITY|blocks/imu-gravity.yaml}
+  - ${MOLA_LO_BLOCK_RUNTIME|blocks/runtime.yaml}
+  - ${MOLA_LO_BLOCK_ACCEPTANCE|blocks/acceptance.yaml}
+  - ${MOLA_LO_BLOCK_ADAPTIVE_THRESHOLD|blocks/adaptive-threshold.yaml}
+  - ${MOLA_LO_BLOCK_SIMPLEMAP|blocks/simplemap.yaml}
+  - ${MOLA_LO_BLOCK_VISUALIZATION|blocks/visualization.yaml}
+  - ${MOLA_LO_BLOCK_INITIAL_LOCALIZATION|blocks/initial-localization.yaml}
+  - ${MOLA_LO_BLOCK_ICP|blocks/icp-gicp.yaml}
+  - ${MOLA_LO_BLOCK_LOCALMAP_UPDATES|blocks/localmap-updates.yaml}
+  - ${MOLA_LO_BLOCK_LOCALMAP|blocks/localmap-gicp.yaml}
+  - ${MOLA_LO_BLOCK_OBSERVATIONS_COMMON|blocks/observations-common.yaml}
+  - ${MOLA_LO_BLOCK_OBSERVATIONS|blocks/observations-gicp.yaml}
+  - ${MOLA_LO_BLOCK_DESKEW_EARLY|blocks/deskew-early.yaml}
+  - ${MOLA_LO_BLOCK_DESKEW_VIZ|blocks/deskew-viz.yaml}
+  - ${MOLA_LO_BLOCK_LEARNED_COVARIANCE|blocks/learned-covariance.yaml}
+
+params:
+  pipeline_name: "GICP (Generalized ICP) with cov-to-cov pairings" # For display/debug only
+
+  # If enabled, vehicle twist will be optimized during ICP
+  # enabling better and more robust odometry in high dynamics motion without an IMU.
+  # NOTE: Disabled for more efficient deskew in the GICP pipeline with IMU.
+  # Enabling it costs about 25% more time per scan. On KITTI, which has no IMU
+  # and so no other source of velocity, it still bought nothing measurable, so
+  # do not assume it helps just because a platform lacks an IMU: measure it.
+  optimize_twist: ${MOLA_OPTIMIZE_TWIST|false}

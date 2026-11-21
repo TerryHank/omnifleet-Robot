@@ -1,0 +1,78 @@
+113 → 112 VR 调试与广播同步结果
+日期：2026-11-02
+
+结论
+112 的 VR 调试服务已安装、启用开机启动并运行，实际广播身份为 CAR-IECME112。
+113 与 112 的 VR 协议实现、兼容入口及普通 VR bridge 共 19 个文件原本已经一致；本轮补齐安装入口、依赖声明、112 配置和 systemd 服务，未重复覆盖相同源码。
+
+113 实际入口
+服务：/etc/systemd/system/omnifleet-t2-vr-adapter.service
+实际命令：ros2 run omnifleet_bringup vr_protocol_adapter
+兼容入口：/home/iecme/omnifleet_ws/src/system/omnifleet_bringup/omnifleet_bringup/vr_protocol_adapter.py
+协议实现：/home/iecme/omnifleet_ws/src/control/omnifleet_teleop/omnifleet_teleop/vr_protocol_adapter.py
+另一套可选 bridge：/home/iecme/omnifleet_ws/src/control/omnifleet_vr_bridge
+已留存服务及全部相关 drop-in，供对照。
+
+112 的工作区与修改
+工作区：/home/iecme/omnifleet_a2_ws
+源码：src/control/omnifleet_teleop、src/control/omnifleet_vr_bridge
+兼容入口：src/system/omnifleet_bringup/omnifleet_bringup/vr_protocol_adapter.py
+安装目录：install_111
+部署目录：deploy/vr-debug
+配置：deploy/vr-debug/vr-adapter.yaml
+环境脚本：deploy/vr-debug/vr_env.bash
+服务：/etc/systemd/system/omnifleet-t2-vr-adapter.service
+原 113 服务参考：deploy/vr-debug/reference113
+备份：/home/iecme/omnifleet_a2_backups/vr_sync113_20261102/before-vr.tar.gz
+
+具体修改
+- 在 omnifleet_bringup 的 CMake 中加入 scripts/vr_protocol_adapter 的安装规则，保留 112 原有底盘入口。
+- 声明 bringup → omnifleet_teleop、teleop → omnifleet_interfaces 的实际依赖。
+- 新服务使用 CAR-IECME112、OmniFleet-Ackermann、wlP1p1s0。
+- 继续使用 112 当前的 ROS 域 42 / rmw_fastrtps_cpp，兼容其现有 ROS 服务。113 的 40-tcp-observer.conf 对应 Zenoh observer 配置，原件已留存参考；本轮没有切换 112 整车中间件。
+- 与 113 当前服务一样使用 enable_drive=false。
+- 112 位姿输入设为 /odom，压缩图像输入设为 /tof/color/image_raw/compressed。
+- 修正备用 omnifleet_vr_bridge 配置中的 113 身份及话题，保留其原有运动参数。备用 bridge 未启动，当前启用的是 DISC 文本协议服务。
+
+协议端口
+UDP 8888：车端协议接收、配对 ACK。
+UDP 9100：约每秒一次的 DISC 发现广播。
+UDP 9000：车端向已配对客户端回传 POSE。
+TCP 8090：112 连接已配对客户端的视频接收端；发送小端四字节长度前缀及 JPEG。
+
+验证结果
+- 3 个相关包构建通过：omnifleet_vr_bridge、omnifleet_teleop、omnifleet_bringup。
+- 9 项协议测试通过：发现格式、配对、解除配对、对端绑定、位姿格式、无里程计行为、现有 debug 驱动配置、JPEG 帧格式和姿态转换。
+- 服务 active/running、enabled、NRestarts=0。
+- 服务父进程 PID=18364；实际 UDP 进程 PID=18410。
+- 实际环境：ROS_DOMAIN_ID=42，RMW_IMPLEMENTATION=rmw_fastrtps_cpp。
+- 实际参数：car_id=CAR-IECME112，enable_drive=False。
+- 捕获 5 个来自 192.168.3.112:8888 的广播，内容：
+  DISC|CAR-IECME112,8888,0,,OmniFleet-Ackermann
+- 从 Windows 本机向 112 发送 PAIR，收到：
+  PAIR_ACK|CAR-IECME112,1,VR112-CODEX-SYNC-20261102
+- 测试后已解除测试配对；广播恢复 paired=0。
+- 观测期间 /cmd_vel 未收到消息；未发送 HEAD、SPEED、ANGLE、FIRE 或 RESET。
+- 5 个受保护的 112 身份/底盘/原 VR 配置文件校验一致；原 chassis、airy、foxglove、waypoints 服务 PID 未变。
+- 113 VR 服务仍为原 PID 3621、active、NRestarts=0，未修改或重启。
+
+当前限制
+112 当前 /odom 与 /tof/color/image_raw/compressed 的发布者数量都为 0。
+底盘启动日志显示其 ackermann_driver 因“STM32 did not echo Ackermann dead-zone PWM parameters”退出；systemd active 是 launch 仍存活，不能据此认定底盘节点健康。
+因此广播、配对和协议软件已验证，真实位姿、视频、头显和舵机动作尚未验收。本轮未修改底盘参数回读逻辑或刷写固件。
+
+保留进程与清理
+只保留用户要求的 VR systemd 服务。临时 ROS 观察节点、UDP 测试监听和测试进程均已结束，测试配对已解除。
+
+手动管理（登录 112 后）
+查看：systemctl status omnifleet-t2-vr-adapter.service
+启动：sudo systemctl start omnifleet-t2-vr-adapter.service
+停止：sudo systemctl stop omnifleet-t2-vr-adapter.service
+日志：journalctl -u omnifleet-t2-vr-adapter.service -f
+
+前台调试入口（先停该服务以释放 UDP 8888）
+sudo systemctl stop omnifleet-t2-vr-adapter.service
+cd /home/iecme/omnifleet_a2_ws
+source deploy/vr-debug/vr_env.bash
+ros2 run omnifleet_bringup vr_protocol_adapter --ros-args --params-file deploy/vr-debug/vr-adapter.yaml
+退出前台后可用 sudo systemctl start omnifleet-t2-vr-adapter.service 恢复服务。

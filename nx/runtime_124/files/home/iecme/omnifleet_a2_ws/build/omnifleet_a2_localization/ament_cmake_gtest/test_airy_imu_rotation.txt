@@ -1,0 +1,19 @@
+-- run_test.py: invoking following command in '/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_localization':
+ - /home/iecme/omnifleet_a2_ws/build/omnifleet_a2_localization/test_airy_imu_rotation --gtest_output=xml:/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_localization/test_results/omnifleet_a2_localization/test_airy_imu_rotation.gtest.xml
+
+Running main() from /opt/ros/humble/src/gtest_vendor/src/gtest_main.cc
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AiryImuRotation
+[ RUN      ] AiryImuRotation.RotatesFactoryAxesIntoTheLidarFrame
+[       OK ] AiryImuRotation.RotatesFactoryAxesIntoTheLidarFrame (0 ms)
+[----------] 1 test from AiryImuRotation (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+
+
+-- run_test.py: return code 0
+-- run_test.py: inject classname prefix into gtest result file '/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_localization/test_results/omnifleet_a2_localization/test_airy_imu_rotation.gtest.xml'
+-- run_test.py: verify result file '/home/iecme/omnifleet_a2_ws/build/omnifleet_a2_localization/test_results/omnifleet_a2_localization/test_airy_imu_rotation.gtest.xml'

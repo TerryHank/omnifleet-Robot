@@ -1,0 +1,17 @@
+source;share/mola_launcher/hook/cmake_prefix_path.ps1
+source;share/mola_launcher/hook/cmake_prefix_path.dsv
+source;share/mola_launcher/hook/cmake_prefix_path.sh
+source;share/mola_launcher/hook/ld_library_path_lib.ps1
+source;share/mola_launcher/hook/ld_library_path_lib.dsv
+source;share/mola_launcher/hook/ld_library_path_lib.sh
+source;share/mola_launcher/hook/path.ps1
+source;share/mola_launcher/hook/path.dsv
+source;share/mola_launcher/hook/path.sh
+source;share/mola_launcher/hook/pythonscriptspath.ps1
+source;share/mola_launcher/hook/pythonscriptspath.dsv
+source;share/mola_launcher/hook/pythonscriptspath.sh
+source;share/mola_launcher/local_setup.bash
+source;share/mola_launcher/local_setup.dsv
+source;share/mola_launcher/local_setup.ps1
+source;share/mola_launcher/local_setup.sh
+source;share/mola_launcher/local_setup.zsh

@@ -1,0 +1,26 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from mola_msgs/srv/MolaRuntimeParamGet.srv
+// generated code does not contain a copyright notice
+
+
+module mola_msgs {
+  module srv {
+    @verbatim (language="comment", text=
+      "This service requests all known runtime configurable parameters of running mola::ExecutableBase modules.")
+    struct MolaRuntimeParamGet_Request {
+      uint8 structure_needs_at_least_one_member;
+    };
+    @verbatim (language="comment", text=
+      "Result: a multiline string in YAML format with all parameters, in this format:" "\n"
+      "---" "\n"
+      "module1:" "\n"
+      "  var: value" "\n"
+      "module2:" "\n"
+      "  var: value" "\n"
+      "..." "\n"
+      "---")
+    struct MolaRuntimeParamGet_Response {
+      string parameters;
+    };
+  };
+};

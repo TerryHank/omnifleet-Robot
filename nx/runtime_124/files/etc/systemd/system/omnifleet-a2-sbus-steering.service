@@ -1,0 +1,17 @@
+[Unit]
+Description=OmniFleet 121 SBUS drive and steering
+After=omnifleet-a2-chassis.service
+
+[Service]
+Type=simple
+User=iecme
+Group=iecme
+WorkingDirectory=/home/iecme/omnifleet_a2_ws
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONPATH=/home/iecme/omnifleet_a2_ws/deploy/xbox-steering
+ExecStart=/bin/bash -c 'source /home/iecme/omnifleet_a2_ws/deploy/chassis-111/chassis_env.bash && exec /usr/bin/python3 /home/iecme/omnifleet_a2_ws/deploy/sbus-steering/sbus_steering.py'
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Gazebo Classic 11 extensions. This branch is simulation-only. -->
+  <xacro:macro name="lunshi_gazebo_classic" params="controller_config">
+    <gazebo reference="base_link">
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="front_left_wheel">
+      <mu1>1.0</mu1><mu2>1.0</mu2><kp>1000000.0</kp><kd>1.0</kd>
+    </gazebo>
+    <gazebo reference="front_right_wheel">
+      <mu1>1.0</mu1><mu2>1.0</mu2><kp>1000000.0</kp><kd>1.0</kd>
+    </gazebo>
+    <gazebo reference="rear_left_wheel">
+      <mu1>1.0</mu1><mu2>1.0</mu2><kp>1000000.0</kp><kd>1.0</kd>
+    </gazebo>
+    <gazebo reference="rear_right_wheel">
+      <mu1>1.0</mu1><mu2>1.0</mu2><kp>1000000.0</kp><kd>1.0</kd>
+    </gazebo>
+
+    <gazebo reference="laser_frame">
+      <sensor name="rplidar_s3_classic" type="ray">
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <update_rate>${s3_update_rate}</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>720</samples>
+              <resolution>1</resolution>
+              <min_angle>${s3_min_angle}</min_angle>
+              <max_angle>${s3_max_angle}</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <!-- Ignore reflections from the simulated robot's own body and sensors. -->
+            <min>0.30</min>
+            <max>12.0</max>
+            <resolution>${s3_range_resolution}</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>${s3_noise_stddev}</stddev>
+          </noise>
+        </ray>
+        <plugin name="rplidar_s3_ros" filename="libgazebo_ros_ray_sensor.so">
+          <ros>
+            <remapping>~/out:=/omnifleet_a2/lidar/obstacles</remapping>
+          </ros>
+          <output_type>sensor_msgs/PointCloud2</output_type>
+          <frame_name>laser_frame</frame_name>
+        </plugin>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="camera_color_optical_frame">
+      <sensor name="hik_mv_dt01sdu_rgb_classic" type="camera">
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <update_rate>15</update_rate>
+        <camera>
+          <horizontal_fov>${mv_rgb_hfov}</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip><near>${mv_near}</near><far>20.0</far></clip>
+        </camera>
+        <plugin name="hik_mv_dt01sdu_rgb_ros" filename="libgazebo_ros_camera.so">
+          <ros>
+            <namespace>/camera/color</namespace>
+            <remapping>image_raw:=image_raw</remapping>
+            <remapping>camera_info:=camera_info</remapping>
+          </ros>
+          <frame_name>camera_color_optical_frame</frame_name>
+        </plugin>
+      </sensor>
+    </gazebo>
+
+    <gazebo>
+      <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+        <ros>
+          <remapping>/omnifleet_a2_ackermann_controller/reference_unstamped:=/cmd_vel</remapping>
+          <remapping>/omnifleet_a2_ackermann_controller/odometry:=/odom</remapping>
+          <remapping>/omnifleet_a2_ackermann_controller/tf_odometry:=/tf</remapping>
+        </ros>
+        <parameters>${controller_config}</parameters>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+</robot>

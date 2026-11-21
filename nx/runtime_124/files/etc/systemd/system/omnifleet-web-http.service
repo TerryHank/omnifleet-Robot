@@ -1,0 +1,6 @@
+[Unit]
+Description=OmniFleet port 80 forward to onboard Web
+Requires=omnifleet-124-dispatch-web.service
+After=omnifleet-124-dispatch-web.service
+[Service]
+ExecStart=/lib/systemd/systemd-socket-proxyd 127.0.0.1:8080

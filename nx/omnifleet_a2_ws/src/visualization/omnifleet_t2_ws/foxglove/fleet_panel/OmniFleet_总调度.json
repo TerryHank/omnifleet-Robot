@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "configById": {
+    "3D!fleet": {
+      "foxglovePanelTitle": "本车地图与航点编辑",
+      "followTf": "map",
+      "followMode": "follow-pose",
+      "cameraState": {
+        "perspective": false,
+        "distance": 8,
+        "phi": 0.01,
+        "thetaOffset": 0,
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "targetOffset": [
+          0.3,
+          0.7,
+          0
+        ],
+        "targetOrientation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "fovy": 45,
+        "near": 0.05,
+        "far": 500
+      },
+      "scene": {
+        "transforms": {
+          "showLabel": true,
+          "axisScale": 0.2,
+          "enablePreloading": false
+        }
+      },
+      "topics": {
+        "/fleet/map": {
+          "visible": true
+        },
+        "/fleet/ui/markers": {
+          "visible": true
+        },
+        "/plan": {
+          "visible": true,
+          "color": "#fb923c"
+        },
+        "/tf": {
+          "visible": true
+        },
+        "/tf_static": {
+          "visible": true
+        }
+      },
+      "transforms": {},
+      "layers": {},
+      "version": 1,
+      "publish": {
+        "type": "pose",
+        "poseTopic": "/fleet/ui/add_pose",
+        "pointTopic": "/fleet/ui/add_point",
+        "poseEstimateTopic": "/initialpose",
+        "poseEstimateXDeviation": 0.5,
+        "poseEstimateYDeviation": 0.5,
+        "poseEstimateThetaDeviation": 0.26
+      }
+    },
+    "Plot!113": {
+      "foxglovePanelTitle": "robot_113 指令 / 实测线速度",
+      "paths": [
+        {
+          "value": "/msc/nav_cmd_vel.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Nav2 指令",
+          "color": "#a78bfa"
+        },
+        {
+          "value": "/msc/cmd_vel_safe.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "安全输出",
+          "color": "#38bdf8"
+        },
+        {
+          "value": "/odom.twist.twist.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "里程计实测",
+          "color": "#fbbf24"
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "followingViewWidth": 30,
+      "xAxisVal": "timestamp",
+      "isSynced": true
+    },
+    "Plot!104": {
+      "foxglovePanelTitle": "robot_104 指令 / 实测线速度",
+      "paths": [
+        {
+          "value": "/msc/nav_cmd_vel.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Nav2 指令",
+          "color": "#a78bfa"
+        },
+        {
+          "value": "/msc/cmd_vel_safe.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "安全输出",
+          "color": "#fb923c"
+        },
+        {
+          "value": "/odom.twist.twist.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "里程计实测",
+          "color": "#fbbf24"
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "followingViewWidth": 30,
+      "xAxisVal": "timestamp",
+      "isSynced": true
+    },
+    "RawMessages!fleet": {
+      "foxglovePanelTitle": "调度、回执、录包与任务状态",
+      "topicPath": "/fleet/ui/state",
+      "expansion": "all",
+      "diffEnabled": false,
+      "diffMethod": "previous message",
+      "fontSize": 12
+    },
+    "RawMessages!113": {
+      "foxglovePanelTitle": "198 本车执行状态",
+      "topicPath": "/navigation/local_status",
+      "expansion": "all",
+      "diffEnabled": false,
+      "diffMethod": "previous message",
+      "fontSize": 12
+    },
+    "RawMessages!104": {
+      "foxglovePanelTitle": "104 本车执行状态",
+      "topicPath": "/navigation/local_status",
+      "expansion": "all",
+      "diffEnabled": false,
+      "diffMethod": "previous message",
+      "fontSize": 12
+    },
+    "SourceInfo!fleet": {
+      "foxglovePanelTitle": "WebSocket 数据源与流量"
+    },
+    "OmniFleetDispatchPanel!fleet": {
+      "operatorLabel": "198 车端"
+    }
+  },
+  "layout": {
+    "direction": "row",
+    "first": {
+      "direction": "column",
+      "first": "3D!fleet",
+      "second": {
+        "direction": "column",
+        "first": {
+          "direction": "row",
+          "first": "Plot!113",
+          "second": "Plot!104",
+          "splitPercentage": 50
+        },
+        "second": {
+          "direction": "row",
+          "first": "RawMessages!113",
+          "second": "RawMessages!104",
+          "splitPercentage": 50
+        },
+        "splitPercentage": 65
+      },
+      "splitPercentage": 65
+    },
+    "second": {
+      "direction": "column",
+      "first": "OmniFleetDispatchPanel!fleet",
+      "second": {
+        "direction": "column",
+        "first": "RawMessages!fleet",
+        "second": "SourceInfo!fleet",
+        "splitPercentage": 80
+      },
+      "splitPercentage": 78
+    },
+    "splitPercentage": 65
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "playbackConfig": {
+    "speed": 1
+  }
+}

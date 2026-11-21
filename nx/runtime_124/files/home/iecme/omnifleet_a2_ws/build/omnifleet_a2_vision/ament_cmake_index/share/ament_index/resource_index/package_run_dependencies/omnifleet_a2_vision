@@ -1,0 +1,1 @@
+cv_bridge;geometry_msgs;libopencv-dev;message_filters;rclcpp;sensor_msgs;std_msgs;ament_index_python;launch;launch_ros;rclpy;python3-numpy;python3-opencv;python3-pyzbar;python3-yaml;tesseract-ocr;ament_cmake_pytest

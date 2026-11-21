@@ -1,0 +1,23 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from omnifleet_interfaces/srv/RunMission.srv
+// generated code does not contain a copyright notice
+
+
+module omnifleet_interfaces {
+  module srv {
+    struct RunMission_Request {
+      string mission_id;
+
+      uint64 revision;
+
+      string policy;
+    };
+    struct RunMission_Response {
+      boolean accepted;
+
+      string transaction_id;
+
+      string message;
+    };
+  };
+};

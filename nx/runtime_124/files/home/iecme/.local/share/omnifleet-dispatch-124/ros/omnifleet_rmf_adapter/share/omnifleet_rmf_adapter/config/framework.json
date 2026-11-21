@@ -1,0 +1,28 @@
+{
+  "central": {
+    "domain_id": 52,
+    "rmw": "rmw_fastrtps_cpp",
+    "reference_robot": "robot_124",
+    "assignments": {
+      "robot_124": {
+        "robot_name": "robot_124",
+        "namespace": "/robot_124",
+        "display_name": "124 阿克曼"
+      }
+    },
+    "identity_revision": 1,
+    "fastdds_config": "fastdds-central.xml"
+  },
+  "stale_after_seconds": 3.0,
+  "robots": {
+    "robot_124": {
+      "enabled": true,
+      "motion_enabled": true,
+      "pose_topic": "/lidar_odometry/pose",
+      "domain_id": 42,
+      "rmw": "rmw_fastrtps_cpp",
+      "local_namespace": "",
+      "observed_namespace": ""
+    }
+  }
+}
