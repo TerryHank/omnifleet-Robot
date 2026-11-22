@@ -6,7 +6,7 @@ The production checkout is `/home/iecme/omnifleet_a2_ws` and the branch is
 
 ## Layout
 
-- `src/`: project-owned ROS 2 packages, including the semantic waypoint UI.
+- [ROS 2 source](../../../omnifleet_ws/src): project-owned ROS 2 packages, including the semantic waypoint UI.
 - `firmware/V3.5.1/`: STM32 source and the verified release image.
 - `foxglove/`: semantic-waypoint extension source and reference layouts.
 
