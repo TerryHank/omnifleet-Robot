@@ -7,4 +7,4 @@
 - 触屏点位走 `/navigation/goal_point`，使用 `point_goal_checker`。近障脱困读取当前导航控制器限速。
 - 车队接口管理许可与租约。任务接受条件包括现有就绪状态、定位 epoch 和租约匹配。
 
-[包声明](package.xml) · [测试](test) · [本机运行入口](../../../README.workspace.md)
+[包声明](package.xml) · [测试](test) · [本机运行入口](../../../../omnifleet_data/README.workspace.md)

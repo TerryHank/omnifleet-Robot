@@ -16,7 +16,9 @@
 
 ROS 2 工作区和车端配置采自 2026-11-20 的 Ranger 3.0 Windows OTG 镜像。
 
-- [`src/vehicle/ranger_can/`](src/vehicle/ranger_can) 包含 CAN 配置和 `ranger3.launch.py`。CAN 速率为 500 kbit/s。
-- [`src/vehicle/ranger_ros2/`](src/vehicle/ranger_ros2) 和 [`src/vehicle/ugv_sdk/`](src/vehicle/ugv_sdk) 包含 Ranger V3 ROS 2 和 CAN SDK 源码。
+- [`omnifleet_ws/src/vehicle/ranger_can/`](../omnifleet_ws/src/vehicle/ranger_can) 包含 CAN 配置和 `ranger3.launch.py`。CAN 速率为 500 kbit/s。
+- [`omnifleet_ws/src/vehicle/ranger_ros2/`](../omnifleet_ws/src/vehicle/ranger_ros2) 和 [`omnifleet_ws/src/vehicle/ugv_sdk/`](../omnifleet_ws/src/vehicle/ugv_sdk) 包含 Ranger V3 ROS 2 和 CAN SDK 源码。
 - [底盘服务配置](system/etc/systemd/system/omnifleet-t2-chassis.service.d/zzzzzz-ranger3.conf) 提供实际启动入口。[工作区说明](README.workspace.md) 说明控制链、里程计和车型配置。
 - SDK 随附的 PDF 手册见 [AgileX SDK 上游文档](https://github.com/agilexrobotics/ugv_sdk/tree/f2704eacdc90357078cd93ec60aae08bb4baab35/docs)。
+
+[源码索引](README.source.md) 按功能域列出各包。[env.bash](env.bash) 是车端环境脚本，恢复时仍安装到 `/home/iecme/omnifleet_ws/env.bash`。快照清单沿用原采集路径。
