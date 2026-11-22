@@ -16,7 +16,9 @@
 
 ROS 2 工作区和车端配置采自 124 号车。车端入口见 [124 工作区说明](README.workspace.md)。
 
-- [`src/`](src) 为车端工作区源码。
+- [`omnifleet_ws/src/`](../omnifleet_ws/src) 为车端工作区源码。
 - [`firmware/robot-124-cascade/`](firmware/robot-124-cascade) 为 124 号车当天的 STM32 级联控制固件源码。
 - [`follow-media/`](follow-media)、[`web/`](web) 分别包含跟随视频服务和车端网页。
 - [`system/`](system) 包含车端服务和配置。采集范围见 [快照说明](BACKUP_INFO.json)。
+
+[源码索引](README.source.md) 按功能域列出各包。[env.bash](env.bash) 是车端环境脚本，恢复时仍安装到 `/home/iecme/omnifleet_ws/env.bash`。快照清单沿用原采集路径。
