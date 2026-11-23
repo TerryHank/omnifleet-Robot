@@ -41,7 +41,7 @@ Missions负责业务状态机、队列和车辆客户端调用。`rmf_dispatch.p
 
 共享地图与共享代价图是不同输出：`/fleet/map`和`/fleet/global_costmap/costmap`。车端原生规划/局部控制还有自己的代价图，不把共享膨胀和车端膨胀混称为同一个参数。具体数值读现有配置和车端回报，不在文档写死。
 
-广播接入生成临时 Fast DDS 路由配置；失去新鲜广播后撤下客户端并删除会话。`data/run/discovery/`为空不等于配置损坏。车辆角色要求discovery运行时profile，不作为手动固定连接入口。详见[BROADCAST_DISCOVERY.md](BROADCAST_DISCOVERY.md)。
+ROS 传输采用 Fast DDS（`rmw_fastrtps_cpp`）。中央角色加载 [fastdds-central.xml](config/fastdds-central.xml)，车辆角色由发现服务根据 [fastdds-client.xml](config/fastdds-client.xml) 和 [路由模板](config/fastdds-router-template.yaml) 生成本车会话。广播接入生成临时 Fast DDS 路由配置；失去新鲜广播后撤下客户端并删除会话。`data/run/discovery/`为空不等于配置损坏。车辆角色要求discovery运行时profile，不作为手动固定连接入口。详见[BROADCAST_DISCOVERY.md](BROADCAST_DISCOVERY.md)。
 
 - `data/connection_status.json`：连接与采样快照；许可聚合以运行中的HTTP `/state`为准。
 - `data/map_hub_status.json`：地图状态，不含运动许可；旧缓存中的`motion_enabled:false`没有控制意义。
@@ -60,6 +60,6 @@ Missions负责业务状态机、队列和车辆客户端调用。`rmf_dispatch.p
 - `control_client.py`：运行在WSL的每车客户端，管理许可配置回读、租约、Action和取消竞态。
 - `map_hub.py / registration.py`：共享图、同伴占用与配准。
 
-启动、停止及离线测试命令见[根README](../../../README.md)。当前部署只使用`omnifleet-rmf.target`及广播发现服务；固定104/113的旧unit、静态会话及旧断连脚本已备份后删除。没有实车时只运行离线测试，不用模拟结果冒充物理验收。
+启动、停止及离线测试命令见[广播发现与接入](BROADCAST_DISCOVERY.md)。当前部署只使用`omnifleet-rmf.target`及广播发现服务；固定104/113的旧unit、静态会话及旧断连脚本已备份后删除。没有实车时只运行离线测试，不用模拟结果冒充物理验收。
 
-当前离线全绿结果和重现命令见[根README的离线全绿基线](../../../README.md#离线全绿基线2026-10-29)。默认基线为`data/test-baselines/dispatch-green-20261029.json`，原33项失败名单保持不变，处置记录见`data/test-baselines/resolved33.json`；没有xfail或跳过。
+仓库内的回归源码见 [test/](test)，测试和实车结果以对应版本的验收记录为准。
