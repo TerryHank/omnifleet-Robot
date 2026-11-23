@@ -21,4 +21,4 @@ ROS 2 工作区和车端配置采自 124 号车。车端入口见 [124 工作区
 - [`follow-media/`](follow-media)、[`web/`](web) 分别包含跟随视频服务和车端网页。
 - [`system/`](system) 包含车端服务和配置。采集范围见 [快照说明](BACKUP_INFO.json)。
 
-[源码索引](README.source.md) 按功能域列出各包。[env.bash](env.bash) 是车端环境脚本，恢复时仍安装到 `/home/iecme/omnifleet_ws/env.bash`。快照清单沿用原采集路径。
+[源码索引](../omnifleet_ws/src/README.md) 按功能域列出各包。[env.bash](env.bash) 是车端环境脚本，恢复时仍安装到 `/home/iecme/omnifleet_ws/env.bash`。快照清单沿用原采集路径。

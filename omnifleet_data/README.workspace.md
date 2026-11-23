@@ -28,4 +28,4 @@
 
 - 遥控导航 App 固定使用 `ws://192.168.144.108:8765/`。接收机 LAN 使用同一地址的 `/24`，机器人配网走 `https://192.168.144.108:8766`（`omnifleet-wifi.service`）。
 
-源码分域见 [源码索引](README.source.md)。`build/`、`install/`、`log/` 是构建产物和日志。
+源码分域见 [源码索引](../omnifleet_ws/src/README.md)。`build/`、`install/`、`log/` 是构建产物和日志。
