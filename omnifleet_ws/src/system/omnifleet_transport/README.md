@@ -1,6 +1,6 @@
 # omnifleet_transport｜目录说明
 
-通信运行脚本、Zenoh/gateway 工具；独立于 ROS 包打包。
+此目录保存通信脚本与旧网关资料。车端通信见 [Fast DDS 配置](../../../../omnifleet_data/README.workspace.md#fast-dds)。
 
 - [runtime/](runtime)
 

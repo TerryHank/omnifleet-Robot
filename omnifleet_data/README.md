@@ -12,6 +12,8 @@
 | [A2](https://github.com/TerryHank/omnifleet-Robot/tree/A2) | 阿克曼 |
 | [R4](https://github.com/TerryHank/omnifleet-Robot/tree/R4) | Ranger Mini 3.0 四驱四转 |
 
+车端 ROS 2 Humble 使用 Fast DDS，见 [Fast DDS 配置](README.workspace.md#fast-dds)。
+
 ## 源码
 
 ROS 2 工作区和车端配置采自 124 号车。车端入口见 [124 工作区说明](README.workspace.md)。

@@ -6,9 +6,11 @@
 
 Windows 的本机接收器转发到 NAT WSL 的 UDP 7448。WSL 地址由 hostname -I 自动解析，不存储车辆地址。转发包需要本机随机令牌；令牌文件不进入仓库、聊天或本报告。
 
-WSL 的 omnifleet-rmf-discovery.service 按广播来源地址生成 data/run/discovery/ 中的临时 Fast DDS 客户端和路由配置，启动每车独立的 ROS 客户端。没有静态车辆 IP 回退。广播超过 6 秒未刷新会撤下对应连接并删除临时地址文件，状态仍受原有新鲜度判定约束；收到新广播后重新连接。多网卡广播不会生成重复车辆；不同机器占用同一身份、不同车辆使用同一 ROS 域、车辆占用中央 Domain 42 时拒绝接入。
+WSL 的 omnifleet-rmf-discovery.service 按广播来源地址生成 data/run/discovery/ 中的临时 Fast DDS 客户端和路由配置，启动每车独立的 ROS 客户端。没有静态车辆 IP 回退。广播超过 6 秒未刷新会撤下对应连接并删除临时地址文件，状态仍受原有新鲜度判定约束；收到新广播后重新连接。多网卡广播不会生成重复车辆；不同机器占用同一身份、不同车辆使用同一 ROS 域、车辆域号与中央域号相同时拒绝接入。
 
 central.assignments 保存中央 ID、前缀与顺序。原有 car1/car2 分配、motion_enabled 和已保存航点保留。未知 robot_id 自动加入分配列表，默认 motion_enabled=false；接入不代表地图配准、执行许可或实车运动验收通过。当前配准按参考车与待配准成员成对计算，再合并有效变换，支持多个成员；这不等于混合底盘编队已经实车验收。
+
+广播端口 `7446` 和 WSL 转发端口 `7448` 用于身份发现。DDS Router 使用广播中的 TCP 路由端口（默认 `42100`），并按模板和会话配置选择转发的数据。中央 Domain 来自 [framework.json](config/framework.json)，车端 Domain 来自本车广播。车端配置见 [Fast DDS 配置](../../../../omnifleet_data/README.workspace.md#fast-dds)。
 
 ## 常驻入口
 

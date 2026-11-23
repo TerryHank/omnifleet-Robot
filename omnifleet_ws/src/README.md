@@ -131,7 +131,8 @@ Nav2 启动与规划/控制器配置、代价地图扩展和车队规划。
 机器人启动、通信与运维。
 
 - [omnifleet_bringup](system/omnifleet_bringup/README.omnifleet.md)
-- `rmw_zenoh_cpp`（当前分支未收录源码）
+- [omnifleet_rmf_adapter](system/omnifleet_rmf_adapter/README.md)
+- [Fast DDS 配置](../../omnifleet_data/README.workspace.md#fast-dds)
 
 ## vehicle
 

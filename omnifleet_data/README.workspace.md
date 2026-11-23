@@ -3,11 +3,31 @@
 | 项目 | 本机配置 |
 | --- | --- |
 | 主机与工作区 | `iecme@192.168.3.124`，`/home/iecme/omnifleet_ws` |
-| ROS（robot.env） | Humble，`robot_101`，`ROS_DOMAIN_ID=101`，`rmw_fastrtps_cpp` |
+| ROS | Humble，`robot_101`，见 [Fast DDS](#fast-dds) |
 | 底盘 | 亚博履带 STM32，`omnifleet_chassis_driver t2_driver` |
 | 环境与数据 | [env.bash](env.bash)，恢复车端时将此脚本安装到 `/home/iecme/omnifleet_ws/env.bash`，供现有 systemd 服务加载。持久数据在 `/home/iecme/omnifleet_data` |
 
 亚博底盘左 M2、右 M1，串口别名 `/dev/omnifleet_t2_stm32`。STM32 回传 SBUS，ROS 负责摇杆优先级和 CH5 三挡。
+
+## Fast DDS
+
+车端 ROS 2 Humble 使用 `rmw_fastrtps_cpp`。快照中的 [robot.env](system/etc/omnifleet_t2/robot.env) 设置 `ROS_DOMAIN_ID=101`、`ROS_LOCALHOST_ONLY=0` 和 `RMW_FASTRTPS_USE_QOS_FROM_XML=1`，并加载 `/etc/omnifleet_t2/fastdds-local.xml`。[fastdds-local.xml](system/etc/omnifleet_t2/fastdds-local.xml) 显式启用回环 UDPv4 和共享内存（SHM）。即使 `ROS_LOCALHOST_ONLY=0`，这份 XML 的车端 UDP 仍绑定 `127.0.0.1`。
+
+局域网调度通过 DDS Router 转发配置允许的 ROS 数据。仓库保留 [fastdds-router.yaml](system/etc/omnifleet_t2/fastdds-router.yaml)、[路由服务](system/etc/systemd/system/omnifleet-fastdds-router.service) 和 [广播发现与接入](../omnifleet_ws/src/system/omnifleet_rmf_adapter/BROADCAST_DISCOVERY.md)。车辆广播用于发布身份和路由端口，调度根据广播生成连接配置。Foxglove 远程客户端连接车端 Foxglove Bridge 的 WebSocket。
+
+在车端终端读取同一份环境后检查 ROS 图：
+
+```bash
+source /opt/ros/humble/setup.bash
+set -a
+source /etc/omnifleet_t2/robot.env
+set +a
+printenv RMW_IMPLEMENTATION ROS_DOMAIN_ID ROS_LOCALHOST_ONLY FASTRTPS_DEFAULT_PROFILES_FILE RMW_FASTRTPS_USE_QOS_FROM_XML
+ros2 node list
+ros2 topic list -t
+```
+
+从其他 RMW 切换后，如果 ROS 2 CLI 还在使用旧 daemon，先在该环境中运行 `ros2 daemon stop`，再重新列出节点。排查服务时用 `systemctl cat <服务名>` 查看 `EnvironmentFile` 和 `ExecStart`，以服务实际加载的环境为准。Fast DDS 的 XML 路径由 `FASTRTPS_DEFAULT_PROFILES_FILE` 指定。参见 [Fast DDS 环境变量](https://fast-dds.docs.eprosima.com/en/2.6.x/fastdds/env_vars/env_vars.html)。
 
 ## 车端主链
 

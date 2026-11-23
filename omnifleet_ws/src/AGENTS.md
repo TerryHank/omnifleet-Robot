@@ -1,4 +1,4 @@
-# OmniFleet 126 工作区约定
+# OmniFleet T2 工作区约定
 
 适用 `/home/iecme/omnifleet_ws`。先读 [本机配置](../../omnifleet_data/README.workspace.md) 和 [源码索引](README.md)，进入子项目后遵循其 `AGENTS.md`。
 

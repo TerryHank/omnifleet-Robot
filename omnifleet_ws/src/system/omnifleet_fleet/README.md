@@ -1,6 +1,6 @@
 # 本车 ROS 接口与运行入口
 
-104、113 分别使用 ROS_DOMAIN_ID=104、113，车辆身份由 OMNIFLEET_ROBOT_ID 保留。
+车端环境见 [Fast DDS 配置](../../../../omnifleet_data/README.workspace.md#fast-dds)。车辆身份由 `OMNIFLEET_ROBOT_ID` 保留。历史 104、113 部署使用过对应域号。
 本车话题、服务、Action、TF 均不加车辆前缀，例如 /map、/tf、/cmd_vel、/navigate_to_pose，坐标系为 map、base_link、rslidar。
 安全速度链为 /navigation/nav_cmd_vel → local_navigation → /navigation/cmd_vel_safe → 底盘。
 旧 Domain 0 双车网关已退役，旧入口明确拒绝启动，不能把两车裸名话题合并到同一通信域。

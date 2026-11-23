@@ -58,7 +58,7 @@ Foxglove 使用 `Nav2PermanentPanel.js`。当前中文构建没有本地扩展 l
 独立 ROS 参数加载进程用安装 YAML 读到 [0.35, 0.35]，随后从面板恢复 0.4。
 未为验证重启真实 Nav2 或移动小车。
 
-当前 113 实验导航栈的手动启动命令（先正常停止已有 Nav2，避免重复节点）：
+113 号车历史实验的手动启动命令（先正常停止已有 Nav2，避免重复节点）：
 
 ```bash
 source /home/iecme/omnifleet_ws/src/system/omnifleet_fleet/env.bash
@@ -67,7 +67,7 @@ cd /home/iecme/omnifleet_ws
 ros2 launch omnifleet_t2_mola_experiments nav2_direct.launch.py transform_tolerance:=0.8 odom_topic:=/odom obstacle_topic:=/rslidar_points obstacle_clearing:=true
 ```
 
-这是本次读取的实际运行参数组合；MOLA/地图由原有进程负责。
+以上是原验收时的参数组合。当前分支通信说明见 [Fast DDS 配置](../../../../../../omnifleet_data/README.workspace.md#fast-dds)。
 永久参数服务停止命令：`sudo systemctl stop omnifleet-t2-nav2-parameters.service`。
 Foxglove 可关闭窗口停止，或运行 `/home/iecme/.local/bin/start-foxglove-single.sh` 手动打开。
 
