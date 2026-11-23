@@ -16,4 +16,4 @@
 | [rrc_tank_bridge](rrc_tank_bridge/README.md) | Safe cmd_vel to Hiwonder tracked motor bridge. |
 | [rrc_tank_description](rrc_tank_description/README.md) | Simple tracked chassis model for Foxglove and ROS 2 TF. |
 
-业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../../AGENTS.md)。
+业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../AGENTS.md)。

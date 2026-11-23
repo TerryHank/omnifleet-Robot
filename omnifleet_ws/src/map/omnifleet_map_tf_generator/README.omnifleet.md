@@ -12,10 +12,6 @@
 - [package.xml](package.xml)：包名称、描述与依赖声明。
 - [setup.py](setup.py)：Python包安装与console_scripts入口。
 
-## 工作区内声明依赖
-
-- [omnifleet_fleet_common](../../common/omnifleet_fleet_common/README.omnifleet.md)
-
 ## 原有资料
 
 - [README.md](README.md)

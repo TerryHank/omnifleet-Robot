@@ -17,7 +17,7 @@ FAST-LIVO2 与 RTAB-Map 的隔离 Airy 启动配置。当前主定位链仍为 M
 
 ## 工作区内声明依赖
 
-- [fast_livo](../fast_livo2_ros2/README.omnifleet.md)
+- `fast_livo` 为 FAST-LIVO2 备用启动项的外部依赖，本分支未收录该包源码。
 - [omnifleet_mola_grid](../../map/omnifleet_mola_grid/README.md)
 - [RTAB-Map启动编排](../../system/omnifleet_bringup/launch/rtabmap_lidar_grid.launch.py)：直接使用上游rtabmap_odom、rtabmap_slam；旧自定义包装包已归档。
 - [omnifleet_sensor_processing](../../sensing/omnifleet_sensor_processing/README.omnifleet.md)

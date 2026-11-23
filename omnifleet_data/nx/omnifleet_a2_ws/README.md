@@ -1,8 +1,6 @@
 # OmniFleet A2 production mainline
 
-This repository is the single source authority for the OmniFleet A2 vehicle.
-The production checkout is `/home/iecme/omnifleet_a2_ws` and the branch is
-`main`.
+This directory preserves deployment files from `/home/iecme/omnifleet_a2_ws`. The public snapshot is published on the `A2` branch. The live paths and service environment for the captured vehicle are documented in the [124 runtime and restore guide](../runtime_124/README.md).
 
 ## Layout
 
@@ -11,12 +9,10 @@ The production checkout is `/home/iecme/omnifleet_a2_ws` and the branch is
 - `foxglove/`: semantic-waypoint extension source and reference layouts.
 
 ROS `build/`, `install/`, `log/`, Python caches, runtime logs and backup copies
-are generated artifacts and are not source. Recoverable deployment snapshots
-live outside the repository under `/home/iecme/robot_backups`.
+are generated artifacts. The repository includes selected ARM64 runtime files in [runtime_124](../runtime_124/README.md). Live maps and local backups are stored separately.
 
 Third-party GLIM, RoboSense Airy, MVS and ROS/Nav2 installations remain in their
-own upstream workspaces or system prefixes. This repository references them at
-runtime; it does not copy their generated build trees.
+own upstream workspaces or system prefixes. The source index and runtime guide identify the sensor driver sources and captured install files included here.
 
 ## Production navigation contract
 

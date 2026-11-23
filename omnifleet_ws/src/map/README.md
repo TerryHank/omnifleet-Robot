@@ -12,4 +12,4 @@
 | [omnifleet_map_tf_generator](omnifleet_map_tf_generator/README.omnifleet.md) | 地图坐标变换、TF 构造与共享地图栅格编解码。 |
 | [omnifleet_mola_grid](omnifleet_mola_grid/README.md) | MP2P 体素切片及 MRPT/ROS 地图桥接，供外部已配准点云使用。 |
 
-业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../../AGENTS.md)。
+业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../AGENTS.md)。

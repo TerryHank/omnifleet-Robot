@@ -8,7 +8,6 @@ MOLA 定位/建图及其他定位后端、实验启动入口和重定位支持�
 
 | 包/组件 | 职责 |
 |---|---|
-| [fast_livo](fast_livo2_ros2/README.omnifleet.md) | This is a modified version of LOAM which is original algorithm is described in the following paper: J. Zhang and S. Singh. LOAM: Lidar Odometry and Mapping in Real-time. Robotics: Science and Systems Conference (RSS). Berkeley, CA, July 2014. |
 | [kitti_metrics_eval](omnifleet_mola/kitti_metrics_eval/README.omnifleet.md) | CLI tool to evaluate the KITTI odometry bechmark metrics to trajectory files |
 | [mola](omnifleet_mola/mola/README.md) | Metapackage with all core open-sourced MOLA packages. |
 | [mola_academic_datasets](omnifleet_mola/mola_academic_datasets/README.md) | Metapackage with all packages supporting reading academic datasets. |
@@ -67,4 +66,4 @@ MOLA 定位/建图及其他定位后端、实验启动入口和重定位支持�
 
 - [omnifleet_relocalization/](omnifleet_relocalization)：MOLA 重定位、地图恢复和故障证据支持目录，保留旧兼容入口。
 
-业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../../AGENTS.md)。
+业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../AGENTS.md)。

@@ -12,4 +12,4 @@
 | [omnifleet_multi_robot_sim](omnifleet_multi_robot_sim/README.md) | Gazebo Classic 多机器人仿真和验证示例。 |
 | [omnifleet_simulator](omnifleet_simulator/README.omnifleet.md) | Gazebo Harmonic 仿真配置。 |
 
-业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../../AGENTS.md)。
+业务配置位于对应包 `config/`；长期数据位于 `/home/iecme/omnifleet_data`。完整规则见 [工作区AGENTS.md](../AGENTS.md)。
